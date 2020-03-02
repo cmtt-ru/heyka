@@ -1,10 +1,11 @@
-const path = require('path')
+const path = require('path');
+
 module.exports = {
   pages: {
     index: {
       entry: 'src/renderer/main.js',
-      template: 'public/index.html'
-    }
+      template: 'public/index.html',
+    },
   },
   configureWebpack: {
     resolve: {
@@ -15,13 +16,13 @@ module.exports = {
         '@views': path.resolve(__dirname, 'src/renderer/views'),
         '@components': path.resolve(__dirname, 'src/renderer/components'),
         '@libs': path.resolve(__dirname, 'src/renderer/libs'),
-        '@classes': path.resolve(__dirname, 'src/renderer/classes')
-      }
-    }
+        '@classes': path.resolve(__dirname, 'src/renderer/classes'),
+      },
+    },
   },
   pluginOptions: {
     electronBuilder: {
-      mainProcessFile: 'src/main/index.js'
-    }
-  }
-}
+      mainProcessFile: 'src/main/index.js',
+    },
+  },
+};
