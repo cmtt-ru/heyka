@@ -1,2 +1,2 @@
 # heyka-frontend
-Heyka frontend!
+Heyka frontend
