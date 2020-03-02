@@ -1,29 +1,32 @@
-import testWithSpectron from 'vue-cli-plugin-electron-builder/lib/testWithSpectron'
-import chai from 'chai'
-import chaiAsPromised from 'chai-as-promised'
+/* eslint-disable no-undef */
+import testWithSpectron from 'vue-cli-plugin-electron-builder/lib/testWithSpectron';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-chai.should()
-chai.use(chaiAsPromised)
+chai.should();
+chai.use(chaiAsPromised);
 
 describe('Application launch', function () {
-  this.timeout(30000)
+  const longEnoughMs = 30000;
+
+  this.timeout(longEnoughMs);
 
   beforeEach(function () {
     return testWithSpectron().then(instance => {
-      this.app = instance.app
-      this.stopServe = instance.stopServe
-    })
-  })
+      this.app = instance.app;
+      this.stopServe = instance.stopServe;
+    });
+  });
 
   beforeEach(function () {
-    chaiAsPromised.transferPromiseness = this.app.transferPromiseness
-  })
+    chaiAsPromised.transferPromiseness = this.app.transferPromiseness;
+  });
 
   afterEach(function () {
     if (this.app && this.app.isRunning()) {
-      return this.stopServe()
+      return this.stopServe();
     }
-  })
+  });
 
   it('opens a window', function () {
     return this.app.client
@@ -36,6 +39,6 @@ describe('Application launch', function () {
       .and.be.above(0)
       .browserWindow.getBounds()
       .should.eventually.have.property('height')
-      .and.be.above(0)
-  })
-})
+      .and.be.above(0);
+  });
+});
