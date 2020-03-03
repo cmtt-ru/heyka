@@ -1,5 +1,8 @@
 <template>
-    <div>Main window</div>
+    <div>
+        <div>Main window</div>
+        <SvgIcon name="headphones"></SvgIcon>
+    </div>
 </template>
 
 <script>
