@@ -1,5 +1,5 @@
 <template>
-    <div>Start</div>
+    <div></div>
 </template>
 
 <script>
@@ -16,7 +16,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="stylus">
-
-</style>
