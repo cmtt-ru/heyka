@@ -1,15 +1,36 @@
 'use strict';
 
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import {
   createProtocol
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib';
+// const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win;
+let mainWindow,
+    loadingScreen;
+const windowParams = {
+  width: 1000,
+  height: 700,
+  show: false,
+  webPreferences: {
+    webSecurity: false,
+    nodeIntegration: true,
+  },
+};
+const splashParams = {
+  width: 90,
+  height: 90,
+  show: false,
+  frame: false,
+  webPreferences: {
+    webSecurity: false,
+    nodeIntegration: true,
+  },
+};
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([ {
@@ -20,71 +41,71 @@ protocol.registerSchemesAsPrivileged([ {
   },
 } ]);
 /**
- * Creating main window
+ * Create the browser window
  * @returns {undefined} NOTHING
  */
 function createWindow() {
-  // Create the browser window.
-  win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-    },
-  });
+  mainWindow = new BrowserWindow(windowParams);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
-    win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    if (!process.env.IS_TEST) {
-      win.webContents.openDevTools();
-    }
+    mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+    // if (!process.env.IS_TEST) {
+    // mainWindow.webContents.openDevTools();
+    // }
   } else {
     createProtocol('app');
-    // Load the index.html when not in development
-    win.loadURL('app://./index.html');
+    mainWindow.loadURL('app://./index.html');
   }
+  // mainWindow.setProgressBar(-1); // hack: force icon refresh
+  ipcMain.on('StartChannel', (event, args) => {
+    console.log(args);
+    mainWindow.show();
+    if (loadingScreen) {
+      loadingScreen.close();
+    }
+  });
 
-  win.on('closed', () => {
-    win = null;
+  mainWindow.on('closed', () => {
+    mainWindow = null;
   });
 }
 
-// Quit when all windows are closed.
+/**
+ * Create Splash window
+ * @returns {undefined} NOTHING
+ */
+function createLoadingScreen() {
+  loadingScreen = new BrowserWindow(Object.assign(splashParams, { parent: mainWindow }));
+  if (isDevelopment) {
+    loadingScreen.loadURL(`file://${process.cwd()}/public/splash.html`);
+  } else {
+    createProtocol('app');
+    loadingScreen.loadFile('splash.html');
+  }
+
+  loadingScreen.on('closed', () => {
+    loadingScreen = null;
+  });
+  loadingScreen.webContents.on('did-finish-load', () => {
+    loadingScreen.show();
+  });
+}
+
 app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
 app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win === null) {
+  if (mainWindow === null) {
     createWindow();
   }
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    // Devtools extensions are broken in Electron 6.0.0 and greater
-    // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/378 for more info
-    // Electron will not launch with Devtools extensions installed on Windows 10 with dark mode
-    // If you are not using Windows 10 dark mode, you may uncomment these lines
-    // In addition, if the linked issue is closed, you can upgrade electron and uncomment these lines
-    // try {
-    //   await installVueDevtools()
-    // } catch (e) {
-    //   console.error('Vue Devtools failed to install:', e.toString())
-    // }
-
-  }
+  // load splash screen (fast) and start loading main screen (not so fast)
+  createLoadingScreen();
   createWindow();
 });
 
