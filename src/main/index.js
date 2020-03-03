@@ -12,6 +12,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
     loadingScreen;
+
 const windowParams = {
   width: 1000,
   height: 700,
@@ -21,6 +22,7 @@ const windowParams = {
     nodeIntegration: true,
   },
 };
+
 const splashParams = {
   width: 90,
   height: 90,
@@ -76,6 +78,7 @@ function createWindow() {
  */
 function createLoadingScreen() {
   loadingScreen = new BrowserWindow(Object.assign(splashParams, { parent: mainWindow }));
+
   if (isDevelopment) {
     loadingScreen.loadURL(`file://${process.cwd()}/public/splash.html`);
   } else {
@@ -86,6 +89,7 @@ function createLoadingScreen() {
   loadingScreen.on('closed', () => {
     loadingScreen = null;
   });
+
   loadingScreen.webContents.on('did-finish-load', () => {
     loadingScreen.show();
   });
