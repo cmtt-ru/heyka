@@ -1,5 +1,9 @@
 <template>
-  <svg :class="className" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    :class="classList"
+    :height="height"
+    :width="width"
+    xmlns="http://www.w3.org/2000/svg">
     <title v-if="title">{{ title }}</title>
     <use :xlink:href="iconPath" xmlns:xlink="http://www.w3.org/1999/xlink"/>
   </svg>
@@ -10,6 +14,14 @@ export default {
   name: 'svg-icon',
 
   props: {
+    width: {
+      type: [Number, String],
+      default: 16,
+    },
+    height: {
+      type: [Number, String],
+      default: 16,
+    },
     name: {
       type: String,
       required: true,
@@ -32,7 +44,7 @@ export default {
       return icon.url;
     },
 
-    className() {
+    classList() {
       return 'svg-icon svg-icon--' + this.name;
     },
   },
@@ -46,13 +58,12 @@ export default {
 };
 </script>
 
-<style>
-:root {
-  --stroke-color: red;
-}
-  .svg-icon {
-    height: 24px;
-    width: 24px;
-  }
+<style lang="stylus">
+  :root
+    --stroke-color red
 
+  .svg-icon
+    fill currentColor
+    height 24px
+    width 24px
 </style>

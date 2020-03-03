@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>Main window</div>
-        <SvgIcon name="headphones"></SvgIcon>
+        <svg-icon name="headphones"></svg-icon>
     </div>
 </template>
 
@@ -13,7 +13,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="stylus">
-
-</style>
