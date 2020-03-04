@@ -8,7 +8,7 @@ Vue.use(VueI18n);
  * @returns {Array} all translation sheets
  */
 function loadLocaleMessages() {
-  const locales = require.context('../translations', true, /[A-Za-z0-9-_,\s]+\.json$/i);
+  const locales = require.context('./translations', true, /[A-Za-z0-9-_,\s]+\.json$/i);
   const messages = {};
 
   locales.keys().forEach(key => {
