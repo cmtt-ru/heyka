@@ -7,6 +7,7 @@ module.exports = {
       template: 'public/index.html',
     },
   },
+
   configureWebpack: {
     resolve: {
       alias: {
@@ -20,6 +21,7 @@ module.exports = {
       },
     },
   },
+
   pluginOptions: {
     electronBuilder: {
       mainProcessFile: 'src/main/index.js',
@@ -30,5 +32,24 @@ module.exports = {
       localeDir: 'translations',
       enableInSFC: true,
     },
+    svgSprite: {
+
+      dir: 'src/assets/icons',
+      test: /\.(svg)(\?.*)?$/,
+      loaderOptions: {
+        extract: true,
+        spriteFilename: 'img/icons.[hash:8].svg', // or 'img/icons.svg' if filenameHashing == false
+      },
+      pluginOptions: {
+        plainSprite: true,
+      },
+    },
+  },
+
+  chainWebpack: config => {
+    config.module
+      .rule('svg-sprite')
+      .use('svgo-loader')
+      .loader('svgo-loader');
   },
 };

@@ -1,5 +1,9 @@
 <template>
-    <div>Main window. {{ $tc("message", seconds) }}</div>
+    <div>
+      <div>Main window. {{ $tc("message", seconds) }}</div>
+      <svg-icon name="headphones" size="24"></svg-icon>
+    </div>
+
 </template>
 
 <script>
@@ -24,7 +28,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="stylus">
-
-</style>
