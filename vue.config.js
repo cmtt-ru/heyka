@@ -26,6 +26,12 @@ module.exports = {
     electronBuilder: {
       mainProcessFile: 'src/main/index.js',
     },
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'translations',
+      enableInSFC: true,
+    },
     svgSprite: {
 
       dir: 'src/assets/icons',
