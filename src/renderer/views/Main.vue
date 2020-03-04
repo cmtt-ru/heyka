@@ -1,5 +1,8 @@
 <template>
-    <div>Main window</div>
+    <div>
+        <div>Main window</div>
+        <svg-icon name="headphones" size="24"></svg-icon>
+    </div>
 </template>
 
 <script>
@@ -10,7 +13,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="stylus">
-
-</style>
