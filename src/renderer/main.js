@@ -4,6 +4,9 @@ import router from './router';
 import store from './store';
 import i18n from './i18n';
 
+import SvgIcon from '@components/SvgIcon.vue';
+Vue.component('SvgIcon', SvgIcon);
+
 Vue.config.productionTip = false;
 
 new Vue({
