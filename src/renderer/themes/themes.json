@@ -1,0 +1,8 @@
+{
+    "themeColors": [
+        {"main": "#000000", "weakmain": "#818181", "secondary": "#FFFFFF", "weaksecondary": "#EFEFF1", "main-stroke-svg": "#000000", "secondary-stroke-svg": "red"},
+        {"main": "#ffffff", "weakmain": "#818181", "secondary": "#313131", "weaksecondary": "#212121", "main-stroke-svg": "#ffffff", "secondary-stroke-svg": "lightgreen"},
+        {"main": "#ffffff", "weakmain": "#3C91C4", "secondary": "#001B33", "weaksecondary": "#0a4478", "main-stroke-svg": "#000000", "secondary-stroke-svg": "red"},
+        {"main": "#11484f", "weakmain": "#D33682", "secondary": "#FDF6E3", "weaksecondary": "#fce5a7", "main-stroke-svg": "#000000", "secondary-stroke-svg": "red"}
+    ]
+}

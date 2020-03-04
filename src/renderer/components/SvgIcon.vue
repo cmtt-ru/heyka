@@ -102,12 +102,11 @@ export default {
   },
 
   mounted() {
-    const time = 2000;
-
+    // const time = 2000;
     // inner svg color change test
-    setTimeout(() => {
-      document.documentElement.style.setProperty('--secondary-stroke-svg', 'green');
-    }, time);
+    // setTimeout(() => {
+    // document.documentElement.style.setProperty('--secondary-stroke-svg', 'green');
+    // }, time);
   },
 };
 </script>
