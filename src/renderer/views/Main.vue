@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>Main window</div>
-        <svg-icon name="headphones"></svg-icon>
+        <svg-icon name="headphones" size="24"></svg-icon>
     </div>
 </template>
 
