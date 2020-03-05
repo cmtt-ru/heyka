@@ -18,7 +18,7 @@ export default {
   mounted() {
     ipcRenderer.send('StartChannel', 'Hello from Main!');
 
-    this.$root.$i18n.locale = 'ru';
+    this.$i18n.locale = 'ru';
 
     const oneSecond = 1000;
 
