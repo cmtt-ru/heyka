@@ -16,7 +16,7 @@ class Themes {
   }
 
   /**
- * Loads language files
+ * Switch theme to selected
  * @param {String} name name of theme
  * @returns {Array} all translation sheets
  */
@@ -25,8 +25,10 @@ class Themes {
       for (const prop in themes[name].colors) { // задаём глобальные переменные css
         document.documentElement.style.setProperty('--' + prop, themes[name].colors[prop]);
       }
+
+      return true;
     } else {
-      return 'theme not found';
+      return false;
     }
   }
 }
