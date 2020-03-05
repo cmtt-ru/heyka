@@ -1,0 +1,25 @@
+{
+  "productName": "Heyka",
+  "appId": "com.heyka.test",
+  "asar": true,
+  "protocols": {
+    "name": "Heyka",
+    "schemes": [
+      "Heyka"
+    ]
+  },
+  "mac": {
+    "target": [
+      "default"
+    ]
+  },
+  "win": {
+    "target": [
+      "portable"
+    ]
+  },
+  "portable": {
+    "artifactName": "Heyka.exe"
+  },
+  "extends": null
+}
