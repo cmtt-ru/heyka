@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import {
   createProtocol
   /* installVueDevtools */
@@ -61,8 +61,13 @@ function createWindow() {
     mainWindow.loadURL('app://./index.html');
   }
   // mainWindow.setProgressBar(-1); // hack: force icon refresh
+
   ipcMain.on('StartChannel', (event, args) => {
-    console.log(args);
+    // console.log(args);
+    if (nativeTheme.shouldUseDarkColors) {
+      console.log('dark!');
+      mainWindow.webContents.send('theme-dark', 'whoooooooh!');
+    }
     mainWindow.show();
     if (loadingScreen) {
       loadingScreen.close();

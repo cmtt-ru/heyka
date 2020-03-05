@@ -3,8 +3,10 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import i18n from './i18n';
-
+import themes from '@/themes';
 import SvgIcon from '@components/SvgIcon.vue';
+
+Vue.prototype.$themes = themes;
 Vue.component('SvgIcon', SvgIcon);
 
 Vue.config.productionTip = false;
