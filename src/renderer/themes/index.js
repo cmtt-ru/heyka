@@ -10,26 +10,34 @@ class Themes {
  * @returns {null} nothing
  */
   constructor(name) {
-    this.colorarray = themes;
+    this.themeArray = themes;
     this.currentTheme = name;
-    this.switchColors(name);
+    this.switchTheme(name);
   }
 
   /**
  * Switch theme to selected
  * @param {String} name name of theme
- * @returns {Array} all translation sheets
+ * @returns {boolean} found or not found theme
  */
-  switchColors(name) {
-    if (Object.prototype.hasOwnProperty.call(themes, name)) {
-      for (const prop in themes[name].colors) { // задаём глобальные переменные css
-        document.documentElement.style.setProperty('--' + prop, themes[name].colors[prop]);
+  switchTheme(name) {
+    if (Object.prototype.hasOwnProperty.call(this.themeArray, name)) {
+      for (const prop in this.themeArray[name].colors) { // задаём глобальные переменные css
+        document.documentElement.style.setProperty('--' + prop, this.themeArray[name].colors[prop]);
       }
 
       return true;
     } else {
       return false;
     }
+  }
+
+  /**
+ * Get all app themes
+ * @returns {Array} all themes
+ */
+  allThemes() {
+    return this.themeArray;
   }
 }
 
