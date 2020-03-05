@@ -6,6 +6,8 @@ import {
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib';
 // const path = require('path');
+
+import Autoupdater from './classes/AutoUpdater';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -66,6 +68,10 @@ function createWindow() {
       loadingScreen.close();
     }
   });
+
+  if (!isDevelopment) {
+    Autoupdater.init(mainWindow);
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
