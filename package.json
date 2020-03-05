@@ -13,6 +13,7 @@
     "postuninstall": "electron-builder install-app-deps",
     "test:unit": "vue-cli-service test:unit"
   },
+  "main": "background.js",
   "dependencies": {
     "chai-as-promised": "^7.1.1",
     "core-js": "^3.6.4",

@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   pages: {
     index: {
-      entry: 'src/renderer/main.js',
+      entry: './src/renderer/main.js',
       template: 'public/index.html',
     },
   },
@@ -23,9 +23,6 @@ module.exports = {
   },
 
   pluginOptions: {
-    electronBuilder: {
-      mainProcessFile: 'src/main/index.js',
-    },
     i18n: {
       locale: 'en',
       fallbackLocale: 'en',
