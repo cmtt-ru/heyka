@@ -36,7 +36,7 @@ class Themes {
  * Get all app themes
  * @returns {Array} all themes
  */
-  allThemes() {
+  getThemes() {
     return this.themeArray;
   }
 }
