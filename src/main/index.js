@@ -61,7 +61,7 @@ function createWindow() {
   // mainWindow.setProgressBar(-1); // hack: force icon refresh
 
   ipcMain.on('StartChannel', (event, args) => {
-    console.log(args);
+    // console.log(args);
     if (nativeTheme.shouldUseDarkColors) {
       console.log('dark!');
       mainWindow.webContents.send('theme-dark', 'whoooooooh!');
