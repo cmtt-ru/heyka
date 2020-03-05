@@ -16,6 +16,7 @@
   "dependencies": {
     "chai-as-promised": "^7.1.1",
     "core-js": "^3.6.4",
+    "electron-updater": "^2.2.4",
     "svg-sprite-loader": "^4.2.1",
     "vue": "^2.6.11",
     "vue-i18n": "^8.0.0",
