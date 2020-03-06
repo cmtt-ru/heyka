@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   pages: {
     index: {
-      entry: './src/renderer/main.js',
+      entry: './src/background.js',
       template: 'public/index.html',
     },
   },
@@ -23,6 +23,20 @@ module.exports = {
   },
 
   pluginOptions: {
+    electronBuilder: {
+      mainProcessFile: 'src/background.js',
+      builderOptions: {
+        productName: 'Heyka',
+        appId: 'com.heyka.test',
+        asar: true,
+        protocols: {
+          name: 'Heyka',
+          schemes: [
+            'heheh',
+          ],
+        },
+      },
+    },
     i18n: {
       locale: 'en',
       fallbackLocale: 'en',

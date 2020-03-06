@@ -2,6 +2,7 @@
     <div>
       <div>Main window. {{ $tc("message", seconds) }}</div>
       <svg-icon name="headphones" size="24"></svg-icon>
+      <div>{{message}}</div>
     </div>
 
 </template>
@@ -12,12 +13,15 @@ export default {
   data() {
     return {
       seconds: 0,
+      message: '',
     };
   },
 
   mounted() {
     ipcRenderer.send('StartChannel', 'Hello from Main!');
-
+    ipcRenderer.on('theme-dark', (event, args) => {
+      this.message = args;
+    });
     this.$i18n.locale = 'ru';
 
     const oneSecond = 1000;

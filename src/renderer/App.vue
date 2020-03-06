@@ -15,7 +15,7 @@ export default {
   created() {
     ipcRenderer.on('theme-dark', (event, arg) => {
       this.$themes.switchTheme('dark');
-      console.log(this.$themes.allThemes());
+      console.log(this.$themes.getThemes());
     });
   },
 };

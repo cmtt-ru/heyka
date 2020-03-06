@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import {
   createProtocol
   /* installVueDevtools */
@@ -37,7 +37,7 @@ const splashParams = {
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([ {
-  scheme: 'app',
+  scheme: 'heheh',
   privileges: {
     secure: true,
     standard: true,
@@ -56,17 +56,17 @@ function createWindow() {
     // mainWindow.webContents.openDevTools();
     // }
   } else {
-    createProtocol('app');
-    mainWindow.loadURL('app://./index.html');
+    createProtocol('heheh');
+    mainWindow.loadURL('heheh://./index.html');
   }
   // mainWindow.setProgressBar(-1); // hack: force icon refresh
 
   ipcMain.on('StartChannel', (event, args) => {
     // console.log(args);
-  // if (nativeTheme.shouldUseDarkColors) {
-  //   console.log('dark!');
-  //   mainWindow.webContents.send('theme-dark', 'whoooooooh!');
-  // }
+    if (nativeTheme.shouldUseDarkColors) {
+      console.log('dark!');
+      mainWindow.webContents.send('theme-dark', 'whoooooooh!');
+    }
     mainWindow.show();
     if (loadingScreen) {
       loadingScreen.close();
@@ -88,7 +88,7 @@ function createLoadingScreen() {
   if (isDevelopment) {
     loadingScreen.loadURL(`file://${process.cwd()}/public/splash.html`);
   } else {
-    createProtocol('app');
+    createProtocol('heheh');
     loadingScreen.loadFile('splash.html');
   }
 
@@ -122,8 +122,8 @@ app.on('ready', async () => {
 // Protocol handler for osx
 app.on('open-url', function (event, u) {
   event.preventDefault();
-
-  console.log('open-url# ' + u);
+  console.log(u);
+  logEverywhere('open-url# ' + u);
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -138,5 +138,17 @@ if (isDevelopment) {
     process.on('SIGTERM', () => {
       app.quit();
     });
+  }
+}
+
+/**
+ * Log both at dev console and at running node console instance
+ * @param {string} s string to print
+ * @returns {undefined} NOTHING
+ */
+function logEverywhere(s) {
+  console.log(s);
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
   }
 }

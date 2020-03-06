@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import {
   createProtocol
   /* installVueDevtools */
@@ -63,10 +63,10 @@ function createWindow() {
 
   ipcMain.on('StartChannel', (event, args) => {
     // console.log(args);
-  // if (nativeTheme.shouldUseDarkColors) {
-  //   console.log('dark!');
-  //   mainWindow.webContents.send('theme-dark', 'whoooooooh!');
-  // }
+    if (nativeTheme.shouldUseDarkColors) {
+      console.log('dark!');
+      mainWindow.webContents.send('theme-dark', 'whoooooooh!');
+    }
     mainWindow.show();
     if (loadingScreen) {
       loadingScreen.close();
@@ -123,7 +123,7 @@ app.on('ready', async () => {
 app.on('open-url', function (event, u) {
   event.preventDefault();
 
-  console.log('open-url# ' + u);
+  logEverywhere('open-url# ' + u);
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -138,5 +138,17 @@ if (isDevelopment) {
     process.on('SIGTERM', () => {
       app.quit();
     });
+  }
+}
+
+/**
+ * Log both at dev console and at running node console instance
+ * @param {string} s string to print
+ * @returns {undefined} NOTHING
+ */
+function logEverywhere(s) {
+  console.log(s);
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
   }
 }
