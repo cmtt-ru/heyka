@@ -37,7 +37,7 @@ const splashParams = {
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([ {
-  scheme: 'app',
+  scheme: 'Heyka',
   privileges: {
     secure: true,
     standard: true,
@@ -56,8 +56,7 @@ function createWindow() {
     // mainWindow.webContents.openDevTools();
     // }
   } else {
-    createProtocol('app');
-    mainWindow.loadURL('app://./index.html');
+    mainWindow.loadURL(`file://${__dirname}/index.html`);
   }
   // mainWindow.setProgressBar(-1); // hack: force icon refresh
 
@@ -76,6 +75,11 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.show();
+    // loadingScreen.hide();
+  });
 }
 
 /**
@@ -88,7 +92,6 @@ function createLoadingScreen() {
   if (isDevelopment) {
     loadingScreen.loadURL(`file://${process.cwd()}/public/splash.html`);
   } else {
-    createProtocol('app');
     loadingScreen.loadFile('splash.html');
   }
 
@@ -115,6 +118,7 @@ app.on('activate', () => {
 
 app.on('ready', async () => {
   // load splash screen (fast) and start loading main screen (not so fast)
+  createProtocol('app');
   createLoadingScreen();
   createWindow();
 });
