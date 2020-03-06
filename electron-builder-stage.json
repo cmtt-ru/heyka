@@ -1,0 +1,28 @@
+{
+  "appId": "app.live.hejka",
+  "productName": "HeykaStage",
+  "mac": {
+      "category": "public.app-category.productivity",
+      "darkModeSupport": true,
+      "extendInfo": {
+          "LSUIElement": 1
+      }
+  },
+  "win": {
+      "target": "nsis",
+      "icon": "icon.ico",
+      "legalTrademarks": "Heyka"
+  },
+  "linux": {
+      "target": "AppImage",
+      "icon": "public/icons/hejka.png",
+      "category": "Network"
+  },
+  "publish": {
+      "provider": "spaces",
+      "name": "heyka-stage",
+      "region": "fra1",
+      "channel": "latest"
+  },
+  "electronUpdaterCompatibility": ">= 2.16"
+}
