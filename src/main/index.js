@@ -1,10 +1,7 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain, nativeTheme } from 'electron';
-import {
-  createProtocol
-  /* installVueDevtools */
-} from 'vue-cli-plugin-electron-builder/lib';
+import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 // const path = require('path');
 // const url = require('url');
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -12,7 +9,8 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
-    loadingScreen;
+    loadingScreen,
+    deeplinkingUrl;
 
 const windowParams = {
   width: 1000,
@@ -35,14 +33,8 @@ const splashParams = {
   },
 };
 
-// Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([ {
-  scheme: 'Heyka',
-  privileges: {
-    secure: true,
-    standard: true,
-  },
-} ]);
+app.setAsDefaultProtocolClient('heyka');
+
 /**
  * Create the browser window
  * @returns {undefined} NOTHING
@@ -56,7 +48,7 @@ function createWindow() {
     // mainWindow.webContents.openDevTools();
     // }
   } else {
-    mainWindow.loadURL(`file://${__dirname}/index.html`);
+    mainWindow.loadURL('heyka://./index.html');
   }
   // mainWindow.setProgressBar(-1); // hack: force icon refresh
 
@@ -66,6 +58,11 @@ function createWindow() {
       console.log('dark!');
       mainWindow.webContents.send('theme-dark', 'whoooooooh!');
     }
+    if (process.platform != 'darwin') {
+      deeplinkingUrl = process.argv.slice(1);
+    }
+    logEverywhere('createWindow# ' + deeplinkingUrl);
+
     mainWindow.show();
     if (loadingScreen) {
       loadingScreen.close();
@@ -92,7 +89,7 @@ function createLoadingScreen() {
   if (isDevelopment) {
     loadingScreen.loadURL(`file://${process.cwd()}/public/splash.html`);
   } else {
-    loadingScreen.loadFile('splash.html');
+    loadingScreen.loadURL('heyka://./splash.html');
   }
 
   loadingScreen.on('closed', () => {
@@ -117,8 +114,8 @@ app.on('activate', () => {
 });
 
 app.on('ready', async () => {
+  createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
-  createProtocol('app');
   createLoadingScreen();
   createWindow();
 });
@@ -126,7 +123,7 @@ app.on('ready', async () => {
 // Protocol handler for osx
 app.on('open-url', function (event, u) {
   event.preventDefault();
-
+  console.log(u);
   logEverywhere('open-url# ' + u);
 });
 
@@ -154,5 +151,6 @@ function logEverywhere(s) {
   console.log(s);
   if (mainWindow && mainWindow.webContents) {
     mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
+    mainWindow.webContents.send('deep-link', s);
   }
 }
