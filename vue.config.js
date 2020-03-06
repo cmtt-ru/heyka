@@ -4,7 +4,7 @@ module.exports = {
   pages: {
     index: {
       entry: './src/renderer/main.js',
-      template: 'public/index.html',
+      template: './public/index.html',
     },
   },
 
@@ -24,11 +24,11 @@ module.exports = {
 
   pluginOptions: {
     electronBuilder: {
+      customFileProtocol: 'heyka://./',
       mainProcessFile: 'src/main/index.js',
       builderOptions: {
         productName: 'Heyka',
         appId: 'com.heyka.test',
-        asar: true,
         protocols: {
           name: 'Heyka',
           schemes: [

@@ -19,7 +19,7 @@ export default {
 
   mounted() {
     ipcRenderer.send('StartChannel', 'Hello from Main!');
-    ipcRenderer.on('theme-dark', (event, args) => {
+    ipcRenderer.on('deep-link', (event, args) => {
       this.message = args;
     });
     this.$i18n.locale = 'ru';
