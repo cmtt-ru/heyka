@@ -44,26 +44,21 @@ function createWindow() {
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    // if (!process.env.IS_TEST) {
-    // mainWindow.webContents.openDevTools();
-    // }
   } else {
     mainWindow.loadURL('heyka://./index.html');
   }
-  // mainWindow.setProgressBar(-1); // hack: force icon refresh
 
   ipcMain.on('StartChannel', (event, args) => {
-    // console.log(args);
     if (nativeTheme.shouldUseDarkColors) {
-      console.log('dark!');
       mainWindow.webContents.send('theme-dark', 'whoooooooh!');
     }
-    if (process.platform != 'darwin') {
+    if (process.platform !== 'darwin') {
       deeplinkingUrl = process.argv.slice(1);
     }
     logEverywhere('createWindow# ' + deeplinkingUrl);
 
     mainWindow.show();
+    mainWindow.webContents.openDevTools();
     if (loadingScreen) {
       loadingScreen.close();
     }
@@ -71,11 +66,6 @@ function createWindow() {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
-  });
-
-  mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.show();
-    // loadingScreen.hide();
   });
 }
 
@@ -120,11 +110,13 @@ app.on('ready', async () => {
   createWindow();
 });
 
-// Protocol handler for osx
-app.on('open-url', function (event, u) {
-  event.preventDefault();
-  console.log(u);
-  logEverywhere('open-url# ' + u);
+app.on('will-finish-launching', function () {
+  // Protocol handler for osx
+  app.on('open-url', function (event, url) {
+    event.preventDefault();
+    deeplinkingUrl = url;
+    logEverywhere('openurl#' + url);
+  });
 });
 
 // Exit cleanly on request from parent process in development mode.
