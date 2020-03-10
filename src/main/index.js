@@ -96,6 +96,24 @@ function createLoadingScreen() {
   });
 }
 
+app.on('second-instance', (e, argv) => {
+  if (process.platform !== 'darwin') {
+    // Keep only command line / deep linked arguments
+    deepLink.setParams(argv.slice(1));
+  }
+
+  if (deepLink.getParams()) {
+    mainWindow.webContents.send('deep-link', deepLink.getParams());
+  }
+
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore();
+    };
+    mainWindow.focus();
+  }
+});
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
@@ -114,6 +132,11 @@ app.on('ready', async () => {
   createLoadingScreen();
   createWindow();
 });
+
+// app.on('open-url', (event, url) => {
+// event.preventDefault();
+// deepLink.setParams(url);
+// });
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
@@ -135,9 +158,9 @@ if (isDevelopment) {
  * @param {string} s string to print
  * @returns {undefined} NOTHING
  */
-function logEverywhere(s) {
-  console.log(s);
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
-  }
-}
+// function logEverywhere(s) {
+// console.log(s);
+// if (mainWindow && mainWindow.webContents) {
+//     mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
+// }
+// }

@@ -42,13 +42,17 @@ class DeepLinkMain {
  * @returns {undefined} nothing
  */
   parseParams() {
+    const deepLinkSetParams = this.setParams.bind(this);
+
     if (process.platform === 'darwin') {
-      app.on('open-url', function (event, url) {
+      // deepLinkSetParams('heyka://call/12366');
+      app.on('open-url', (event, url) => {
+        console.log('url mac:', url);
         event.preventDefault();
-        this.setDeepLinkParams(url);
+        deepLinkSetParams(url);
       });
     } else {
-      this.setDeepLinkParams(process.argv.slice(1));
+      deepLinkSetParams(process.argv.slice(1));
     }
   }
 
@@ -57,7 +61,8 @@ class DeepLinkMain {
  * @param {string} param deep link string
  * @returns {boolean} if deep link parsing is successful
  */
-  setDeepLinkParams(param) {
+  setParams(param) {
+    this.params = null;
     const commandObj = deepLinkDeconstruct(param);
 
     if (!this.commands.includes(commandObj.command)) {
@@ -66,6 +71,14 @@ class DeepLinkMain {
     this.params = commandObj;
 
     return true;
+  }
+
+  /**
+ * Get deep link params
+ * @returns {Object} deep link params
+ */
+  getParams() {
+    return this.params;
   }
 }
 
