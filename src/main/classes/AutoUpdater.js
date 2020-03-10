@@ -9,7 +9,8 @@ export default {
 
   init(mainWindow) {
     autoUpdater.on('error', (error) => {
-      dialog.showErrorBox('Error: ', error == null ? 'unknown' : (error.stack || error).toString());
+      console.log(error.toString());
+      // dialog.showErrorBox('Error: ', error == null ? 'unknown' : (error.stack || error).toString());
     });
 
     autoUpdater.on('update-available', () => {
