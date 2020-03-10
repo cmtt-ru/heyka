@@ -2,6 +2,7 @@
 
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+import Autoupdater from './classes/AutoUpdater';
 import deepLink from './classes/deeplink';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -63,6 +64,10 @@ function createWindow() {
       loadingScreen.close();
     }
   });
+
+  if (!isDevelopment) {
+    Autoupdater.init(mainWindow);
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
