@@ -2,15 +2,11 @@
 
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
-// const path = require('path');
-// const url = require('url');
+import deepLink from './classes/deeplink';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
-    loadingScreen,
-    deeplinkingUrl;
+    loadingScreen;
 
 const windowParams = {
   width: 1000,
@@ -48,15 +44,19 @@ function createWindow() {
     mainWindow.loadURL('heyka://./index.html');
   }
 
-  ipcMain.on('StartChannel', (event, args) => {
+  ipcMain.on('start-is-ready', () => {
     if (nativeTheme.shouldUseDarkColors) {
-      mainWindow.webContents.send('theme-dark', 'whoooooooh!');
+      mainWindow.webContents.send('theme-dark', 'theme-dark');
     }
-    if (process.platform !== 'darwin') {
-      deeplinkingUrl = process.argv.slice(1);
-    }
-    logEverywhere('createWindow# ' + deeplinkingUrl);
 
+    if (deepLink.getParams()) {
+      mainWindow.webContents.send('deep-link', deepLink.getParams());
+    } else {
+      mainWindow.webContents.send('default-behaviour');
+    }
+  });
+
+  ipcMain.on('page-rendered', (event, args) => {
     mainWindow.show();
     mainWindow.webContents.openDevTools();
     if (loadingScreen) {
@@ -110,15 +110,6 @@ app.on('ready', async () => {
   createWindow();
 });
 
-app.on('will-finish-launching', function () {
-  // Protocol handler for osx
-  app.on('open-url', function (event, url) {
-    event.preventDefault();
-    deeplinkingUrl = url;
-    logEverywhere('openurl#' + url);
-  });
-});
-
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
@@ -143,6 +134,5 @@ function logEverywhere(s) {
   console.log(s);
   if (mainWindow && mainWindow.webContents) {
     mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
-    mainWindow.webContents.send('deep-link', s);
   }
 }

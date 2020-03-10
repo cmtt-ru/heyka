@@ -6,7 +6,7 @@
 import { ipcRenderer } from 'electron';
 export default {
   mounted() {
-    ipcRenderer.send('StartChannel', 'Hello from Login!');
+    ipcRenderer.send('page-rendered', 'Hello from Login!');
   },
 };
 </script>

@@ -18,10 +18,7 @@ export default {
   },
 
   mounted() {
-    ipcRenderer.send('StartChannel', 'Hello from Main!');
-    ipcRenderer.on('deep-link', (event, args) => {
-      this.message = args;
-    });
+    ipcRenderer.send('page-rendered', 'Hello from Main!');
     this.$i18n.locale = 'ru';
 
     const oneSecond = 1000;
@@ -29,6 +26,9 @@ export default {
     setInterval(() => {
       this.seconds += 1;
     }, oneSecond);
+
+    console.log(this.$route.query);
+    this.message = this.$route.query.hash;
   },
 };
 </script>
