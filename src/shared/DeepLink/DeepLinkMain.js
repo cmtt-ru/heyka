@@ -24,19 +24,19 @@ function deepLinkDeconstruct(str) {
 /**
  * A class that handles Deep Links in main process
  */
-export default class DeepLinkMain {
+class DeepLinkMain {
   /**
  * Inits deep link class
  * @param {Array} commandsArray legitimate commands
  * @param {object} mainWindow mainWindow instance
  * @returns {undefined} nothing
  */
-  constructor(commandsArray, mainWindow) {
+  constructor(commandsArray) {
     this.commands = commandsArray;
-    this.mainWindow = mainWindow;
-    // app.on('will-finish-launching', () => {
-    this.parseParams();
-    // });
+    this.mainWindow = null;
+    app.on('will-finish-launching', () => {
+      this.parseParams();
+    });
   }
 
   /**
@@ -47,14 +47,13 @@ export default class DeepLinkMain {
     const deepLinkSetParams = this.setParams.bind(this);
 
     if (process.platform === 'darwin') {
+      deepLinkSetParams('heyka://call/test 123');
       app.on('open-url', (event, url) => {
         console.log('url mac:', url);
         event.preventDefault();
         deepLinkSetParams(url);
 
-        if (this.getParams() && this.mainWindow.isVisible()) {
-          this.mainWindow.webContents.send('deep-link', this.getParams());
-        }
+        this.sendDeepLink();
       });
     } else {
       deepLinkSetParams(process.argv.slice(1));
@@ -63,9 +62,8 @@ export default class DeepLinkMain {
 
       if (gotTheLock) {
         app.on('second-instance', (e, argv) => {
-          if (process.platform !== 'darwin') {
-            deepLinkSetParams(argv.slice(1));
-          }
+          deepLinkSetParams(argv.slice(1));
+          console.log(argv);
 
           if (this.mainWindow) {
             if (this.mainWindow.isMinimized()) {
@@ -73,9 +71,7 @@ export default class DeepLinkMain {
             };
             this.mainWindow.focus();
           }
-          if (this.getParams() && this.mainWindow.isVisible()) {
-            this.mainWindow.webContents.send('deep-link', this.getParams());
-          }
+          this.sendDeepLink();
         });
       } else {
         app.quit();
@@ -84,7 +80,17 @@ export default class DeepLinkMain {
   }
 
   /**
- * Send deep link command to renderer process
+ * Try sending deep link command to renderer process
+ * @returns {undefined} nothing
+ */
+  sendDeepLink() {
+    if (this.getParams() && this.mainWindow && this.mainWindow.isVisible()) {
+      this.mainWindow.webContents.send('deep-link', this.getParams());
+    }
+  }
+
+  /**
+ * Set deep link parameters
  * @param {string} param deep link string
  * @returns {boolean} if deep link parsing is successful
  */
@@ -92,7 +98,7 @@ export default class DeepLinkMain {
     this.params = null;
     const commandObj = deepLinkDeconstruct(param.toString());
 
-    console.log(commandObj);
+    // console.log(commandObj);
 
     if (!this.commands.includes(commandObj.command)) {
       return false;
@@ -103,6 +109,15 @@ export default class DeepLinkMain {
   }
 
   /**
+ * add mainWindow instance to deepLink object
+ * @param {string} window mainWindow instance
+ * @returns {undefined} NOTHING
+ */
+  bindMainWindow(window) {
+    this.mainWindow = window;
+  }
+
+  /**
  * Get deep link params
  * @returns {Object} deep link params
  */
@@ -110,3 +125,5 @@ export default class DeepLinkMain {
     return this.params;
   }
 }
+
+export default new DeepLinkMain(['invite', 'call', 'join']);

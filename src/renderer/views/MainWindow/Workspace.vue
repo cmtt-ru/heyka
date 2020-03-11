@@ -27,7 +27,7 @@ export default {
       this.seconds += 1;
     }, oneSecond);
 
-    console.log(this.$route.query);
+    console.log('mainWindow:', this.$route.query);
     this.message = this.$route.query.hash;
   },
 };
