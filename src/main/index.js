@@ -3,12 +3,11 @@
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
-import DeepLinkMain from './classes/deeplink';
+import deepLink from '../shared/DeepLink/DeepLinkMain';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let mainWindow,
-    loadingScreen,
-    deepLink;
+    loadingScreen;
 
 const windowParams = {
   width: 1000,
@@ -39,8 +38,7 @@ app.setAsDefaultProtocolClient('heyka');
  */
 function createWindow() {
   mainWindow = new BrowserWindow(windowParams);
-
-  deepLink = new DeepLinkMain(['invite', 'call', 'join'], mainWindow);
+  deepLink.bindMainWindow(mainWindow);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
@@ -51,7 +49,7 @@ function createWindow() {
     if (nativeTheme.shouldUseDarkColors) {
       mainWindow.webContents.send('theme-dark', 'theme-dark');
     }
-    console.log(deepLink.getParams());
+    // console.log(deepLink.getParams());
     if (deepLink.getParams()) {
       mainWindow.webContents.send('deep-link', deepLink.getParams());
     } else {

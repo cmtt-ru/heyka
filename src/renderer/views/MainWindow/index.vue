@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import DeepLinkRenderer from '@classes/DeepLink';
+import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 
 export default {
   data() {
