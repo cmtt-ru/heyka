@@ -1,4 +1,4 @@
-name: Linter-Checking
+name: Linter-And-Tests-Checking
 
 on:
   pull_request:
