@@ -3,7 +3,7 @@ name: Prod-Appliction-Publishing
 on:
   push:
     branches:
-      - HEYK-37-autobuild
+      - HEYK-36-autobuild
     
 jobs:
   build-mac:
