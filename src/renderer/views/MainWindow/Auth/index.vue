@@ -1,12 +1,15 @@
 <template>
-    <div>Login window</div>
+    <div>
+    <div>Login wrapper</div>
+    <router-view></router-view>
+</div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron';
 export default {
   mounted() {
-    ipcRenderer.send('StartChannel', 'Hello from Login!');
+    ipcRenderer.send('page-rendered', 'Hello from Login!');
   },
 };
 </script>

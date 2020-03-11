@@ -2,6 +2,7 @@
     <div>
       <div>Main window. {{ $tc("message", seconds) }}</div>
       <svg-icon name="headphones" size="24"></svg-icon>
+      <div>{{message}}</div>
     </div>
 
 </template>
@@ -12,12 +13,12 @@ export default {
   data() {
     return {
       seconds: 0,
+      message: '',
     };
   },
 
   mounted() {
-    ipcRenderer.send('StartChannel', 'Hello from Main!');
-
+    ipcRenderer.send('page-rendered', 'Hello from Main!');
     this.$i18n.locale = 'ru';
 
     const oneSecond = 1000;
@@ -25,6 +26,9 @@ export default {
     setInterval(() => {
       this.seconds += 1;
     }, oneSecond);
+
+    console.log('mainWindow:', this.$route.query);
+    this.message = this.$route.query.hash;
   },
 };
 </script>

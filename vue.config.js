@@ -3,8 +3,8 @@ const path = require('path');
 module.exports = {
   pages: {
     index: {
-      entry: 'src/renderer/main.js',
-      template: 'public/index.html',
+      entry: './src/renderer/main.js',
+      template: './public/index.html',
     },
   },
 
@@ -18,13 +18,25 @@ module.exports = {
         '@components': path.resolve(__dirname, 'src/renderer/components'),
         '@libs': path.resolve(__dirname, 'src/renderer/libs'),
         '@classes': path.resolve(__dirname, 'src/renderer/classes'),
+        '@shared': path.resolve(__dirname, 'src/shared'),
       },
     },
   },
 
   pluginOptions: {
     electronBuilder: {
+      customFileProtocol: 'heyka://./',
       mainProcessFile: 'src/main/index.js',
+      builderOptions: {
+        productName: 'Heyka',
+        appId: 'com.heyka.test',
+        protocols: {
+          name: 'Heyka',
+          schemes: [
+            'heyka',
+          ],
+        },
+      },
     },
     i18n: {
       locale: 'en',
