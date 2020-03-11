@@ -1,9 +1,10 @@
 import router from '@/router';
+import { ipcRenderer } from 'electron';
 
 /**
  * A class that handles Deep Links in renderer process
  */
-class DeepLinkRenderer {
+export default class DeepLinkRenderer {
   /**
  * Inits deep link class
  * @param {String} map command-router mapping
@@ -11,6 +12,9 @@ class DeepLinkRenderer {
  */
   constructor(map) {
     this.commandMap = map;
+    ipcRenderer.on('deep-link', (event, args) => {
+      this.route(args);
+    });
   }
 
   /**
@@ -28,9 +32,9 @@ class DeepLinkRenderer {
   }
 }
 
-export default new DeepLinkRenderer({
-  login: 'login',
-  join: 'main',
-  call: 'main',
-  d: 'main',
-});
+// export default new DeepLinkRenderer({
+// login: 'login',
+// join: 'main/workspace',
+// call: 'main/workspace',
+// d: 'main/workspace',
+// });

@@ -5,23 +5,36 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/start',
-    name: 'Start',
-    component: () => import(/* webpackChunkName: "start" */ '@views/Start.vue'),
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import(/* webpackChunkName: "login" */ '@views/Login.vue'),
-  },
-  {
-    path: '/main',
-    name: 'Main',
-    component: () => import(/* webpackChunkName: "main" */ '@views/Main.vue'),
+    path: '/main-window',
+    component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow'),
+    children: [
+      {
+        path: '',
+        component: () => import(/* webpackChunkName: "start" */ '@views/MainWindow/Start.vue'),
+      },
+      {
+        path: 'workspace',
+        component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace.vue'),
+      },
+      {
+        path: 'auth',
+        component: () => import(/* webpackChunkName: "login" */ '@views/MainWindow/Auth'),
+        children: [
+          {
+            path: '',
+            component: () => import(/* webpackChunkName: "start" */ '@views/MainWindow/Auth/Hello.vue'),
+          },
+          {
+            path: 'credentials',
+            component: () => import(/* webpackChunkName: "start" */ '@views/MainWindow/Auth/Credentials.vue'),
+          },
+        ],
+      },
+    ],
   },
   {
     path: '*',
-    redirect: '/start',
+    redirect: '/main-window',
   },
 ];
 

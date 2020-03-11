@@ -3,11 +3,12 @@
 import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
-import deepLink from './classes/deeplink';
+import DeepLinkMain from './classes/deeplink';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let mainWindow,
-    loadingScreen;
+    loadingScreen,
+    deepLink;
 
 const windowParams = {
   width: 1000,
@@ -39,17 +40,18 @@ app.setAsDefaultProtocolClient('heyka');
 function createWindow() {
   mainWindow = new BrowserWindow(windowParams);
 
+  deepLink = new DeepLinkMain(['invite', 'call', 'join'], mainWindow);
+
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
   } else {
     mainWindow.loadURL('heyka://./index.html');
   }
-
   ipcMain.on('start-is-ready', () => {
     if (nativeTheme.shouldUseDarkColors) {
       mainWindow.webContents.send('theme-dark', 'theme-dark');
     }
-
+    console.log(deepLink.getParams());
     if (deepLink.getParams()) {
       mainWindow.webContents.send('deep-link', deepLink.getParams());
     } else {
@@ -95,24 +97,6 @@ function createLoadingScreen() {
     loadingScreen.show();
   });
 }
-
-app.on('second-instance', (e, argv) => {
-  if (process.platform !== 'darwin') {
-    // Keep only command line / deep linked arguments
-    deepLink.setParams(argv.slice(1));
-  }
-
-  if (deepLink.getParams()) {
-    mainWindow.webContents.send('deep-link', deepLink.getParams());
-  }
-
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) {
-      mainWindow.restore();
-    };
-    mainWindow.focus();
-  }
-});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
