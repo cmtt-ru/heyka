@@ -69,8 +69,15 @@ function createWindow() {
     Autoupdater.init(mainWindow);
   }
 
+  mainWindow.on('close', (event) => {
+    if (process.platform === 'darwin' && mainWindow.isVisible()) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+  });
   mainWindow.on('closed', () => {
     mainWindow = null;
+    app.quit();
   });
 }
 
@@ -105,6 +112,8 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
+  } else {
+    mainWindow.show();
   }
 });
 
@@ -115,10 +124,15 @@ app.on('ready', async () => {
   createWindow();
 });
 
-// app.on('open-url', (event, url) => {
-// event.preventDefault();
-// deepLink.setParams(url);
-// });
+app.on('before-quit', function () {
+  console.log('before-quit');
+  mainWindow.hide();
+});
+
+app.on('will-quit', function () {
+  console.log('will-quit');
+  mainWindow = null;
+});
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
