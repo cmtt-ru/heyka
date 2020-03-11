@@ -19,10 +19,10 @@
       "category": "Network"
   },
   "publish": {
-      "provider": "spaces",
-      "name": "heyka-stage",
-      "region": "fra1",
-      "channel": "latest"
+      "provider": "s3",
+      "bucket": "heyka-beta-bin",
+      "endpoint": "https://storage.yandexcloud.net",
+      "path": "test/"
   },
   "electronUpdaterCompatibility": ">= 2.16"
 }

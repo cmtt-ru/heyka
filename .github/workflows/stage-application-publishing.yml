@@ -1,0 +1,53 @@
+name: Stage-Appliction-Publishing
+
+on:
+  push:
+    branches:
+      - stage
+    
+jobs:
+  build-mac:
+    runs-on: macOS-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install dependencies
+      run: npm install
+    - name: set configuration
+      run: cp ./electron-builder-prod.json ./electron-builder.json
+    - name: build for mac os
+      run: npm run electron:build -- --mac --publish always
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        CI: true
+
+  build-linux-win:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install wine
+      run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install wine32 && sudo apt-get install wine-stable
+    - name: install dependencies
+      run: npm install
+    - name: set configuration
+      run: cp ./electron-builder-prod.json ./electron-builder.json
+    - name: build for win and linux (without certificates)
+      run: npm run electron:build -- --win --linux --publish always
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        CI: true
