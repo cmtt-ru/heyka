@@ -8,18 +8,10 @@
 import { ipcRenderer } from 'electron';
 
 export default {
-
-  methods: {
-
-  },
   created() {
     ipcRenderer.on('theme-dark', (event, arg) => {
       this.$themes.switchTheme('dark');
       // console.log(this.$themes.getThemes());
-    });
-    ipcRenderer.on('deep-link', (event, args) => {
-      console.log('got to renderer deep link');
-      this.$deeplink.route(args);
     });
   },
 };

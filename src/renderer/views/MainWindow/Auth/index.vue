@@ -1,5 +1,8 @@
 <template>
-    <div>Login window</div>
+    <div>
+    <div>Login wrapper</div>
+    <router-view></router-view>
+</div>
 </template>
 
 <script>

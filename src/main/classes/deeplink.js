@@ -9,7 +9,7 @@ function deepLinkDeconstruct(str) {
   if (str.indexOf('://') === -1) { // test deeplink
     return {
       command: 'join',
-      hash: 'devMode 123',
+      hash: 'devMode 12357858',
     };
   }
   str = str.split('://')[1]; // remove app name, eg: 'heyka://'
@@ -24,17 +24,19 @@ function deepLinkDeconstruct(str) {
 /**
  * A class that handles Deep Links in main process
  */
-class DeepLinkMain {
+export default class DeepLinkMain {
   /**
  * Inits deep link class
- * @param {String} commandsArray legitimate commands
+ * @param {Array} commandsArray legitimate commands
+ * @param {object} mainWindow mainWindow instance
  * @returns {undefined} nothing
  */
-  constructor(commandsArray) {
+  constructor(commandsArray, mainWindow) {
     this.commands = commandsArray;
-    app.on('will-finish-launching', () => {
-      this.parseParams();
-    });
+    this.mainWindow = mainWindow;
+    // app.on('will-finish-launching', () => {
+    this.parseParams();
+    // });
   }
 
   /**
@@ -45,14 +47,39 @@ class DeepLinkMain {
     const deepLinkSetParams = this.setParams.bind(this);
 
     if (process.platform === 'darwin') {
-      // deepLinkSetParams('heyka://call/12366');
       app.on('open-url', (event, url) => {
         console.log('url mac:', url);
         event.preventDefault();
         deepLinkSetParams(url);
+
+        if (this.getParams() && this.mainWindow.isVisible()) {
+          this.mainWindow.webContents.send('deep-link', this.getParams());
+        }
       });
     } else {
       deepLinkSetParams(process.argv.slice(1));
+
+      const gotTheLock = app.requestSingleInstanceLock();
+
+      if (gotTheLock) {
+        app.on('second-instance', (e, argv) => {
+          if (process.platform !== 'darwin') {
+            deepLinkSetParams(argv.slice(1));
+          }
+
+          if (this.mainWindow) {
+            if (this.mainWindow.isMinimized()) {
+              this.mainWindow.restore();
+            };
+            this.mainWindow.focus();
+          }
+          if (this.getParams() && this.mainWindow.isVisible()) {
+            this.mainWindow.webContents.send('deep-link', this.getParams());
+          }
+        });
+      } else {
+        app.quit();
+      }
     }
   }
 
@@ -63,7 +90,9 @@ class DeepLinkMain {
  */
   setParams(param) {
     this.params = null;
-    const commandObj = deepLinkDeconstruct(param);
+    const commandObj = deepLinkDeconstruct(param.toString());
+
+    console.log(commandObj);
 
     if (!this.commands.includes(commandObj.command)) {
       return false;
@@ -81,5 +110,3 @@ class DeepLinkMain {
     return this.params;
   }
 }
-
-export default new DeepLinkMain(['invite', 'call', 'join']);
