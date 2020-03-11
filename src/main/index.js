@@ -1,17 +1,11 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain, nativeTheme } from 'electron';
-import {
-  createProtocol
-  /* installVueDevtools */
-} from 'vue-cli-plugin-electron-builder/lib';
-// const path = require('path');
-
+import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
+import deepLink from '../shared/DeepLink/DeepLinkMain';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
     loadingScreen;
 
@@ -36,39 +30,36 @@ const splashParams = {
   },
 };
 
-// Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([ {
-  scheme: 'app',
-  privileges: {
-    secure: true,
-    standard: true,
-  },
-} ]);
+app.setAsDefaultProtocolClient('heyka');
+
 /**
  * Create the browser window
  * @returns {undefined} NOTHING
  */
 function createWindow() {
   mainWindow = new BrowserWindow(windowParams);
+  deepLink.bindMainWindow(mainWindow);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    // if (!process.env.IS_TEST) {
-    // mainWindow.webContents.openDevTools();
-    // }
   } else {
-    createProtocol('app');
-    mainWindow.loadURL('app://./index.html');
+    mainWindow.loadURL('heyka://./index.html');
   }
-  // mainWindow.setProgressBar(-1); // hack: force icon refresh
-
-  ipcMain.on('StartChannel', (event, args) => {
-    // console.log(args);
+  ipcMain.on('start-is-ready', () => {
     if (nativeTheme.shouldUseDarkColors) {
-      console.log('dark!');
-      mainWindow.webContents.send('theme-dark', 'whoooooooh!');
+      mainWindow.webContents.send('theme-dark', 'theme-dark');
     }
+    // console.log(deepLink.getParams());
+    if (deepLink.getParams()) {
+      mainWindow.webContents.send('deep-link', deepLink.getParams());
+    } else {
+      mainWindow.webContents.send('default-behaviour');
+    }
+  });
+
+  ipcMain.on('page-rendered', (event, args) => {
     mainWindow.show();
+    mainWindow.webContents.openDevTools();
     if (loadingScreen) {
       loadingScreen.close();
     }
@@ -78,8 +69,15 @@ function createWindow() {
     Autoupdater.init(mainWindow);
   }
 
+  mainWindow.on('close', (event) => {
+    if (process.platform === 'darwin' && mainWindow.isVisible()) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+  });
   mainWindow.on('closed', () => {
     mainWindow = null;
+    app.quit();
   });
 }
 
@@ -93,8 +91,7 @@ function createLoadingScreen() {
   if (isDevelopment) {
     loadingScreen.loadURL(`file://${process.cwd()}/public/splash.html`);
   } else {
-    createProtocol('app');
-    loadingScreen.loadFile('splash.html');
+    loadingScreen.loadURL('heyka://./splash.html');
   }
 
   loadingScreen.on('closed', () => {
@@ -115,13 +112,26 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
+  } else {
+    mainWindow.show();
   }
 });
 
 app.on('ready', async () => {
+  createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
   createLoadingScreen();
   createWindow();
+});
+
+app.on('before-quit', function () {
+  console.log('before-quit');
+  mainWindow.hide();
+});
+
+app.on('will-quit', function () {
+  console.log('will-quit');
+  mainWindow = null;
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -138,3 +148,15 @@ if (isDevelopment) {
     });
   }
 }
+
+/**
+ * Log both at dev console and at running node console instance
+ * @param {string} s string to print
+ * @returns {undefined} NOTHING
+ */
+// function logEverywhere(s) {
+// console.log(s);
+// if (mainWindow && mainWindow.webContents) {
+//     mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
+// }
+// }
