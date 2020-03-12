@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import deepLink from '../shared/DeepLink/DeepLinkMain';
@@ -46,10 +46,6 @@ function createWindow() {
     mainWindow.loadURL('heyka://./index.html');
   }
   ipcMain.on('start-is-ready', () => {
-    if (nativeTheme.shouldUseDarkColors) {
-      mainWindow.webContents.send('theme-dark', 'theme-dark');
-    }
-
     if (deepLink.getParams()) {
       mainWindow.webContents.send('deep-link', deepLink.getParams());
     } else {
