@@ -49,7 +49,7 @@ function createWindow() {
     if (nativeTheme.shouldUseDarkColors) {
       mainWindow.webContents.send('theme-dark', 'theme-dark');
     }
-    // console.log(deepLink.getParams());
+
     if (deepLink.getParams()) {
       mainWindow.webContents.send('deep-link', deepLink.getParams());
     } else {
