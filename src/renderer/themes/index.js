@@ -1,4 +1,10 @@
 import themes from './themes.json';
+import Store from 'electron-store';
+const { nativeTheme } = require('electron').remote;
+const ThemeFileStore = new Store({
+  name: 'theme',
+  encryptionKey: '1234543',
+});
 
 /**
  * A class that handles themes
@@ -11,8 +17,19 @@ class Themes {
  */
   constructor(name) {
     this.themeArray = themes;
-    this.currentTheme = name;
-    this.switchTheme(name);
+
+    if (nativeTheme.shouldUseDarkColors) {
+      this.userHasDarkPreference();
+    }
+
+    const theme = ThemeFileStore.get('currentTheme');
+
+    if (theme) {
+      this.switchTheme(theme);
+    } else {
+      this.currentTheme = name;
+      this.switchTheme(name);
+    }
   }
 
   /**
@@ -21,6 +38,8 @@ class Themes {
  * @returns {boolean} found or not found theme
  */
   switchTheme(name) {
+    ThemeFileStore.set('currentTheme', name);
+
     if (Object.prototype.hasOwnProperty.call(this.themeArray, name)) {
       for (const prop in this.themeArray[name].colors) { // задаём глобальные переменные css
         document.documentElement.style.setProperty('--' + prop, this.themeArray[name].colors[prop]);
@@ -29,6 +48,18 @@ class Themes {
       return true;
     } else {
       return false;
+    }
+  }
+
+  /**
+ * If no theme is saved, we should use dark theme
+ * @returns {void}
+ */
+  userHasDarkPreference() {
+    const theme = ThemeFileStore.get('currentTheme');
+
+    if (!theme) {
+      this.switchTheme('dark');
     }
   }
 
