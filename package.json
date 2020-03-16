@@ -1,5 +1,5 @@
 {
-  "name": "Heyka",
+  "name": "heyka",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,7 +15,6 @@
   },
   "main": "background.js",
   "dependencies": {
-    "app-module-path": "^2.2.0",
     "chai-as-promised": "^7.1.1",
     "core-js": "^3.6.4",
     "electron-builder": "^22.4.0",

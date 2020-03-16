@@ -5,7 +5,6 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import deepLink from '../shared/DeepLink/DeepLinkMain';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
-require('app-module-path').addPath(__dirname);
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let mainWindow,
