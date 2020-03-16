@@ -8,8 +8,8 @@ import { app } from 'electron';
 function deepLinkDeconstruct(str) {
   if (str.indexOf('://') === -1) { // test deeplink
     return {
-      command: 'join',
-      hash: 'devMode 12357858',
+      // command: 'join',
+      // hash: 'devMode 12357858',
     };
   }
   str = str.split('://')[1]; // remove app name, eg: 'heyka://'

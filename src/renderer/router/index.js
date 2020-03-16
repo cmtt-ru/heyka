@@ -10,7 +10,7 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import(/* webpackChunkName: "start" */ '@views/MainWindow/Start.vue'),
+        component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Start.vue'),
       },
       {
         path: 'workspace',
@@ -18,17 +18,27 @@ const routes = [
       },
       {
         path: 'auth',
-        component: () => import(/* webpackChunkName: "login" */ '@views/MainWindow/Auth'),
+        component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth'),
         children: [
           {
             path: '',
-            component: () => import(/* webpackChunkName: "start" */ '@views/MainWindow/Auth/Hello.vue'),
+            component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Hello.vue'),
           },
           {
             path: 'credentials',
-            component: () => import(/* webpackChunkName: "start" */ '@views/MainWindow/Auth/Credentials.vue'),
+            component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Credentials.vue'),
           },
         ],
+      },
+    ],
+  },
+  {
+    path: '/push-window',
+    component: () => import(/* webpackChunkName: "push" */ '@views/PushWindow'),
+    children: [
+      {
+        path: '',
+        component: () => import(/* webpackChunkName: "push" */ '@views/PushWindow/Poke.vue'),
       },
     ],
   },

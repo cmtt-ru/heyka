@@ -1,0 +1,32 @@
+{
+    "main": {
+        "width": 1000,
+        "height": 700,
+        "webPreferences": {
+            "webSecurity": false,
+            "nodeIntegration": true
+        }
+    },
+    "splash": {
+        "width": 90,
+        "height": 90,
+        "transparent": true,
+        "movable": false,
+        "fullscreenable": false,
+        "resizable": false,
+        "frame": false,
+        "webPreferences": {
+            "webSecurity": false,
+            "nodeIntegration": true
+        }
+    },
+    "push": {
+        "width": 400,
+        "height": 100,
+        "show": true,
+        "webPreferences": {
+            "webSecurity": false,
+            "nodeIntegration": true
+        }
+    }
+}

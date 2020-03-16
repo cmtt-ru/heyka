@@ -3,7 +3,7 @@ import Store from 'electron-store';
 const { nativeTheme } = require('electron').remote;
 const ThemeFileStore = new Store({
   name: 'theme',
-  encryptionKey: '1234543',
+  encryptionKey: '31415926',
 });
 
 /**
