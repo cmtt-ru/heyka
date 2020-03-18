@@ -1,10 +1,16 @@
 <template>
     <div>
+      <br><br>
       <div>Main window. {{ $tc("message", seconds) }}</div>
       <svg-icon name="headphones" size="24"></svg-icon>
+      <br>
       <div>{{message}}</div>
+      <br>
       <button @click="openPushWindow()">Открыть пуш</button>
       <button @click="closePushWindow()">Закрыть пуш</button>
+      <br><br><br>
+      <button @click="trayToggle()">Из трея/в трей</button>
+      <br><br><br>
     </div>
 
 </template>
@@ -31,7 +37,7 @@ export default {
       if (!pushWindow) {
         pushWindow = WindowManager.create({
           route: '/push-window',
-          position: 'trayCenter',
+          position: 'topRight',
           template: 'push',
           onClose: () => {
             pushWindow = null;
@@ -39,11 +45,14 @@ export default {
         });
       }
     },
-    closePushWindow(event, visible) {
+    closePushWindow() {
       if (pushWindow) {
         pushWindow.close();
         pushWindow = null;
       }
+    },
+    trayToggle() {
+      ipcRenderer.send('tray-manager-toggle');
     },
   },
 
