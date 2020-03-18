@@ -3,9 +3,13 @@
 import { app, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
-import deepLink from '../shared/DeepLink/DeepLinkMain';
+import TrayManager from './classes/TrayManager';
+import DeepLink from '../shared/DeepLink/DeepLinkMain';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 const isDevelopment = process.env.NODE_ENV !== 'production';
+
+console.time('init');
+console.time('before-load');
 
 let mainWindow,
     loadingScreenID;
@@ -14,38 +18,44 @@ app.setAsDefaultProtocolClient('heyka');
 
 /**
  * Create the browser window
- * @returns {undefined} NOTHING
+ * @returns {void}
  */
 function createWindow() {
-  const mainWindowid = WindowManager.createWindow({
-    position: 'bottomCenter',
-    template: 'main',
-    onClose: () => {
-      mainWindow = null;
-    },
-  });
+  let params = {};
+
+  if (TrayManager.isInTray()) {
+    params = {
+      position: 'tray',
+      template: 'maintray',
+    };
+  } else {
+    params = {
+      position: 'center',
+      template: 'main',
+    };
+  }
+
+  const mainWindowid = WindowManager.createWindow(params);
 
   mainWindow = WindowManager.getWindow(mainWindowid);
-  deepLink.bindMainWindow(mainWindow);
+  DeepLink.bindMainWindow(mainWindow);
+  TrayManager.bindMainWindow(mainWindow);
 
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-  } else {
-    mainWindow.loadURL('heyka://./index.html');
-  }
   ipcMain.on('start-is-ready', () => {
-    if (deepLink.getParams()) {
-      mainWindow.webContents.send('deep-link', deepLink.getParams());
+    if (DeepLink.getParams()) {
+      mainWindow.webContents.send('deep-link', DeepLink.getParams());
     } else {
       mainWindow.webContents.send('default-behaviour');
     }
   });
 
   ipcMain.on('page-rendered', (event, args) => {
-    mainWindow.webContents.openDevTools();
     if (loadingScreenID) {
+      console.timeEnd('init');
       WindowManager.closeWindow(loadingScreenID);
+      loadingScreenID = null;
     }
+    mainWindow.webContents.openDevTools();
   });
 
   if (!isDevelopment) {
@@ -74,6 +84,7 @@ function createLoadingScreen() {
     template: 'splash',
     url: 'splash.html',
   });
+  console.timeEnd('before-load');
 }
 
 app.on('window-all-closed', () => {
@@ -121,15 +132,3 @@ if (isDevelopment) {
     });
   }
 }
-
-/**
- * Log both at dev console and at running node console instance
- * @param {string} s string to print
- * @returns {undefined} NOTHING
- */
-// function logEverywhere(s) {
-// console.log(s);
-// if (mainWindow && mainWindow.webContents) {
-//     mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
-// }
-// }

@@ -1,13 +1,8 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
-import Positioner from 'electron-positioner';
+import Positioner from './Positioner';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
-// import Store from 'electron-store';
-// const PositionFileStore = new Store({
-// name: 'position',
-// encryptionKey: '31415926',
-// });
 
 // const isMac = process.platform === 'darwin';
 // const isLinux = process.platform === 'linux';
@@ -18,7 +13,7 @@ const DEFAULT_WINDOW_OPTIONS = {
   height: 560,
   x: 0,
   y: 0,
-  frame: true,
+  frame: false,
   movable: true,
   fullscreenable: false,
   resizable: true,
@@ -46,8 +41,6 @@ class WindowManager {
 
     ipcMain.on('window-manager-create', (event, options) => {
       const windowId = this.createWindow(options);
-
-      // console.log('window-manager-create', options, windowId);
 
       event.returnValue = {
         id: windowId,
@@ -127,9 +120,9 @@ class WindowManager {
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
       newWindow.loadURL(devUrl);
-      if (!process.env.IS_TEST) {
-        // newWindow.webContents.openDevTools();
-      }
+      // if (!process.env.IS_TEST) {
+      //   newWindow.webContents.openDevTools();
+      // }
     } else {
       createProtocol('heyka');
       newWindow.loadURL(prodUrl);
@@ -212,16 +205,9 @@ export default new WindowManager();
  * @param {boolean} trayAdjust if position is near tray
  * @returns {object} adjusted window coordinates
  */
-function getWindowPosition(wnd, pos = 'center', trayAdjust = false) {
-  // const trayBounds = TrayHelper.getBounds();
-  const positioner = new Positioner(wnd);
+function getWindowPosition(wnd, pos = 'center') {
+  const testMargin = 20;
+  const positioner = new Positioner(wnd, testMargin);
 
-  const coords = positioner.calculate(pos);
-
-  if (trayAdjust) {
-    coords.x -= 250;
-    coords.y -= 160;
-  }
-
-  return coords;
+  return positioner.calculate(pos);
 }
