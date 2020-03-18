@@ -2,10 +2,11 @@
     "main": {
         "width": 1000,
         "height": 700,
-        "webPreferences": {
-            "webSecurity": false,
-            "nodeIntegration": true
-        }
+        "frame": true
+    },
+    "maintray": {
+        "width": 500,
+        "height": 700
     },
     "splash": {
         "width": 90,
@@ -14,19 +15,10 @@
         "movable": false,
         "fullscreenable": false,
         "resizable": false,
-        "frame": false,
-        "webPreferences": {
-            "webSecurity": false,
-            "nodeIntegration": true
-        }
+        "frame": false
     },
     "push": {
         "width": 400,
-        "height": 100,
-        "show": true,
-        "webPreferences": {
-            "webSecurity": false,
-            "nodeIntegration": true
-        }
+        "height": 100
     }
 }
