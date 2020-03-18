@@ -1,34 +1,14 @@
 'use strict';
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import deepLink from '../shared/DeepLink/DeepLinkMain';
+import WindowManager from '../shared/WindowManager/WindowManagerMain';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let mainWindow,
-    loadingScreen;
-
-const windowParams = {
-  width: 1000,
-  height: 700,
-  show: false,
-  webPreferences: {
-    webSecurity: false,
-    nodeIntegration: true,
-  },
-};
-
-const splashParams = {
-  width: 90,
-  height: 90,
-  show: false,
-  frame: false,
-  webPreferences: {
-    webSecurity: false,
-    nodeIntegration: true,
-  },
-};
+    loadingScreenID;
 
 app.setAsDefaultProtocolClient('heyka');
 
@@ -37,7 +17,15 @@ app.setAsDefaultProtocolClient('heyka');
  * @returns {undefined} NOTHING
  */
 function createWindow() {
-  mainWindow = new BrowserWindow(windowParams);
+  const mainWindowid = WindowManager.createWindow({
+    position: 'bottomCenter',
+    template: 'main',
+    onClose: () => {
+      mainWindow = null;
+    },
+  });
+
+  mainWindow = WindowManager.getWindow(mainWindowid);
   deepLink.bindMainWindow(mainWindow);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -54,10 +42,9 @@ function createWindow() {
   });
 
   ipcMain.on('page-rendered', (event, args) => {
-    mainWindow.show();
     mainWindow.webContents.openDevTools();
-    if (loadingScreen) {
-      loadingScreen.close();
+    if (loadingScreenID) {
+      WindowManager.closeWindow(loadingScreenID);
     }
   });
 
@@ -82,20 +69,10 @@ function createWindow() {
  * @returns {undefined} NOTHING
  */
 function createLoadingScreen() {
-  loadingScreen = new BrowserWindow(Object.assign(splashParams, { parent: mainWindow }));
-
-  if (isDevelopment) {
-    loadingScreen.loadURL(`file://${process.cwd()}/public/splash.html`);
-  } else {
-    loadingScreen.loadURL('heyka://./splash.html');
-  }
-
-  loadingScreen.on('closed', () => {
-    loadingScreen = null;
-  });
-
-  loadingScreen.webContents.on('did-finish-load', () => {
-    loadingScreen.show();
+  loadingScreenID = WindowManager.createWindow({
+    position: 'center',
+    template: 'splash',
+    url: 'splash.html',
   });
 }
 
