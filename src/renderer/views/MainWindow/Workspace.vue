@@ -51,6 +51,7 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
     async openPushWindow() {
       // console.log(WindowManager.create);
       if (!pushWindow) {
