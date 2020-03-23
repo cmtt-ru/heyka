@@ -1,64 +1,61 @@
 'use strict';
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
-import deepLink from '../shared/DeepLink/DeepLinkMain';
+import TrayManager from './classes/TrayManager';
+import DeepLink from '../shared/DeepLink/DeepLinkMain';
+import WindowManager from '../shared/WindowManager/WindowManagerMain';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
+console.time('init');
+console.time('before-load');
+
 let mainWindow,
-    loadingScreen;
-
-const windowParams = {
-  width: 1000,
-  height: 700,
-  show: false,
-  webPreferences: {
-    webSecurity: false,
-    nodeIntegration: true,
-  },
-};
-
-const splashParams = {
-  width: 90,
-  height: 90,
-  show: false,
-  frame: false,
-  webPreferences: {
-    webSecurity: false,
-    nodeIntegration: true,
-  },
-};
+    loadingScreenID;
 
 app.setAsDefaultProtocolClient('heyka');
 
 /**
  * Create the browser window
- * @returns {undefined} NOTHING
+ * @returns {void}
  */
 function createWindow() {
-  mainWindow = new BrowserWindow(windowParams);
-  deepLink.bindMainWindow(mainWindow);
+  let params = {};
 
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+  if (TrayManager.isInTray()) {
+    params = {
+      position: 'tray',
+      template: 'maintray',
+    };
   } else {
-    mainWindow.loadURL('heyka://./index.html');
+    params = {
+      position: 'center',
+      template: 'main',
+    };
   }
+
+  const mainWindowid = WindowManager.createWindow(params);
+
+  mainWindow = WindowManager.getWindow(mainWindowid);
+  DeepLink.bindMainWindow(mainWindow);
+  TrayManager.bindMainWindow(mainWindow);
+
   ipcMain.on('start-is-ready', () => {
-    if (deepLink.getParams()) {
-      mainWindow.webContents.send('deep-link', deepLink.getParams());
+    if (DeepLink.getParams()) {
+      mainWindow.webContents.send('deep-link', DeepLink.getParams());
     } else {
       mainWindow.webContents.send('default-behaviour');
     }
   });
 
   ipcMain.on('page-rendered', (event, args) => {
-    mainWindow.show();
-    mainWindow.webContents.openDevTools();
-    if (loadingScreen) {
-      loadingScreen.close();
+    if (loadingScreenID) {
+      console.timeEnd('init');
+      WindowManager.closeWindow(loadingScreenID);
+      loadingScreenID = null;
     }
+    mainWindow.webContents.openDevTools();
   });
 
   if (!isDevelopment) {
@@ -82,21 +79,12 @@ function createWindow() {
  * @returns {undefined} NOTHING
  */
 function createLoadingScreen() {
-  loadingScreen = new BrowserWindow(Object.assign(splashParams, { parent: mainWindow }));
-
-  if (isDevelopment) {
-    loadingScreen.loadURL(`file://${process.cwd()}/public/splash.html`);
-  } else {
-    loadingScreen.loadURL('heyka://./splash.html');
-  }
-
-  loadingScreen.on('closed', () => {
-    loadingScreen = null;
+  loadingScreenID = WindowManager.createWindow({
+    position: 'center',
+    template: 'splash',
+    url: 'splash.html',
   });
-
-  loadingScreen.webContents.on('did-finish-load', () => {
-    loadingScreen.show();
-  });
+  console.timeEnd('before-load');
 }
 
 app.on('window-all-closed', () => {
@@ -144,15 +132,3 @@ if (isDevelopment) {
     });
   }
 }
-
-/**
- * Log both at dev console and at running node console instance
- * @param {string} s string to print
- * @returns {undefined} NOTHING
- */
-// function logEverywhere(s) {
-// console.log(s);
-// if (mainWindow && mainWindow.webContents) {
-//     mainWindow.webContents.executeJavaScript(`console.log("${s}")`);
-// }
-// }
