@@ -1,18 +1,29 @@
 <template>
     <div>
+      <br><br>
       <div>Main window. {{ $tc("message", seconds) }}</div>
       <svg-icon name="headphones" size="24"></svg-icon>
+      <br>
       <div>{{message}}</div>
       <br><br>
       <button @click="Login()">Login</button>
       <br><br>
       <button @click="GetWorkspaces()">GetWorkspaces</button>
+      <br><br>
+      <button @click="openPushWindow()">Открыть пуш</button>
+      <button @click="closePushWindow()">Закрыть пуш</button>
+      <br><br><br>
+      <button @click="trayToggle()">Из трея/в трей</button>
+      <br><br><br>
     </div>
 
 </template>
 
 <script>
 import { ipcRenderer } from 'electron';
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+
+let pushWindow;
 
 export default {
   data() {
@@ -20,6 +31,7 @@ export default {
       seconds: 0,
       message: '',
       input: '',
+
     };
   },
 
@@ -39,6 +51,27 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    async openPushWindow() {
+      // console.log(WindowManager.create);
+      if (!pushWindow) {
+        pushWindow = WindowManager.create({
+          route: '/push-window',
+          position: 'topRight',
+          template: 'push',
+          onClose: () => {
+            pushWindow = null;
+          },
+        });
+      }
+    },
+    closePushWindow() {
+      if (pushWindow) {
+        pushWindow.close();
+        pushWindow = null;
+      }
+    },
+    trayToggle() {
+      ipcRenderer.send('tray-manager-toggle');
     },
   },
 
