@@ -1,5 +1,5 @@
 import axios from 'axios';
 
-export default function (ID) {
-  return axios.post('/channels/' + ID + '/leave');
+export default function (id) {
+  return axios.post(`/channels/${id}/leave`);
 }
