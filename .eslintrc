@@ -165,7 +165,7 @@
     "Math": true,
     "Air": true,
     "_log": true,
-
+    "__static": true,
     "Paragraph": true,
     "Header": true,
     "Embed": true,

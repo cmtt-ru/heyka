@@ -73,6 +73,8 @@ function middleware(func) {
           await updateToken();
 
           return middleware(func).apply(null, arguments);
+        default:
+          throw err;
       }
     }
   };

@@ -1,15 +1,37 @@
 /* eslint-disable no-magic-numbers */
 import path from 'path';
-import { app, Menu, Tray, nativeImage, ipcMain } from 'electron';
+import { app, Menu, Tray, systemPreferences, nativeImage, ipcMain } from 'electron';
 import Store from 'electron-store';
+
 const TrayFileStore = new Store({
   name: 'tray',
   encryptionKey: '31415926',
 });
 
 const isMac = process.platform === 'darwin';
-// const isWin = !isMac;
+const isWin = !isMac;
 let animationTimer;
+
+const icons = {
+  light: {
+    default: 'icon',
+    'onair-1': 'icon-onair-1',
+    'onair-2': 'icon-onair-2',
+    crossed: 'icon-crossed',
+  },
+  dark: {
+    default: 'icon-light',
+    'onair-1': 'icon-onair-1',
+    'onair-2': 'icon-onair-2',
+    crossed: 'icon-crossed',
+  },
+};
+
+let theme = 'light';
+
+if ((isMac && systemPreferences.isDarkMode()) || isWin) {
+  theme = 'dark';
+}
 
 /**
  * A class that manages app living in tray
@@ -26,7 +48,7 @@ class TrayManager {
       this.toggleTrayPosition();
     });
     app.on('ready', () => {
-      this.tray = new Tray(iconPath);
+      this.set(iconPath);
       const contextMenu = Menu.buildFromTemplate([
         // { role: 'appMenu' }
         ...(isMac ? [ {
@@ -131,31 +153,50 @@ class TrayManager {
   }
 
   /**
- * Change tray icon to desired
+ * Get icon full path by icon name
+  * @param {string} icon icon path
+ * @returns {string} icon full path
+ */
+  getIconPath(icon) {
+    if (icons[theme][icon]) {
+      console.log(path.join(__static, `trayIcons/${icons[theme][icon]}.ico`));
+
+      return path.join(__static, `trayIcons/${icons[theme][icon]}.ico`);
+    } else {
+      console.error(`Icon "${icon}" not found`);
+
+      return false;
+    }
+  }
+
+  /**
+ * Change tray icon to desired, and create tray if none
   * @param {string} icon icon path
  * @returns {void}
  */
-  changeIcon(icon) {
-    if (this.tray !== null) {
-      const nImage = nativeImage.createFromPath(this.getIconPath(icon));
+  set(icon) {
+    const nImage = nativeImage.createFromPath(this.getIconPath(icon));
 
+    if (this.tray === undefined) {
+      this.tray = new Tray(nImage);
+    } else {
       this.tray.setImage(nImage);
     }
   }
 
   /**
  * Alternate tray icon between given icons
-  * @param {Array} icons icons array
+  * @param {Array} iconsArray icons array
   * @param {Number} interval interval between alternating icons
  * @returns {void}
  */
-  setAnimation(icons = [], interval = 500) {
-    const iconsCount = icons.length;
+  setAnimation(iconsArray = [], interval = 500) {
+    const iconsCount = iconsArray.length;
     let counter = 0;
 
     clearInterval(animationTimer);
 
-    this.set(icons[0]);
+    this.set(iconsArray[0]);
 
     animationTimer = setInterval(() => {
       counter++;
@@ -164,7 +205,7 @@ class TrayManager {
         counter = 0;
       }
 
-      this.set(icons[counter]);
+      this.set(iconsArray[counter]);
     }, interval);
   }
 
@@ -202,5 +243,4 @@ class TrayManager {
     app.exit();
   }
 }
-
-export default new TrayManager(path.resolve('public/icons/icon.ico'));
+export default new TrayManager('default');
