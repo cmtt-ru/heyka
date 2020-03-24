@@ -6,7 +6,7 @@
       <br>
       <div>{{message}}</div>
       <br><br>
-      <button @click="Login()">Login</button>
+      <button @click="login()">Login</button>
       <br><br>
       <button @click="GetWorkspaces()">GetWorkspaces</button>
       <br><br>
@@ -36,21 +36,23 @@ export default {
   },
 
   methods: {
-    Login() {
-      this.$API.auth.signinByLink('7a514d3b0f3d44d09d05564ca12a049200c8c576908cd0fe2065105cab4ca7e99613b72b3094303eb3').then((res) => {
+    async login() {
+      try {
+        const res = await this.$API.auth.signinByLink('7a514d3b0f3d44d09d05564ca12a049200c8c576908cd0fe2065105cab4ca7e99613b72b3094303eb3');
+
         console.log(res);
-      })
-        .catch((err) => {
-          console.log(err);
-        });
+      } catch (err) {
+        console.log(err);
+      }
     },
-    GetWorkspaces() {
-      this.$API.workspace.getWorkspaces().then((res) => {
+    async GetWorkspaces() {
+      try {
+        const res = await this.$API.workspace.getWorkspaces();
+
         console.log(res);
-      })
-        .catch((err) => {
-          console.log(err);
-        });
+      } catch (err) {
+        console.log(err);
+      }
     },
     async openPushWindow() {
       // console.log(WindowManager.create);

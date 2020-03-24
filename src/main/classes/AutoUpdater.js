@@ -1,4 +1,4 @@
-import { dialog } from 'electron';
+// import { dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 
 let updateTimer;
@@ -8,10 +8,10 @@ autoUpdater.autoDownload = false;
 export default {
 
   init(mainWindow) {
-    autoUpdater.on('error', (error) => {
-      // console.log(error.toString());
-      dialog.showErrorBox('Error: ', error == null ? 'unknown' : (error.stack || error).toString());
-    });
+    // autoUpdater.on('error', (error) => {
+    //   // console.log(error.toString());
+    //   dialog.showErrorBox('Error: ', error == null ? 'unknown' : (error.stack || error).toString());
+    // });
 
     autoUpdater.on('update-available', () => {
       this.stopTimer();

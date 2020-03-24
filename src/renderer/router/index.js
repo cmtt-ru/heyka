@@ -1,32 +1,45 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
+const Start = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Start');
+const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
+const Workspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace');
+const Auth = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth');
+const AuthHello = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Hello');
+const AuthCredentials = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Credentials');
+const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/PushWindow');
+const PushWindowPoke = () => import(/* webpackChunkName: "push" */ '@views/PushWindow/Poke');
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/main-window',
-    component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow'),
+    component: MainWindow,
     children: [
       {
         path: '',
-        component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Start.vue'),
+        component: Start,
+      },
+      {
+        path: 'signinbylink',
+        component: SigninLinkCheck,
       },
       {
         path: 'workspace',
-        component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace.vue'),
+        component: Workspace,
       },
       {
         path: 'auth',
-        component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth'),
+        component: Auth,
         children: [
           {
             path: '',
-            component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Hello.vue'),
+            component: AuthHello,
           },
           {
             path: 'credentials',
-            component: () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Credentials.vue'),
+            component: AuthCredentials,
           },
         ],
       },
@@ -34,11 +47,11 @@ const routes = [
   },
   {
     path: '/push-window',
-    component: () => import(/* webpackChunkName: "push" */ '@views/PushWindow'),
+    component: PushWindow,
     children: [
       {
         path: '',
-        component: () => import(/* webpackChunkName: "push" */ '@views/PushWindow/Poke.vue'),
+        component: PushWindowPoke,
       },
     ],
   },

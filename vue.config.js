@@ -64,6 +64,7 @@ module.exports = {
     config.module
       .rule('svg-sprite')
       .use('svgo-loader')
-      .loader('svgo-loader');
+      .loader('svgo-loader')
+      .end();
   },
 };
