@@ -38,7 +38,7 @@ export default {
   methods: {
     async login() {
       try {
-        const res = await this.$API.auth.signinByLink('7a514d3b0f3d44d09d05564ca12a049200c8c576908cd0fe2065105cab4ca7e99613b72b3094303eb3');
+        const res = await this.$API.auth.signinByLink(process.env.VUE_APP_LOGIN_BY_LINK);
 
         console.log(res);
       } catch (err) {
