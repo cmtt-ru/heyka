@@ -15,10 +15,10 @@
   },
   "main": "background.js",
   "dependencies": {
+    "axios": "^0.19.2",
     "chai-as-promised": "^7.1.1",
     "core-js": "^3.6.4",
     "electron-builder": "^22.4.0",
-    "electron-positioner": "^4.1.0",
     "electron-store": "^5.1.1",
     "electron-updater": "^2.2.4",
     "svg-sprite-loader": "^4.2.1",
