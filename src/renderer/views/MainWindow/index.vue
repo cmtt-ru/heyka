@@ -1,14 +1,38 @@
 <template>
-<div>
-    <div>Main wrapper</div>
-    <router-view></router-view>
-</div>
+  <div>
+    <div>
+      <layout>
+
+        <template v-slot:sidebar-header>
+          sidebar-header
+        </template>
+
+        <template v-slot:sidebar-body>
+          sidebar-body
+        </template>
+
+        <template v-slot:content-header>
+          content-header
+        </template>
+
+        <template v-slot:content-body>
+          <router-view></router-view>
+        </template>
+
+      </layout>
+
+    </div>
+  </div>
 </template>
 
 <script>
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
+import Layout from './Layout';
 
 export default {
+  components: {
+    Layout,
+  },
   data() {
     return {
       deepLink: {},
@@ -25,7 +49,6 @@ export default {
   },
 };
 </script>
-
 <style scoped lang="stylus">
 
 </style>
