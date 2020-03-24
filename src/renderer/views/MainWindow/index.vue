@@ -16,6 +16,7 @@ export default {
   },
   created() {
     this.deepLink = new DeepLinkRenderer({
+      invite: 'main-window/signinbylink',
       login: 'main-window/login',
       join: 'main-window/workspace',
       call: 'main-window/workspace',

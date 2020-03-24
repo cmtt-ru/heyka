@@ -20,6 +20,7 @@ module.exports = {
         '@libs': path.resolve(__dirname, 'src/renderer/libs'),
         '@classes': path.resolve(__dirname, 'src/renderer/classes'),
         '@shared': path.resolve(__dirname, 'src/shared'),
+        '@api': path.resolve(__dirname, 'src/api'),
       },
     },
   },

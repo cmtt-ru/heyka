@@ -5,7 +5,11 @@
       <svg-icon name="headphones" size="24"></svg-icon>
       <br>
       <div>{{message}}</div>
-      <br>
+      <br><br>
+      <button @click="login()">Login</button>
+      <br><br>
+      <button @click="GetWorkspaces()">GetWorkspaces</button>
+      <br><br>
       <button @click="openPushWindow()">Открыть пуш</button>
       <button @click="closePushWindow()">Закрыть пуш</button>
       <br><br><br>
@@ -32,6 +36,24 @@ export default {
   },
 
   methods: {
+    async login() {
+      try {
+        const res = await this.$API.auth.signinByLink(process.env.VUE_APP_LOGIN_BY_LINK);
+
+        console.log(res);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async GetWorkspaces() {
+      try {
+        const res = await this.$API.workspace.getWorkspaces();
+
+        console.log(res);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async openPushWindow() {
       // console.log(WindowManager.create);
       if (!pushWindow) {
@@ -58,6 +80,7 @@ export default {
 
   mounted() {
     ipcRenderer.send('page-rendered', 'Hello from Main!');
+
     this.$i18n.locale = 'ru';
 
     const oneSecond = 1000;
