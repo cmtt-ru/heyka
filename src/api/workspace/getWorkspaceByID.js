@@ -1,5 +1,5 @@
 import axios from 'axios';
 
-export default function (ID) {
-  return axios.get('/workspaces/' + ID);
+export default function (id) {
+  return axios.get(`/workspaces/${id}`);
 }

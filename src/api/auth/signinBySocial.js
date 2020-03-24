@@ -1,5 +1,5 @@
 import axios from 'axios';
 
-export default function (SOCIAL, params) {
-  return axios.post('/signin/' + SOCIAL, params);
+export default function (social, params) {
+  return axios.post(`/signin/${social}`, params);
 }

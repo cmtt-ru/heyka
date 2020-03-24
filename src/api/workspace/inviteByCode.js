@@ -1,5 +1,5 @@
 import axios from 'axios';
 
-export default function (ID, params) {
-  return axios.post('/workspaces/' + ID + '/invites', params);
+export default function (id, params) {
+  return axios.post(`/workspaces/${id}/invites`, params);
 }

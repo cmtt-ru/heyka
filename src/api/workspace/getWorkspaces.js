@@ -1,5 +1,7 @@
 import axios from 'axios';
 
-export default function () {
-  return axios.get('/workspaces').then((res) => res.data);
+export default async function () {
+  const res = await axios.get('/workspaces');
+
+  return res.data;
 }

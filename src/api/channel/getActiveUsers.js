@@ -1,5 +1,5 @@
 import axios from 'axios';
 
-export default function (ID) {
-  return axios.get('/channels/' + ID + '/active-users');
+export default function (id) {
+  return axios.get(`/channels/${id}/active-users`);
 }

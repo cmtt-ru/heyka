@@ -1,5 +1,5 @@
 import axios from 'axios';
 
-export default function (ID, params) {
-  return axios.post('/workspaces/' + ID + '/invite/slack', params);
+export default function (id, params) {
+  return axios.post(`/workspaces/${id}/invite/slack`, params);
 }
