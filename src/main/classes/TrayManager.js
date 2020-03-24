@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 import path from 'path';
-import { app, Menu, Tray, systemPreferences, nativeImage, ipcMain } from 'electron';
+import { app, Menu, Tray, nativeImage, ipcMain, nativeTheme } from 'electron';
 import Store from 'electron-store';
 
 const TrayFileStore = new Store({
@@ -29,7 +29,7 @@ const icons = {
 
 let theme = 'light';
 
-if ((isMac && systemPreferences.isDarkMode()) || isWin) {
+if ((isMac && nativeTheme.shouldUseDarkColors) || isWin) {
   theme = 'dark';
 }
 
