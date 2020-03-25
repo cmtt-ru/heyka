@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style lang="stylus">
-
+  /** TODO: move out colors */
   $sidebar-bg = #EFEFF1;
   $content-bg = #FFFFFF;
   $border-color = alpha(#000, 0.075);

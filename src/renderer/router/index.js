@@ -3,21 +3,32 @@ import VueRouter from 'vue-router';
 
 /**
  * Main window views
+ * @constructor
  */
-
 const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
 
+/* Initial window loading */
 const Start = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Start');
-const Workspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace');
-const TestWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Workspace');
 
-const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings');
-const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
-
+/* Auth layout */
 const Auth = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth');
 const AuthHello = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Hello');
 const AuthCredentials = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Credentials');
 
+/* Workspace layout */
+const Workspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace');
+const TestWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Workspace');
+
+/* Settings layout */
+const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings');
+
+/* Signin link from deep link */
+const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
+
+/**
+ * Push window views
+ * @constructor
+ */
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/PushWindow');
 const PushWindowPoke = () => import(/* webpackChunkName: "push" */ '@views/PushWindow/Poke');
 
