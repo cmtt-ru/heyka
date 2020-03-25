@@ -4,7 +4,7 @@
 
       <div class="layout__column layout__column--sidebar">
 
-        <div class="layout__row layout__row--header">
+        <div class="layout__row layout__row--header" v-if="$slots['sidebar-header']">
           <slot name="sidebar-header"></slot>
         </div>
 
@@ -16,7 +16,7 @@
 
       <div class="layout__column layout__column--content">
 
-        <div class="layout__row layout__row--header">
+        <div class="layout__row layout__row--header" v-if="$slots['content-header']">
           <slot name="content-header"></slot>
         </div>
 
