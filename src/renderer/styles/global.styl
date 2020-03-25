@@ -6,6 +6,22 @@
   padding 0
 
 /**
+ * Right way to disable text selection,
+ * html elements dragging and some browser like stuff
+ */
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before
+  user-select none
+
+input, button, textarea, :focus
+  outline none
+
+a:not([draggable=true]), img:not([draggable=true])
+  -webkit-user-drag none
+
+
+/**
  * Basic global styles
  */
 #app
@@ -13,6 +29,7 @@
   color var(--main)
   background-color var(--secondary)
   font-size 14px
+  line-height 18px
 
 /**
  * Layout class generator
