@@ -3,7 +3,7 @@
     <layout>
 
       <template v-slot:sidebar-header>
-        <div class="l-p-8">
+        <div class="l-p-8 l-w-m">
           Settings
         </div>
       </template>
