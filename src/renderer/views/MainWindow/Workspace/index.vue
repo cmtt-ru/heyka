@@ -3,8 +3,8 @@
     <layout>
 
       <template v-slot:sidebar-header>
-        <div class="l-p-8">
-          sidebar-header
+        <div class="l-p-8 l-w-m">
+          Yandex.Taxi
         </div>
       </template>
 

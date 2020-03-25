@@ -69,11 +69,23 @@ generateLayoutClasses($layout-grid)
       padding-left $n * 1px
 
 /**
-* Layout helper classes .l-{style}-{value}
-*
-* @example
-*   `l-mt-8` means `margin-top: 8px`
-*/
+ * Layout helper classes .l-{style}-{value}
+ *
+ * @example
+ *   `l-mt-8` means `margin-top: 8px`
+ */
 .l-
   $sizes = 4, 8, 12
   generateLayoutClasses($sizes)
+
+/**
+ * Font weight 500
+ */
+.l-w-m
+  font-weight 500
+
+/**
+ * Font size 12px
+ */
+.l-fs-12
+  font-size 12px
