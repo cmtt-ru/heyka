@@ -3,24 +3,30 @@
     <layout>
 
       <template v-slot:sidebar-header>
-        Settings
+        <div class="l-p-8">
+          Settings
+        </div>
       </template>
 
       <template v-slot:sidebar-body>
-        <router-link to="">General</router-link>
-        <br>
-        <router-link to="">Devices</router-link>
-        <br>
-        <router-link to="">Network</router-link>
-        <br>
-        <router-link to="">About</router-link>
-        <br>
-        <router-link to="">Support</router-link>
+        <div class="l-p-8">
+          <router-link to="">General</router-link>
+          <br>
+          <router-link to="">Devices</router-link>
+          <br>
+          <router-link to="">Network</router-link>
+          <br>
+          <router-link to="">About</router-link>
+          <br>
+          <router-link to="">Support</router-link>
+        </div>
       </template>
 
       <template v-slot:content-body>
-        <router-link :to="{name: 'workspace'}">Close</router-link>
-        <router-view></router-view>
+        <div class="l-p-8">
+          <router-link :to="{name: 'workspace'}">Close</router-link>
+          <router-view></router-view>
+        </div>
       </template>
 
     </layout>

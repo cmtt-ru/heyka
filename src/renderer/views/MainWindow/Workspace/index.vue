@@ -3,15 +3,21 @@
     <layout>
 
       <template v-slot:sidebar-header>
-        sidebar-header
+        <div class="l-p-8">
+          sidebar-header
+        </div>
       </template>
 
       <template v-slot:sidebar-body>
-        <router-link :to="{ name: 'settings'}">Settings</router-link>
+        <div class="l-p-8">
+          <router-link :to="{ name: 'settings'}">Settings</router-link>
+        </div>
       </template>
 
       <template v-slot:content-header>
-        content-header
+        <div class="l-p-8">
+          content-header
+        </div>
       </template>
 
       <template v-slot:content-body>
