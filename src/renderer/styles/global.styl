@@ -1,0 +1,53 @@
+/**
+ * Reset styles
+ */
+*
+  margin 0
+  padding 0
+
+
+/**
+ * Layout class generator
+ */
+generateLayoutClasses($layout-grid)
+  for $n in $layout-grid
+    /** Margin classes */
+    &m-{$n}
+      margin $n * 1px
+
+    &mt-{$n}
+      margin-top $n * 1px
+
+    &mr-{$n}
+      margin-right $n * 1px
+
+    &mb-{$n}
+      margin-bottom $n * 1px
+
+    &ml-{$n}
+      margin-left $n * 1px
+
+    /** Padding classes */
+    &p-{$n}
+      padding $n * 1px
+
+    &pt-{$n}
+      padding-top $n * 1px
+
+    &pr-{$n}
+      padding-left $n * 1px
+
+    &pb-{$n}
+      padding-bottom $n * 1px
+
+    &pl-{$n}
+      padding-left $n * 1px
+
+/**
+* Layout helper classes .l-{style}-{value}
+*
+* @example
+*   `l-mt-8` means `margin-top: 8px`
+*/
+.l-
+  generateLayoutClasses(4, 8, 12)

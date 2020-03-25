@@ -78,11 +78,11 @@ const routes = [
        */
       {
         path: 'workspace',
-        name: 'workspace',
         component: Workspace,
         children: [
           {
             path: '',
+            name: 'workspace',
             component: TestWorkspace,
           },
         ],
