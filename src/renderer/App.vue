@@ -18,10 +18,6 @@ export default {
 </script>
 
 <style lang="stylus">
-@import './styles/global'
-
-#app
-  font-family Avenir, Helvetica, Arial, sans-serif
-  color var(--main)
-  background-color var(--secondary)
+  @import './styles/fonts'
+  @import './styles/global'
 </style>
