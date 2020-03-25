@@ -18,9 +18,7 @@ export default {
 </script>
 
 <style lang="stylus">
-*
-  margin 0
-  padding 0
+@import './styles/global'
 
 #app
   font-family Avenir, Helvetica, Arial, sans-serif
