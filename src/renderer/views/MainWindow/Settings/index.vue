@@ -19,6 +19,8 @@
           <router-link to="">About</router-link>
           <br>
           <router-link to="">Support</router-link>
+          <br>
+          <router-link :to="{name: 'styleguide'}">Styleguide</router-link>
         </div>
       </template>
 
