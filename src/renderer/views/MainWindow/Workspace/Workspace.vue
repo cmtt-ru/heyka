@@ -1,6 +1,7 @@
 <template>
   <div class="l-p-8">
     <br><br>
+    <Avatar :status="'online'" :onair="false"></Avatar>
     <div>Main window. {{ $tc("message", seconds) }}</div>
     <svg-icon name="headphones" size="24"></svg-icon>
     <br>
@@ -22,10 +23,14 @@
 <script>
 import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import Avatar from '@components/Avatar';
 
 let pushWindow;
 
 export default {
+  components: {
+    Avatar,
+  },
   data() {
     return {
       seconds: 0,
