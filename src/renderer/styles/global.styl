@@ -1,0 +1,91 @@
+/**
+ * Reset styles
+ */
+*
+  margin 0
+  padding 0
+
+/**
+ * Right way to disable text selection,
+ * html elements dragging and some browser like stuff
+ */
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before
+  user-select none
+
+input, button, textarea, :focus
+  outline none
+
+a:not([draggable=true]), img:not([draggable=true])
+  -webkit-user-drag none
+
+
+/**
+ * Basic global styles
+ */
+#app
+  font-family Inter, sans-serif
+  color var(--main)
+  background-color var(--secondary)
+  font-size 14px
+  line-height 18px
+
+/**
+ * Layout class generator
+ */
+generateLayoutClasses($layout-grid)
+  for $n in $layout-grid
+    /** Margin classes */
+    &m-{$n}
+      margin $n * 1px
+
+    &mt-{$n}
+      margin-top $n * 1px
+
+    &mr-{$n}
+      margin-right $n * 1px
+
+    &mb-{$n}
+      margin-bottom $n * 1px
+
+    &ml-{$n}
+      margin-left $n * 1px
+
+    /** Padding classes */
+    &p-{$n}
+      padding $n * 1px
+
+    &pt-{$n}
+      padding-top $n * 1px
+
+    &pr-{$n}
+      padding-left $n * 1px
+
+    &pb-{$n}
+      padding-bottom $n * 1px
+
+    &pl-{$n}
+      padding-left $n * 1px
+
+/**
+ * Layout helper classes .l-{style}-{value}
+ *
+ * @example
+ *   `l-mt-8` means `margin-top: 8px`
+ */
+.l-
+  $sizes = 4, 8, 12
+  generateLayoutClasses($sizes)
+
+/**
+ * Font weight 500
+ */
+.l-w-m
+  font-weight 500
+
+/**
+ * Font size 12px
+ */
+.l-fs-12
+  font-size 12px
