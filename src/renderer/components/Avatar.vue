@@ -1,8 +1,8 @@
 <template>
 <div class="avatar" :style="containerSize">
     <div class="avatar__image" :style="avatarImage"></div>
-    <div v-if="statusStyle" class="avatar__status-wrapper">
-        <div :style="statusStyle" class="avatar__status"></div>
+    <div v-if="statusStyle" class="avatar__status">
+        <div :style="statusStyle" class="avatar__status__dot"></div>
     </div>
     <div v-if="onair" class="avatar__onair"></div>
 </div>
@@ -76,57 +76,56 @@ export default {
     .avatar
         position relative
 
-    .avatar__image
-        width 100%
-        height 100%
-        background-color red
-        background-position center
-        background-size cover
-        background-repeat no-repeat
-        border-radius 50%
+        &__image
+            width 100%
+            height 100%
+            background-color red
+            background-position center
+            background-size cover
+            background-repeat no-repeat
+            border-radius 50%
 
-    .avatar__status-wrapper
-        position absolute
-        bottom -2px
-        right -2px
-        width calc(100% * 1/3)
-        height calc(100% * 1/3)
-        min-width 4px
-        min-height 4px
-        max-width 12px
-        max-height 12px
-        border-radius 50%
-        background-color white //TODO: надо повторять цвет фона, на котором находится аватарка
-        border 2px solid white //TODO: надо повторять цвет фона, на котором находится аватарка
+        &__status
+            position absolute
+            bottom -2px
+            right -2px
+            width calc(100% * 1/3)
+            height calc(100% * 1/3)
+            min-width 4px
+            min-height 4px
+            max-width 12px
+            max-height 12px
+            border-radius 50%
+            background-color white //TODO: надо повторять цвет фона, на котором находится аватарка
+            border 2px solid white //TODO: надо повторять цвет фона, на котором находится аватарка
 
-    .avatar__status
-        position absolute
-        box-sizing border-box
-        bottom 0px
-        right 0px
-        width 100%
-        height 100%
-        border-radius 50%
-        border: 2px solid
+            &__dot
+                position absolute
+                box-sizing border-box
+                bottom 0px
+                right 0px
+                width 100%
+                height 100%
+                border-radius 50%
+                border: 2px solid
 
-    .avatar__onair
-        position absolute
-        bottom 0
-        right 0
-        left 0
-        top 0
-        border-radius 50%
-        background-color transparent
-        border 2px solid green //TODO: var
-
-    .avatar__onair::after
-        content ''
-        position absolute
-        bottom 0
-        right 0
-        left 0
-        top 0
-        border-radius 50%
-        background-color transparent
-        border 2px solid white  //TODO: надо повторять цвет фона, на котором находится аватарка
+        &__onair
+            position absolute
+            bottom 0
+            right 0
+            left 0
+            top 0
+            border-radius 50%
+            background-color transparent
+            border 2px solid green //TODO: var
+            &::after
+                content ''
+                position absolute
+                bottom 0
+                right 0
+                left 0
+                top 0
+                border-radius 50%
+                background-color transparent
+                border 2px solid white  //TODO: надо повторять цвет фона, на котором находится аватарка
 </style>
