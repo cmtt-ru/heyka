@@ -1,21 +1,21 @@
 <template>
-    <div>
-      <br><br>
-      <div>Main window. {{ $tc("message", seconds) }}</div>
-      <svg-icon name="headphones" size="24"></svg-icon>
-      <br>
-      <div>{{message}}</div>
-      <br><br>
-      <button @click="login()">Login</button>
-      <br><br>
-      <button @click="GetWorkspaces()">GetWorkspaces</button>
-      <br><br>
-      <button @click="openPushWindow()">Открыть пуш</button>
-      <button @click="closePushWindow()">Закрыть пуш</button>
-      <br><br><br>
-      <button @click="trayToggle()">Из трея/в трей</button>
-      <br><br><br>
-    </div>
+  <div class="l-p-8">
+    <br><br>
+    <div>Main window. {{ $tc("message", seconds) }}</div>
+    <svg-icon name="headphones" size="24"></svg-icon>
+    <br>
+    <div>{{message}}</div>
+    <br><br>
+    <button @click="login()">Login</button>
+    <br><br>
+    <button @click="GetWorkspaces()">GetWorkspaces</button>
+    <br><br>
+    <button @click="openPushWindow()">Открыть пуш</button>
+    <button @click="closePushWindow()">Закрыть пуш</button>
+    <br><br><br>
+    <button @click="trayToggle()">Из трея/в трей</button>
+    <br><br><br>
+  </div>
 
 </template>
 
