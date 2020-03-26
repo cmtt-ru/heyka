@@ -26,11 +26,11 @@ function isRetina() {
  */
 function formImageUrl(src, width, height, scaleType = 'scale_crop') {
   if (!src.includes('leonardo.osnova')) {
-    return '';
+    return src;
   }
 
   if (width === undefined) {
-    return '';
+    return src;
   }
 
   if (height === undefined) {
