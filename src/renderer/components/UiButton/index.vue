@@ -1,10 +1,11 @@
 <template>
-  <div class="ui-button" :class="classes"></div>
+  <div class="ui-button">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'svg-icon',
   props: {
     /**
      * Style type of the button
@@ -67,7 +68,9 @@ export default {
   },
 
   computed: {
-
+    withCaption() {
+      return this.$slots.default !== undefined;
+    },
   },
 
   methods: {
@@ -81,5 +84,5 @@ export default {
 </script>
 
 <style lang="stylus">
-
+  @import './styles/ui-button'
 </style>

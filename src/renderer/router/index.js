@@ -21,6 +21,7 @@ const TestWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWi
 
 /* Settings layout */
 const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings');
+const Styleguide = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Styleguide');
 
 /* Signin link from deep link */
 const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
@@ -95,6 +96,13 @@ const routes = [
         path: 'settings',
         name: 'settings',
         component: Settings,
+        children: [
+          {
+            path: 'styleguide',
+            name: 'styleguide',
+            component: Styleguide,
+          },
+        ],
       },
 
       /**
