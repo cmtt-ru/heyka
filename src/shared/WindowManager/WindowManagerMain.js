@@ -13,6 +13,7 @@ const DEFAULT_WINDOW_OPTIONS = {
   height: 560,
   x: 0,
   y: 0,
+  // backgroundColor: '#000000', //! need to set same color as main bg color of theme
   frame: false,
   movable: true,
   fullscreenable: false,
