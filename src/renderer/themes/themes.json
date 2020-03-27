@@ -89,7 +89,7 @@
             "content": {
                 "--app-bg": "#333333",
                 "--line-stroke": "#D6D8DA",
-                "--item-bg-hover": "#F2F2F2",
+                "--item-bg-hover": "#222222",
                 "--item-bg-multi-pick": "#F4FBF7",
                 "--text-0": "#FFFFFF",
                 "--text-1": "#76787B",

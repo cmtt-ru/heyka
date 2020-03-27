@@ -1,7 +1,7 @@
 <template>
   <div class="l-p-8">
     <br><br>
-    <Avatar :status="'online'" :onair="false"></Avatar>
+    <avatar :status="'online'" :onair="false"></avatar>
     <div>Main window. {{ $tc("message", seconds) }}</div>
     <svg-icon name="headphones" size="24"></svg-icon>
     <br>
@@ -16,6 +16,31 @@
     <br><br><br>
     <button @click="trayToggle()">Из трея/в трей</button>
     <br><br><br>
+
+    <list>
+      <list-item>
+        <avatar slot="leftIcon" onair="true"></avatar>
+        <div>Текст 1</div>
+        </list-item>
+      <list-item>Текст 2</list-item>
+      <list-item>
+        <div>Текст 3</div>
+        <div slot="rightIcons">
+          <svg-icon name="headphones" size="24"></svg-icon>
+          <svg-icon name="headphones" size="24"></svg-icon>
+        </div>
+        </list-item>
+      <list-item button>
+        <svg-icon slot="leftIcon" name="headphones" size="24"></svg-icon>
+        <div>Текст 4</div>
+      </list-item>
+      <list-item floatIcons>
+        <div>Текст 5</div>
+        <div slot="rightIcons">
+          <svg-icon name="headphones" size="24"></svg-icon>
+        </div>
+      </list-item>
+    </list>
   </div>
 
 </template>
@@ -24,12 +49,16 @@
 import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Avatar from '@components/Avatar';
+import List from '@components/List';
+import ListItem from '@components/ListItem';
 
 let pushWindow;
 
 export default {
   components: {
     Avatar,
+    List,
+    ListItem,
   },
   data() {
     return {
