@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import leonardo from '@/filters/leonardo';
 export default {
   data: function () {
     return {
@@ -53,7 +52,7 @@ export default {
     avatarImage() {
       if (this.image) {
         return {
-          'background-image': `url("${leonardo(this.image, this.size)}")`,
+          'background-image': `url("${this.$options.filters.formImageUrl(this.image, this.size)}")`,
         };
       }
 
@@ -80,7 +79,7 @@ export default {
         &__image
             width 100%
             height 100%
-            background-color red
+            background-color var(--text-0)
             background-position center
             background-size cover
             background-repeat no-repeat
