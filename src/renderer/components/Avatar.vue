@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import leonardo from '@/filters/leonardo';
 export default {
   data: function () {
     return {
@@ -36,7 +37,7 @@ export default {
     },
     image: {
       type: [ String ],
-      default: 'https://scontent.fhel6-1.fna.fbcdn.net/v/t1.0-1/cp0/p50x50/61704800_2456457874389149_363698698208673792_o.jpg?_nc_cat=102&_nc_sid=bbed71&_nc_eui2=AeFhQZ1G_1t_Fbpy-OSxN1NNZf6bi0FQEAjCV2_FJnD9tsxRLXlgzyxfhqzs17e3P0PEBlSHzj5MhVbTT038aSngASe2EMm25NcizzQ6zb_Ekw&_nc_oc=AQkDx8nxiAev5UJhDUo5Z6u6UWXr0lFfBx-h4sKh6TO28_n016DIMZ8geqwLYnhPJ1Q&_nc_ht=scontent.fhel6-1.fna&oh=280c3f02c48c386189c978d2db1feaa4&oe=5EA15F7E',
+      default: 'https://leonardo.osnova.io/51cf1edf-2288-5e45-f473-78568fa53fa8/',
     },
     status: {
       type: [ String ],
@@ -52,7 +53,7 @@ export default {
     avatarImage() {
       if (this.image) {
         return {
-          'background-image': `url("${this.image}")`, // TODO: сделать resize-фильр для картинок с Леонардо
+          'background-image': `url("${leonardo(this.image, this.size)}")`,
         };
       }
 
