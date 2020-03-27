@@ -14,16 +14,16 @@ export default {
     return {
       statusColors: {
         online: {
-          'background-color': '#27AE60', // TODO: тут и дальше сделать цвета переменными
-          'border-color': '#27AE60',
+          'background-color': 'var(--color-1)',
+          'border-color': 'var(--color-1)',
         },
         idle: {
-          'background-color': '#FDCB4B',
-          'border-color': '#FDCB4B',
+          'background-color': 'var(--color-3)',
+          'border-color': 'var(--color-3)',
         },
         offline: {
           'background-color': 'transparent',
-          'border-color': '#B1B3B5',
+          'border-color': 'var(--color-4)',
         },
       },
     };
@@ -72,7 +72,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     .avatar
         position relative
 
@@ -96,8 +96,8 @@ export default {
             max-width 12px
             max-height 12px
             border-radius 50%
-            background-color white //TODO: надо повторять цвет фона, на котором находится аватарка
-            border 2px solid white //TODO: надо повторять цвет фона, на котором находится аватарка
+            background-color var(--app-bg)
+            border 2px solid var(--app-bg)
 
             &__dot
                 position absolute
@@ -117,7 +117,8 @@ export default {
             top 0
             border-radius 50%
             background-color transparent
-            border 2px solid green //TODO: var
+            border 2px solid var(--color-1)
+
             &::after
                 content ''
                 position absolute
@@ -127,5 +128,5 @@ export default {
                 top 0
                 border-radius 50%
                 background-color transparent
-                border 2px solid white  //TODO: надо повторять цвет фона, на котором находится аватарка
+                border 2px solid var(--app-bg)
 </style>
