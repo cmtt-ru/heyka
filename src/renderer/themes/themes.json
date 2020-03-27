@@ -1,18 +1,106 @@
 {
     "light": {
-        "name": "",
-        "colors": {"main": "#000000", "weakmain": "#818181", "secondary": "#FFFFFF", "weaksecondary": "#EFEFF1", "main-stroke-svg": "#000000", "secondary-stroke-svg": "red"}
+        "name": "Light",
+        "colors": {
+            "root": {
+                "--text-tech-0": "#DE4B39",
+                "--text-tech-1": "#27AE60",
+                "--text-tech-2": "#1575F1",
+                "--text-tech-3": "#FFFFFF",
+                "--color-0": "#DE4B39",
+                "--color-1": "#27AE60",
+                "--color-2": "#1575F1",
+                "--color-3": "#FDCB4B",
+                "--color-4": "#B1B3B5",
+                "--stroke-0": "#F6D4CF",
+                "--stroke-1": "#C9EAD7",
+                "--stroke-2": "#C4DCFB",
+                "--stroke-3": "#D7D8D9",
+                "--button-bg-0": "#FDF6F5",
+                "--button-bg-1": "#F4FBF7",
+                "--button-bg-2": "#F3F8FE",
+                "--button-bg-3": "#FFFFFF", 
+                "--button-bg-4": "#E6E6E6",
+                "--icon-bg": "#E8F2FE",
+                "--input": "#F2F2F2"
+            },
+            "navbar": {
+                "--app-bg": "#EFEFF1",
+                "--line-stroke": "#D6D8DA",
+                "--item-bg-hover": "#FAFAFB",
+                "--item-bg-active": "#FFFFFF",
+                "--text-0": "#000000",
+                "--text-1": "#76787B",
+                "--icon-0": "#000000",
+                "--icon-1": "#76787B" 
+            },
+            "content": {
+                "--app-bg": "#FFFFFF",
+                "--line-stroke": "#D6D8DA",
+                "--item-bg-hover": "#F2F2F2",
+                "--item-bg-multi-pick": "#F4FBF7",
+                "--text-0": "#000000",
+                "--text-1": "#76787B",
+                "--icon-0": "#000000",
+                "--icon-1": "#76787B" 
+            },
+            "popover": {
+                "--app-bg": "#000000",
+                "--text-0": "#E5E5E5",
+                "--icon-0": "#FFFFFF"
+            }
+        }
     },
     "dark": {
-        "name": "",
-        "colors": {"main": "#ffffff", "weakmain": "#818181", "secondary": "#313131", "weaksecondary": "#212121", "main-stroke-svg": "#ffffff", "secondary-stroke-svg": "lightgreen"}
-    },
-    "blue": {
-        "name": "",
-        "colors": {"main": "#ffffff", "weakmain": "#3C91C4", "secondary": "#001B33", "weaksecondary": "#0a4478", "main-stroke-svg": "#000000", "secondary-stroke-svg": "red"}
-    },
-    "pink": {
-        "name": "",
-        "colors": {"main": "#11484f", "weakmain": "#D33682", "secondary": "#FDF6E3", "weaksecondary": "#fce5a7", "main-stroke-svg": "#000000", "secondary-stroke-svg": "red"}
+        "name": "Dark",
+        "colors": {
+            "root": {
+                "--text-tech-0": "#DE4B39",
+                "--text-tech-1": "#27AE60",
+                "--text-tech-2": "#1575F1",
+                "--text-tech-3": "#FFFFFF",
+                "--color-0": "#DE4B39",
+                "--color-1": "#27AE60",
+                "--color-2": "#1575F1",
+                "--color-3": "#FDCB4B",
+                "--color-4": "#B1B3B5",
+                "--stroke-0": "#F6D4CF",
+                "--stroke-1": "#C9EAD7",
+                "--stroke-2": "#C4DCFB",
+                "--stroke-3": "#D7D8D9",
+                "--button-bg-0": "#FDF6F5",
+                "--button-bg-1": "#F4FBF7",
+                "--button-bg-2": "#F3F8FE",
+                "--button-bg-3": "#FFFFFF", 
+                "--button-bg-4": "#E6E6E6",
+                "--icon-bg": "#E8F2FE",
+                "--input": "#F2F2F2"
+            },
+            "navbar": {
+                "--app-bg": "#191919",
+                "--line-stroke": "#D6D8DA",
+                "--item-bg-hover": "#FAFAFB",
+                "--item-bg-active": "#FFFFFF",
+                "--text-0": "#FFFFFF",
+                "--text-1": "#76787B",
+                "--icon-0": "#FFFFFF",
+                "--icon-1": "#76787B" 
+            },
+            "content": {
+                "--app-bg": "#333333",
+                "--line-stroke": "#D6D8DA",
+                "--item-bg-hover": "#F2F2F2",
+                "--item-bg-multi-pick": "#F4FBF7",
+                "--text-0": "#FFFFFF",
+                "--text-1": "#76787B",
+                "--icon-0": "#FFFFFF",
+                "--icon-1": "#76787B" 
+            },
+            "popover": {
+                "--app-bg": "#000000",
+                "--text-0": "#E5E5E5",
+                "--icon-0": "#FFFFFF"
+            }
+        }
     }
 }
