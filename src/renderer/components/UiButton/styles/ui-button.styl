@@ -1,0 +1,98 @@
+.ui-button
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  color: $color-1;
+  justify-content: center;
+
+  /**
+   * Small size button
+   */
+  buttonSmallStyle()
+    height 24px
+    line-height 24px
+    font-size 14px
+    padding 0 12px
+    border-radius 4px
+
+  /**
+   * Medium size button
+   */
+  buttonMediumStyle()
+    height 32px
+    line-height 32px
+    font-size 14px
+    padding 0 12px
+    border-radius 4px
+
+  /**
+   * Large size button
+   */
+  buttonLargeStyle() {
+    height 30px
+    line-height 30px
+    font-size 13px
+    padding 0 15px
+    border-radius 4px
+  }
+
+  /**
+   * Button with solid background
+   */
+  buttonSolid($bg-color, $text-color)
+    background-color $bg-color
+    color $text-color
+
+  /**
+   * Button with borders
+   */
+  buttonBorder($bg-color, $text-color, $border-color)
+    background-color $bg-color
+    color $text-color
+    border 1px solid $border-color
+
+  /**
+   * Disabled state
+   */
+  buttonDisabledState()
+    pointer-events none
+    opacity 0.5
+
+  /**
+   * Hover state
+   */
+  buttonHoverState()
+    opacity 0.8
+
+  /**
+   * Active state
+   * used for all buttons
+   */
+  buttonActiveState()
+    transform translateY(1px)
+
+  /**
+  * Button size classes
+  */
+  &--small
+    buttonSmallStyle()
+
+  &--medium
+    buttonMediumStyle()
+
+  &--large
+    buttonLargeStyle()
+
+  /**
+   * Button type classes
+   */
+  &--1
+    buttonSolid(var(--color-2), var(--text-tech-3))
+
+
+  &:hover
+    buttonHoverState()
+
+  &:active
+    buttonActiveState()

@@ -1,5 +1,7 @@
 <template>
-  <div class="ui-button">
+  <div class="ui-button"
+       :class="classList"
+  >
     <slot></slot>
   </div>
 </template>
@@ -13,7 +15,7 @@ export default {
      */
     type: {
       type: Number,
-      default: 1,
+      required: true,
     },
 
     /**
@@ -68,8 +70,66 @@ export default {
   },
 
   computed: {
+    /**
+     * Check if button caption exists. Means slot exists.
+     * @return {boolean}
+     */
     withCaption() {
       return this.$slots.default !== undefined;
+    },
+
+    /**
+     * Returns all necessary class for buttons
+     *
+     * @return {Object}
+     */
+    classList() {
+      const baseClass = 'ui-button';
+      const classes = {};
+
+      /**
+       * Type class
+       * @type {boolean}
+       */
+      classes[`${baseClass}--${this.type}`] = true;
+
+      /**
+       * Size class
+       * @type {boolean}
+       */
+      classes[`${baseClass}--${this.size}`] = true;
+
+      /**
+       * Active class
+       * @type {boolean}
+       */
+      classes[`${baseClass}--active`] = this.active;
+
+      /**
+       * Disabled class
+       * @type {boolean}
+       */
+      classes[`${baseClass}--disabled`] = this.disabled;
+
+      /**
+       * Loading class
+       * @type {boolean}
+       */
+      classes[`${baseClass}--loading`] = this.loading;
+
+      /**
+       * Wide class
+       * @type {boolean}
+       */
+      classes[`${baseClass}--wide`] = this.wide;
+
+      /**
+       * Icon class
+       * @type {boolean}
+       */
+      classes[`${baseClass}--icon`] = this.icon !== null;
+
+      return classes;
     },
   },
 
