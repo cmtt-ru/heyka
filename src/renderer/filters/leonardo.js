@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 /**
  * Retina image size multiplicator
  * @type {number}
@@ -24,7 +22,7 @@ function isRetina() {
  * @param {string} scaleType – scale type, default `scale_scrop`, can be 'resize'
  * @return {string}
  */
-function formImageUrl(src, width, height, scaleType = 'scale_crop') {
+export default function formImageUrl(src, width, height, scaleType = 'scale_crop') {
   if (!src.includes('leonardo.osnova')) {
     return src;
   }
@@ -44,5 +42,3 @@ function formImageUrl(src, width, height, scaleType = 'scale_crop') {
 
   return `${src}-/${scaleType}/${width}x${height}/center`;
 }
-
-Vue.filter('formImageUrl', formImageUrl);
