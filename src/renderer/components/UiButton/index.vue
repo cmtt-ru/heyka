@@ -1,9 +1,21 @@
 <template>
+  <!-- Simple button  -->
   <div class="ui-button"
+       v-if="!withIcon"
        :class="classList"
   >
     <slot></slot>
   </div>
+
+  <!-- Button with icon  -->
+  <div class="ui-button"
+       v-else-if="withIcon"
+       :class="classList"
+  >
+    <svg-icon :name="icon" size="16"></svg-icon>
+    <slot></slot>
+  </div>
+
 </template>
 
 <script>
@@ -76,6 +88,14 @@ export default {
      */
     withCaption() {
       return this.$slots.default !== undefined;
+    },
+
+    /**
+     * Check if button has icon
+     * @return {boolean}
+     */
+    withIcon() {
+      return this.icon !== null;
     },
 
     /**
