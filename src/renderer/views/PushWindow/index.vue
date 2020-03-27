@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="layout__popover" :style="$themes.getColors('popover')">
     <div>Push Wrapper</div>
     <router-view></router-view>
 </div>
@@ -15,7 +15,7 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-    #app
-        background-color var(--main)
-        color var(--secondary)
+    .layout__popover
+        background-color var(--app-bg)
+        color var(--text-0)
 </style>

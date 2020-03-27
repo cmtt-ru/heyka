@@ -26,6 +26,7 @@ class Themes {
 
     if (theme) {
       this.switchTheme(theme);
+      this.currentTheme = theme;
     } else {
       this.currentTheme = name;
       this.switchTheme(name);
@@ -41,14 +42,23 @@ class Themes {
     ThemeFileStore.set('currentTheme', name);
 
     if (Object.prototype.hasOwnProperty.call(this.themeArray, name)) {
-      for (const prop in this.themeArray[name].colors) { // задаём глобальные переменные css
-        document.documentElement.style.setProperty('--' + prop, this.themeArray[name].colors[prop]);
+      for (const prop in this.themeArray[name].colors['root']) { // задаём глобальные переменные css
+        document.documentElement.style.setProperty(prop, this.themeArray[name].colors['root'][prop]);
       }
 
       return true;
     } else {
       return false;
     }
+  }
+
+  /**
+ * Get StyleSheet for specific layout area
+ * @param {String} area name of area (navbar/content/popover/etc.)
+ * @returns {Object}
+ */
+  getColors(area) {
+    return this.themeArray[this.currentTheme].colors[area] || {};
   }
 
   /**
