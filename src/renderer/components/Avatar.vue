@@ -14,16 +14,16 @@ export default {
     return {
       statusColors: {
         online: {
-          'background-color': '#27AE60', // TODO: тут и дальше сделать цвета переменными
-          'border-color': '#27AE60',
+          'background-color': 'var(--color-1)',
+          'border-color': 'var(--color-1)',
         },
         idle: {
-          'background-color': '#FDCB4B',
-          'border-color': '#FDCB4B',
+          'background-color': 'var(--color-3)',
+          'border-color': 'var(--color-3)',
         },
         offline: {
           'background-color': 'transparent',
-          'border-color': '#B1B3B5',
+          'border-color': 'var(--color-4)',
         },
       },
     };
@@ -36,7 +36,7 @@ export default {
     },
     image: {
       type: [ String ],
-      default: 'https://scontent.fhel6-1.fna.fbcdn.net/v/t1.0-1/cp0/p50x50/61704800_2456457874389149_363698698208673792_o.jpg?_nc_cat=102&_nc_sid=bbed71&_nc_eui2=AeFhQZ1G_1t_Fbpy-OSxN1NNZf6bi0FQEAjCV2_FJnD9tsxRLXlgzyxfhqzs17e3P0PEBlSHzj5MhVbTT038aSngASe2EMm25NcizzQ6zb_Ekw&_nc_oc=AQkDx8nxiAev5UJhDUo5Z6u6UWXr0lFfBx-h4sKh6TO28_n016DIMZ8geqwLYnhPJ1Q&_nc_ht=scontent.fhel6-1.fna&oh=280c3f02c48c386189c978d2db1feaa4&oe=5EA15F7E',
+      default: 'https://leonardo.osnova.io/51cf1edf-2288-5e45-f473-78568fa53fa8/',
     },
     status: {
       type: [ String ],
@@ -52,7 +52,7 @@ export default {
     avatarImage() {
       if (this.image) {
         return {
-          'background-image': `url("${this.image}")`, // TODO: сделать resize-фильр для картинок с Леонардо
+          'background-image': `url("${this.$options.filters.formImageUrl(this.image, this.size)}")`,
         };
       }
 
@@ -72,14 +72,14 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     .avatar
         position relative
 
         &__image
             width 100%
             height 100%
-            background-color red
+            background-color var(--text-0)
             background-position center
             background-size cover
             background-repeat no-repeat
@@ -96,8 +96,8 @@ export default {
             max-width 12px
             max-height 12px
             border-radius 50%
-            background-color white //TODO: надо повторять цвет фона, на котором находится аватарка
-            border 2px solid white //TODO: надо повторять цвет фона, на котором находится аватарка
+            background-color var(--app-bg)
+            border 2px solid var(--app-bg)
 
             &__dot
                 position absolute
@@ -117,7 +117,8 @@ export default {
             top 0
             border-radius 50%
             background-color transparent
-            border 2px solid green //TODO: var
+            border 2px solid var(--color-1)
+
             &::after
                 content ''
                 position absolute
@@ -127,5 +128,5 @@ export default {
                 top 0
                 border-radius 50%
                 background-color transparent
-                border 2px solid white  //TODO: надо повторять цвет фона, на котором находится аватарка
+                border 2px solid var(--app-bg)
 </style>
