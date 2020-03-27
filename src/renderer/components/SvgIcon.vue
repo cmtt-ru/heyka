@@ -49,7 +49,7 @@ export default {
     },
     stroke: {
       type: [ String ],
-      default: null,
+      default: 'var(--icon-0)',
     },
     title: {
       type: String,
@@ -110,12 +110,3 @@ export default {
   },
 };
 </script>
-
-<style lang="stylus">
-  :root
-    --main-stroke-svg black
-    --secondary-stroke-svg red
-
-  .icon
-    stroke var(--main-stroke-svg)
-</style>

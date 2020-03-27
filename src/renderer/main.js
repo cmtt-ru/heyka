@@ -6,8 +6,9 @@ import i18n from './i18n';
 import themes from '@/themes';
 import API from '@api';
 import SvgIcon from '@components/SvgIcon.vue';
+import './filters/leonardo';
 
-Vue.prototype.$themes = themes; // TODO: убрать из глобал объекта
+Vue.prototype.$themes = themes;
 Vue.prototype.$API = API;
 Vue.component('SvgIcon', SvgIcon);
 
