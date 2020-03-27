@@ -2,9 +2,15 @@
 
   <div>
 
-    <h3>Buttons</h3>
+    <h3 class="l-mt-12">Buttons</h3>
 
-    <ui-button>Apply</ui-button>
+    <div class="l-mt-12">
+
+      <ui-button :type="1" icon="sdf" class="l-mr-8">Create channel</ui-button>
+
+      <ui-button size="small" :type="1" icon="sdf">Apply</ui-button>
+
+    </div>
 
   </div>
 
