@@ -1,5 +1,7 @@
 <template>
-
+  <!--
+    * Styleguide for testing UI components
+  -->
   <div>
 
     <h2 class="l-mt-24">Buttons</h2>
