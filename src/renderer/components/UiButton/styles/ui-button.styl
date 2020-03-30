@@ -1,10 +1,9 @@
 .ui-button
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-  color: $color-1;
-  justify-content: center;
+  cursor pointer
+  display inline-flex
+  align-items center
+  white-space nowrap
+  justify-content center
 
   /**
    * Small size button
@@ -29,13 +28,12 @@
   /**
    * Large size button
    */
-  buttonLargeStyle() {
+  buttonLargeStyle()
     height 30px
     line-height 30px
     font-size 13px
     padding 0 15px
     border-radius 4px
-  }
 
   /**
    * Button with solid background
@@ -51,6 +49,61 @@
     background-color $bg-color
     color $text-color
     border 1px solid $border-color
+    box-sizing border-box
+
+  /**
+   * Button with icon and caption
+   */
+  buttonWithIconAndCaption()
+    &^[0]--small
+      padding-left 4px
+
+    &^[0]--medium
+      padding-left 8px
+
+    &^[0]--large
+      padding-left 16px
+
+    ^[0]__icon
+      margin-right 12px
+
+  /**
+   * Square button with icon only
+   */
+  buttonSquareIcon($bg-color)
+    padding 0
+    align-items center
+    justify-content center
+    flex-direction column
+    background-color $bg-color
+
+    &^[0]--small
+      width 24px
+      height 24px
+      border-radius 4px
+
+    &^[0]--medium
+      width 36px
+      height 36px
+      border-radius 4px
+
+    &^[0]--large
+      width 64px
+      height 64px
+      border-radius 8px
+
+  /**
+   * Button with 100% width
+   */
+  buttonWideStyle()
+    width 100%
+
+    ^[0]__caption
+      margin-right auto
+      margin-left auto
+
+    ^[0]__icon
+      margin 0
 
   /**
    * Disabled state
@@ -60,10 +113,11 @@
     opacity 0.5
 
   /**
-   * Hover state
+   * Default hover state
    */
-  buttonHoverState()
-    opacity 0.8
+  buttonDefaultHoverState()
+    &:hover
+      opacity 0.8
 
   /**
    * Active state
@@ -89,25 +143,45 @@
    */
   &--1
     buttonSolid(var(--color-2), var(--text-tech-3))
+    buttonDefaultHoverState()
 
   &--2
     buttonBorder(var(--button-bg-4), var(--text-0), var(--stroke-3))
+    buttonDefaultHoverState()
 
   &--3
     buttonBorder(var(--app-bg), var(--text-0), var(--stroke-3))
+    buttonDefaultHoverState()
 
   &--4
     buttonBorder(var(--button-bg-0), var(--text-tech-0), var(--stroke-0))
+    buttonDefaultHoverState()
 
   &--5
     buttonBorder(var(--button-bg-1), var(--text-tech-1), var(--stroke-1))
+    buttonDefaultHoverState()
 
   &--6
     buttonBorder(var(--button-bg-2), var(--text-tech-2), var(--stroke-2))
+    buttonDefaultHoverState()
+
+  &--7
+    buttonSquareIcon(var(--button-bg-5))
+
+    &:hover
+      background var(--button-bg-6)
+
+  &--8
+    color var(--text-1)
+    buttonDefaultHoverState()
 
 
-  &:hover
-    buttonHoverState()
+  &--icon&--caption
+    buttonWithIconAndCaption()
+    padding-left 4px
+
+  &--wide
+    buttonWideStyle()
 
   &:active
     buttonActiveState()

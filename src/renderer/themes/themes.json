@@ -19,8 +19,11 @@
                 "--button-bg-0": "#FDF6F5",
                 "--button-bg-1": "#F4FBF7",
                 "--button-bg-2": "#F3F8FE",
-                "--button-bg-3": "#FFFFFF", 
+                "--button-bg-3": "#FFFFFF",
                 "--button-bg-4": "#E6E6E6",
+                "--button-bg-5": "transparent",
+                "--button-bg-6": "#E6E6E6",
+                "--button-bg-7": "transparent",
                 "--icon-bg": "#E8F2FE",
                 "--input": "#F2F2F2"
             },
@@ -32,7 +35,7 @@
                 "--text-0": "#000000",
                 "--text-1": "#76787B",
                 "--icon-0": "#000000",
-                "--icon-1": "#76787B" 
+                "--icon-1": "#76787B"
             },
             "content": {
                 "--app-bg": "#FFFFFF",
@@ -42,12 +45,15 @@
                 "--text-0": "#000000",
                 "--text-1": "#76787B",
                 "--icon-0": "#000000",
-                "--icon-1": "#76787B" 
+                "--icon-1": "#76787B"
             },
             "popover": {
                 "--app-bg": "#000000",
                 "--text-0": "#E5E5E5",
-                "--icon-0": "#FFFFFF"
+                "--icon-0": "#FFFFFF",
+                "--button-bg-5": "#191919",
+                "--button-bg-6": "#262626",
+                "--button-bg-7": "#333333"
             }
         }
     },
@@ -71,7 +77,7 @@
                 "--button-bg-0": "#FDF6F5",
                 "--button-bg-1": "#F4FBF7",
                 "--button-bg-2": "#F3F8FE",
-                "--button-bg-3": "#FFFFFF", 
+                "--button-bg-3": "#FFFFFF",
                 "--button-bg-4": "#E6E6E6",
                 "--icon-bg": "#E8F2FE",
                 "--input": "#F2F2F2"
@@ -84,7 +90,7 @@
                 "--text-0": "#FFFFFF",
                 "--text-1": "#76787B",
                 "--icon-0": "#FFFFFF",
-                "--icon-1": "#76787B" 
+                "--icon-1": "#76787B"
             },
             "content": {
                 "--app-bg": "#333333",
@@ -94,7 +100,7 @@
                 "--text-0": "#FFFFFF",
                 "--text-1": "#76787B",
                 "--icon-0": "#FFFFFF",
-                "--icon-1": "#76787B" 
+                "--icon-1": "#76787B"
             },
             "popover": {
                 "--app-bg": "#000000",
