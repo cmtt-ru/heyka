@@ -12,13 +12,33 @@
        v-else-if="withIcon"
        :class="classList"
   >
-    <svg-icon :name="icon" size="16"></svg-icon>
-    <slot></slot>
+    <svg-icon
+      class="ui-button__icon"
+      :name="icon"
+      :size="iconSizeComp"
+    ></svg-icon>
+
+    <span class="ui-button__caption">
+      <slot></slot>
+    </span>
+
+    <slot name="right"></slot>
   </div>
 
 </template>
 
 <script>
+
+/**
+ * Size of icons
+ * @type {{small: number, large: number, medium: number}}
+ */
+const ICON_SIZES = {
+  small: 16,
+  medium: 20,
+  large: 24,
+};
+
 export default {
   props: {
     /**
@@ -76,6 +96,14 @@ export default {
      */
     icon: {
       type: String,
+      default: null,
+    },
+
+    /**
+     * Icon size
+     */
+    iconSize: {
+      type: Number,
       default: null,
     },
 
@@ -149,16 +177,29 @@ export default {
        */
       classes[`${baseClass}--icon`] = this.icon !== null;
 
+      /**
+       * Caption class
+       * @type {boolean}
+       */
+      classes[`${baseClass}--caption`] = !!this.$slots.default;
+
       return classes;
     },
-  },
 
-  methods: {
+    /**
+     * Compute right icon size
+     *
+     * @return {number|*}
+     */
+    iconSizeComp() {
+      if (this.iconSize) {
+        return this.iconSize;
+      } else if (this.icon && !this.$slots.default) {
+        return ICON_SIZES[this.size];
+      }
 
-  },
-
-  mounted() {
-
+      return ICON_SIZES['small'];
+    },
   },
 };
 </script>
