@@ -43,7 +43,7 @@ export default {
   props: {
     /**
      * Style type of the button
-     * @param [1 — 10]
+     * @param [1 — 8]
      */
     type: {
       type: Number,
@@ -51,7 +51,7 @@ export default {
     },
 
     /**
-     * Size of the button.
+     * Size of the button
      * @param small | medium | large
      */
     size: {
