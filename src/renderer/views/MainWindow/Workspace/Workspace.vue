@@ -3,7 +3,6 @@
     <br><br>
     <avatar :status="'online'" :onair="false"></avatar>
     <div>Main window. {{ $tc("message", seconds) }}</div>
-    <svg-icon name="headphones" size="24"></svg-icon>
     <br>
     <div>{{message}}</div>
     <br><br>
@@ -13,32 +12,25 @@
     <br><br>
     <button @click="openPushWindow()">Открыть пуш</button>
     <button @click="closePushWindow()">Закрыть пуш</button>
-    <br><br><br>
+    <br><br>
     <button @click="trayToggle()">Из трея/в трей</button>
     <br><br><br>
 
-    <list>
-      <list-item>
-        <avatar slot="leftIcon" onair="true"></avatar>
-        <div>Текст 1</div>
-        </list-item>
-      <list-item>Текст 2</list-item>
-      <list-item>
-        <div>Текст 3</div>
-        <div slot="rightIcons">
-          <svg-icon name="headphones" size="24"></svg-icon>
-          <svg-icon name="headphones" size="24"></svg-icon>
-        </div>
-        </list-item>
-      <list-item button>
-        <svg-icon slot="leftIcon" name="headphones" size="24"></svg-icon>
-        <div>Текст 4</div>
+    <list :filterBy="''">
+      <list-item @click="clickFirstElement()" filterKey="Текст 1">
+        <avatar @click.native.stop="clickFirstAvatar()"></avatar>
+        <div>Текст 1 очень очень длинный текст</div>
       </list-item>
-      <list-item floatIcons>
-        <div>Текст 5</div>
-        <div slot="rightIcons">
-          <svg-icon name="headphones" size="24"></svg-icon>
-        </div>
+      <list-item
+        @click="clickChannel(index)"
+        v-for="(channel, index) in channels"
+        :key="channel.name"
+        :selected="channel.selected"
+        :filterKey="channel.name"
+        button
+      >
+       <avatar></avatar>
+       <div>{{channel.name}}</div>
       </list-item>
     </list>
   </div>
@@ -49,8 +41,7 @@
 import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Avatar from '@components/Avatar';
-import List from '@components/List';
-import ListItem from '@components/ListItem';
+import { List, ListItem } from '@components/List';
 
 let pushWindow;
 
@@ -64,12 +55,25 @@ export default {
     return {
       seconds: 0,
       message: '',
-      input: '',
+      channels: [
+        { name: '123' },
+        { name: '456' },
+        { name: '789' },
+      ],
 
     };
   },
 
   methods: {
+    clickFirstAvatar(event) {
+      console.log('нажали на аватарку');
+    },
+    clickFirstElement(event) {
+      console.log('нажали на элемент');
+    },
+    clickChannel(index) {
+      this.$set(this.channels[index], 'selected', !this.channels[index].selected);
+    },
     async login() {
       try {
         const res = await this.$API.auth.signinByLink(process.env.VUE_APP_LOGIN_BY_LINK);

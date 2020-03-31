@@ -1,5 +1,8 @@
 <template>
-<div class="avatar" :style="containerSize">
+<div
+  class="avatar"
+  :style="containerSize"
+>
     <div class="avatar__image" :style="avatarImage"></div>
     <div v-if="statusStyle" class="avatar__status">
         <div :style="statusStyle" class="avatar__status__dot"></div>
