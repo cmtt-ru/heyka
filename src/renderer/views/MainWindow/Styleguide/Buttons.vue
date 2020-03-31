@@ -8,11 +8,11 @@
 
     <div class="l-mt-12">
 
-      <ui-button :type="1" size="small" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="1" size="small" class="l-mr-8">Type --1</ui-button>
 
-      <ui-button :type="2" size="small" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="2" size="small" class="l-mr-8">Type --2</ui-button>
 
-      <ui-button :type="3" size="small" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="3" size="small" class="l-mr-8">Type --3</ui-button>
 
     </div>
 
@@ -20,28 +20,28 @@
 
     <div class="l-mt-12">
 
-      <ui-button :type="1" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="1" class="l-mr-8">Type --1</ui-button>
 
-      <ui-button :type="2" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="2" class="l-mr-8">Type --2</ui-button>
 
-      <ui-button :type="3" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="3" class="l-mr-8">Type --3</ui-button>
 
     </div>
 
     <div class="l-mt-12">
 
-      <ui-button :type="4" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="4" class="l-mr-8">Type --4</ui-button>
 
-      <ui-button :type="5" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="5" class="l-mr-8">Type --5</ui-button>
 
-      <ui-button :type="6" class="l-mr-8">Create channel</ui-button>
+      <ui-button :type="6" class="l-mr-8">Type --6</ui-button>
 
     </div>
 
     <h3 class="l-mt-24">Wide</h3>
     <div class="l-mt-12" style="width: 260px">
       <ui-button :type="6" icon="headphones" wide class="l-mr-8">
-        Facebook
+        Type --6
         <svg-icon
           name="headphones"
           :size="12"
@@ -52,19 +52,19 @@
 
     <div class="l-mt-12" style="width: 260px">
       <ui-button :type="3" :wide="true" class="l-mr-8">
-        Facebook
+        Type --3
       </ui-button>
     </div>
 
     <h3 class="l-mt-24">With icon</h3>
     <div class="l-mt-12" style="width: 260px">
-      <ui-button :type="9" icon="headphones" class="l-mr-8">Add headphones</ui-button>
+      <ui-button :type="9" icon="headphones" class="l-mr-8">Type --9</ui-button>
     </div>
     <div class="l-mt-12" style="width: 260px">
-      <ui-button :type="10" icon="headphones" class="l-mr-8">Add headphones</ui-button>
+      <ui-button :type="10" icon="headphones" class="l-mr-8">Type --10</ui-button>
     </div>
 
-    <h3 class="l-mt-24">Icon only</h3>
+    <h3 class="l-mt-24">Icon only, type --7</h3>
     <div class="l-mt-12">
       <ui-button :type="7" size="small" icon="headphones" class="l-mr-8"></ui-button>
       <ui-button :type="7" size="medium" icon="headphones" class="l-mr-8"></ui-button>
@@ -83,8 +83,8 @@
 
         <h3>Transparent button</h3>
         <div class="l-mt-12">
-          <ui-button :type="8" size="small">Cancel</ui-button>
-          <ui-button :type="8" size="small">Apply</ui-button>
+          <ui-button :type="8" size="small">Type --8</ui-button>
+          <ui-button :type="8" size="small">Type --8</ui-button>
         </div>
 
       </div>
