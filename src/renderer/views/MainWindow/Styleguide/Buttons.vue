@@ -1,10 +1,8 @@
 <template>
-  <!--
-    * Styleguide for testing UI components
-  -->
+
   <div>
 
-    <h2 class="l-mt-24">Buttons</h2>
+    <h1 class="l-mt-12">Buttons</h1>
 
     <h3 class="l-mt-24">Small</h3>
 
@@ -116,6 +114,5 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-  h3
-    color var(--text-0)
+
 </style>
