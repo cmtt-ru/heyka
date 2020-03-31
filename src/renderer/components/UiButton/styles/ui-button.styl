@@ -8,7 +8,7 @@
   /**
    * Small size button
    */
-  buttonSmallStyle()
+  buttonSmallSize()
     height 24px
     line-height 24px
     font-size 14px
@@ -18,7 +18,7 @@
   /**
    * Medium size button
    */
-  buttonMediumStyle()
+  buttonMediumSize()
     height 32px
     line-height 32px
     font-size 14px
@@ -28,7 +28,7 @@
   /**
    * Large size button
    */
-  buttonLargeStyle()
+  buttonLargeSize()
     height 30px
     line-height 30px
     font-size 13px
@@ -113,6 +113,31 @@
     opacity 0.5
 
   /**
+   * Loading state
+   */
+  buttonLoadingState()
+    $color-light = rgba(255, 255, 255, 0.1);
+    $color-dark = rgba(0, 0, 0, 0.03);
+
+    pointer-events: none;
+    background-size: 56px 56px;
+    animation: loading 0.5s infinite linear;
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, $color-dark 10px, $color-dark 20px);
+
+    &^[0]--1
+    &^[0]--7
+      background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, $color-light 10px, $color-light 20px);
+
+    @keyframes loading {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: -56px 0;
+      }
+    }
+
+  /**
    * Default hover state
    */
   buttonDefaultHoverState()
@@ -130,13 +155,13 @@
   * Button size classes
   */
   &--small
-    buttonSmallStyle()
+    buttonSmallSize()
 
   &--medium
-    buttonMediumStyle()
+    buttonMediumSize()
 
   &--large
-    buttonLargeStyle()
+    buttonLargeSize()
 
   /**
    * Button type classes
@@ -178,10 +203,12 @@
 
   &--icon&--caption
     buttonWithIconAndCaption()
-    padding-left 4px
 
   &--wide
     buttonWideStyle()
+
+  &--loading
+    buttonLoadingState()
 
   &:active
     buttonActiveState()

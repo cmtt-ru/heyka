@@ -42,7 +42,7 @@
 
     <h3 class="l-mt-24">Wide</h3>
     <div class="l-mt-12" style="width: 260px">
-      <ui-button :type="6" icon="headphones" :wide="true" class="l-mr-8">
+      <ui-button :type="6" icon="headphones" wide class="l-mr-8">
         Facebook
         <svg-icon
           name="headphones"
