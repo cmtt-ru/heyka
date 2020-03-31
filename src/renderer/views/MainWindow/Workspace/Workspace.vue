@@ -36,6 +36,7 @@
        <div>{{channel.name}}</div>
       </list-item>
     </list>
+    <Janus />
   </div>
 
 </template>
@@ -45,6 +46,7 @@ import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Avatar from '@components/Avatar';
 import { List, ListItem } from '@components/List';
+import Janus from './Janus';
 
 let pushWindow;
 
@@ -53,6 +55,7 @@ export default {
     Avatar,
     List,
     ListItem,
+    Janus,
   },
   data() {
     return {
