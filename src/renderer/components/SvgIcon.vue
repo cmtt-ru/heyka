@@ -3,7 +3,8 @@
     :class="classList"
     :height="dimension(height)"
     :width="dimension(width)"
-    xmlns="http://www.w3.org/2000/svg">
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <title v-if="title">{{ title }}</title>
     <use
     :style="{strokeWidth: strokeWidth, opacity: opacity, stroke: strokeColor}"
@@ -22,6 +23,11 @@ export default {
         16: '1.2px',
         12: '1px',
       },
+      sizes: {
+        small: 12,
+        medium: 16,
+        large: 24,
+      },
       defaultStroke: '1.2px',
     };
   },
@@ -36,7 +42,7 @@ export default {
       default: 16,
     },
     size: {
-      type: [Number, String],
+      type: [ String ],
       default: null,
     },
     name: {
@@ -94,7 +100,7 @@ export default {
 
     dimension(value) {
       if (this.size) {
-        return Number(this.size);
+        return this.sizes[this.size];
       }
 
       return Number(value);
