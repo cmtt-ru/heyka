@@ -52,7 +52,7 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
   .link
     display block
     padding 4px 8px
@@ -68,5 +68,15 @@ export default {
   .router-link-exact-active
     background-color var(--item-bg-active)
     box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
+
+  pre
+    display inline-flex
+    background var(--item-bg-hover)
+    padding 0 4px
+    border-radius 4px
+    border 1px solid var(--stroke-3)
+    font-size 12px
+    margin-top 4px
+    user-select text !important
 
 </style>
