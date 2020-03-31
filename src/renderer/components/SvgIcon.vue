@@ -49,7 +49,7 @@ export default {
     },
     stroke: {
       type: [ String ],
-      default: 'var(--icon-0)',
+      default: 'currentColor',
     },
     title: {
       type: String,

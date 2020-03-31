@@ -58,6 +58,14 @@
       </ui-button>
     </div>
 
+    <h3 class="l-mt-24">With icon</h3>
+    <div class="l-mt-12" style="width: 260px">
+      <ui-button :type="9" icon="headphones" class="l-mr-8">Add headphones</ui-button>
+    </div>
+    <div class="l-mt-12" style="width: 260px">
+      <ui-button :type="10" icon="headphones" class="l-mr-8">Add headphones</ui-button>
+    </div>
+
     <h3 class="l-mt-24">Icon only</h3>
     <div class="l-mt-12">
       <ui-button :type="7" size="small" icon="headphones" class="l-mr-8"></ui-button>
@@ -66,7 +74,7 @@
     </div>
 
     <div class="l-mt-12" style="background: #000; margin: 0 -8px 0 -8px; padding: 18px 8px">
-      <div :style="$themes.getColors('popover')">
+      <div :style="$themes.getColors('popover')" style="color: var(--text-0)">
 
         <h3>Icon in popover</h3>
         <div class="l-mt-12 l-mb-24">

@@ -12,11 +12,16 @@
        v-else-if="withIcon"
        :class="classList"
   >
-    <svg-icon
-      class="ui-button__icon"
-      :name="icon"
-      :size="iconSizeComp"
-    ></svg-icon>
+
+    <conditional-wrapper :wrap="needToWrapIcon">
+      <div class="ui-button__icon-bg">
+        <svg-icon
+          class="ui-button__icon"
+          :name="icon"
+          :size="iconSizeComp"
+        ></svg-icon>
+      </div>
+    </conditional-wrapper>
 
     <span class="ui-button__caption">
       <slot></slot>
@@ -29,6 +34,8 @@
 
 <script>
 
+import ConditionalWrapper from '@components/ConditionalWrapper';
+
 /**
  * Size of icons
  * @type {{small: number, large: number, medium: number}}
@@ -40,6 +47,9 @@ const ICON_SIZES = {
 };
 
 export default {
+  components: {
+    ConditionalWrapper,
+  },
   props: {
     /**
      * Style type of the button
@@ -199,6 +209,16 @@ export default {
       }
 
       return ICON_SIZES['small'];
+    },
+
+    /**
+     * Return true if necessary to wrap icon with div
+     *
+     * @return {boolean}
+     */
+    needToWrapIcon() {
+      // eslint-disable-next-line no-magic-numbers
+      return this.type === 9;
     },
   },
 };

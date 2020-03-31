@@ -200,8 +200,32 @@
     color var(--text-1)
     buttonDefaultHoverState()
 
+  &--9
+    color var(--text-tech-2)
+    stroke var(--text-tech-2)
+    padding 0
 
-  &--icon&--caption
+    & ^[0]__icon-bg
+      display flex
+      width 24px
+      height 24px
+      background var(--button-bg-2)
+      border-radius 100%
+      align-items center
+      justify-content center
+      margin-right 8px
+
+  &--10
+    color var(--text-1)
+    stroke var(--text-1)
+    padding 0
+
+    & ^[0]__icon
+      margin-right 8px
+
+    buttonDefaultHoverState()
+
+  &--icon&--caption&--wide
     buttonWithIconAndCaption()
 
   &--wide
