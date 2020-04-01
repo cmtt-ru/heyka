@@ -47,5 +47,4 @@ export default {
 <style lang="stylus" scoped>
   .list-view
     width 100%
-    padding 4px //! потом убрать, паддинг будем снаружи выставлять руками
 </style>

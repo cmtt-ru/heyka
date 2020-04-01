@@ -4,14 +4,12 @@
 
       <template v-slot:sidebar-header>
         <div class="l-p-8 l-w-m">
-          Yandex.Taxi
+          Комитет
         </div>
       </template>
 
       <template v-slot:sidebar-body>
-        <div class="l-p-8">
-          <router-link :to="{ name: 'settings'}">Settings</router-link>
-        </div>
+          <sidebar/>
       </template>
 
       <template v-slot:content-header>
@@ -21,7 +19,7 @@
       </template>
 
       <template v-slot:content-body>
-        <router-view></router-view>
+        <router-view/>
       </template>
 
     </layout>
@@ -30,10 +28,12 @@
 
 <script>
 import Layout from './../Layout';
+import Sidebar from './Sidebar';
 
 export default {
   components: {
     Layout,
+    Sidebar,
   },
   data() {
     return {

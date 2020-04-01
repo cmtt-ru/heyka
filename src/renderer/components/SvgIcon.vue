@@ -7,13 +7,18 @@
   >
     <title v-if="title">{{ title }}</title>
     <use
-    :style="{strokeWidth: strokeWidth, opacity: opacity, stroke: strokeColor}"
+    v-if="!animate"
+    :style="{strokeWidth: strokeWidth, stroke: strokeColor}"
     :xlink:href="iconPath"
     xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    <g v-if="animate" :style="{strokeWidth: strokeWidth, stroke: strokeColor}">
+      <slot></slot>
+    </g>
   </svg>
 </template>
 
 <script>
+
 export default {
   name: 'svg-icon',
   data: function () {
@@ -22,13 +27,13 @@ export default {
         24: '1.2px',
         16: '1.2px',
         12: '1px',
+        default: '1.2px',
       },
       sizes: {
         small: 12,
         medium: 16,
         large: 24,
       },
-      defaultStroke: '1.2px',
     };
   },
 
@@ -61,15 +66,19 @@ export default {
       type: String,
       default: null,
     },
+    animate: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
 
     strokeWidth() {
-      if (Object.prototype.hasOwnProperty.call(this.iconStrokes, this.dimension(this.width))) {
+      if ({}.hasOwnProperty.call(this.iconStrokes, this.dimension(this.width))) {
         return this.iconStrokes[this.dimension(this.width)];
       } else {
-        return this.defaultStroke;
+        return this.iconStrokes.default;
       }
     },
     strokeColor() {
@@ -105,14 +114,6 @@ export default {
 
       return Number(value);
     },
-  },
-
-  mounted() {
-    // const time = 2000;
-    // inner svg color change test
-    // setTimeout(() => {
-    // document.documentElement.style.setProperty('--secondary-stroke-svg', 'green');
-    // }, time);
   },
 };
 </script>
