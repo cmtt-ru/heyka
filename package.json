@@ -53,6 +53,7 @@
     "vue-cli-plugin-electron-builder": "^1.4.5",
     "vue-cli-plugin-i18n": "^0.6.1",
     "vue-cli-plugin-svg-sprite": "^1.0.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "vuebar": "0.0.20"
   }
 }
