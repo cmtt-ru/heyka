@@ -6,24 +6,22 @@
 
 <script>
 export default {
-  data: function () {
-    return {
-
-    };
-  },
-
   props: {
+    /**
+     * Show only list-items that match this string by their filterKey
+     */
     filterBy: {
       type: String,
       default: '',
     },
   },
 
-  computed: {
-
-  },
-
   methods: {
+
+    /**
+     * Gather all list-items that have prop "selected"
+     * @return {Array} keys of selected items
+     */
     selectedChildren() {
       const selectedArray = [];
 

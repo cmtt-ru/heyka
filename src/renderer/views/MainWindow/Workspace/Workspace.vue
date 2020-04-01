@@ -17,12 +17,12 @@
     <br><br><br>
 
     <list :filterBy="''">
-      <list-item @click.native="clickFirstElement()" filterKey="Текст 1">
-        <avatar @click.native.stop="clickFirstAvatar()"></avatar>
+      <list-item @click.native="clickFirstElementHandler()" filterKey="Текст 1">
+        <avatar @click.native.stop="clickFirstAvatarHandler()"></avatar>
         <div>Текст 1 очень очень длинный текст</div>
       </list-item>
       <list-item
-        @click.native="clickChannel(index)"
+        @click.native="clickChannelHandler(index)"
         v-for="(channel, index) in channels"
         :key="channel.name"
         :selected="channel.selected"
@@ -67,13 +67,26 @@ export default {
   },
 
   methods: {
-    clickFirstAvatar(event) {
+    /**
+     * Detect Avatar (part of list-item) click
+     * @returns {void}
+     */
+    clickFirstAvatarHandler() {
       console.log('нажали на аватарку');
     },
-    clickFirstElement(event) {
+    /**
+     * Detect list-item click
+     * @returns {void}
+     */
+    clickFirstElementHandler() {
       console.log('нажали на элемент');
     },
-    clickChannel(index) {
+    /**
+     * Multi-pick testing
+     * @param {Number} index index of clicked channel
+     * @returns {void}
+     */
+    clickChannelHandler(index) {
       this.$set(this.channels[index], 'selected', !this.channels[index].selected);
     },
     async login() {
