@@ -18,7 +18,8 @@
         <svg-icon
           class="ui-button__icon"
           :name="icon"
-          :size="iconSizeComp"
+          :width="iconSizeComp"
+          :height="iconSizeComp"
         ></svg-icon>
       </div>
     </conditional-wrapper>
