@@ -51,17 +51,14 @@ export default {
 
     &__column
       height 100%
+      background-color var(--app-bg)
+      color var(--text-0)
 
       &--sidebar
-        width 200px
-        flex 0 0 auto
-        background-color var(--app-bg)
-        color var(--text-0)
+        flex 0 0 200px
 
       &--content
-        flex 3 0 auto
-        background-color var(--app-bg)
-        color var(--text-0)
+        flex 1 1 auto
 
     &__row
       &--header
