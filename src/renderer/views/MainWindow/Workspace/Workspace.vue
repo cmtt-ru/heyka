@@ -17,16 +17,18 @@
     <br><br><br>
 
     <list :filterBy="''">
-      <list-item @click="clickFirstElement()" filterKey="Текст 1">
+      <list-item @click.native="clickFirstElement()" filterKey="Текст 1">
         <avatar @click.native.stop="clickFirstAvatar()"></avatar>
         <div>Текст 1 очень очень длинный текст</div>
       </list-item>
       <list-item
-        @click="clickChannel(index)"
+        @click.native="clickChannel(index)"
         v-for="(channel, index) in channels"
         :key="channel.name"
         :selected="channel.selected"
         :filterKey="channel.name"
+        class="test-item"
+        :class="{'test-item--selected': channel.selected}"
         button
       >
        <avatar></avatar>
@@ -132,3 +134,12 @@ export default {
   },
 };
 </script>
+
+<style lang="stylus" scoped>
+.test-item
+  &:hover
+    background-color var(--item-bg-hover)
+
+  &--selected
+    background-color var(--item-bg-multi-pick)
+</style>
