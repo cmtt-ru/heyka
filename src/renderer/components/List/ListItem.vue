@@ -33,6 +33,10 @@ export default {
       type: [ Boolean ],
       default: false,
     },
+    active: {
+      type: [ Boolean ],
+      default: false,
+    },
   },
   computed: {
     ifPassesFilter() {
@@ -60,18 +64,14 @@ export default {
   box-sizing border-box
 
 .list-item--selected
-  background-color var(--item-bg-multi-pick)
-
+  background-color var(--item-bg-multi-pick) //? надо ли отдать эту логику стилей на контент лист айтема?
 .list-item--button
   cursor pointer
-
-  &:hover
-    background-color var(--item-bg-hover) //! перебивает цвет мульти-селекта
 
 $color1 = var(--item-bg-multi-pick)
 $color2 = var(--item-bg-hover)
 .list-item--selected.list-item--button:hover
   background-blend-mode: mulitply;
-  background-image: linear-gradient(0deg, $color1, $color2); //TODO: сделать норм смешение цветов
+  background-image: linear-gradient(0deg, $color1, $color2);
 
 </style>
