@@ -18,19 +18,19 @@ export default {
 
   props: {
     text: {
-      type: [ String ],
+      type: String,
       default: '',
     },
     filterKey: {
-      type: [ String ],
+      type: String,
       default: '',
     },
     button: {
-      type: [ Boolean ],
+      type: Boolean,
       default: false,
     },
     selected: {
-      type: [ Boolean ],
+      type: Boolean,
       default: false,
     },
   },
@@ -59,19 +59,6 @@ export default {
   border-radius 4px
   box-sizing border-box
 
-.list-item--selected
-  background-color var(--item-bg-multi-pick)
-
-.list-item--button
-  cursor pointer
-
-  &:hover
-    background-color var(--item-bg-hover) //! перебивает цвет мульти-селекта
-
-$color1 = var(--item-bg-multi-pick)
-$color2 = var(--item-bg-hover)
-.list-item--selected.list-item--button:hover
-  background-blend-mode: mulitply;
-  background-image: linear-gradient(0deg, $color1, $color2); //TODO: сделать норм смешение цветов
-
+  &--button
+    cursor pointer
 </style>
