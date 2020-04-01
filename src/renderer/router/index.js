@@ -25,6 +25,11 @@ const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/
 /* Signin link from deep link */
 const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
 
+/* Styleguide */
+const Styleguide = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide');
+const StyleguideButtons = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Buttons');
+const StyleguideLists = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Lists');
+
 /**
  * Push window views
  * @constructor
@@ -95,6 +100,30 @@ const routes = [
         path: 'settings',
         name: 'settings',
         component: Settings,
+        children: [
+
+        ],
+      },
+
+      /**
+       * Styleguide layout
+       */
+      {
+        path: 'styleguide',
+        name: 'styleguide',
+        component: Styleguide,
+        children: [
+          {
+            path: 'buttons',
+            name: 'styleguide-buttons',
+            component: StyleguideButtons,
+          },
+          {
+            path: 'lists',
+            name: 'styleguide-lists',
+            component: StyleguideLists,
+          },
+        ],
       },
 
       /**
