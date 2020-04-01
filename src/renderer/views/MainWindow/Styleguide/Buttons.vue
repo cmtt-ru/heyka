@@ -44,7 +44,7 @@
         Type --6
         <svg-icon
           name="headphones"
-          :size="12"
+          size="small"
           slot="right"
         ></svg-icon>
       </ui-button>
