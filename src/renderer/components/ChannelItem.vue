@@ -5,7 +5,10 @@
           <channel-on-air></channel-on-air>
         </svg-icon>
         <div class="channel__content">
-            <div class="channel__name">{{channel.name}}</div>
+            <div class="channel__name-wrapper">
+              <div class="channel__name text-overflow">{{channel.name}}</div>
+              <slot name="right-button"></slot>
+            </div>
             <div v-show="channel.online.length" class="channel__users">
                 <div class="channel__users__avatars">
                   <avatar v-for="person in channel.online" :key="person.name" :size="12"></avatar>
@@ -19,34 +22,51 @@
 <script>
 import Avatar from '@components/Avatar';
 import channelOnAir from '@assets/iconsAnimate/channelOnAir.vue';
+
+const ICON_MAP = {
+  public: 'channel',
+  private: 'lock',
+  temp: 'clock',
+  default: 'channel',
+};
+const MAX_USERS = 8;
+
 export default {
   components: {
     Avatar,
-    channelOnAir,
+    channelOnAir, // TODO: добавить и остальные анимированные иконки
   },
-  props: { channel: Object },
+  props: {
+    /**
+     * Object with full channel info
+     */
+    channel: Object,
+  },
   data() {
     return {
-      iconMap: {
-        public: 'channel',
-        private: 'lock',
-        temp: 'clock',
-        default: 'channel',
-      },
-      maxUsers: 8,
+
     };
   },
   computed: {
+    /**
+     * Show icon corresponding to channel status
+     * @returns {String} name of correct icon
+     */
     dynamicIcon() {
-      if ({}.hasOwnProperty.call(this.iconMap, this.channel.type)) {
-        return this.iconMap[this.channel.type];
+      if ({}.hasOwnProperty.call(ICON_MAP, this.channel.type)) {
+        return ICON_MAP[this.channel.type];
       } else {
-        return this.iconMap.default;
+        return ICON_MAP.default;
       }
     },
+
+    /**
+     * Show "+x" after "MAX_USERS" amount of avatars
+     * @returns {Number} x in "+x"
+     */
     extraUsers() {
-      if (this.channel.online.length > this.maxUsers) {
-        return this.channel.online.length - this.maxUsers;
+      if (this.channel.online.length > MAX_USERS) {
+        return this.channel.online.length - MAX_USERS;
       }
 
       return false;
@@ -78,8 +98,9 @@ export default {
     bottom 0
     left 0
     right 0
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow 0px 1px 2px rgba(0, 0, 0, 0.1)
     opacity 0
+    pointer-events none
     transition opacity 0.2s linear
 
   &--active //TODO: .router-link-active
@@ -97,15 +118,20 @@ export default {
 
   &__content
     display block
+    width 160px
+
+  &__name-wrapper
+    padding 3px 0
+    display flex
+    flex-direction row
+    align-items center
+    justify-content space-between
+    width 100%
 
   &__name
     font-style normal
     font-weight normal
-    max-width 160px
-    overflow hidden
-    text-overflow ellipsis //? Заменить на уход в прозрачность
-    white-space nowrap
-    padding 3px 0
+    width 140px
 
   &__users
     height 12px
@@ -115,7 +141,7 @@ export default {
     align-items center
 
     &__avatars
-      max-width 95px
+      max-width 124px
       overflow hidden
       display flex
       flex-direction row

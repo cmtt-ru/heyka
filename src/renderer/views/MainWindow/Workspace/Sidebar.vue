@@ -1,27 +1,32 @@
 <template>
   <div class="l-p-8">
-    <router-link :to="{ name: 'settings'}">Settings</router-link>
-    <br><br>
 
-    <div class="menu-body-title">
-      <div class="menu-body-title__label">Channels</div>
-      <svg-icon
-        class="menu-body-title__add"
-        @click.native="addRandomChannel"
-        name="add"
-        size="medium"
-        stroke="var(--icon-1)"
-      ></svg-icon>
+    <div class="connected-channel" v-if="connectedChannel.name" @click="clickChannelHandler(connectedChannel)">
+       <channel-item :channel="connectedChannel">
+         <ui-button
+          slot="right-button"
+          :type="7"
+          class="connected-channel__button"
+          size="small"
+          height="16"
+          icon="more">
+        </ui-button>
+       </channel-item>
+    </div>
+    <div class="channel-header">
+      <div class="channel-header__label l-ml-4">Channels</div>
+      <ui-button :type="7" class="channel-header__add" @click.native="addRandomChannelHandler" size="small" icon="add"></ui-button>
     </div>
 
     <list :filterBy="''">
       <list-item
-        @click.native="clickChannel(index)"
-        @dblclick.native="dbclickChannel(index)"
-        v-for="(channel, index) in channels"
+        @click.native="clickChannelHandler(channel)"
+        @dblclick.native="dbclickChannelHandler(channel)"
+        v-for="channel in sortedChannels"
         :key="channel.name"
         :active="channel.active"
         :filterKey="channel.name"
+        v-show="!channel.connected"
         button
       >
        <channel-item :channel="channel"></channel-item>
@@ -35,18 +40,21 @@
 <script>
 import ChannelItem from '@components/ChannelItem';
 import { List, ListItem } from '@components/List';
+import UiButton from '@components/UiButton';
 
 export default {
   components: {
     List,
     ListItem,
     ChannelItem,
+    UiButton,
+
   },
   data() {
     return {
       channels: [
         {
-          name: 'Heyka-dev',
+          name: 'heyka-dev',
           type: 'public',
           talking: true,
           active: false,
@@ -79,28 +87,68 @@ export default {
           ],
         },
       ],
-
+      connectedChannel: {
+        name: '',
+        online: [],
+      },
     };
   },
 
+  computed: {
+
+    /**
+     * Sort channels by name
+     * @returns {Array} array of sorted channels
+     */
+    sortedChannels() {
+      const ch = [ ...this.channels ];
+
+      return ch.sort((a, b) => {
+        if (a.name.toLowerCase().trim() < b.name.toLowerCase().trim()) {
+          return -1;
+        }
+        if (a.name.toLowerCase().trim() > b.name.toLowerCase().trim()) {
+          return 1;
+        }
+
+        return 0;
+      });
+    },
+
+  },
+
   methods: {
-    clickFirstAvatar() {
-      console.log('нажали на аватарку');
-    },
-    clickFirstElement() {
-      console.log('нажали на элемент');
-    },
-    clickChannel(index) {
+    /**
+     * Make Channel active and route to its info
+     * @param {Object} channel selected channel
+     * @returns {void}
+     */
+    clickChannelHandler(channel) { // TODO: добавить роутинг
       for (const ch of this.channels) {
         ch.active = false;
       }
-      this.$set(this.channels[index], 'active', true);
+      this.$set(channel, 'active', true);
     },
-    dbclickChannel(index) {
+
+    /**
+     * Connect to channel
+     * @param {Object} channel selected channel
+     * @returns {void}
+     */
+    dbclickChannelHandler(channel) { // TODO: добавить коннект к сокетам и всё такое
       console.log('double click');
-      this.$set(this.channels[index], 'connected', !this.channels[index].connected);
+      for (const ch of this.channels) {
+        ch.connected = false;
+      }
+      this.$set(channel, 'connected', true);
+      this.connectedChannel = channel;
     },
-    addRandomChannel() {
+
+    /**
+     * Substitution for proper channel creation
+     * @returns {void}
+     */
+    addRandomChannelHandler() {
       // eslint-disable-next-line no-magic-numbers
       const length = Math.floor(Math.random() * (17)) + 8;
       let channelName = '';
@@ -122,8 +170,24 @@ export default {
 
   },
 
-  mounted() {
-
-  },
 };
 </script>
+
+<style lang="stylus" scoped>
+.connected-channel
+  margin-bottom 8px
+
+  &__button
+    color var(--icon-1)
+    margin-right 4px
+
+.channel-header
+  display flex
+  flex-direction row
+  justify-content space-between
+  align-items center
+  color var(--text-1)
+  margin-bottom 2px
+  font-size 12px
+
+</style>

@@ -4,7 +4,7 @@
 
       <template v-slot:sidebar-header>
         <div class="l-p-8 l-w-m">
-          Комитет
+          <router-link :to="{ name: 'settings'}">Settings</router-link>
         </div>
       </template>
 
