@@ -18,23 +18,23 @@ export default {
 
   props: {
     text: {
-      type: [ String ],
+      type: String,
       default: '',
     },
     filterKey: {
-      type: [ String ],
+      type: String,
       default: '',
     },
     button: {
-      type: [ Boolean ],
+      type: Boolean,
       default: false,
     },
     selected: {
-      type: [ Boolean ],
+      type: Boolean,
       default: false,
     },
     active: {
-      type: [ Boolean ],
+      type: Boolean,
       default: false,
     },
   },
