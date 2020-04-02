@@ -1,7 +1,7 @@
 <template>
     <div
       class="list-item"
-      v-if="ifPassesFilter"
+      v-if="matchesFilter"
       :class="{'list-item--button': button, 'list-item--selected' : selected}"
     >
     <slot></slot>
@@ -17,35 +17,44 @@ export default {
   },
 
   props: {
-    text: {
-      type: String,
-      default: '',
-    },
+    /**
+     * Key for list searching/filtering. In most cases it is just text on the list-item
+     */
     filterKey: {
       type: String,
       default: '',
     },
+    /**
+     * whether we should add button behaviour (cursor: pointer)
+     */
     button: {
       type: Boolean,
       default: false,
     },
+    /**
+     * Whether item is selected (for multi pick, eg. when sending invites to multiple people)
+     */
     selected: {
-      type: Boolean,
-      default: false,
-    },
-    active: {
       type: Boolean,
       default: false,
     },
   },
   computed: {
-    ifPassesFilter() {
+    /**
+     * Decide if item matches List's filter
+     * @return {Boolean}
+     */
+    matchesFilter() {
       if (this.filterKey.toLowerCase().includes(this.parentFilterBy.toLowerCase())) {
         return true;
       } // TODO: сделать умный поиск (например, с перепутанной раскладкой)
 
       return false;
     },
+    /**
+     * Get Parent's filter
+     * @return {String}
+     */
     parentFilterBy() {
       return this.$parent.filterBy || '';
     },
@@ -63,15 +72,6 @@ export default {
   border-radius 4px
   box-sizing border-box
 
-.list-item--selected
-  background-color var(--item-bg-multi-pick) //? надо ли отдать эту логику стилей на контент лист айтема?
-.list-item--button
-  cursor pointer
-
-$color1 = var(--item-bg-multi-pick)
-$color2 = var(--item-bg-hover)
-.list-item--selected.list-item--button:hover
-  background-blend-mode: mulitply;
-  background-image: linear-gradient(0deg, $color1, $color2);
-
+  &--button
+    cursor pointer
 </style>
