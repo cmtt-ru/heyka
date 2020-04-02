@@ -33,6 +33,16 @@ a
   font-size 14px
   line-height 18px
 
+.text-overflow
+  -webkit-margin-start .1px //! Без этого не обновляется хитрый градиентный текст, если меняется. работает с задержкой
+  z-index 1 //! Без этого не обновляется хитрый градиентный текст, если меняется. работает с задержкой
+  pointer-events none
+  white-space nowrap
+  background -webkit-linear-gradient(180deg, transparent, transparent 10px, currentColor 30px)
+  -webkit-background-clip text
+  -webkit-text-fill-color transparent
+
+
 /**
  * Layout class generator
  */

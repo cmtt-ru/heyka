@@ -3,6 +3,7 @@
   <div class="ui-button"
        v-if="!withIcon"
        :class="classList"
+       :style="buttonSize"
   >
     <slot></slot>
   </div>
@@ -11,6 +12,7 @@
   <div class="ui-button"
        v-else-if="withIcon"
        :class="classList"
+       :style="buttonSize"
   >
 
     <conditional-wrapper :wrap="needToWrapIcon">
@@ -68,6 +70,14 @@ export default {
     size: {
       type: String,
       default: 'medium',
+    },
+
+    /**
+     * Exact size of the button, use with caution
+     */
+    height: {
+      type: [Number, String],
+      default: null,
     },
 
     /**
@@ -220,6 +230,22 @@ export default {
     needToWrapIcon() {
       // eslint-disable-next-line no-magic-numbers
       return this.type === 9;
+    },
+
+    /**
+     * Return altered size of icon if "height" prop is provided
+     *
+     * @return {Object} style with width and height of button
+     */
+    buttonSize() {
+      if (this.height) {
+        return {
+          height: this.height + 'px',
+          width: this.height + 'px',
+        };
+      }
+
+      return {};
     },
   },
 };
