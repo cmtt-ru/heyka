@@ -14,7 +14,7 @@ export default {
 
   props: {
     filterBy: {
-      type: [ String ],
+      type: String,
       default: '',
     },
   },
