@@ -6,7 +6,7 @@
         </svg-icon>
         <div class="channel__content">
             <div class="channel__name-wrapper">
-              <div class="channel__name text-overflow">{{channel.name}}</div>
+              <div :key="channel.name" class="channel__name text-overflow">{{channel.name}}</div>
               <slot name="right-button"></slot>
             </div>
             <div v-show="channel.online.length" class="channel__users">
@@ -70,6 +70,15 @@ export default {
       }
 
       return false;
+    },
+  },
+
+  methods: {
+    randomPadding() {
+      // eslint-disable-next-line no-magic-numbers
+      const num = (1 / (Math.random() * 10000));
+
+      return { 'padding-top': num + 'px' };
     },
   },
 };
