@@ -59,7 +59,7 @@ export default {
         color var(--text-0)
 
       &--content
-        flex 3 0 auto
+        flex 3 1 auto
         background-color var(--app-bg)
         color var(--text-0)
 
