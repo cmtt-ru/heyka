@@ -1,16 +1,16 @@
 const state = () => {
   return {
     /**
-     * List of all available workspace
+     * List of all available workspaces
      */
-    workspaces: {
+    collection: {
 
       0: {
         /**
          * Workspace id
-         * @type {number}
+         * @type {string}
          */
-        id: 0,
+        id: '',
 
         /**
          * Workspace name
