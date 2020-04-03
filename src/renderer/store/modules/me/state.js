@@ -1,6 +1,46 @@
 const state = () => {
   return {
-    workspace: Math.random(),
+    /**
+     * Authorized user id
+     * @type {string}
+     */
+    id: '',
+
+    /**
+     * Selected workspace id
+     * @type {string}
+     */
+    selectedWorkspaceId: '',
+
+    /**
+     * Selected channel id
+     * @type {string}
+     */
+    selectedChannelId: '',
+
+    /**
+     * Authorized user's media state
+     * @type {{
+     *   speaking: boolean,
+     *   speakers: boolean,
+     *   screen: boolean,
+     *   microphone: boolean,
+     *   camera: boolean
+     * }}
+     */
+    mediaState: {
+      microphone: true,
+      speakers: true,
+      screen: true,
+      camera: true,
+      speaking: true,
+    },
+
+    /**
+     * Authorized user's pokes list
+     * @type {array}
+     */
+    pokes: [],
   };
 };
 
