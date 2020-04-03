@@ -8,7 +8,7 @@
     <br><br>
     <button @click="login()">Login</button>
     <br><br>
-    <button @click="GetWorkspaces()">GetWorkspaces</button>
+    <button @click="getWorkspaces()">GetWorkspaces</button>
     <br><br>
     <button @click="openPushWindow()">Открыть пуш</button>
     <button @click="closePushWindow()">Закрыть пуш</button>
@@ -98,14 +98,8 @@ export default {
         console.log(err);
       }
     },
-    async GetWorkspaces() {
-      try {
-        const res = await this.$API.workspace.getWorkspaces();
-
-        console.log(res);
-      } catch (err) {
-        console.log(err);
-      }
+    async getWorkspaces() {
+      this.$store.dispatch('workspaces/load');
     },
     async openPushWindow() {
       // console.log(WindowManager.create);

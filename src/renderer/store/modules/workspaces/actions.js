@@ -1,10 +1,17 @@
-export default {
+import API from '@api';
 
-  action({ commit }) {
-    return new Promise((resolve, reject) => {
-      commit('SET_SOME', 1);
-      resolve();
-    });
+export default {
+  /**
+   * Load workspaces
+   * @param {object} commit – commit mutation
+   * @return {Promise<unknown>}
+   */
+  async load({ commit }) {
+    const workspaces = await API.workspace.getWorkspaces();
+
+    console.log(workspaces);
+
+    return workspaces;
   },
 
 };
