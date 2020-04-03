@@ -1,5 +1,5 @@
 <template>
-    <router-link to="#" :class="{'channel--active': channel.active}" class="channel">
+    <router-link :to="'/main-window/workspace/channel/'+channel.name" :class="{'channel--active': channel.active}" class="channel">
         <svg-icon v-if="!channel.talking" class="channel__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"></svg-icon>
         <svg-icon v-if="channel.talking" class="channel__type" name="channelOnAir" size="medium" animate>
           <channel-on-air></channel-on-air>

@@ -18,6 +18,7 @@ const AuthCredentials = () => import(/* webpackChunkName: "main" */ '@views/Main
 /* Workspace layout */
 const Workspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace');
 const TestWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Workspace');
+const Channel = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Channel');
 
 /* Settings layout */
 const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings');
@@ -89,6 +90,11 @@ const routes = [
             path: '',
             name: 'workspace',
             component: TestWorkspace,
+          },
+          {
+            path: 'channel/:id',
+            name: 'channel',
+            component: Channel,
           },
         ],
       },

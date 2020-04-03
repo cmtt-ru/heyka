@@ -2,7 +2,7 @@
     <div
       class="list-item"
       v-if="matchesFilter"
-      :class="{'list-item--button': button, 'list-item--selected' : selected}"
+      :class="{'list-item--button': button}"
     >
     <slot></slot>
     </div>
