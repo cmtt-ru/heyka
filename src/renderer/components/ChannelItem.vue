@@ -73,14 +73,6 @@ export default {
     },
   },
 
-  methods: {
-    randomPadding() {
-      // eslint-disable-next-line no-magic-numbers
-      const num = (1 / (Math.random() * 10000));
-
-      return { 'padding-top': num + 'px' };
-    },
-  },
 };
 </script>
 
