@@ -67,6 +67,7 @@ export default {
 
       &--sidebar
         flex 0 0 200px
+        width 200px
 
       &--content
         flex 1 1 auto
