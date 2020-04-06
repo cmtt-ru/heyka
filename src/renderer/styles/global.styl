@@ -4,6 +4,7 @@
 *
   margin 0
   padding 0
+  min-width 0
 
 /**
  * Right way to disable text selection,
@@ -21,7 +22,8 @@ a:not([draggable=true]), img:not([draggable=true])
   -webkit-user-drag none
 
 a
-  color: var(--color-2); //! временно
+  color inherit
+  text-decoration none
 
 
 /**
@@ -31,6 +33,16 @@ a
   font-family Inter, sans-serif
   font-size 14px
   line-height 18px
+
+
+/**
+ * ! use in pair with dynamic "key" attr to trigger re-render
+ */
+.text-overflow
+  white-space nowrap
+  background-image -webkit-linear-gradient(180deg, transparent, transparent 10px, currentColor 30px)
+  -webkit-background-clip text
+  -webkit-text-fill-color transparent
 
 /**
  * Layout class generator

@@ -52,7 +52,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped> //? scoped или нет? пока убрал, чтобы не мешало в списке каналов
   .link
     display block
     padding 4px 8px
