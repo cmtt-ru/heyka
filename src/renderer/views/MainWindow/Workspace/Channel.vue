@@ -111,6 +111,8 @@ export default {
   methods: {
     /**
      * Dummy click handler
+     * @param {Object} user user
+     * @returns {void}
      */
     clickUserHandler(user) {
       console.log(user.name);
