@@ -1,7 +1,7 @@
 <template>
     <div class="user">
         <avatar class="user__avatar" :size="24" :onair="user.onair"></avatar>
-        <div :id="'nameNode_'+user.id" :key="user.name" class="user__name">{{user.name}}</div>
+        <div v-textfade :key="user.name" class="user__name">{{user.name}}</div>
         <div class="user__statuses">
             <svg-icon
                 v-for="icon in iconArray"
@@ -69,28 +69,6 @@ export default {
       return icons;
     },
 
-  },
-
-  methods: {
-    /**
-     * Decide if we should add custom fade text-overflow
-     * @returns {void}
-     */
-    isTextLong() { // TODO: move to custom directive
-      const name = document.getElementById('nameNode_' + this.user.id);
-
-      if (name.offsetWidth < name.scrollWidth) {
-        name.classList.add('text-overflow');
-      } else {
-        name.classList.remove('text-overflow');
-      }
-    },
-
-  },
-
-  mounted() {
-    this.isTextLong();
-    window.addEventListener('resize', this.isTextLong, false);
   },
 
 };
