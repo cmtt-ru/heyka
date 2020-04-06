@@ -51,7 +51,7 @@ function addStyles(el, stylesheet) {
  * @param {Object} el element
  * @returns {void}
  */
-function repainElement(el) {
+function reflowElement(el) {
   const paddingTop = el.style.paddingTop || getComputedStyle(el).paddingTop;
 
   // eslint-disable-next-line no-magic-numbers
@@ -77,7 +77,7 @@ export default {
     if (binding.value && binding.value === binding.oldValue) {
       return;
     }
-    repainElement(el);
+    reflowElement(el);
     elementCheck(el);
   },
   unbind: (el) => {
