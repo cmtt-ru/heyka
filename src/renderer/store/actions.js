@@ -4,21 +4,53 @@ import { mapKeys } from '@libs/arrays';
 export default {
 
   async initial({ commit, dispatch }) {
-    const workspaces = await API.workspace.getWorkspaces();
+    /**
+     * Get authenticated user
+     */
+    const authenticatedUser = await API.user.getAuthenticatedUser();
 
-    const selectedWorkspaceId = workspaces[0].id;
+    /**
+     * Authenticated user id
+     */
+    const userId = authenticatedUser.id;
 
-    const workspace = await API.workspace.getWorkspaceByID(selectedWorkspaceId);
+    if (userId) {
+      /**
+       * Get workspaces list
+       */
+      const workspaces = await API.workspace.getWorkspaces();
 
-    commit('workspaces/SET_COLLECTION', mapKeys(workspaces, 'id'));
+      /**
+       * Selected workspace id
+       * @todo: store & load from local store
+       */
+      const selectedWorkspaceId = workspaces[0].id;
 
-    commit('channels/SET_COLLECTION', mapKeys(workspace.channels, 'id'));
+      /**
+       * Get specific workspace data
+       */
+      const workspace = await API.workspace.getWorkspaceByID(selectedWorkspaceId);
 
-    commit('users/SET_COLLECTION', mapKeys(workspace.users, 'id'));
+      /**
+       * Selected channel id
+       * @todo: store & load from local store
+       */
+      const selectedChannelId = workspace.channels[0].id;
 
-    commit('me/SET_WORKSPACE_ID', selectedWorkspaceId);
+      commit('me/SET_USER_ID', userId);
 
-    return workspaces;
+      commit('workspaces/SET_COLLECTION', mapKeys(workspaces, 'id'));
+
+      commit('channels/SET_COLLECTION', mapKeys(workspace.channels, 'id'));
+
+      commit('users/SET_COLLECTION', mapKeys(workspace.users, 'id'));
+
+      commit('me/SET_WORKSPACE_ID', selectedWorkspaceId);
+
+      commit('me/SET_CHANNEL_ID', selectedChannelId);
+    } else {
+      console.error('AUTH REQUIRED');
+    }
   },
 
 };
