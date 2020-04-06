@@ -1,6 +1,5 @@
 <template>
-    <router-link to="#" :class="{'channel--active': channel.active}" class="channel">
-
+    <router-link :to="'/main-window/workspace/channel/'+channel.name" :class="{'channel--active': channel.active}" class="channel">
         <svg-icon v-if="!channel.talking" class="channel__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"></svg-icon>
         <svg-icon v-if="channel.talking" class="channel__type" name="channelOnAir" size="medium" animate>
           <channel-on-air></channel-on-air>
@@ -120,15 +119,6 @@ export default {
     pointer-events none
     transition opacity 0.2s linear
 
-  &--active //TODO: .router-link-active
-    background-color var(--item-bg-active)
-
-    &::after
-      opacity 1
-
-    &:hover
-      background-color var(--item-bg-active)
-
   &__type
     margin 4px 4px 0 4px
     display flex
@@ -171,4 +161,10 @@ export default {
       font-size 12px
       margin-left 4px
       color var(--text-1)
+
+.router-link-active
+  background-color var(--item-bg-active)
+
+  &::after
+    opacity 1
 </style>
