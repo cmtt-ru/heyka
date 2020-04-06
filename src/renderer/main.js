@@ -7,6 +7,7 @@ import themes from '@/themes';
 import API from '@api';
 import SvgIcon from '@components/SvgIcon.vue';
 import './filters/leonardo';
+import './directives';
 
 Vue.prototype.$themes = themes;
 Vue.prototype.$API = API;
