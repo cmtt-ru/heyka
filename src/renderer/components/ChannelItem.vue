@@ -8,7 +8,7 @@
         <div class="channel__content">
 
             <div class="channel__name-wrapper">
-              <div :key="channel.name" class="channel__name text-overflow">{{channel.name}}</div>
+              <div v-textfade="channel.name" class="channel__name">{{channel.name}}</div>
               <ui-button
                 v-show="channel.active"
                 :type="7"
@@ -134,11 +134,11 @@ export default {
   &__name
     font-style normal
     font-weight normal
-    width 140px
+    width 136px
 
   &__more
     color var(--icon-1)
-    margin-right 4px
+    margin 0 4px
 
   &__users
     height 12px
