@@ -8,8 +8,9 @@
     <br><br>
     <button @click="login()">Login</button>
     <br><br>
-    <button @click="getWorkspaces()">GetWorkspaces</button>
+    <button @click="loadInitialState()">Load initial state</button>
     <br><br>
+
     <button @click="openPushWindow()">Открыть пуш</button>
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
@@ -98,9 +99,6 @@ export default {
         console.log(err);
       }
     },
-    async getWorkspaces() {
-      this.$store.dispatch('workspaces/load');
-    },
     async openPushWindow() {
       // console.log(WindowManager.create);
       if (!pushWindow) {
@@ -122,6 +120,10 @@ export default {
     },
     trayToggle() {
       ipcRenderer.send('tray-manager-toggle');
+    },
+
+    async loadInitialState() {
+      await this.$store.dispatch('initial');
     },
   },
 
