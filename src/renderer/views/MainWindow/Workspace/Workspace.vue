@@ -127,7 +127,7 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
     ipcRenderer.send('page-rendered', 'Hello from Main!');
 
     this.$i18n.locale = 'ru';
