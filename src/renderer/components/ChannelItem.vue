@@ -104,15 +104,6 @@ export default {
     pointer-events none
     transition opacity 0.2s linear
 
-  &--active //TODO: .router-link-active
-    background-color var(--item-bg-active)
-
-    &::after
-      opacity 1
-
-    &:hover
-      background-color var(--item-bg-active)
-
   &__type
     margin 4px 4px 0 4px
     display flex
@@ -155,4 +146,10 @@ export default {
       font-size 12px
       margin-left 4px
       color var(--text-1)
+
+.router-link-active
+  background-color var(--item-bg-active)
+
+  &::after
+    opacity 1
 </style>
