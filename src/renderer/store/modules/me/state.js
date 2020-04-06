@@ -1,3 +1,9 @@
+import Store from 'electron-store';
+
+const meStore = new Store({
+  name: 'store-module-me',
+});
+
 const state = () => {
   return {
     /**
@@ -10,7 +16,7 @@ const state = () => {
      * Selected workspace id
      * @type {string}
      */
-    selectedWorkspaceId: '',
+    selectedWorkspaceId: meStore.get('selectedWorkspaceId'),
 
     /**
      * Selected channel id
