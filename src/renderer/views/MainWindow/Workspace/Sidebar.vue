@@ -2,17 +2,9 @@
   <div class="l-p-8">
 
     <div class="connected-channel" v-if="connectedChannel.name" @click="clickChannelHandler(connectedChannel)">
-       <channel-item :channel="connectedChannel">
-         <ui-button
-          slot="right-button"
-          :type="7"
-          class="connected-channel__button"
-          size="small"
-          height="16"
-          icon="more">
-        </ui-button>
-       </channel-item>
+       <channel-item @more="MoreHandler()" :channel="connectedChannel"/>
     </div>
+
     <div class="channel-header">
       <div class="channel-header__label l-ml-4">Channels</div>
       <ui-button :type="7" class="channel-header__add" @click.native="addRandomChannelHandler" size="small" icon="add"></ui-button>
@@ -29,7 +21,7 @@
         v-show="!channel.connected"
         button
       >
-       <channel-item :channel="channel"></channel-item>
+       <channel-item @more="MoreHandler()" :channel="channel"/>
       </list-item>
 
     </list>
@@ -145,7 +137,7 @@ export default {
     },
 
     /**
-     * Substitution for proper channel creation
+     * Dummy channel creation
      * @returns {void}
      */
     addRandomChannelHandler() {
@@ -168,6 +160,14 @@ export default {
       });
     },
 
+    /**
+     * Dummy popover creation
+     * @returns {void}
+     */
+    MoreHandler() {
+      console.log('more');
+    },
+
   },
 
 };
@@ -176,10 +176,6 @@ export default {
 <style lang="stylus" scoped>
 .connected-channel
   margin-bottom 8px
-
-  &__button
-    color var(--icon-1)
-    margin-right 4px
 
 .channel-header
   display flex
