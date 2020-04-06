@@ -4,24 +4,38 @@
         <svg-icon v-if="channel.talking" class="channel__type" name="channelOnAir" size="medium" animate>
           <channel-on-air></channel-on-air>
         </svg-icon>
+
         <div class="channel__content">
+
             <div class="channel__name-wrapper">
               <div :key="channel.name" class="channel__name text-overflow">{{channel.name}}</div>
-              <slot name="right-button"></slot>
+              <ui-button
+                v-show="channel.active"
+                :type="7"
+                class="channel__more"
+                size="small"
+                height="16"
+                @click.native="$emit('more')"
+                icon="more">
+              </ui-button>
             </div>
+
             <div v-show="channel.online.length" class="channel__users">
                 <div class="channel__users__avatars">
                   <avatar v-for="person in channel.online" :key="person.name" :size="12"></avatar>
                 </div>
                 <div v-if="extraUsers" class="channel__users__more">+{{extraUsers}}</div>
             </div>
+
         </div>
+
     </router-link>
 </template>
 
 <script>
 import Avatar from '@components/Avatar';
 import channelOnAir from '@assets/iconsAnimate/channelOnAir.vue';
+import UiButton from '@components/UiButton';
 
 const ICON_MAP = {
   public: 'channel',
@@ -35,6 +49,7 @@ export default {
   components: {
     Avatar,
     channelOnAir, // TODO: добавить и остальные анимированные иконки
+    UiButton,
   },
   props: {
     /**
@@ -108,10 +123,6 @@ export default {
     margin 4px 4px 0 4px
     display flex
 
-  &__content
-    display block
-    width 160px
-
   &__name-wrapper
     padding 3px 0
     display flex
@@ -124,6 +135,10 @@ export default {
     font-style normal
     font-weight normal
     width 140px
+
+  &__more
+    color var(--icon-1)
+    margin-right 4px
 
   &__users
     height 12px

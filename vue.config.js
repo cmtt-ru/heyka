@@ -14,6 +14,7 @@ module.exports = {
         '@static': path.resolve(__dirname, 'public'),
         '@': path.resolve(__dirname, 'src/renderer'),
         '@assets': path.resolve(__dirname, 'src/assets'),
+        '@styles': path.resolve(__dirname, 'src/renderer/styles'),
         '@icons': path.resolve(__dirname, 'src/renderer/components/icons'),
         '@views': path.resolve(__dirname, 'src/renderer/views'),
         '@components': path.resolve(__dirname, 'src/renderer/components'),
@@ -53,10 +54,9 @@ module.exports = {
       loaderOptions: {
         extract: true,
         spriteFilename: 'img/icons.[hash:8].svg', // or 'img/icons.svg' if filenameHashing == false
-        runtimeCompat: true,
       },
       pluginOptions: {
-        plainSprite: false,
+        plainSprite: true,
       },
     },
   },
