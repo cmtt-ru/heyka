@@ -1,7 +1,10 @@
 <template>
     <div class="user">
+
         <avatar class="user__avatar" :size="24" :onair="user.onair"></avatar>
+
         <div v-textfade :key="user.name" class="user__name">{{user.name}}</div>
+
         <div class="user__statuses">
             <svg-icon
                 v-for="icon in iconArray"
@@ -11,6 +14,7 @@
                 size="small"
             ></svg-icon>
         </div>
+
         <ui-button
             v-if="user.sharing"
             class="user__sharing"
@@ -18,6 +22,7 @@
             size="small"
             icon="cast">
         </ui-button>
+
     </div>
 </template>
 
