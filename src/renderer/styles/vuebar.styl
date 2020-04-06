@@ -1,0 +1,20 @@
+/**
+ * Custom Vuebar styles
+ */
+.vb > .vb-dragger
+  z-index 5
+  width 12px
+  right 0
+  display none
+
+.vb > .vb-dragger > .vb-dragger-styler
+  backface-visibility hidden
+  transform rotate3d(0,0,0,0)
+  background-color var(--scroll-bar)
+  margin 4px 4px 4px 0
+  border-radius 20px
+  height calc(100% - 8px)
+  display block
+
+.vb:hover > .vb-dragger
+  display block
