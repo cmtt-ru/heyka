@@ -5,7 +5,7 @@ export default {
    * @param {object} state – me module state
    * @return {string}
    */
-  selectedWorkspaceId: state => {
+  getSelectedWorkspaceId: state => {
     return state.selectedWorkspaceId;
   },
 };
