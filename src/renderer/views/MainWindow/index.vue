@@ -21,8 +21,6 @@ export default {
     });
 
     await this.$store.dispatch('initial');
-
-    console.log(this.$store.getters['channels/getChannels']);
   },
 };
 </script>
