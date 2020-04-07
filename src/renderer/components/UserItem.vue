@@ -64,7 +64,7 @@ export default {
       if (this.user.admin === true) {
         icons.push(ICON_MAP['admin']);
       }
-      if (this.user.mic === false) {
+      if (this.user.microphone === false) {
         icons.push(ICON_MAP['mic']);
       }
       if (this.user.headphones === false) {
