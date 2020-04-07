@@ -6,6 +6,8 @@ import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
 import DeepLink from '../shared/DeepLink/DeepLinkMain';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 console.time('init');
@@ -106,6 +108,17 @@ app.on('ready', async () => {
   // load splash screen (fast) and start loading main screen (not so fast)
   createLoadingScreen();
   createWindow();
+
+  /**
+   * Vue devtools chrome extension
+   */
+  if (isDevelopment) {
+    installExtension(VUEJS_DEVTOOLS)
+      .then(() => {})
+      .catch(err => {
+        console.log('Unable to install `vue-devtools`: \n', err);
+      });
+  }
 });
 
 app.on('before-quit', function () {

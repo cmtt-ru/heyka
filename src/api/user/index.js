@@ -1,3 +1,7 @@
-import getMediaState from './getMediaState';
+import setMediaState from './setMediaState';
+import getAuthenticatedUser from './getAuthenticatedUser';
 
-export default { getMediaState };
+export default {
+  setMediaState,
+  getAuthenticatedUser,
+};
