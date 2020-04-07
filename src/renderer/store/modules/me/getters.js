@@ -8,4 +8,8 @@ export default {
   getSelectedWorkspaceId: state => {
     return state.selectedWorkspaceId;
   },
+
+  getMediaState: state => {
+    return state.mediaState || {};
+  },
 };

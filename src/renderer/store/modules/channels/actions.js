@@ -1,10 +1,17 @@
+import API from '@api';
+
 export default {
 
-  action({ commit }) {
-    return new Promise((resolve, reject) => {
-      commit('SET_SOME', 1);
-      resolve();
-    });
+  async selectChannel({ commit }, id, mediaState) {
+    const channel = await API.channel.select(id, mediaState/* {
+      microphone: false,
+      speakers: false,
+      screen: true,
+      camera: true,
+      speaking: false,
+    } */);
+
+    return channel;
   },
 
 };
