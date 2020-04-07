@@ -1,60 +1,67 @@
 <template>
   <div class="l-p-8">
+    <br />
     Janus
-    <button @click="disconnectFromJanus">Disconnect</button>
+    <br />
+    <button @click="selectChannel">Select channel</button>
+    <br />
+    <button @click="unselectChannel">Unselect channel</button>
+    <br />
+    <audio ref="audio" autoplay />
   </div>
 </template>
 
 <script>
-import JanusWrapper from '@classes/janusWrapper.js';
+import JanusWrapper from '@classes/JanusWrapper.js';
 export default {
   name: 'Janus',
+  data() {
+    return {
+      janus: {
+        url: 'http://localhost:8088/janus',
+        workspaceToken: '4e9ba3c0ef6367ccde8a5e2f730486d818ee64d0b2f43f2b3e',
+        channelToken: 'd14cdb7799217049f5555af82fe749328bda9ae0bcc30fc708',
+        audioRoomId: 698975104980057,
+        videoRoomId: 4163988414424622,
+      },
+      janusWrapper: null,
+      userId: 'randomUserId',
+    };
+  },
   async created() {
     await JanusWrapper.init();
     this.log('JanusWrapper was initialized');
   },
-  data() {
-    return {
-      janusWrapper: null,
-    };
-  },
   methods: {
-    disconnectFromJanus() {
-      this.janusWrapper.disconnect();
+    async selectChannel() {
+      const janusWrapper = new JanusWrapper({
+        ...this.janus,
+        userId: this.userId,
+        debug: true,
+      });
+
+      this.janusWrapper = janusWrapper;
+
+      janusWrapper.on('connection-error', errorCode => {
+        this.log(`Connection error: ${errorCode}`);
+      });
+
+      janusWrapper.on('remote-audio-stream', stream => {
+        this.log('Attach audio stream to audio element');
+        JanusWrapper.attachMediaStream(this.$refs.audio, stream);
+      });
+
+      await janusWrapper.join();
+    },
+    unselectChannel() {
+      if (this.janusWrapper) {
+        this.janusWrapper.__disconnect();
+        this.janusWrapper = null;
+      }
     },
     log() {
       console.log('JANUS.VUE: ', ...arguments);
     },
-  },
-  async mounted() {
-    const janusServerUrl = 'http://localhost:8088/janus';
-    const janusAuthToken = '19902a60e5d85949bfbddede461717ee9b0501a3f630302f9a';
-    const janusWrapper = new JanusWrapper({
-      janusServerUrl,
-      janusAuthToken,
-      debug: true,
-    });
-
-    this.janusWrapper = janusWrapper;
-
-    janusWrapper.on('destroyed', () => {
-      this.log('Janus wrapper was destroyed');
-    });
-    janusWrapper.on('connection-error', (error) => {
-      this.log('Connection error', error);
-    });
-
-    try {
-      await janusWrapper.connect();
-    } catch (e) {
-      if (e === JanusWrapper.errors.AUTHORIZATION_ERROR) {
-        this.log('Handle authorization error');
-      } else if (e === JanusWrapper.errors.SERVER_DOWN) {
-        this.log('Handle server error');
-      } else if (e === JanusWrapper.errors.UNKNOW) {
-        this.log('Handle unknow error');
-      }
-    }
   },
 };
 </script>
