@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="'/main-window/workspace/channel/'+channel.name" :class="{'channel--active': channel.active}" class="channel">
+    <router-link :to="'/main-window/workspace/channel/'+channel.id" class="channel">
         <svg-icon v-if="!channel.talking" class="channel__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"></svg-icon>
         <svg-icon v-if="channel.talking" class="channel__type" name="channelOnAir" size="medium" animate>
           <channel-on-air></channel-on-air>
@@ -10,7 +10,7 @@
             <div class="channel__name-wrapper">
               <div v-textfade="channel.name" class="channel__name">{{channel.name}}</div>
               <ui-button
-                v-show="channel.active"
+                v-show="$route.params.id===channel.id"
                 :type="7"
                 class="channel__more"
                 size="small"
@@ -20,9 +20,9 @@
               </ui-button>
             </div>
 
-            <div v-show="channel.online.length" class="channel__users">
+            <div v-show="channel.users.length" class="channel__users">
                 <div class="channel__users__avatars">
-                  <avatar v-for="person in channel.online" :key="person.name" :size="12"></avatar>
+                  <avatar v-for="person in channel.users" :key="person.name" :size="12"></avatar>
                 </div>
                 <div v-if="extraUsers" class="channel__users__more">+{{extraUsers}}</div>
             </div>
@@ -68,10 +68,10 @@ export default {
      * @returns {String} name of correct icon
      */
     dynamicIcon() {
-      if ({}.hasOwnProperty.call(ICON_MAP, this.channel.type)) {
-        return ICON_MAP[this.channel.type];
+      if (this.channel.isPrivate) { // TODO: lifespan
+        return ICON_MAP['private'];
       } else {
-        return ICON_MAP.default;
+        return ICON_MAP['public'];
       }
     },
 
@@ -80,12 +80,16 @@ export default {
      * @returns {Number} x in "+x"
      */
     extraUsers() {
-      if (this.channel.online.length > MAX_USERS) {
-        return this.channel.online.length - MAX_USERS;
+      if (this.channel.users.length > MAX_USERS) {
+        return this.channel.users.length - MAX_USERS;
       }
 
       return false;
     },
+  },
+
+  created() {
+
   },
 
 };

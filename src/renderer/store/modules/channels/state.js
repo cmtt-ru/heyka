@@ -41,6 +41,11 @@ const state = () => {
          * @type {string}
          */
         updatedAt: '',
+        /**
+         * Channel users
+         * @type {Array}
+         */
+        users: [],
       },
 
     },

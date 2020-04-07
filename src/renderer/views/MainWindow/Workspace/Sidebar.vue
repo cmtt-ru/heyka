@@ -1,7 +1,7 @@
 <template>
   <div class="l-p-8">
 
-    <div class="connected-channel" v-if="connectedChannel.name" @click="clickChannelHandler(connectedChannel)">
+    <div class="connected-channel" v-if="connectedChannel.name">
        <channel-item @more="MoreHandler()" :channel="connectedChannel"/>
     </div>
 
@@ -10,9 +10,8 @@
       <ui-button :type="7" class="channel-header__add" @click.native="addRandomChannelHandler" size="small" icon="add"></ui-button>
     </div>
 
-    <list :filterBy="''">
+    <list :filterBy="''" v-if="sortedChannels.length">
       <list-item
-        @click.native="clickChannelHandler(channel)"
         @dblclick.native="dbclickChannelHandler(channel)"
         v-for="channel in sortedChannels"
         :key="channel.name"
@@ -44,44 +43,9 @@ export default {
   },
   data() {
     return {
-      channels: [
-        {
-          name: 'heyka-dev',
-          type: 'public',
-          talking: true,
-          active: false,
-          online: [
-            { name: 'Ivan' },
-            { name: 'Mika' },
-            { name: 'Eugene' },
-          ],
-        },
-        {
-          name: 'Designers',
-          type: 'public',
-          active: false,
-          online: [],
-        },
-        {
-          name: 'Chit-chat with long name',
-          type: 'private',
-          active: false,
-          online: [
-            { name: 'Ivan' },
-            { name: 'Mika' },
-            { name: 'Eugene' },
-            { name: 'Ivan2' },
-            { name: 'Mika2' },
-            { name: 'Eugene2' },
-            { name: 'Ivan3' },
-            { name: 'Mika3' },
-            { name: 'Eugene3' },
-          ],
-        },
-      ],
       connectedChannel: {
         name: '',
-        online: [],
+        users: [],
       },
     };
   },
@@ -93,34 +57,14 @@ export default {
      * @returns {Array} array of sorted channels
      */
     sortedChannels() {
-      const ch = [ ...this.channels ];
+      console.log(this.$store.getters['channels/getChannels']);
 
-      return ch.sort((a, b) => {
-        if (a.name.toLowerCase().trim() < b.name.toLowerCase().trim()) {
-          return -1;
-        }
-        if (a.name.toLowerCase().trim() > b.name.toLowerCase().trim()) {
-          return 1;
-        }
-
-        return 0;
-      });
+      return this.$store.getters['channels/getChannels'];
     },
 
   },
 
   methods: {
-    /**
-     * Make Channel active and route to its info
-     * @param {Object} channel selected channel
-     * @returns {void}
-     */
-    clickChannelHandler(channel) { // TODO: добавить роутинг
-      for (const ch of this.channels) {
-        ch.active = false;
-      }
-      this.$set(channel, 'active', true);
-    },
 
     /**
      * Connect to channel
@@ -149,14 +93,14 @@ export default {
       for (let i = 0; i < length; i++) {
         channelName += characters.charAt(Math.floor(Math.random() * characters.length));
       }
-      const chtypes = ['public', 'private'];
-      const channelType = chtypes[Math.floor(Math.random() * chtypes.length)];
+      // eslint-disable-next-line no-magic-numbers
+      const channelType = (Math.random() < 0.5);
 
       this.channels.push({
         name: channelName,
         type: channelType,
         active: false,
-        online: [],
+        users: [],
       });
     },
 
@@ -167,6 +111,10 @@ export default {
     MoreHandler() {
       console.log('more');
     },
+
+  },
+
+  created() {
 
   },
 
