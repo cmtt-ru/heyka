@@ -22,7 +22,7 @@
 
             <div v-show="channel.users.length" class="channel__users">
                 <div class="channel__users__avatars">
-                  <avatar v-for="person in channel.users" :key="person.name" :size="12"></avatar>
+                  <avatar v-for="person in users" :key="person.name" :image="person.avatar" :size="12"></avatar>
                 </div>
                 <div v-if="extraUsers" class="channel__users__more">+{{extraUsers}}</div>
             </div>
@@ -57,12 +57,16 @@ export default {
      */
     channel: Object,
   },
-  data() {
-    return {
 
-    };
-  },
   computed: {
+    /**
+     * Get users array
+     * @returns {Array} array of users
+     */
+    users() {
+      return this.$store.getters.getUsersByChannel(this.channel.id);
+    },
+
     /**
      * Show icon corresponding to channel status
      * @returns {String} name of correct icon

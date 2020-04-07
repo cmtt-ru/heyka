@@ -38,4 +38,12 @@ export default {
     }
   },
 
+  async selectChannel({ commit, getters }, id) {
+    const channel = await API.channel.select(id, getters['me/getMediaState']);
+
+    commit('me/SET_CHANNEL_ID', id);
+
+    return channel;
+  },
+
 };

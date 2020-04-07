@@ -71,13 +71,16 @@ export default {
      * @param {Object} channel selected channel
      * @returns {void}
      */
-    dbclickChannelHandler(channel) { // TODO: добавить коннект к сокетам и всё такое
+    async dbclickChannelHandler(channel) { // TODO: добавить коннект к сокетам и всё такое
       console.log('double click');
-      for (const ch of this.channels) {
-        ch.connected = false;
-      }
-      this.$set(channel, 'connected', true);
-      this.connectedChannel = channel;
+      const cha = await this.$store.dispatch('selectChannel', channel.id);
+
+      console.log(cha);
+      // for (const ch of this.channels) {
+      // ch.connected = false;
+      // }
+      // this.$set(channel, 'connected', true);
+      // this.connectedChannel = channel;
     },
 
     /**

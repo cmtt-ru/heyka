@@ -3,7 +3,7 @@ import { sortAny } from '@libs/arrays';
 export default {
 
   /**
-   * Ger sorted channels
+   * Get sorted channels
    *
    * @param {object} state – channels module state
    * @return {array}
