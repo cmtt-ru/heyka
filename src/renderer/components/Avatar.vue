@@ -12,25 +12,22 @@
 </template>
 
 <script>
-export default {
-  data: function () {
-    return {
-      statusColors: {
-        online: {
-          'background-color': 'var(--color-1)',
-          'border-color': 'var(--color-1)',
-        },
-        idle: {
-          'background-color': 'var(--color-3)',
-          'border-color': 'var(--color-3)',
-        },
-        offline: {
-          'background-color': 'transparent',
-          'border-color': 'var(--color-4)',
-        },
-      },
-    };
+const STATUS_COLORS = {
+  online: {
+    'background-color': 'var(--color-1)',
+    'border-color': 'var(--color-1)',
   },
+  idle: {
+    'background-color': 'var(--color-3)',
+    'border-color': 'var(--color-3)',
+  },
+  offline: {
+    'background-color': 'transparent',
+    'border-color': 'var(--color-4)',
+  },
+};
+
+export default {
 
   props: {
     size: {
@@ -68,7 +65,7 @@ export default {
       };
     },
     statusStyle() {
-      return this.statusColors[this.status] || null;
+      return STATUS_COLORS[this.status] || null;
     },
   },
 
