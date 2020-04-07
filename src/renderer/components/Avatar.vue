@@ -4,14 +4,20 @@
   :style="containerSize"
 >
     <div class="avatar__image" :style="avatarImage"></div>
+
     <div v-if="statusStyle" class="avatar__status">
         <div :style="statusStyle" class="avatar__status__dot"></div>
     </div>
+
     <div v-if="onair" class="avatar__onair"></div>
 </div>
 </template>
 
 <script>
+
+/**
+ * status-to-color map (small circle in bottom right corner)
+ */
 const STATUS_COLORS = {
   online: {
     'background-color': 'var(--color-1)',
@@ -30,18 +36,34 @@ const STATUS_COLORS = {
 export default {
 
   props: {
+
+    /**
+     * Image size
+     */
     size: {
       type: [ Number ],
       default: 24,
     },
+
+    /**
+     * Image url
+     */
     image: {
       type: [ String ],
-      default: 'https://leonardo.osnova.io/51cf1edf-2288-5e45-f473-78568fa53fa8/',
+      default: 'https://leonardo.osnova.io/51cf1edf-2288-5e45-f473-78568fa53fa8/', // TODO: remove after img upload is set up
     },
+
+    /**
+     * online status (small circle in bottom right corner)
+     */
     status: {
       type: [ String ],
       default: null,
     },
+
+    /**
+     * If person is talking, we need to draw green circle around avatar.
+     */
     onair: {
       type: [ Boolean ],
       default: false,
@@ -49,6 +71,11 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Set img as bg-image in css
+     * @returns {Object} corresponding background-image
+     */
     avatarImage() {
       if (this.image) {
         return {
@@ -58,12 +85,22 @@ export default {
 
       return {};
     },
+
+    /**
+     * Set img size in css
+     * @returns {Object} height and width
+     */
     containerSize() {
       return {
         height: this.size + 'px',
         width: this.size + 'px',
       };
     },
+
+    /**
+     * Set status-circle color
+     * @returns {Object} background-color and border-color
+     */
     statusStyle() {
       return STATUS_COLORS[this.status] || null;
     },
