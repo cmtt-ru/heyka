@@ -59,7 +59,7 @@ export default {
     },
 
     /**
-     * Return's selected channel
+     * Returns selected channel
      * @returns {object} – channel
      */
     selectedChannel() {

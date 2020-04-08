@@ -46,4 +46,12 @@ export default {
     return channel;
   },
 
+  async unselectChannel({ commit, getters }, id) {
+    const channel = await API.channel.unselect(id);
+
+    commit('me/SET_CHANNEL_ID', null);
+
+    return channel;
+  },
+
 };
