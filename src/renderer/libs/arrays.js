@@ -17,6 +17,22 @@ export function mapKeys(array, key) {
 }
 
 /**
+ * Convert array of object into object with specific key
+ *
+ * @param {object} obj – source obj
+ * @return {object}
+ */
+export function flattenObject(obj) {
+  const array = [];
+
+  for (const id in obj) {
+    array.push(obj[id]);
+  }
+
+  return array;
+}
+
+/**
  * Sort function than can sort by options:
  *   key: 'anyKey'
  *   type: 'string' | 'number' | 'date'

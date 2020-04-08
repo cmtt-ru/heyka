@@ -43,7 +43,7 @@
         :filterKey="user.name"
         button
       >
-      <user-item :user="user"></user-item>
+      <channel-user-item :user="user"></channel-user-item>
       </list-item>
 
     </list>
@@ -53,7 +53,7 @@
 
 <script>
 import { List, ListItem } from '@components/List';
-import UserItem from '@components/UserItem';
+import ChannelUserItem from '@components/ChannelUserItem';
 import UiButton from '@components/UiButton';
 import channelOnAir from '@assets/iconsAnimate/channelOnAir.vue';
 
@@ -68,7 +68,7 @@ export default {
   components: {
     List,
     ListItem,
-    UserItem,
+    ChannelUserItem,
     UiButton,
     channelOnAir, // TODO: добавить и остальные анимированные иконки
   },
