@@ -92,13 +92,17 @@ export default {
     },
 
     /**
-     * Returns channel
+     * Returns current channel
      * @returns {object} – channel
      */
     channel() {
       return this.$store.getters['channels/getChannelById'](this.channelId);
     },
 
+    /**
+     * Determine if we are connected to current channel or not
+     * @returns {boolean}
+     */
     isConnected() {
       return this.$store.getters['me/getSelectedChannelId'] === this.channelId;
     },
@@ -153,10 +157,6 @@ export default {
     moreHandler() {
       console.log('more');
     },
-  },
-
-  created() {
-
   },
 
 };

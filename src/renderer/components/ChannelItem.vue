@@ -10,7 +10,7 @@
             <div class="channel__name-wrapper">
               <div v-textfade="channel.name" class="channel__name">{{channel.name}}</div>
               <ui-button
-                v-show="$route.params.id===channel.id"
+                v-show="isSelected"
                 :type="7"
                 class="channel__more"
                 size="small"
@@ -90,10 +90,10 @@ export default {
 
       return false;
     },
-  },
 
-  created() {
-
+    isSelected() {
+      return this.$route.params.id === this.channel.id;
+    },
   },
 
 };

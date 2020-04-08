@@ -3,6 +3,11 @@ import { mapKeys } from '@libs/arrays';
 
 export default {
 
+  /**
+   * Initialize store and app state
+   * @param {object} context – store context
+   * @return {void}
+   */
   async initial({ commit, dispatch, getters }) {
     /** Get authenticated user */
     const authenticatedUser = await API.user.getAuthenticatedUser();
@@ -13,8 +18,8 @@ export default {
     if (userId) {
       /** Get workspaces list */
       /**
-       * @todo: Предусмотреть, что воркспейсов может не быть.
-       *        Перекинуть юзера на веб страницу где можно создать воркспейс
+       * todo: Предусмотреть, что воркспейсов может не быть.
+       *       Перекинуть юзера на веб страницу где можно создать воркспейс
        */
       const workspaces = await API.workspace.getWorkspaces();
 
@@ -38,6 +43,12 @@ export default {
     }
   },
 
+  /**
+   * Select (join) channel
+   * @param {object} context – store context
+   * @param {string} id – channel id
+   * @return {object} selected channel
+   */
   async selectChannel({ commit, getters }, id) {
     const channel = await API.channel.select(id, getters['me/getMediaState']);
 
@@ -46,7 +57,13 @@ export default {
     return channel;
   },
 
-  async unselectChannel({ commit, getters }, id) {
+  /**
+   * Unselect (join) channel
+   * @param {object} context – store context
+   * @param {string} id – channel id
+   * @return {object} unselected channel
+   */
+  async unselectChannel({ commit }, id) {
     const channel = await API.channel.unselect(id);
 
     commit('me/SET_CHANNEL_ID', null);
