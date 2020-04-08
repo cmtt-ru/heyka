@@ -25,13 +25,7 @@ import { getAccessToken } from './accessToken';
   bindErrorEvents();
 
   /** User select/unselect channel */
-  client.on(eventNames.userSelectedChannel, data => {
-    console.log(data);
-  });
-
-  client.on(eventNames.userUnselectedChannel, data => {
-    console.log(data);
-  });
+  bindChannelEvents();
 })();
 
 /**
@@ -80,5 +74,42 @@ function bindErrorEvents() {
 
   client.on('socket-api-error', error => {
     console.error('socket-api-error', error.event, error.message);
+  });
+}
+
+/**
+ * Bind channel events
+ *
+ * @returns {void}
+ */
+function bindChannelEvents() {
+  const mutationTimeout = 100;
+
+  let mutationTimer;
+  let unselectData = null;
+
+  /** Select channel */
+  client.on(eventNames.userUnselectedChannel, data => {
+    unselectData = data;
+
+    mutationTimer = setTimeout(() => {
+      unselectData = null;
+
+      store.commit('me/SET_CHANNEL_ID', null);
+      store.commit('channels/REMOVE_USER', data);
+    }, mutationTimeout);
+  });
+
+  /** Unselect channel */
+  client.on(eventNames.userSelectedChannel, data => {
+    clearTimeout(mutationTimer);
+
+    if (unselectData) {
+      store.commit('channels/REMOVE_USER', unselectData);
+      unselectData = null;
+    }
+
+    store.commit('channels/ADD_USER', data);
+    store.commit('me/SET_CHANNEL_ID', data.channelId);
   });
 }

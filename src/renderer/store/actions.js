@@ -50,11 +50,7 @@ export default {
    * @return {object} selected channel
    */
   async selectChannel({ commit, getters }, id) {
-    const channel = await API.channel.select(id, getters['me/getMediaState']);
-
-    commit('me/SET_CHANNEL_ID', id);
-
-    return channel;
+    return API.channel.select(id, getters['me/getMediaState']);
   },
 
   /**
@@ -64,11 +60,7 @@ export default {
    * @return {object} unselected channel
    */
   async unselectChannel({ commit }, id) {
-    const channel = await API.channel.unselect(id);
-
-    commit('me/SET_CHANNEL_ID', null);
-
-    return channel;
+    return API.channel.unselect(id);
   },
 
 };
