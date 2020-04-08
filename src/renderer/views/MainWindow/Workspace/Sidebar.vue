@@ -15,12 +15,27 @@
         @dblclick.native="dbclickChannelHandler(channel)"
         v-for="channel in sortedChannels"
         :key="channel.name"
-        :active="channel.active"
         :filterKey="channel.name"
-        v-show="!channel.connected"
         button
       >
        <channel-item @more="moreHandler()" :channel="channel"/>
+      </list-item>
+
+    </list>
+
+    <div class="channel-header">
+      <div class="channel-header__label l-ml-4">Users</div>
+      <ui-button :type="7" class="channel-header__add" @click.native="addUserHandler" size="small" icon="add"></ui-button>
+    </div>
+
+    <list :filterBy="''" v-if="sortedUsers.length">
+      <list-item
+        v-for="user in sortedUsers"
+        :key="user.name"
+        :filterKey="user.name"
+        button
+      >
+       <sidebar-user-item @more="moreHandler()" :user="user"/>
       </list-item>
 
     </list>
@@ -32,6 +47,7 @@
 import ChannelItem from '@components/ChannelItem';
 import { List, ListItem } from '@components/List';
 import UiButton from '@components/UiButton';
+import SidebarUserItem from '@components/SidebarUserItem';
 
 export default {
   components: {
@@ -39,6 +55,7 @@ export default {
     ListItem,
     ChannelItem,
     UiButton,
+    SidebarUserItem,
   },
 
   data() {
@@ -56,6 +73,16 @@ export default {
       return this.$store.getters['channels/getChannels'].filter(channel => {
         return !(this.selectedChannel && channel.id === this.selectedChannel.id);
       });
+    },
+
+    /**
+     * Sort users by online status and name
+     * @returns {array} – array of sorted users
+     */
+    sortedUsers() {
+      const users = this.$store.getters['users/getAllUsers'];
+
+      return users;
     },
 
     /**
@@ -86,6 +113,14 @@ export default {
      */
     createChannelHandler() {
       console.log('Create new channel handler');
+    },
+
+    /**
+     * Show add-user pseudo-popup
+     * @returns {void}
+     */
+    addUserHandler() {
+      console.log('Add new user handler');
     },
 
     /**

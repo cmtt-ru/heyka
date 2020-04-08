@@ -3,7 +3,7 @@
   class="avatar"
   :style="containerSize"
 >
-    <div class="avatar__image" :style="avatarImage"></div>
+    <img loading="lazy" class="avatar__image" :src="avatarImage"/>
 
     <div v-if="statusStyle" class="avatar__status">
         <div :style="statusStyle" class="avatar__status__dot"></div>
@@ -50,7 +50,7 @@ export default {
      */
     image: {
       type: [ String ],
-      default: 'https://leonardo.osnova.io/51cf1edf-2288-5e45-f473-78568fa53fa8/', // TODO: remove after img upload is set up
+      default: null,
     },
 
     /**
@@ -78,9 +78,7 @@ export default {
      */
     avatarImage() {
       if (this.image) {
-        return {
-          'background-image': `url("${this.$options.filters.formImageUrl(this.image, this.size)}")`,
-        };
+        return this.$options.filters.formImageUrl(this.image, this.size); // TODO: поставить таймаут и перескачивание, если '429 Too many requests'
       }
 
       return {};
@@ -114,12 +112,13 @@ export default {
         position relative
 
         &__image
+            display block
             width 100%
             height 100%
-            background-color var(--text-0)
-            background-position center
-            background-size cover
+            background-image: url("data:image/svg+xml;utf8,<svg version='1.1' id='L9' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 100 100' enable-background='new 0 0 0 0' xml:space='preserve'> <path fill='rgba(0,0,0,0.5)' d='M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50'>       <animateTransform attributeName='transform' attributeType='XML' type='rotate' dur='1s' from='0 50 50' to='360 50 50' repeatCount='indefinite'/></path></svg>");
             background-repeat no-repeat
+            background-size: 200%;
+            background-position center
             border-radius 50%
 
         &__status
