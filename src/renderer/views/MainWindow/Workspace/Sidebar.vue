@@ -1,13 +1,13 @@
 <template>
   <div class="l-p-8">
 
-    <div class="connected-channel" v-if="connectedChannel.name">
-       <channel-item @more="MoreHandler()" :channel="connectedChannel"/>
+    <div class="connected-channel" v-if="selectedChannel">
+       <channel-item @more="moreHandler()" :channel="selectedChannel"/>
     </div>
 
     <div class="channel-header">
       <div class="channel-header__label l-ml-4">Channels</div>
-      <ui-button :type="7" class="channel-header__add" @click.native="addRandomChannelHandler" size="small" icon="add"></ui-button>
+      <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" icon="add"></ui-button>
     </div>
 
     <list :filterBy="''" v-if="sortedChannels.length">
@@ -20,7 +20,7 @@
         v-show="!channel.connected"
         button
       >
-       <channel-item @more="MoreHandler()" :channel="channel"/>
+       <channel-item @more="moreHandler()" :channel="channel"/>
       </list-item>
 
     </list>
@@ -39,82 +39,62 @@ export default {
     ListItem,
     ChannelItem,
     UiButton,
-
   },
+
   data() {
     return {
-      connectedChannel: {
-        name: '',
-        users: [],
-      },
+
     };
   },
 
   computed: {
-
     /**
      * Sort channels by name
-     * @returns {Array} array of sorted channels
+     * @returns {array} – array of sorted channels
      */
     sortedChannels() {
-      console.log(this.$store.getters['channels/getChannels']);
-
-      return this.$store.getters['channels/getChannels'];
+      return this.$store.getters['channels/getChannels'].filter(channel => {
+        return !(this.selectedChannel && channel.id === this.selectedChannel.id);
+      });
     },
 
+    /**
+     * Return's selected channel
+     * @returns {object} – channel
+     */
+    selectedChannel() {
+      const selectedChannelId = this.$store.getters['me/getSelectedChannelId'];
+
+      return this.$store.getters['channels/getChannelById'](selectedChannelId);
+    },
   },
 
   methods: {
-
     /**
      * Connect to channel
      * @param {Object} channel selected channel
      * @returns {void}
      */
-    async dbclickChannelHandler(channel) { // TODO: добавить коннект к сокетам и всё такое
-      console.log('double click');
-      const cha = await this.$store.dispatch('selectChannel', channel.id);
-
-      console.log(cha);
-      // for (const ch of this.channels) {
-      // ch.connected = false;
-      // }
-      // this.$set(channel, 'connected', true);
-      // this.connectedChannel = channel;
+    async dbclickChannelHandler(channel) {
+      // TODO: добавить коннект к сокетам и всё такое
+      await this.$store.dispatch('selectChannel', channel.id);
     },
 
     /**
-     * Dummy channel creation
+     * Show channel creation pseudo-popup
      * @returns {void}
      */
-    addRandomChannelHandler() {
-      // eslint-disable-next-line no-magic-numbers
-      const length = Math.floor(Math.random() * (17)) + 8;
-      let channelName = '';
-      const characters = 'aaaabcddeeeeeefgihhhiiikllmnnnooooprrrssstttttuwy     ';
-
-      for (let i = 0; i < length; i++) {
-        channelName += characters.charAt(Math.floor(Math.random() * characters.length));
-      }
-      // eslint-disable-next-line no-magic-numbers
-      const channelType = (Math.random() < 0.5);
-
-      this.channels.push({
-        name: channelName,
-        type: channelType,
-        active: false,
-        users: [],
-      });
+    createChannelHandler() {
+      console.log('Create new channel handler');
     },
 
     /**
      * Dummy popover creation
      * @returns {void}
      */
-    MoreHandler() {
+    moreHandler() {
       console.log('more');
     },
-
   },
 
   created() {

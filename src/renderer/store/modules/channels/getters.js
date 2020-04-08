@@ -18,4 +18,14 @@ export default {
     ]));
   },
 
+  /**
+   * Get channel by id
+   *
+   * @param {object} state – channels module state
+   * @return {object}
+   */
+  getChannelById: state => id => {
+    return state.collection[id];
+  },
+
 };

@@ -7,9 +7,8 @@ import getters from './getters';
 
 const debug = process.env.NODE_ENV !== 'production';
 
-console.log(modules);
-
 Vue.use(Vuex);
+
 const store = new Vuex.Store({
   modules,
   actions,
