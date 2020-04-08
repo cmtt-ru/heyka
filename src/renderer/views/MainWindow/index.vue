@@ -11,7 +11,7 @@ export default {
       deepLink: {},
     };
   },
-  async created() {
+  created() {
     this.deepLink = new DeepLinkRenderer({
       invite: 'main-window/signinbylink',
       login: 'main-window/login',
@@ -20,7 +20,7 @@ export default {
       d: 'main-window/workspace',
     });
 
-    await this.$store.dispatch('initial');
+    this.$store.dispatch('initial');
   },
 };
 </script>

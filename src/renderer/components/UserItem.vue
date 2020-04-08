@@ -1,7 +1,7 @@
 <template>
     <div class="user">
 
-        <avatar class="user__avatar" :size="24" :onair="user.onair"></avatar>
+        <avatar class="user__avatar" :image="user.avatar" :size="24" :onair="user.speaking"></avatar>
 
         <div v-textfade :key="user.name" class="user__name">{{user.name}}</div>
 
@@ -16,7 +16,7 @@
         </div>
 
         <ui-button
-            v-if="user.sharing"
+            v-if="user.screen"
             class="user__sharing"
             :type="7"
             size="small"
@@ -61,13 +61,13 @@ export default {
     iconArray() {
       const icons = [];
 
-      if (this.user.admin === true) {
+      if (this.user.role === 'admin') {
         icons.push(ICON_MAP['admin']);
       }
-      if (this.user.mic === false) {
+      if (this.user.microphone === false) {
         icons.push(ICON_MAP['mic']);
       }
-      if (this.user.headphones === false) {
+      if (this.user.speakers === false) {
         icons.push(ICON_MAP['headphones']);
       }
 

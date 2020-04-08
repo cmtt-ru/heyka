@@ -1,10 +1,5 @@
-export default {
+// import API from '@api';
 
-  action({ commit }) {
-    return new Promise((resolve, reject) => {
-      commit('SET_SOME', 1);
-      resolve();
-    });
-  },
+export default {
 
 };

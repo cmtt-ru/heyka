@@ -3,7 +3,7 @@ import { sortAny } from '@libs/arrays';
 export default {
 
   /**
-   * Ger sorted channels
+   * Get sorted channels
    *
    * @param {object} state – channels module state
    * @return {array}
@@ -16,6 +16,16 @@ export default {
         order: 'asc',
       },
     ]));
+  },
+
+  /**
+   * Get channel by id
+   *
+   * @param {object} state – channels module state
+   * @return {object}
+   */
+  getChannelById: state => id => {
+    return state.collection[id];
   },
 
 };
