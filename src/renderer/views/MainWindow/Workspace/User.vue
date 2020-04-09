@@ -4,6 +4,7 @@
       <div class="user">
         <avatar class="user__avatar" :key="user.avatar" :image="user.avatar" :size="40"></avatar>
         <div v-textfade="user.name" class="user__name">{{user.name}}</div>
+        <!-- <div>TODO: user role</div> -->
         <div :style="statusStyle" class="user__status"></div>
         <ui-button
             :type="7"
@@ -33,14 +34,14 @@
         </ui-button>
       </div>
 
-      <div class="user-email">
-        <div class="user-email__title">Local time</div>
-        <div class="user-email__address">{{time}}</div>
+      <div class="user-info">
+        <div class="user-info__title">Local time</div>
+        <div class="user-info__content">{{time}}</div>
       </div>
 
-      <div class="user-email">
-        <div class="user-email__title">Email</div>
-        <div class="user-email__address">{{user.email}}</div>
+      <div class="user-info">
+        <div class="user-info__title">Email</div>
+        <div class="user-info__content user-info__content--email">{{user.email}}</div>
       </div>
   </div>
 
@@ -104,8 +105,6 @@ export default {
      * @returns {object} – user
      */
     user() {
-      console.log(this.$store.getters['users/getUserById'](this.userId));
-
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
@@ -175,6 +174,7 @@ export default {
 
   &__avatar
     flex-shrink 0
+    flex-grow 0
 
   &__name
     margin-left 12px
@@ -191,10 +191,12 @@ export default {
     border: 2px solid
     margin 0 8px
     flex-shrink 0
+    flex-grow 0
 
   &__more
     margin-left auto
     flex-shrink 0
+    flex-grow 0
     margin-top -26px
     color var(--icon-1)
 
@@ -204,15 +206,17 @@ export default {
 .icon-in-button
   margin 0 4px
 
-.user-email
+.user-info
   margin-top 20px
 
   &__title
     font-size 12px
     color var(--text-1)
 
-  &__address
+  &__content
     margin-top 4px
-    user-select all
+
+    &--email
+      user-select all
 
 </style>

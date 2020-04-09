@@ -35,6 +35,11 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Return true if this user is currently offline
+     * @returns {boolean}
+     */
     isOffline() {
       return this.user.onlineStatus === 'offline';
     },
