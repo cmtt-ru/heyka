@@ -6,6 +6,7 @@
         <div v-textfade :key="user.name" class="user__name">{{user.name}}</div>
 
         <ui-button
+            v-show="isSelected"
             :type="7"
             class="user__more"
             size="small"
@@ -36,6 +37,14 @@ export default {
   computed: {
     isOffline() {
       return this.user.onlineStatus === 'offline';
+    },
+
+    /**
+     * Return true if this user's page is currently opened
+     * @returns {boolean}
+     */
+    isSelected() {
+      return this.$route.params.id === this.user.id;
     },
   },
 

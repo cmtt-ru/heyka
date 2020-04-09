@@ -1,13 +1,13 @@
 <template>
-  <div class="l-p-8">
+  <div id="channels" class="l-p-8">
 
     <div class="connected-channel" v-if="selectedChannel">
        <channel-item @more="moreHandler()" :channel="selectedChannel"/>
     </div>
 
     <div class="channel-header">
-      <div class="channel-header__label l-ml-4">Channels</div>
-      <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" icon="add"></ui-button>
+      <a href="#channels" class="channel-header__label l-ml-4">Channels</a>
+      <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
     <list :filterBy="''" v-if="sortedChannels.length">
@@ -18,14 +18,15 @@
         :filterKey="channel.name"
         button
       >
-       <channel-item @more="moreHandler()" :channel="channel"/>
+       <channel-item @more="moreHandler()" v-show="!selectedChannel || (channel.id !== selectedChannel.id)" :channel="channel"/>
       </list-item>
 
     </list>
 
-    <div class="channel-header">
-      <div class="channel-header__label l-ml-4">Users</div>
-      <ui-button :type="7" class="channel-header__add" @click.native="addUserHandler" size="small" icon="add"></ui-button>
+    <div id="user" class="user-ancor"></div>
+    <div class="channel-header user-header">
+      <a href="#user" class="channel-header__label l-ml-4">Users</a>
+      <ui-button :type="7" class="channel-header__add" @click.native="addUserHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
     <list :filterBy="''" v-if="sortedUsers.length">
@@ -70,9 +71,9 @@ export default {
      * @returns {array} – array of sorted channels
      */
     sortedChannels() {
-      return this.$store.getters['channels/getChannels'].filter(channel => {
+      return this.$store.getters['channels/getChannels']/* .filter(channel => {
         return !(this.selectedChannel && channel.id === this.selectedChannel.id);
-      });
+      }) */;
     },
 
     /**
@@ -140,16 +141,26 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.connected-channel
-  margin-bottom 8px
 
 .channel-header
   display flex
+  background-color var(--app-bg)
   flex-direction row
   justify-content space-between
   align-items center
   color var(--text-1)
-  margin-bottom 2px
   font-size 12px
+  position sticky
+  top 0
+  z-index 1
+  padding 5px 4px
+  margin-top 7px
+
+.user-header
+  top 27px
+  bottom 0
+
+.user-ancor
+  transform translateY(-25px)
 
 </style>
