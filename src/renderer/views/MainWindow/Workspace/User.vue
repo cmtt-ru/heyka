@@ -14,16 +14,29 @@
         </ui-button>
       </div>
 
-      <ui-button :type="1" :wide="true" class="user-action">
-        Private talk
-      </ui-button>
-      <ui-button v-if="selectedChannelName" :type="3" :wide="true" class="user-action">
-        <div>Invite to</div>
-        <svg-icon class="icon-in-button" name="channelOnAir" size="medium" animate>
-          <channel-on-air></channel-on-air>
-        </svg-icon>
-        <div>{{selectedChannelName}}</div>
-      </ui-button>
+      <div v-if="user.onlineStatus==='offline'">
+        <ui-button :type="2" :wide="true" class="user-action">
+          Send invite by Slack
+        </ui-button>
+      </div>
+
+      <div v-else>
+        <ui-button :type="1" :wide="true" class="user-action">
+          Private talk
+        </ui-button>
+        <ui-button v-if="selectedChannelName" :type="3" :wide="true" class="user-action">
+          <div>Invite to</div>
+          <svg-icon class="icon-in-button" name="channelOnAir" size="medium" animate>
+            <channel-on-air></channel-on-air>
+          </svg-icon>
+          <div>{{selectedChannelName}}</div>
+        </ui-button>
+      </div>
+
+      <div class="user-email">
+        <div class="user-email__title">Local time</div>
+        <div class="user-email__address">{{time}}</div>
+      </div>
 
       <div class="user-email">
         <div class="user-email__title">Email</div>
@@ -66,6 +79,19 @@ export default {
   computed: {
 
     /**
+     * Display user's time
+     * @returns {String} hh:mm
+     */
+    time() {
+      const now = new Date(); // TODO: 1) update every minute; 2) get user's timezone
+      const twoDigits = 2;
+
+      return now.getHours().toString()
+        .padStart(twoDigits, '0') + ':' + now.getMinutes().toString()
+        .padStart(twoDigits, '0');
+    },
+
+    /**
      * Get user ID from route param
      * @returns {String} – user ID
      */
@@ -78,6 +104,8 @@ export default {
      * @returns {object} – user
      */
     user() {
+      console.log(this.$store.getters['users/getUserById'](this.userId));
+
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
@@ -185,5 +213,6 @@ export default {
 
   &__address
     margin-top 4px
+    user-select all
 
 </style>
