@@ -1,12 +1,12 @@
 <template>
-  <div id="channels" class="l-p-8">
+  <div id="sidebar_channel_ancor" class="l-p-8">
 
     <div class="connected-channel" v-if="selectedChannel">
        <channel-item @more="moreHandler()" :channel="selectedChannel"/>
     </div>
 
     <div class="channel-header">
-      <a href="#channels" class="channel-header__label l-ml-4">Channels</a>
+      <a href="#sidebar_channel_ancor" class="channel-header__label l-ml-4">Channels</a>
       <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
@@ -23,9 +23,9 @@
 
     </list>
 
-    <div id="user" class="user-ancor"></div>
+    <div id="sidebar_user_ancor" class="user-ancor"></div>
     <div class="channel-header user-header">
-      <a href="#user" class="channel-header__label l-ml-4">Users</a>
+      <a href="#sidebar_user_ancor" class="channel-header__label l-ml-4">Users</a>
       <ui-button :type="7" class="channel-header__add" @click.native="addUserHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
@@ -72,9 +72,7 @@ export default {
      * @returns {array} – array of sorted channels
      */
     sortedChannels() {
-      return this.$store.getters['channels/getChannels']/* .filter(channel => {
-        return !(this.selectedChannel && channel.id === this.selectedChannel.id);
-      }) */;
+      return this.$store.getters['channels/getChannels'];
     },
 
     /**
