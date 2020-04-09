@@ -18,7 +18,7 @@
         :filterKey="channel.name"
         button
       >
-       <channel-item @more="moreHandler()" v-show="!selectedChannel || (channel.id !== selectedChannel.id)" :channel="channel"/>
+       <channel-item @more="moreHandler()" v-show="notSelected(channel.id)" :channel="channel"/>
       </list-item>
 
     </list>
@@ -66,6 +66,7 @@ export default {
   },
 
   computed: {
+
     /**
      * Sort channels by name
      * @returns {array} – array of sorted channels
@@ -95,9 +96,20 @@ export default {
 
       return this.$store.getters['channels/getChannelById'](selectedChannelId);
     },
+
   },
 
   methods: {
+
+    /**
+     * Filter selected channel out of main list
+     * @param {string} id ID of passed channel
+     * @returns {boolean} false if channel is selected
+     */
+    notSelected(id) {
+      return !this.selectedChannel || (id !== this.selectedChannel.id);
+    },
+
     /**
      * Connect to channel
      * @param {Object} channel selected channel

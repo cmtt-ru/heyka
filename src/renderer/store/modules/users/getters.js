@@ -1,4 +1,4 @@
-import { flattenObject, sortAny } from '@libs/arrays';
+import { sortByPriority } from '@libs/arrays';
 
 export default {
 
@@ -9,15 +9,13 @@ export default {
    * @return {object} users' collection
    */
   getAllUsers: state => {
-    const users = flattenObject(state.collection);
+    const users = Object.values(state.collection);
 
-    return users.sort(sortAny([
-      {
-        key: 'name',
-        type: 'string',
-        order: 'asc',
-      },
-    ])) || [];
+    return users.sort(sortByPriority({
+      key: 'onlineStatus',
+      priority: ['online', 'idle', 'offline'],
+      name: 'name',
+    })) || [];
   },
 
   /**
