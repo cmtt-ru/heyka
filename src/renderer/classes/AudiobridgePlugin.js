@@ -108,6 +108,7 @@ class AudiobridgePlugin extends EventEmitter {
       // Remote audio stream is available
       onremotestream: stream => {
         this.__debug('remotestream', stream);
+        this.emit('remote-audio-stream', stream);
       },
 
       // Data Channel is available
@@ -175,7 +176,7 @@ class AudiobridgePlugin extends EventEmitter {
         this.__pluginHandle.send({
           message: {
             request: 'configure',
-            muted: false,
+            muted: true,
           },
           jsep,
         });

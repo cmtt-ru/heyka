@@ -4,7 +4,7 @@ import AudiobridgePlugin from './AudiobridgePlugin';
 
 const ERROR_CODES = {
   SERVER_DOWN: 'Server is down',
-  AUTHORIZATION_ERROR: 'Authorization error',
+  AUTHENTICATION_ERROR: 'Authentication error',
   UNKNOW: 'Unknow error',
 };
 
@@ -98,6 +98,8 @@ class JanusWrapper extends EventEmitter {
     });
 
     audiobridgePlugin.attach();
+
+    audiobridgePlugin.on('remote-audio-stream', stream => this.emit('remote-audio-stream', stream));
   }
 
   /**
@@ -122,7 +124,7 @@ class JanusWrapper extends EventEmitter {
           if (cause.indexOf('Connect to Janus error') + 1 || cause.indexOf('Lost connection to the server') + 1) {
             internalError = ERROR_CODES.SERVER_DOWN;
           } else if (cause.indexOf('Unauthorized request') + 1) {
-            internalError = ERROR_CODES.AUTHORIZATION_ERROR;
+            internalError = ERROR_CODES.AUTHENTICATION_ERROR;
           } else {
             internalError = ERROR_CODES.UNKNOW;
           }
