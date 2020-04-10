@@ -24,8 +24,11 @@ import { getAccessToken } from './accessToken';
   /** Bind error events */
   bindErrorEvents();
 
-  /** User select/unselect channel */
+  /** Channel select/unselect  */
   bindChannelEvents();
+
+  /** User events */
+  bindUserEvents();
 })();
 
 /**
@@ -144,5 +147,17 @@ function bindChannelEvents() {
 
     store.commit('channels/ADD_USER', data);
     store.commit('me/SET_CHANNEL_ID', data.channelId);
+  });
+}
+
+/**
+ * Bind user events
+ *
+ * @returns {void}
+ */
+function bindUserEvents() {
+  /** Online status changed */
+  client.on(eventNames.onlineStatusChanged, data => {
+    store.commit('users/SET_ONLINE_STATUS', data);
   });
 }
