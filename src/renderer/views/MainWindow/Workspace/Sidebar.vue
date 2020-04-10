@@ -1,13 +1,13 @@
 <template>
-  <div class="l-p-8">
+  <div id="sidebar_channel_ancor" class="l-p-8">
 
     <div class="connected-channel" v-if="selectedChannel">
        <channel-item @more="moreHandler()" :channel="selectedChannel"/>
     </div>
 
     <div class="channel-header">
-      <div class="channel-header__label l-ml-4">Channels</div>
-      <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" icon="add"></ui-button>
+      <a href="#sidebar_channel_ancor" class="channel-header__label l-ml-4">Channels</a>
+      <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
     <list :filterBy="''" v-if="sortedChannels.length">
@@ -15,12 +15,28 @@
         @dblclick.native="dbclickChannelHandler(channel)"
         v-for="channel in sortedChannels"
         :key="channel.name"
-        :active="channel.active"
         :filterKey="channel.name"
-        v-show="!channel.connected"
         button
       >
-       <channel-item @more="moreHandler()" :channel="channel"/>
+       <channel-item @more="moreHandler()" v-show="notSelected(channel.id)" :channel="channel"/>
+      </list-item>
+
+    </list>
+
+    <div id="sidebar_user_ancor" class="user-ancor"></div>
+    <div class="channel-header user-header">
+      <a href="#sidebar_user_ancor" class="channel-header__label l-ml-4">Users</a>
+      <ui-button :type="7" class="channel-header__add" @click.native="addUserHandler" size="small" height="16" icon="add"></ui-button>
+    </div>
+
+    <list :filterBy="''" v-if="sortedUsers.length">
+      <list-item
+        v-for="user in sortedUsers"
+        :key="user.name"
+        :filterKey="user.name"
+        button
+      >
+       <sidebar-user-item @more="moreHandler()" :user="user"/>
       </list-item>
 
     </list>
@@ -32,6 +48,7 @@
 import ChannelItem from '@components/ChannelItem';
 import { List, ListItem } from '@components/List';
 import UiButton from '@components/UiButton';
+import SidebarUserItem from '@components/SidebarUserItem';
 
 export default {
   components: {
@@ -39,6 +56,7 @@ export default {
     ListItem,
     ChannelItem,
     UiButton,
+    SidebarUserItem,
   },
 
   data() {
@@ -48,14 +66,23 @@ export default {
   },
 
   computed: {
+
     /**
      * Sort channels by name
      * @returns {array} – array of sorted channels
      */
     sortedChannels() {
-      return this.$store.getters['channels/getChannels'].filter(channel => {
-        return !(this.selectedChannel && channel.id === this.selectedChannel.id);
-      });
+      return this.$store.getters['channels/getChannels'];
+    },
+
+    /**
+     * Sort users by online status and name
+     * @returns {array} – array of sorted users
+     */
+    sortedUsers() {
+      const users = this.$store.getters['users/getAllUsers'];
+
+      return users;
     },
 
     /**
@@ -67,9 +94,20 @@ export default {
 
       return this.$store.getters['channels/getChannelById'](selectedChannelId);
     },
+
   },
 
   methods: {
+
+    /**
+     * Filter selected channel out of main list
+     * @param {string} id ID of passed channel
+     * @returns {boolean} false if channel is selected
+     */
+    notSelected(id) {
+      return !this.selectedChannel || (id !== this.selectedChannel.id);
+    },
+
     /**
      * Connect to channel
      * @param {Object} channel selected channel
@@ -89,6 +127,14 @@ export default {
     },
 
     /**
+     * Show add-user pseudo-popup
+     * @returns {void}
+     */
+    addUserHandler() {
+      console.log('Add new user handler');
+    },
+
+    /**
      * Dummy popover creation
      * @returns {void}
      */
@@ -105,16 +151,26 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.connected-channel
-  margin-bottom 8px
 
 .channel-header
   display flex
+  background-color var(--app-bg)
   flex-direction row
   justify-content space-between
   align-items center
   color var(--text-1)
-  margin-bottom 2px
   font-size 12px
+  position sticky
+  top 0
+  z-index 1
+  padding 5px 4px
+  margin-top 7px
+
+.user-header
+  top 27px
+  bottom 0
+
+.user-ancor
+  transform translateY(-25px)
 
 </style>
