@@ -91,6 +91,10 @@ export default {
       return false;
     },
 
+    /**
+     * Return true if this channel is currently opened
+     * @returns {boolean}
+     */
     isSelected() {
       return this.$route.params.id === this.channel.id;
     },
