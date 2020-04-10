@@ -18,6 +18,41 @@ export function mapKeys(array, key) {
 
 /**
  * Sort function than can sort by options:
+ *   key: key to sort by
+ *   priority: Array of key variants, with more important values going first. I
+ *      If value was not found, such elements are placed first
+ *   name: Key to sort if "priority" of elementys is the same
+ *
+ * @param {array} options – sort options
+ * @return {function(...[*]=)}
+ */
+export function sortByPriority(options = {
+  key: 'onlineStatus',
+  priority: ['online', 'idle', 'offline'],
+  name: 'name',
+}) {
+  return (a, b) => {
+    const delta = options.priority.indexOf(a[options.key]) - options.priority.indexOf(b[options.key]);
+
+    if (delta > 0) {
+      return 1;
+    } else if (delta < 0) {
+      return -1;
+    } else {
+      if (a[options.name] > b[options.name]) {
+        return 1;
+      }
+      if (a[options.name] < b[options.name]) {
+        return -1;
+      }
+
+      return 0;
+    }
+  };
+}
+
+/**
+ * Sort function than can sort by options:
  *   key: 'anyKey'
  *   type: 'string' | 'number' | 'date'
  *   order: 'asc' | 'desc'

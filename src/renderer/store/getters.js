@@ -26,7 +26,7 @@ export default {
         type: 'string',
         order: 'asc',
       },
-    ])) || [];
+    ]));
   },
 
 };
