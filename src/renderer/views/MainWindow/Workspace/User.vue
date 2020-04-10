@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user" class="l-p-8">
+  <div v-if="user" class="l-p-12">
 
       <div class="user">
         <avatar class="user__avatar" :key="user.avatar" :image="user.avatar" :size="40"></avatar>
@@ -162,9 +162,9 @@ export default {
 <style lang="stylus" scoped>
 
 .user
-  height 74px
-  padding 12px
-  margin-bottom 3px
+  height 40px
+  padding 0
+  margin-bottom 24px
   width 100%
   box-sizing border-box
   display flex
@@ -189,7 +189,7 @@ export default {
     box-sizing border-box
     border-radius 50%
     border: 2px solid
-    margin 0 8px
+    margin 2px 8px 0
     flex-shrink 0
     flex-grow 0
 
@@ -197,7 +197,7 @@ export default {
     margin-left auto
     flex-shrink 0
     flex-grow 0
-    margin-top -26px
+    margin-top -18px
     color var(--icon-1)
 
 .user-action

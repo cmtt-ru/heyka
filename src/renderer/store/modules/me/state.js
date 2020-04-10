@@ -34,13 +34,13 @@ const state = () => {
      *   camera: boolean
      * }}
      */
-    mediaState: {
-      microphone: true,
-      speakers: true,
-      screen: true,
-      camera: true,
-      speaking: true,
-    },
+    mediaState: meStore.get('mediaState', {
+      microphone: false,
+      speakers: false,
+      screen: false,
+      camera: false,
+      speaking: false,
+    }),
 
     /**
      * Authorized user's pokes list

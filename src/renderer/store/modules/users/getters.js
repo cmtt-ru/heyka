@@ -11,6 +11,13 @@ export default {
   getAllUsers: state => {
     const users = Object.values(state.collection);
 
+    //! For testing:
+    // if (users.length > 1) {
+    // users[5].onlineStatus = 'online';
+    // users[8].onlineStatus = 'online';
+    // users[20].onlineStatus = 'online';
+    // }
+
     return users.sort(sortByPriority({
       key: 'onlineStatus',
       priority: ['online', 'idle', 'offline'],

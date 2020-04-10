@@ -1,7 +1,7 @@
 <template>
     <router-link :to="'/main-window/workspace/user/'+user.id" class="user" :class="{'user--offline': isOffline}">
 
-        <avatar class="user__avatar" :image="user.avatar" :size="14"></avatar>
+        <avatar class="user__avatar" :image="user.avatar" :status="isStrangeStatus" :size="14"></avatar>
 
         <div v-textfade :key="user.name" class="user__name">{{user.name}}</div>
 
@@ -42,6 +42,18 @@ export default {
      */
     isOffline() {
       return this.user.onlineStatus === 'offline';
+    },
+
+    /**
+     * We need to display user status if he is not online or oflline (idle, busy, etc.)
+     * @returns {string|null}
+     */
+    isStrangeStatus() {
+      if (this.user.onlineStatus !== 'online' && this.user.onlineStatus !== 'offline') {
+        return this.user.onlineStatus;
+      }
+
+      return null;
     },
 
     /**
@@ -88,4 +100,5 @@ export default {
 .router-link-active
     background-color var(--item-bg-active)
     opacity 1
+    box-shadow 0px 1px 2px rgba(0, 0, 0, 0.1)
 </style>
