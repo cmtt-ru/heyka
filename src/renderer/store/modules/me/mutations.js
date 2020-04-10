@@ -33,4 +33,15 @@ export default {
     state.selectedChannelId = id;
   },
 
+  /**
+   * Sets our media state
+   *
+   * @param {object} state – module me state
+   * @param {object} mediaState – our media state
+   * @constructor
+   */
+  SET_MEDIA_STATE(state, mediaState) {
+    state.mediaState = mediaState;
+  },
+
 };

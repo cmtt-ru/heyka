@@ -1,14 +1,12 @@
 <template>
-  <div id="sidebar_channel_ancor" class="l-p-8">
-
-     <router-link :to="{ name: 'settings'}">Settings</router-link>
+  <div id="sidebar_channel_anchor" class="l-p-8">
 
     <div class="connected-channel" v-if="selectedChannel">
        <channel-item @more="moreHandler()" :channel="selectedChannel"/>
     </div>
 
     <div class="channel-header">
-      <a href="#sidebar_channel_ancor" class="channel-header__label l-ml-4">Channels</a>
+      <a href="#sidebar_channel_anchor" class="channel-header__label l-ml-4">Channels</a>
       <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
@@ -25,9 +23,9 @@
 
     </list>
 
-    <div id="sidebar_user_ancor" class="user-ancor"></div>
+    <div id="sidebar_user_anchor" class="user-anchor"></div>
     <div class="channel-header user-header">
-      <a href="#sidebar_user_ancor" class="channel-header__label l-ml-4">Users</a>
+      <a href="#sidebar_user_anchor" class="channel-header__label l-ml-4">Users</a>
       <ui-button :type="7" class="channel-header__add" @click.native="addUserHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
@@ -172,7 +170,7 @@ export default {
   top 27px
   bottom 0
 
-.user-ancor
+.user-anchor
   transform translateY(-25px)
 
 </style>
