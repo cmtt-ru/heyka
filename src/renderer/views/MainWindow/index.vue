@@ -4,6 +4,7 @@
 
 <script>
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
+import '@api/socket';
 
 export default {
   data() {

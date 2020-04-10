@@ -39,6 +39,7 @@ async function authorize() {
       transaction: 'auth',
       workspaceId: store.getters['me/getSelectedWorkspaceId'],
       token: getAccessToken(),
+      // todo: online status
       onlineStatus: 'online',
     });
 
@@ -83,30 +84,62 @@ function bindErrorEvents() {
  * @returns {void}
  */
 function bindChannelEvents() {
-  const mutationTimeout = 100;
+  /**
+   * Data buffer with delay
+   *
+   * @type {object}
+   */
+  const dataBuffer = {
+    timeout: 100,
 
-  let mutationTimer;
-  let unselectData = null;
+    buffer: {},
 
-  /** Select channel */
-  client.on(eventNames.userUnselectedChannel, data => {
-    unselectData = data;
+    add(id, data) {
+      this.buffer[id] = {
+        data,
+        timer: null,
+      };
+    },
 
-    mutationTimer = setTimeout(() => {
-      unselectData = null;
+    remove(id) {
+      this.cancelDelay(id);
+      delete this.buffer[id];
+    },
 
-      store.commit('me/SET_CHANNEL_ID', null);
-      store.commit('channels/REMOVE_USER', data);
-    }, mutationTimeout);
-  });
+    get(id) {
+      return this.buffer[id] && this.buffer[id].data;
+    },
+
+    delay(id, callback) {
+      this.buffer[id].timer = setTimeout(callback, this.timeout);
+    },
+
+    cancelDelay(id) {
+      clearInterval(this.buffer[id].timer);
+    },
+  };
 
   /** Unselect channel */
+  client.on(eventNames.userUnselectedChannel, data => {
+    const userId = data.userId;
+
+    dataBuffer.add(userId, data);
+
+    dataBuffer.delay(userId, () => {
+      dataBuffer.remove(userId);
+      store.commit('channels/REMOVE_USER', data);
+      store.commit('me/SET_CHANNEL_ID', null);
+    });
+  });
+
+  /** Select channel */
   client.on(eventNames.userSelectedChannel, data => {
-    clearTimeout(mutationTimer);
+    const userId = data.userId;
+    const unselectData = dataBuffer.get(userId);
 
     if (unselectData) {
       store.commit('channels/REMOVE_USER', unselectData);
-      unselectData = null;
+      dataBuffer.remove(userId);
     }
 
     store.commit('channels/ADD_USER', data);
