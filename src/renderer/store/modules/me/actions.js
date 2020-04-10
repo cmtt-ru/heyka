@@ -18,6 +18,13 @@ export default {
     meStore.set('selectedWorkspaceId', id);
   },
 
+  /**
+   * Set our new media state
+   *
+   * @param {function} commit – store commit
+   * @param {object} mediaState – new mediaState
+   * @return {void}
+   */
   async setMediaState({ commit }, mediaState) {
     commit('SET_MEDIA_STATE', mediaState);
     meStore.set('mediaState', mediaState);
