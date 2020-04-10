@@ -3,9 +3,7 @@
     <layout>
 
       <template v-slot:sidebar-header>
-        <div class="l-p-8 l-w-m">
-          <router-link :to="{ name: 'settings'}">Settings</router-link>
-        </div>
+        <sidebar-header/>
       </template>
 
       <template v-slot:sidebar-body>
@@ -13,9 +11,7 @@
       </template>
 
       <template v-slot:content-header>
-        <div class="l-p-8">
-          content-header
-        </div>
+         <workspace-header/>
       </template>
 
       <template v-slot:content-body>
@@ -29,11 +25,15 @@
 <script>
 import Layout from './../Layout';
 import Sidebar from './Sidebar';
+import SidebarHeader from './SidebarHeader';
+import WorkspaceHeader from './WorkspaceHeader';
 
 export default {
   components: {
     Layout,
     Sidebar,
+    SidebarHeader,
+    WorkspaceHeader,
   },
   data() {
     return {
