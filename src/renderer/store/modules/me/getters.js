@@ -1,5 +1,15 @@
 export default {
   /**
+   * Get user id
+   *
+   * @param {object} state – module me state
+   * @return {string}
+   */
+  getMyId(state) {
+    return state.id;
+  },
+
+  /**
    * Get selected workspace id
    *
    * @param {object} state – me module state

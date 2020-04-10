@@ -113,23 +113,9 @@ export default {
   flex-direction row
   align-items flex-start
   justify-content flex-start
-  transition background-color 0.2s linear
-  position relative
 
   &:hover
     background-color var(--item-bg-hover)
-
-  &::after
-    content ''
-    position absolute
-    top 0
-    bottom 0
-    left 0
-    right 0
-    box-shadow 0px 1px 2px rgba(0, 0, 0, 0.1)
-    opacity 0
-    pointer-events none
-    transition opacity 0.2s linear
 
   &__type
     margin 4px 4px 0 4px
@@ -176,7 +162,5 @@ export default {
 
 .router-link-active
   background-color var(--item-bg-active)
-
-  &::after
-    opacity 1
+  box-shadow 0px 1px 2px rgba(0, 0, 0, 0.1)
 </style>
