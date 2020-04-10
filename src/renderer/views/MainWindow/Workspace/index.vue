@@ -29,7 +29,6 @@
 <script>
 import Layout from './../Layout';
 import Sidebar from './Sidebar';
-import '@api/socket';
 
 export default {
   components: {
