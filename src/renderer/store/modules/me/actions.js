@@ -1,3 +1,4 @@
+import API from '@api';
 import Store from 'electron-store';
 
 const meStore = new Store({
@@ -15,6 +16,19 @@ export default {
   setSelectedWorkspaceId({ commit }, id) {
     commit('SET_WORKSPACE_ID', id);
     meStore.set('selectedWorkspaceId', id);
+  },
+
+  /**
+   * Set our new media state
+   *
+   * @param {function} commit – store commit
+   * @param {object} mediaState – new mediaState
+   * @return {void}
+   */
+  async setMediaState({ commit }, mediaState) {
+    commit('SET_MEDIA_STATE', mediaState);
+    meStore.set('mediaState', mediaState);
+    await API.user.setMediaState(mediaState);
   },
 
 };

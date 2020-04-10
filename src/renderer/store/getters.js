@@ -1,4 +1,3 @@
-// import API from '@api';
 import { sortAny } from '@libs/arrays';
 
 export default {
