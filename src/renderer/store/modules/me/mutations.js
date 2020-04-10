@@ -1,7 +1,7 @@
 export default {
 
   /**
-   * Set's user id
+   * Sets user id
    *
    * @param {object} state – module me state
    * @param {string} id – user id
@@ -12,7 +12,7 @@ export default {
   },
 
   /**
-   * Set's selected workspace id
+   * Sets selected workspace id
    *
    * @param {object} state – module me state
    * @param {string} id – workspace id
@@ -23,7 +23,7 @@ export default {
   },
 
   /**
-   * Set's selected channel id
+   * Sets selected channel id
    *
    * @param {object} state – module me state
    * @param {string} id – channel id

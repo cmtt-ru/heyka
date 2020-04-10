@@ -1,6 +1,8 @@
 <template>
   <div class="l-p-8">
 
+     <router-link :to="{ name: 'settings'}">Settings</router-link>
+
     <div class="connected-channel" v-if="selectedChannel">
        <channel-item @more="moreHandler()" :channel="selectedChannel"/>
     </div>
