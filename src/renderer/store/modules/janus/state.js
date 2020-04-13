@@ -4,19 +4,19 @@ const state = () => {
      * Janus server url
      * @type {string}
      */
-    url: '',
+    janusServerUrl: '',
 
     /**
-     * Janus workspace token
+     * Janus auth token
      * @type {string}
      */
-    workspaceToken: '',
+    janusAuthToken: '',
 
     /**
-     * Janus channel token
+     * Channel auth token
      * @type {string}
      */
-    channelToken: '',
+    channelAuthToken: '',
 
     /**
      * Janus audio room id
