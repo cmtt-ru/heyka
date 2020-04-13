@@ -1,7 +1,7 @@
 import store from '@/store';
 import eventNames from './eventNames';
 import { client, connect } from './client';
-import { getAccessToken } from './accessToken';
+import { getAccessToken } from '../tokens';
 
 /**
  * Initialization
@@ -37,11 +37,13 @@ import { getAccessToken } from './accessToken';
  * @returns {promise}
  */
 async function authorize() {
+  const accessToken = await getAccessToken();
+
   return new Promise((resolve, reject) => {
     client.emit(eventNames.auth, {
       transaction: 'auth',
       workspaceId: store.getters['me/getSelectedWorkspaceId'],
-      token: getAccessToken(),
+      token: accessToken,
       // todo: online status
       onlineStatus: 'online',
     });

@@ -1,18 +1,10 @@
-/* eslint-disable require-jsdoc */
-
 import userApi from './user';
 import authApi from './auth';
 import workspaceApi from './workspace';
 import channelApi from './channel';
 import * as ERROR from './constants';
-import refreshToken from './auth/refreshToken';
 import axios from 'axios';
-import Store from 'electron-store';
-
-const authFileStore = new Store({
-  name: 'auth',
-  encryptionKey: '1234543',
-});
+import { updateTokens } from './tokens';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -22,31 +14,13 @@ if (isDevelopment) {
   axios.defaults.baseURL = process.env.VUE_APP_PROD_URL;
 }
 
-if (authFileStore.has('accessToken')) {
-  setAxiosTokenHeader(authFileStore.get('accessToken'));
-}
-
-function setAxiosTokenHeader(token) {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-}
-
-async function updateToken() {
-  let { accessToken: ACCESS, refreshToken: REFRESH } = authFileStore.store;
-
-  const res = await refreshToken({
-    accessToken: ACCESS,
-    refreshToken: REFRESH,
-  });
-
-  ACCESS = res.data.accessToken;
-  REFRESH = res.data.refreshToken;
-
-  setAxiosTokenHeader(ACCESS);
-  authFileStore.set('accessToken', ACCESS);
-  authFileStore.set('refreshToken', REFRESH);
-}
-
-function injectMidleware(functions) {
+/**
+ * Inject's middleware function in all api methods
+ *
+ * @param {object} functions – object with functions
+ * @returns {object}
+ */
+function injectMiddleware(functions) {
   Object.keys(functions).forEach(name => {
     const origFunc = functions[name];
 
@@ -55,15 +29,17 @@ function injectMidleware(functions) {
 
   return functions;
 }
+
+/**
+ * Middleware function
+ *
+ * @param {function} func – specific function
+ * @returns {function(...[*]=)}
+ */
 function middleware(func) {
   return async function () {
     try {
-      // console.time(name);
-      const res = await func.apply(null, arguments);
-
-      // console.timeEnd(name);
-
-      return res;
+      return await func.apply(null, arguments);
     } catch (err) {
       switch (true) {
         case err.response === undefined:
@@ -71,7 +47,7 @@ function middleware(func) {
         case err.response.data.message === ERROR.BAD_TOKEN :
           break;
         case err.response.data.message === ERROR.EXPIRED_TOKEN :
-          await updateToken();
+          await updateTokens();
 
           return middleware(func).apply(null, arguments);
         default:
@@ -79,11 +55,11 @@ function middleware(func) {
       }
     }
   };
-};
+}
 
 export default {
-  user: injectMidleware(userApi),
-  auth: injectMidleware(authApi),
-  workspace: injectMidleware(workspaceApi),
-  channel: injectMidleware(channelApi),
+  user: injectMiddleware(userApi),
+  auth: injectMiddleware(authApi),
+  workspace: injectMiddleware(workspaceApi),
+  channel: injectMiddleware(channelApi),
 };
