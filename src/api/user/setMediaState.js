@@ -1,7 +1,6 @@
 import axios from 'axios';
-
-const socketId = '3442344';
+import { client } from '@api/socket/client';
 
 export default function (mediaState) {
-  return axios.post(`/user/media-state?socketId=${socketId}`, mediaState);
+  return axios.post(`/user/media-state?socketId=${client.id}`, mediaState);
 }
