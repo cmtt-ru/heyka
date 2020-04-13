@@ -42,4 +42,30 @@ export default {
 
     users.push(data);
   },
+
+  /**
+   * Set specific user media state
+   *
+   * @param {object} state – vuex state
+   * @param {string} userId – user id
+   * @param {object} userMediaState – user media state
+   * @constructor
+   */
+  SET_USER_MEDIA_STATE(state, { userId, userMediaState }) {
+    let user;
+
+    Object.values(state.collection).some(channel => {
+      const userIndex = searchIndexByKey(channel.users, 'userId', userId);
+
+      if (userIndex >= 0) {
+        user = channel.users[userIndex];
+
+        return true;
+      }
+    });
+
+    if (user) {
+      user = Object.assign(user, userMediaState);
+    }
+  },
 };
