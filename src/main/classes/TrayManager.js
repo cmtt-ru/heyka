@@ -239,15 +239,19 @@ class TrayManager {
   }
 
   /**
- * Move Main Window to tray
- * @returns {void}
- */
+   * Move Main Window to tray
+   * @returns {void}
+  */
   toggleTrayPosition() {
     TrayFileStore.set('ifInTray', !this.inTray);
     app.relaunch();
     app.exit();
   }
 
+  /**
+   * Update tray icon when systemPrference has changed
+   * @returns {void}
+  */
   updateTheme() {
     if ((isMac && nativeTheme.shouldUseDarkColors) || isWin) {
       theme = 'dark';
