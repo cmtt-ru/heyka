@@ -48,24 +48,16 @@ export default {
    *
    * @param {object} state – vuex state
    * @param {string} userId – user id
+   * @param {string} channelId – channel id
    * @param {object} userMediaState – user media state
    * @constructor
    */
-  SET_USER_MEDIA_STATE(state, { userId, userMediaState }) {
-    let user;
+  SET_USER_MEDIA_STATE(state, { userId, channelId, userMediaState }) {
+    const users = state.collection[channelId].users;
+    const userIndex = searchIndexByKey(users, 'userId', userId);
 
-    Object.values(state.collection).some(channel => {
-      const userIndex = searchIndexByKey(channel.users, 'userId', userId);
-
-      if (userIndex >= 0) {
-        user = channel.users[userIndex];
-
-        return true;
-      }
-    });
-
-    if (user) {
-      user = Object.assign(user, userMediaState);
+    if (userIndex !== undefined) {
+      users[userId] = Object.assign(users[userId], userMediaState);
     }
   },
 };
