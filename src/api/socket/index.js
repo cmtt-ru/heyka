@@ -156,8 +156,13 @@ function bindChannelEvents() {
  * @returns {void}
  */
 function bindUserEvents() {
-  /** Online status changed */
+  /** User online status changed */
   client.on(eventNames.onlineStatusChanged, data => {
     store.commit('users/SET_ONLINE_STATUS', data);
+  });
+
+  /** User media status changed */
+  client.on(eventNames.mediaStateUpdated, data => {
+    store.commit('channels/SET_USER_MEDIA_STATE', data);
   });
 }
