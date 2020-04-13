@@ -47,6 +47,9 @@ class TrayManager {
  */
   constructor(iconPath) {
     this.inTray = TrayFileStore.get('ifInTray', true);
+    nativeTheme.on('updated', () => {
+      this.updateTheme();
+    });
     ipcMain.on('tray-manager-toggle', (event, options) => {
       this.toggleTrayPosition();
     });
@@ -243,6 +246,15 @@ class TrayManager {
     TrayFileStore.set('ifInTray', !this.inTray);
     app.relaunch();
     app.exit();
+  }
+
+  updateTheme() {
+    if ((isMac && nativeTheme.shouldUseDarkColors) || isWin) {
+      theme = 'dark';
+    } else {
+      theme = 'light';
+    }
+    this.set('default');
   }
 }
 export default new TrayManager('default');
