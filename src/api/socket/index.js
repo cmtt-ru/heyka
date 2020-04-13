@@ -4,9 +4,11 @@ import { client, connect } from './client';
 import { getAccessToken } from '../tokens';
 
 /**
- * Initialization
+ * Connect to socket, authorize and bind events
+ *
+ * @returns {Promise<void>}
  */
-(async () => {
+export async function init() {
   /** Trying to connect */
   try {
     await connect();
@@ -29,7 +31,17 @@ import { getAccessToken } from '../tokens';
 
   /** User events */
   bindUserEvents();
-})();
+}
+
+/**
+ * Destroy socket connection and unbind events
+ *
+ * @returns {Promise<void>}
+ */
+export async function destroy() {
+  client.off();
+  client.disconnect();
+}
 
 /**
  * Authorize in socket
@@ -49,12 +61,12 @@ async function authorize() {
     });
 
     client.on(eventNames.authSuccess, data => {
-      console.log('auth-success', data);
+      console.log('socket auth success', data);
       resolve(data);
     });
 
     client.on('socket-api-error-auth', data => {
-      console.log('auth-error', data);
+      console.error('socket auth error', data);
       reject(data);
     });
   });

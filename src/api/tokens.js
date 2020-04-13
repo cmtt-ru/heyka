@@ -51,15 +51,16 @@ export function setTokens(newTokens) {
 
 /**
  * Update tokens
+ *
  * @returns {Promise<void>}
  */
 export async function updateTokens() {
-  const response = await refreshToken({
+  const freshTokens = await refreshToken({
     accessToken: authFileStore.get('accessToken'),
     refreshToken: authFileStore.get('refreshToken'),
   });
 
-  setTokens(response);
+  setTokens(freshTokens);
 }
 
 /**
