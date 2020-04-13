@@ -98,3 +98,19 @@ export function sortAny(options = [ {
         return firstValue > secondValue ? direction : firstValue < secondValue ? -(direction) : 0;
       }).reduce((pos, neg) => pos || neg, 0);
 }
+
+/**
+ * Search key with value in array
+ *
+ * @param {array} array – array of objects
+ * @param {string} key – array key
+ * @param {string} keyValue – value of the key
+ * @return {number}
+ */
+export function searchIndexByKey(array, key, keyValue) {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i][key] === keyValue) {
+      return i;
+    }
+  }
+}

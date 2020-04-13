@@ -8,7 +8,8 @@ import * as ERROR from './constants';
 import refreshToken from './auth/refreshToken';
 import axios from 'axios';
 import Store from 'electron-store';
-const AuthFileStore = new Store({
+
+const authFileStore = new Store({
   name: 'auth',
   encryptionKey: '1234543',
 });
@@ -21,8 +22,8 @@ if (isDevelopment) {
   axios.defaults.baseURL = process.env.VUE_APP_PROD_URL;
 }
 
-if (AuthFileStore.has('accessToken')) {
-  setAxiosTokenHeader(AuthFileStore.get('accessToken'));
+if (authFileStore.has('accessToken')) {
+  setAxiosTokenHeader(authFileStore.get('accessToken'));
 }
 
 function setAxiosTokenHeader(token) {
@@ -30,7 +31,7 @@ function setAxiosTokenHeader(token) {
 }
 
 async function updateToken() {
-  let { accessToken: ACCESS, refreshToken: REFRESH } = AuthFileStore.store;
+  let { accessToken: ACCESS, refreshToken: REFRESH } = authFileStore.store;
 
   const res = await refreshToken({
     accessToken: ACCESS,
@@ -41,8 +42,8 @@ async function updateToken() {
   REFRESH = res.data.refreshToken;
 
   setAxiosTokenHeader(ACCESS);
-  AuthFileStore.set('accessToken', ACCESS);
-  AuthFileStore.set('refreshToken', REFRESH);
+  authFileStore.set('accessToken', ACCESS);
+  authFileStore.set('refreshToken', REFRESH);
 }
 
 function injectMidleware(functions) {
