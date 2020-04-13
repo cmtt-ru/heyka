@@ -31,7 +31,7 @@ export default {
   },
 
   /**
-   * Remove specific user from specific channel
+   * Add specific user from specific channel
    *
    * @param {object} state – vuex state
    * @param {object} data – user data
