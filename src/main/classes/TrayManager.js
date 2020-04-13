@@ -12,6 +12,9 @@ const isMac = process.platform === 'darwin';
 const isWin = !isMac;
 let animationTimer;
 
+/**
+ * Icon names for dark&light themes. No ".png", no "@2x" stuff
+ */
 const icons = {
   light: {
     default: 'icon',
@@ -44,6 +47,9 @@ class TrayManager {
  */
   constructor(iconPath) {
     this.inTray = TrayFileStore.get('ifInTray', true);
+    nativeTheme.on('updated', () => {
+      this.updateTheme();
+    });
     ipcMain.on('tray-manager-toggle', (event, options) => {
       this.toggleTrayPosition();
     });
@@ -122,7 +128,7 @@ class TrayManager {
         } ]),
       ]);
 
-      this.tray.setToolTip('You have 0 messages');
+      // this.tray.setToolTip('You have 0 notifications');
       this.tray.setContextMenu(contextMenu);
       this.tray.on('click', (event) => {
         this.clickTray();
@@ -140,8 +146,8 @@ class TrayManager {
   }
 
   /**
- * Toggle Mainwindow on tray click
- * @returns {void}
+   * Toggle Mainwindow on tray click
+   * @returns {void}
  */
   clickTray() {
     if (this.mainWindow.isMinimized()) {
@@ -153,15 +159,14 @@ class TrayManager {
   }
 
   /**
- * Get icon full path by icon name
-  * @param {string} icon icon path
- * @returns {string} icon full path
- */
+    * Get icon full path by icon name.
+    *!nativePath accepts only png and jpeg. No ico!
+    * @param {string} icon icon path
+    * @returns {string} icon full path
+  */
   getIconPath(icon) {
     if (icons[theme][icon]) {
-      console.log(path.join(__static, `trayIcons/${icons[theme][icon]}.ico`));
-
-      return path.join(__static, `trayIcons/${icons[theme][icon]}.ico`);
+      return path.join(__static, `trayIcons/${icons[theme][icon]}.png`);
     } else {
       console.error(`Icon "${icon}" not found`);
 
@@ -234,13 +239,26 @@ class TrayManager {
   }
 
   /**
- * Move Main Window to tray
- * @returns {void}
- */
+   * Move Main Window to tray
+   * @returns {void}
+  */
   toggleTrayPosition() {
     TrayFileStore.set('ifInTray', !this.inTray);
     app.relaunch();
     app.exit();
+  }
+
+  /**
+   * Update tray icon when systemPrference has changed
+   * @returns {void}
+  */
+  updateTheme() {
+    if ((isMac && nativeTheme.shouldUseDarkColors) || isWin) {
+      theme = 'dark';
+    } else {
+      theme = 'light';
+    }
+    this.set('default');
   }
 }
 export default new TrayManager('default');
