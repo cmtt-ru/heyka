@@ -10,7 +10,7 @@ export default {
    * @return {array}
    */
   getUsersByChannel: (state, getters) => (id) => {
-    const ch = state['channels'].collection[id] || { users: [] };
+    const ch = getters['channels/getChannelById'](id) || { users: [] };
 
     const users = ch.users.map(user => {
       return {

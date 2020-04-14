@@ -22,13 +22,19 @@ export default {
    * Set our new media state
    *
    * @param {function} commit – store commit
+   * @param {function} getters – store getters
    * @param {object} mediaState – new mediaState
    * @return {void}
    */
-  async setMediaState({ commit }, mediaState) {
+  async setMediaState({ commit, getters }, mediaState) {
+    const selectedChannelId = getters['getSelectedChannelId'];
+
     commit('SET_MEDIA_STATE', mediaState);
     meStore.set('mediaState', mediaState);
-    await API.user.setMediaState(mediaState);
+
+    if (selectedChannelId) {
+      await API.user.setMediaState(mediaState);
+    }
   },
 
 };

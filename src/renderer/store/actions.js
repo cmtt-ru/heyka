@@ -50,7 +50,9 @@ export default {
    * @return {object} selected channel
    */
   async selectChannel({ commit, getters }, id) {
-    return API.channel.select(id, getters['me/getMediaState']);
+    const response = await API.channel.select(id, getters['me/getMediaState']);
+
+    commit('janus/SET_OPTIONS', response.connectionOptions);
   },
 
   /**
