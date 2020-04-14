@@ -95,6 +95,10 @@ export default {
       }
     },
     onSpeakingChange(isSpeaking) {
+      // ignore speaking state if you are muted
+      if (!this.microphone) {
+        return;
+      }
       if (this.speaking !== isSpeaking) {
         this.$store.dispatch('me/setMediaState', {
           ...this.mediaState,
@@ -130,7 +134,7 @@ export default {
       this.janusWrapper.setMuting(!state);
     },
     speakers(state) {
-      this.$refs.audio.muted = !!state;
+      this.$refs.audio.muted = !state;
     },
   },
 };
