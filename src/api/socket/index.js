@@ -1,12 +1,14 @@
 import store from '@/store';
 import eventNames from './eventNames';
 import { client, connect } from './client';
-import { getAccessToken } from './accessToken';
+import { getAccessToken } from '../tokens';
 
 /**
- * Initialization
+ * Connect to socket, authorize and bind events
+ *
+ * @returns {Promise<void>}
  */
-(async () => {
+export async function init() {
   /** Trying to connect */
   try {
     await connect();
@@ -29,7 +31,17 @@ import { getAccessToken } from './accessToken';
 
   /** User events */
   bindUserEvents();
-})();
+}
+
+/**
+ * Destroy socket connection and unbind events
+ *
+ * @returns {Promise<void>}
+ */
+export async function destroy() {
+  client.off();
+  client.disconnect();
+}
 
 /**
  * Authorize in socket
@@ -37,22 +49,24 @@ import { getAccessToken } from './accessToken';
  * @returns {promise}
  */
 async function authorize() {
+  const accessToken = await getAccessToken();
+
   return new Promise((resolve, reject) => {
     client.emit(eventNames.auth, {
       transaction: 'auth',
       workspaceId: store.getters['me/getSelectedWorkspaceId'],
-      token: getAccessToken(),
+      token: accessToken,
       // todo: online status
       onlineStatus: 'online',
     });
 
     client.on(eventNames.authSuccess, data => {
-      console.log('auth-success', data);
+      console.log('socket auth success', data);
       resolve(data);
     });
 
     client.on('socket-api-error-auth', data => {
-      console.log('auth-error', data);
+      console.error('socket auth error', data);
       reject(data);
     });
   });
