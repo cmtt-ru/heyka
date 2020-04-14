@@ -105,6 +105,20 @@ class JanusWrapper extends EventEmitter {
     audiobridgePlugin.attach();
 
     audiobridgePlugin.on('remote-audio-stream', stream => this.emit('remote-audio-stream', stream));
+    audiobridgePlugin.on('media-state', isActive => this.emit('audio-stream-active', isActive));
+    audiobridgePlugin.on('start-speaking', () => this.emit('speaking', true));
+    audiobridgePlugin.on('stop-speaking', () => this.emit('speaking', false));
+
+    this.__audiobridgePlugin = audiobridgePlugin;
+  }
+
+  /**
+   * Mute/unmute current user
+   * @param {boolean} muted Should the user be muted
+   * @returns {undefined}
+   */
+  setMuting(muted) {
+    this.__audiobridgePlugin.setMuting(muted);
   }
 
   /**

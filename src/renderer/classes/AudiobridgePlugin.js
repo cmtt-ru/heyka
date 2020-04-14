@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import hark from 'hark';
 const JANUS_PLUGIN = 'janus.plugin.audiobridge';
 
 /**
@@ -33,6 +34,9 @@ class AudiobridgePlugin extends EventEmitter {
     this.__maxBitrate = 48;
     this.__debugEnabled = debug;
 
+    // hark stream
+    this.__harkStream = null;
+
     this.__pluginHandle = null;
   }
 
@@ -46,21 +50,21 @@ class AudiobridgePlugin extends EventEmitter {
       plugin: JANUS_PLUGIN,
       // Called when plugin attached
       success: pluginHandle => {
-        this.__debug('plugin attached');
+        this._debug('plugin attached');
 
         this.__pluginHandle = pluginHandle;
-        this.__joinChannel();
+        this._joinChannel();
       },
 
       // Triggered after `getUserMedia` is called (isAllowed=true means that request for user media is accepted)
       consentDialog: isAllowed => {
-        this.__debug('Consent dialog', isAllowed);
+        this._debug('Consent dialog', isAllowed);
       },
 
       // Notifies that WebRTC connection between the computer and Janus is established (or is down)
       // reason is presented in some cases when state = false
       webrtcState: (state, reason) => {
-        this.__debug('webrtcState', state, reason);
+        this._debug('webrtcState', state, reason);
       },
 
       // Presents an ICE state for that moment
@@ -69,19 +73,20 @@ class AudiobridgePlugin extends EventEmitter {
       // 'connected', 'completed': Path for media stream is available
       // 'disconnected', 'failed': Media path is not available
       iceState: state => {
-        this.__debug('iceState', state);
+        this._debug('iceState', state);
       },
 
       // Triggered when Janus starts or stops receiving client's media
       mediaState: (type, isActive) => {
-        this.__debug('mediaState', type, isActive);
+        this._debug('mediaState', type, isActive);
+        this.emit('media-state', isActive);
       },
 
       // Notifies when some of packets are lost
       // uplink=true when some of packets from Janus are lost
       // uplink=false when all of our packets is not received by Janus
       slowLink: uplink => {
-        this.__debug('slowLink', uplink);
+        this._debug('slowLink', uplink);
       },
 
       // Handle a message from plugin
@@ -90,45 +95,77 @@ class AudiobridgePlugin extends EventEmitter {
 
         switch (true) {
           case event === 'joined':
-            this.__onJoinedChannel(message);
+            this._onJoinedChannel(message);
             break;
           case jsep !== undefined && jsep !== null:
-            this.__onRemoteJsep(jsep);
+            this._onRemoteJsep(jsep);
             break;
           default:
-            this.__debug('message', message, jsep);
+            this._debug('message', message, jsep);
         }
       },
 
       // Local audio stream is available
       onlocalstream: stream => {
-        this.__debug('localstream', stream);
+        this._debug('localstream', stream);
+        this._onLocalAudioStream(stream);
       },
 
       // Remote audio stream is available
       onremotestream: stream => {
-        this.__debug('remotestream', stream);
+        this._debug('remotestream', stream);
         this.emit('remote-audio-stream', stream);
       },
 
       // Data Channel is available
       ondataopen: () => {
-        this.__debug('dataopen');
+        this._debug('dataopen');
       },
 
       // Some data is received through the Data Channel
       ondata: data => {
-        this.__debug('data', data);
+        this._debug('data', data);
       },
 
       // WebRTC connection with the plugin was closed
       oncleanup: () => {
-        this.__debug('cleanup');
+        this._debug('cleanup');
       },
 
       // Plugin is detached (it can't be used)
       detached: () => {
-        this.__debug('detached');
+        this._debug('detached');
+      },
+    });
+  }
+
+  /**
+   * Detached audiobridge plugin from Janus
+   * @returns {undefined}
+   */
+  detach() {
+    if (this.__pluginHandle) {
+      this.__pluginHandle.detach();
+      this.__pluginHandle = null;
+    }
+    if (this.__harkStream) {
+      this.__harkStream.removeAllListeners('speaking');
+      this.__harkStream.removeAllListeners('stopped_speaking');
+      this.__harkStream.stop();
+      this.__harkStream = null;
+    }
+  }
+
+  /**
+   * Mute/unmute current participant
+   * @param {boolean} muted Should the participant be muted
+   * @returns {undefined}
+   */
+  setMuting(muted) {
+    this.__pluginHandle.send({
+      message: {
+        request: 'configure',
+        muted: muted,
       },
     });
   }
@@ -137,7 +174,7 @@ class AudiobridgePlugin extends EventEmitter {
    * Send message about join to the channel
    * @returns {undefined}
    */
-  __joinChannel() {
+  _joinChannel() {
     this.__pluginHandle.send({
       message: {
         request: 'join',
@@ -153,7 +190,7 @@ class AudiobridgePlugin extends EventEmitter {
    * @private
    * @returns {undefined}
    */
-  __debug() {
+  _debug() {
     if (this.__debugEnabled) {
       console.log('Audiobridge plugin: ', ...arguments);
     }
@@ -164,8 +201,8 @@ class AudiobridgePlugin extends EventEmitter {
    * @param {object} message Janus event message object
    * @returns {undefined}
    */
-  __onJoinedChannel(message) {
-    this.__debug('room joined', message);
+  _onJoinedChannel(message) {
+    this._debug('room joined', message);
 
     this.__pluginHandle.createOffer({
       media: {
@@ -182,7 +219,7 @@ class AudiobridgePlugin extends EventEmitter {
         });
       },
       error: error => {
-        this.__debug('create offer error', error);
+        this._debug('create offer error', error);
       },
     });
   }
@@ -192,9 +229,24 @@ class AudiobridgePlugin extends EventEmitter {
    * @param {object} jsep Remote jsep object
    * @returns {undefined}
    */
-  __onRemoteJsep(jsep) {
-    this.__debug('handle remote jsep', jsep);
+  _onRemoteJsep(jsep) {
+    this._debug('handle remote jsep', jsep);
     this.__pluginHandle.handleRemoteJsep({ jsep });
+  }
+
+  /**
+   * Handles local audio stream
+   * @param {object} stream Audio stream object
+   * @returns {undefined}
+   */
+  _onLocalAudioStream(stream) {
+    this.__harkStream = hark(stream, {});
+    this.__harkStream.on('speaking', () => {
+      this.emit('start-speaking');
+    });
+    this.__harkStream.on('stopped_speaking', () => {
+      this.emit('stop-speaking');
+    });
   }
 };
 
