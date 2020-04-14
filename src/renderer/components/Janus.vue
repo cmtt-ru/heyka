@@ -13,20 +13,23 @@
 
 <script>
 import JanusWrapper from '@classes/JanusWrapper.js';
+import { mapState } from 'vuex';
+
 export default {
   name: 'Janus',
   data() {
     return {
-      janus: {
-        url: 'http://localhost:8088/janus',
-        workspaceToken: 'ba4a0f7a5e91ff278bcffa0e2000977ee40cc901cc75e8a663',
-        channelToken: '8126d4768463b7a55bfa6fef2f36c9ffebf832a5815b6591c9',
-        audioRoomId: 2749700786267343,
-        videoRoomId: 7722212745590146,
-      },
       janusWrapper: null,
-      userId: 'randomUserId',
     };
+  },
+  computed: {
+    ...mapState('janus', {
+      janusOptions: state => state,
+    }),
+    ...mapState('me', {
+      selectedChannelId: 'selectedChannelId',
+      userId: 'id',
+    }),
   },
   async created() {
     await JanusWrapper.init();
@@ -35,7 +38,7 @@ export default {
   methods: {
     async selectChannel() {
       const janusWrapper = new JanusWrapper({
-        ...this.janus,
+        ...this.janusOptions,
         userId: this.userId,
         debug: true,
       });
@@ -49,7 +52,7 @@ export default {
     },
     unselectChannel() {
       if (this.janusWrapper) {
-        this.janusWrapper.__disconnect();
+        this.janusWrapper.disconnect();
         this.janusWrapper = null;
       }
     },
@@ -72,6 +75,24 @@ export default {
     },
     log() {
       console.log('JANUS.VUE: ', ...arguments);
+    },
+  },
+  watch: {
+    selectedChannelId(id, oldId) {
+      if (id === null || id === '') {
+        this.unselectChannel();
+
+        return this.log('Channel is deselected');
+      }
+
+      if (oldId === null || oldId === '') {
+        this.selectChannel();
+
+        return this.log('Channel is selected for the first time');
+      }
+
+      this.unselectChannel();
+      this.selectChannel();
     },
   },
 };

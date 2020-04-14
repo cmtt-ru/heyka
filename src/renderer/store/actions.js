@@ -49,10 +49,22 @@ export default {
    * @param {string} id – channel id
    * @return {object} selected channel
    */
-  async selectChannel({ commit, getters }, id) {
+  async selectChannel({ commit, getters, state }, id) {
     const response = await API.channel.select(id, getters['me/getMediaState']);
 
+    if (state.me.selectedChannelId !== null && state.me.selectedChannelId !== '') {
+      commit('channels/REMOVE_USER', {
+        userId: state.me.id,
+        channelId: state.me.selectedChannelId,
+      });
+    }
     commit('janus/SET_OPTIONS', response.connectionOptions);
+    commit('channels/ADD_USER', {
+      userId: state.me.id,
+      channelId: id,
+      userMediaState: getters['me/getMediaState'],
+    });
+    commit('me/SET_CHANNEL_ID', id);
   },
 
   /**
@@ -61,8 +73,14 @@ export default {
    * @param {string} id – channel id
    * @return {object} unselected channel
    */
-  async unselectChannel({ commit }, id) {
-    return API.channel.unselect(id);
+  async unselectChannel({ commit, state }, id) {
+    await API.channel.unselect(id);
+
+    commit('channels/REMOVE_USER', {
+      userId: state.me.id,
+      channelId: id,
+    });
+    commit('me/SET_CHANNEL_ID', null);
   },
 
 };

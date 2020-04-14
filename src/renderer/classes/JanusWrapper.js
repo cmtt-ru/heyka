@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events';
 import Janus from './janus';
 import AudiobridgePlugin from './AudiobridgePlugin';
+// eslint-disable-next-line no-unused-vars
+import adapter from 'webrtc-adapter';
 
 const ERROR_CODES = {
   SERVER_DOWN: 'Server is down',
@@ -25,9 +27,9 @@ class JanusWrapper extends EventEmitter {
    * @param {boolean} config.debug Enable or disable debug output
    */
   constructor({
-    url,
-    workspaceToken,
-    channelToken,
+    janusServerUrl,
+    janusAuthToken,
+    channelAuthToken,
     audioRoomId,
     videoRoomId,
     userId,
@@ -36,9 +38,9 @@ class JanusWrapper extends EventEmitter {
     super();
 
     // Initialize private variables
-    this.__url = url;
-    this.__workspaceToken = workspaceToken;
-    this.__channelToken = channelToken;
+    this.__url = janusServerUrl + ':8088/janus';
+    this.__workspaceToken = janusAuthToken;
+    this.__channelToken = channelAuthToken;
     this.__audioRoomId = audioRoomId;
     this.__videoRoomId = videoRoomId;
     this.__userId = userId;
@@ -58,7 +60,10 @@ class JanusWrapper extends EventEmitter {
    * @return {Promise<null>}
    */
   static init() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (!Janus.isWebrtcSupported()) {
+        reject(new Error('WebRTC is not supported'));
+      }
       Janus.init({
         debug: true,
         dependencies: Janus.useDefaultDependencies(),
@@ -87,7 +92,7 @@ class JanusWrapper extends EventEmitter {
    */
   async join() {
     /** Connect to Janus */
-    await this.__connect();
+    await this._connect();
 
     const audiobridgePlugin = new AudiobridgePlugin({
       janus: this.__janus,
@@ -107,7 +112,7 @@ class JanusWrapper extends EventEmitter {
    * @private
    * @returns {Promise<null>}
    */
-  __connect() {
+  _connect() {
     return new Promise((resolve, reject) => {
       let isFullfilled = false;
 
@@ -129,7 +134,7 @@ class JanusWrapper extends EventEmitter {
             internalError = ERROR_CODES.UNKNOW;
           }
 
-          this.__debug('Janus connection error', cause);
+          this._debug('Janus connection error', cause);
           if (isFullfilled) {
             this.emit('connection-error', internalError);
 
@@ -150,7 +155,7 @@ class JanusWrapper extends EventEmitter {
    * @private
    * @returns {undefined}
    */
-  __disconnect() {
+  disconnect() {
     if (!this.__janus) {
       return;
     }
@@ -165,7 +170,7 @@ class JanusWrapper extends EventEmitter {
    * @private
    * @returns {undefined}
    */
-  __debug() {
+  _debug() {
     if (this.__debug) {
       console.log('JANUS WRAPPER: ', ...arguments);
     }
