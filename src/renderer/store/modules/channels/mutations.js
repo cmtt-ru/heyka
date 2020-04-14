@@ -1,4 +1,5 @@
 import { searchIndexByKey } from '@libs/arrays';
+import Vue from 'vue';
 
 export default {
 
@@ -60,10 +61,10 @@ export default {
     const userIndex = searchIndexByKey(users, 'userId', userId);
 
     if (userIndex !== undefined) {
-      users[userIndex] = {
+      Vue.set(users, userIndex, {
         ...users[userIndex],
         ...userMediaState,
-      };
+      });
     }
   },
 };
