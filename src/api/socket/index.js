@@ -84,6 +84,7 @@ function bindErrorEvents() {
 
   client.on('reconnect', data => {
     console.log('reconnect', data);
+    authorize();
   });
 
   client.on('error', data => {
@@ -138,6 +139,12 @@ function bindChannelEvents() {
 
   /** Unselect channel */
   client.on(eventNames.userUnselectedChannel, data => {
+    // Перемещение пользователя между каналами осуществляется
+    // методами selectChannel/unselectChannel
+    if (data.userId === store.state.me.id) {
+      return;
+    }
+
     const userId = data.userId;
 
     dataBuffer.add(userId, data);
@@ -145,12 +152,17 @@ function bindChannelEvents() {
     dataBuffer.delay(userId, () => {
       dataBuffer.remove(userId);
       store.commit('channels/REMOVE_USER', data);
-      store.commit('me/SET_CHANNEL_ID', null);
     });
   });
 
   /** Select channel */
   client.on(eventNames.userSelectedChannel, data => {
+    // Перемещение пользователя между каналами осуществляется
+    // методами selectChannel/unselectChannel
+    if (data.userId === store.state.me.id) {
+      return;
+    }
+
     const userId = data.userId;
     const unselectData = dataBuffer.get(userId);
 
@@ -160,7 +172,6 @@ function bindChannelEvents() {
     }
 
     store.commit('channels/ADD_USER', data);
-    store.commit('me/SET_CHANNEL_ID', data.channelId);
   });
 }
 
