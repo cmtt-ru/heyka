@@ -29,9 +29,6 @@
         </div>
 
       </div>
-
-      <janus />
-
     </div>
   </div>
 </template>
@@ -40,15 +37,11 @@
 
 import Vue from 'vue';
 import Vuebar from 'vuebar';
-import Janus from '@components/Janus.vue';
 import '@styles/vuebar.styl';
 
 Vue.use(Vuebar);
 
 export default {
-  components: {
-    Janus,
-  },
   data() {
     return {};
   },

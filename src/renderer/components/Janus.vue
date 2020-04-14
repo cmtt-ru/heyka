@@ -1,12 +1,5 @@
 <template>
-  <div class="l-p-8">
-    <br />
-    Janus
-    <br />
-    <button @click="selectChannel">Select channel</button>
-    <br />
-    <button @click="unselectChannel">Unselect channel</button>
-    <br />
+  <div>
     <audio ref="audio" autoplay muted/>
   </div>
 </template>
