@@ -1,12 +1,19 @@
 <template>
-  <router-view></router-view>
+  <div>
+    <janus />
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
+import Janus from '@components/Janus.vue';
 import * as sockets from '@api/socket';
 
 export default {
+  components: {
+    Janus,
+  },
   data() {
     return {
       deepLink: {},
