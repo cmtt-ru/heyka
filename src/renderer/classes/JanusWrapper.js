@@ -65,7 +65,7 @@ class JanusWrapper extends EventEmitter {
         reject(new Error('WebRTC is not supported'));
       }
       Janus.init({
-        debug: true,
+        debug: this.__debug,
         dependencies: Janus.useDefaultDependencies(),
         callback: function () {
           resolve();
@@ -99,7 +99,7 @@ class JanusWrapper extends EventEmitter {
       room: this.__audioRoomId,
       token: this.__channelToken,
       userId: this.__userId,
-      debug: true,
+      debug: this.__debug,
     });
 
     audiobridgePlugin.attach();

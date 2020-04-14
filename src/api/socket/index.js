@@ -84,6 +84,7 @@ function bindErrorEvents() {
 
   client.on('reconnect', data => {
     console.log('reconnect', data);
+    authorize();
   });
 
   client.on('error', data => {

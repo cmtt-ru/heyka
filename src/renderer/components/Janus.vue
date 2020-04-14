@@ -42,11 +42,16 @@ export default {
     this.log('JanusWrapper was initialized');
   },
   methods: {
+    /**
+     * Join to the Janus channel
+     * Subscribe for event from JanusWrapper
+     * @returns {undefined}
+     */
     async selectChannel() {
       const janusWrapper = new JanusWrapper({
         ...this.janusOptions,
         userId: this.userId,
-        debug: true,
+        debug: process.env.VUE_APP_JANUS_DEBUG === 'true',
       });
 
       this.janusWrapper = janusWrapper;
@@ -58,6 +63,11 @@ export default {
 
       await janusWrapper.join();
     },
+
+    /**
+     * Leave the Janus channel
+     * @returns {undefined}
+     */
     unselectChannel() {
       if (this.janusWrapper) {
         this.janusWrapper.removeAllListeners('connection-error');
@@ -67,10 +77,22 @@ export default {
         this.janusWrapper = null;
       }
     },
+
+    /**
+     * Handles remote audio stream
+     * @param {object} stream remote audio stream
+     * @returns {undefined}
+     */
     onRemoteAudioStream(stream) {
       this.log('Attach audio stream to the audio element');
       JanusWrapper.attachMediaStream(this.$refs.audio, stream);
     },
+
+    /**
+     * Handles Janus connection error
+     * @param {string} errorCode Janus error code
+     * @returns {undefined}
+     */
     onConnectionError(errorCode) {
       switch (errorCode) {
         case JanusWrapper.errors.SERVER_DOWN:
@@ -84,6 +106,12 @@ export default {
           break;
       }
     },
+
+    /**
+     * Handles event when media connection activity is changed
+     * @param {boolean} isActive Is media connection active
+     * @returns {undefined}
+     */
     onAudioStreamActive(isActive) {
       if (isActive) {
         if (this.microphone) {
@@ -94,6 +122,12 @@ export default {
         }
       }
     },
+
+    /**
+     * Handles user speaking state changes
+     * @param {boolean} isSpeaking is user speaking
+     * @returns {undefined}
+     */
     onSpeakingChange(isSpeaking) {
       // ignore speaking state if you are muted
       if (!this.microphone) {
@@ -106,11 +140,22 @@ export default {
         });
       }
     },
+
+    /**
+     * Internal log function
+     * @returns {nothing}
+     */
     log() {
       console.log('JANUS.VUE: ', ...arguments);
     },
   },
   watch: {
+    /**
+     * Reacts on channel is changed
+     * @param {string} id New channel id
+     * @param {string} oldId Previous channel id
+     * @returns {nothing}
+     */
     selectedChannelId(id, oldId) {
       if (id === null || id === '') {
         this.unselectChannel();
@@ -127,12 +172,24 @@ export default {
       this.unselectChannel();
       this.selectChannel();
     },
+
+    /**
+     * Reacts on microphone state is changed
+     * @param {boolean} state Is microphone enabled
+     * @returns {undefined}
+     */
     microphone(state) {
       if (!this.janusWrapper) {
         return;
       }
       this.janusWrapper.setMuting(!state);
     },
+
+    /**
+     * Reacts on speakers state is changed
+     * @param {boolean} state Is speakers enabled
+     * @returns {undefined}
+     */
     speakers(state) {
       this.$refs.audio.muted = !state;
     },
