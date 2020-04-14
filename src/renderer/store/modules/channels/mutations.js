@@ -1,4 +1,5 @@
 import { searchIndexByKey } from '@libs/arrays';
+import Vue from 'vue';
 
 export default {
 
@@ -40,7 +41,10 @@ export default {
   ADD_USER(state, data) {
     const users = state.collection[data.channelId].users;
 
-    users.push(data);
+    users.push({
+      userId: data.userId,
+      ...data.userMediaState,
+    });
   },
 
   /**
@@ -57,7 +61,10 @@ export default {
     const userIndex = searchIndexByKey(users, 'userId', userId);
 
     if (userIndex !== undefined) {
-      users[userId] = Object.assign(users[userId], userMediaState);
+      Vue.set(users, userIndex, {
+        ...users[userIndex],
+        ...userMediaState,
+      });
     }
   },
 };
