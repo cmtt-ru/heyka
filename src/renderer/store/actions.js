@@ -83,4 +83,14 @@ export default {
     commit('me/SET_CHANNEL_ID', null);
   },
 
+  /**
+   * Set socket connected
+   * @param {object} context store context
+   * @param {boolean} value is socket connected
+   * @returns {void}
+   */
+  async setSocketConnected({ commit }, value) {
+    commit('SET_SOCKET_CONNECTED', value);
+  },
+
 };

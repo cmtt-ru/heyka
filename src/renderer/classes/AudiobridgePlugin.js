@@ -37,6 +37,7 @@ class AudiobridgePlugin extends EventEmitter {
     // hark stream
     this.__harkStream = null;
 
+    this.__detached = false;
     this.__pluginHandle = null;
   }
 
@@ -50,6 +51,9 @@ class AudiobridgePlugin extends EventEmitter {
       plugin: JANUS_PLUGIN,
       // Called when plugin attached
       success: pluginHandle => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('plugin attached');
 
         this.__pluginHandle = pluginHandle;
@@ -58,12 +62,18 @@ class AudiobridgePlugin extends EventEmitter {
 
       // Triggered after `getUserMedia` is called (isAllowed=true means that request for user media is accepted)
       consentDialog: isAllowed => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('Consent dialog', isAllowed);
       },
 
       // Notifies that WebRTC connection between the computer and Janus is established (or is down)
       // reason is presented in some cases when state = false
       webrtcState: (state, reason) => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('webrtcState', state, reason);
       },
 
@@ -73,11 +83,17 @@ class AudiobridgePlugin extends EventEmitter {
       // 'connected', 'completed': Path for media stream is available
       // 'disconnected', 'failed': Media path is not available
       iceState: state => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('iceState', state);
       },
 
       // Triggered when Janus starts or stops receiving client's media
       mediaState: (type, isActive) => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('mediaState', type, isActive);
         this.emit('media-state', isActive);
       },
@@ -86,11 +102,17 @@ class AudiobridgePlugin extends EventEmitter {
       // uplink=true when some of packets from Janus are lost
       // uplink=false when all of our packets is not received by Janus
       slowLink: uplink => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('slowLink', uplink);
       },
 
       // Handle a message from plugin
       onmessage: (message, jsep) => {
+        if (this.__detached) {
+          return;
+        }
         const event = message.audiobridge;
 
         switch (true) {
@@ -107,33 +129,49 @@ class AudiobridgePlugin extends EventEmitter {
 
       // Local audio stream is available
       onlocalstream: stream => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('localstream', stream);
         this._onLocalAudioStream(stream);
       },
 
       // Remote audio stream is available
       onremotestream: stream => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('remotestream', stream);
         this.emit('remote-audio-stream', stream);
       },
 
       // Data Channel is available
       ondataopen: () => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('dataopen');
       },
 
       // Some data is received through the Data Channel
       ondata: data => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('data', data);
       },
 
       // WebRTC connection with the plugin was closed
       oncleanup: () => {
+        if (this.__detached) {
+          return;
+        }
         this._debug('cleanup');
       },
 
       // Plugin is detached (it can't be used)
       detached: () => {
+        this.__detached = true;
         this._debug('detached');
       },
     });
@@ -149,8 +187,6 @@ class AudiobridgePlugin extends EventEmitter {
       this.__pluginHandle = null;
     }
     if (this.__harkStream) {
-      this.__harkStream.removeAllListeners('speaking');
-      this.__harkStream.removeAllListeners('stopped_speaking');
       this.__harkStream.stop();
       this.__harkStream = null;
     }
@@ -240,7 +276,9 @@ class AudiobridgePlugin extends EventEmitter {
    * @returns {undefined}
    */
   _onLocalAudioStream(stream) {
-    this.__harkStream = hark(stream, {});
+    this.__harkStream = hark(stream, {
+      interval: 75,
+    });
     this.__harkStream.on('speaking', () => {
       this.emit('start-speaking');
     });

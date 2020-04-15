@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       janusWrapper: null,
+      socketDisconnectedDelay: null,
     };
   },
   computed: {
@@ -29,6 +30,7 @@ export default {
       screen: state => state.mediaState.screen,
       camera: state => state.mediaState.camera,
     }),
+    ...mapState([ 'isSocketConnected' ]),
   },
   async created() {
     await JanusWrapper.init();
@@ -135,6 +137,14 @@ export default {
     },
 
     /**
+     * Handles socket is disconnected
+     * @returns {void}
+     */
+    onSocketDisconnected() {
+      this.unselectChannel();
+    },
+
+    /**
      * Internal log function
      * @returns {nothing}
      */
@@ -185,6 +195,34 @@ export default {
      */
     speakers(state) {
       this.$refs.audio.muted = !state;
+    },
+
+    isSocketConnected(value) {
+      const disconnectedReactionDelay = 1000; // milliseconds
+      const isChannelSelected = this.selectedChannelId !== '' && this.selectedChannelId !== null;
+
+      if (!isChannelSelected) {
+        return;
+      }
+
+      if (!value) {
+        if (this.socketDisconnectedDelay) {
+          clearTimeout(this.socketDisconnectedDelay);
+          this.socketDisconnectedDelay = null;
+        }
+        this.socketDisconnectedDelay = setTimeout(() => {
+          this.onSocketDisconnected();
+        }, disconnectedReactionDelay);
+      } else {
+        if (this.socketDisconnectedDelay) {
+          clearTimeout(this.socketDisconnectedDelay);
+          this.socketDisconnectedDelay = null;
+        }
+
+        if (!this.janusWrapper) {
+          this.selectChannel();
+        }
+      }
     },
   },
 };
