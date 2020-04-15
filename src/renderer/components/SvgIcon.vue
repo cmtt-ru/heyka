@@ -115,7 +115,7 @@ export default {
 
     /**
      * Set stroke width depending on icon width
-     * @returns {String} stroke width
+     * @returns {string} stroke width
      */
     strokeWidth() {
       if ({}.hasOwnProperty.call(ICON_STROKES, this.dimension(this.width))) {
@@ -127,7 +127,7 @@ export default {
 
     /**
      * Import icon from svg-sprite
-     * @returns {String} icon url
+     * @returns {string} icon url
      */
     iconPath() {
       let icon = require(`@assets/icons/${this.name}.svg`);
@@ -141,7 +141,7 @@ export default {
 
     /**
      * Attach additional classes to icon elements for possible future styling
-     * @returns {String} 'icon' and 'icon-#icon_name#' as classes
+     * @returns {string} 'icon' and 'icon-#icon_name#' as classes
      */
     classList() {
       return 'icon icon--' + this.name;
@@ -153,8 +153,8 @@ export default {
 
     /**
      * Return width/height in px if "size" prop is defined. Otherwise set width/height as passed in props "width/height"
-     * @param {String} value width/height in px
-     * @returns {Number} correct width/height in px
+     * @param {string} value width/height in px
+     * @returns {number} correct width/height in px
      */
     dimension(value) {
       if (this.size) {
