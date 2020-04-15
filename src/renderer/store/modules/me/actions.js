@@ -22,8 +22,8 @@ export default {
    * Set our new media state
    *
    * @param {function} commit – store commit
+   * @param {MediaState} mediaState – new mediaState
    * @param {function} getters – store getters
-   * @param {object} mediaState – new mediaState
    * @return {void}
    */
   async setMediaState({ commit, getters }, mediaState) {

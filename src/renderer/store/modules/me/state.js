@@ -4,48 +4,39 @@ const meStore = new Store({
   name: 'store-module-me',
 });
 
+/**
+ * @typedef {object} MeState
+ * @property {string} id – my id
+ * @property {string} selectedWorkspaceId – selected workspace id
+ * @property {string} selectedChannelId – selected channel id
+ * @property {MediaState} mediaState – my media state
+ * @property {array} pokes – list of pokes
+ */
+
+/**
+ * Me state
+ * @returns {MeState}
+ */
 const state = () => {
+  /**
+   * @type MediaState
+   */
+  const initialMediaState = meStore.get('mediaState', {
+    microphone: false,
+    speakers: false,
+    screen: false,
+    camera: false,
+    speaking: false,
+  });
+
+  /**
+   * @namespace MeState
+   */
   return {
-    /**
-     * Authorized user id
-     * @type {string}
-     */
     id: '',
-
-    /**
-     * Selected workspace id
-     * @type {string}
-     */
     selectedWorkspaceId: meStore.get('selectedWorkspaceId'),
-
-    /**
-     * Selected channel id
-     * @type {string}
-     */
     selectedChannelId: '',
-
-    /**
-     * Authorized user's media state
-     * @type {{
-     *   speaking: boolean,
-     *   speakers: boolean,
-     *   screen: boolean,
-     *   microphone: boolean,
-     *   camera: boolean
-     * }}
-     */
-    mediaState: meStore.get('mediaState', {
-      microphone: false,
-      speakers: false,
-      screen: false,
-      camera: false,
-      speaking: false,
-    }),
-
-    /**
-     * Authorized user's pokes list
-     * @type {array}
-     */
+    mediaState: initialMediaState,
     pokes: [],
   };
 };
