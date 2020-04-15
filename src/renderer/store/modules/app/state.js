@@ -11,7 +11,7 @@
  * @property {string} theme.name – theme name
  * @property {boolean} theme.auto – theme auto choose
  *
- * @property {boolean} devices – list of user devices
+ * @property {object} devices – list of user devices
  * @property {boolean} devices.speakers – speakers
  * @property {boolean} devices.microphones – microphones
  * @property {boolean} devices.webcams – web cameras
