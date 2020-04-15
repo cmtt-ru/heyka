@@ -1,11 +1,10 @@
 import { sortAny } from '@libs/arrays';
 
 export default {
-
   /**
    * Get sorted channels
    *
-   * @param {object} state – channels module state
+   * @param {ChannelState} state – channels module state
    * @return {array}
    */
   getChannels: state => {
@@ -21,7 +20,7 @@ export default {
   /**
    * Get channel by id
    *
-   * @param {object} state – channels module state
+   * @param {ChannelState} state – channels module state
    * @return {object}
    */
   getChannelById: state => id => {
