@@ -141,7 +141,10 @@ function bindChannelEvents() {
   client.on(eventNames.userUnselectedChannel, data => {
     // Перемещение пользователя между каналами осуществляется
     // методами selectChannel/unselectChannel
-    if (data.userId === store.state.me.id) {
+    const myId = store.state.me.id;
+    const myChannel = store.state.me.selectedChannelId;
+
+    if (data.userId === myId && data.channelId === myChannel) {
       return;
     }
 
@@ -159,7 +162,10 @@ function bindChannelEvents() {
   client.on(eventNames.userSelectedChannel, data => {
     // Перемещение пользователя между каналами осуществляется
     // методами selectChannel/unselectChannel
-    if (data.userId === store.state.me.id) {
+    const myId = store.state.me.id;
+    const myChannel = store.state.me.selectedChannelId;
+
+    if (data.userId === myId && data.channelId === myChannel) {
       return;
     }
 
