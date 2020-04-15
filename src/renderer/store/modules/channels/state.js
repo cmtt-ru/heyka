@@ -6,7 +6,7 @@
  * @property {boolean} isPrivate – private status
  * @property {string} createdAt – creation date
  * @property {string} updatedAt – update date
- * @property {Array.<MediaState>} users – array of user's media state
+ * @property {MediaState[]} users – array of user's media state
  */
 
 /**

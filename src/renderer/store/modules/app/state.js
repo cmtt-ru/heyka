@@ -23,7 +23,7 @@
  */
 const state = () => {
   /**
-   * @type AppState
+   * @namespace AppState
    */
   return {
     appName: 'Heyka Desktop',
