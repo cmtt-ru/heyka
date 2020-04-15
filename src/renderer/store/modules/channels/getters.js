@@ -5,7 +5,7 @@ export default {
    * Get sorted channels
    *
    * @param {ChannelState} state – channels module state
-   * @return {array}
+   * @returns {array}
    */
   getChannels: state => {
     return Object.values(state.collection).sort(sortAny([
@@ -21,7 +21,7 @@ export default {
    * Get channel by id
    *
    * @param {ChannelState} state – channels module state
-   * @return {object}
+   * @returns {object}
    */
   getChannelById: state => id => {
     return state.collection[id];

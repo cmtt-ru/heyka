@@ -11,7 +11,7 @@ export default {
    *
    * @param {function} commit – store commit
    * @param {string} id – workspace id
-   * @return {void}
+   * @returns {void}
    */
   setSelectedWorkspaceId({ commit }, id) {
     commit('SET_WORKSPACE_ID', id);
@@ -24,7 +24,7 @@ export default {
    * @param {function} commit – store commit
    * @param {MediaState} mediaState – new mediaState
    * @param {function} getters – store getters
-   * @return {void}
+   * @returns {void}
    */
   async setMediaState({ commit, getters }, mediaState) {
     const selectedChannelId = getters['getSelectedChannelId'];

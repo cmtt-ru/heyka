@@ -5,7 +5,7 @@ export default {
    * Get all users from workspace
    *
    * @param {UserState} state – user module state
-   * @return {Array.<User>}
+   * @returns {Array.<User>}
    */
   getAllUsers: state => {
     /** @type {Array.<User>} */
@@ -22,7 +22,7 @@ export default {
    * Get user info by his id
    *
    * @param {UserState} state – user module state
-   * @return {function(*): User}
+   * @returns {function(*): User}
    */
   getUserById: state => id => {
     return state.collection[id] || null;

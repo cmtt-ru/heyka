@@ -3,7 +3,7 @@ export default {
    * Get user id
    *
    * @param {MeState} state – module me state
-   * @return {string}
+   * @returns {string}
    */
   getMyId(state) {
     return state.id;
@@ -13,7 +13,7 @@ export default {
    * Get selected workspace id
    *
    * @param {MeState} state – me module state
-   * @return {string}
+   * @returns {string}
    */
   getSelectedWorkspaceId: state => {
     return state.selectedWorkspaceId;
@@ -23,7 +23,7 @@ export default {
    * Get media state
    *
    * @param {MeState} state – me module state
-   * @return {object}
+   * @returns {object}
    */
   getMediaState: state => {
     return state.mediaState;
@@ -33,7 +33,7 @@ export default {
    * Get selected channel id
    *
    * @param {MeState} state – me module state
-   * @return {string}
+   * @returns {string}
    */
   getSelectedChannelId: state => {
     return state.selectedChannelId;
