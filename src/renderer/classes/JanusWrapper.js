@@ -176,7 +176,12 @@ class JanusWrapper extends EventEmitter {
     if (!this.__janus.isConnected()) {
       return;
     }
+    if (this.__audiobridgePlugin) {
+      this.__audiobridgePlugin.detach();
+      this.__audiobridgePlugin = null;
+    }
     this.__janus.destroy();
+    this.__janus = null;
   }
 
   /**

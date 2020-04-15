@@ -62,6 +62,7 @@ async function authorize() {
 
     client.on(eventNames.authSuccess, data => {
       console.log('socket auth success', data);
+      store.dispatch('setSocketConnected', true);
       resolve(data);
     });
 
@@ -80,6 +81,7 @@ async function authorize() {
 function bindErrorEvents() {
   client.on('disconnect', data => {
     console.log('disconnect', data);
+    store.dispatch('setSocketConnected', false);
   });
 
   client.on('reconnect', data => {
@@ -141,10 +143,7 @@ function bindChannelEvents() {
   client.on(eventNames.userUnselectedChannel, data => {
     // Перемещение пользователя между каналами осуществляется
     // методами selectChannel/unselectChannel
-    const myId = store.state.me.id;
-    const myChannel = store.state.me.selectedChannelId;
-
-    if (data.userId === myId && data.channelId === myChannel) {
+    if (data.socketId === client.id) {
       return;
     }
 
@@ -160,12 +159,7 @@ function bindChannelEvents() {
 
   /** Select channel */
   client.on(eventNames.userSelectedChannel, data => {
-    // Перемещение пользователя между каналами осуществляется
-    // методами selectChannel/unselectChannel
-    const myId = store.state.me.id;
-    const myChannel = store.state.me.selectedChannelId;
-
-    if (data.userId === myId && data.channelId === myChannel) {
+    if (data.socketId === client.id) {
       return;
     }
 
