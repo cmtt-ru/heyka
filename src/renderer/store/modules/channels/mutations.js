@@ -57,7 +57,7 @@ export default {
     const userIndex = searchIndexByKey(users, 'userId', userId);
 
     if (userIndex !== undefined) {
-      users[userId] = Object.assign(users[userId], userMediaState);
+      users[userIndex] = Object.assign(users[userIndex], userMediaState);
     }
   },
 };
