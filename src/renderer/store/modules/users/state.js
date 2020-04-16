@@ -1,63 +1,32 @@
+/**
+ * @typedef {object} User
+ * @property {string} userId – user id
+ * @property {string} name – user name
+ * @property {string} email – user email
+ * @property {boolean} isEmailVerified – email verification status
+ * @property {string} avatar – leonardo url
+ * @property {string} createdAt – user creation date
+ * @property {string} updatedAt – user update date
+ * @property {string} onlineStatus – user online status
+ */
+
+/**
+ * @typedef {Object.<string, User>} UserCollection
+ */
+
+/**
+ * User state
+ * @returns {UserState}
+ */
 const state = () => {
+  /**
+   * @namespace UserState
+   */
   return {
     /**
-     * List of all available users in specific workspace
+     * @type UserCollection
      */
-    collection: {
-
-      0: {
-        /**
-         * User id
-         * @type {string}
-         */
-        id: '',
-
-        /**
-         * User name
-         * @type {string}
-         */
-        name: 'test',
-
-        /**
-         * User email
-         * @type {string}
-         */
-        email: 'email@test.io',
-
-        /**
-         * Email verification status
-         * @type {boolean}
-         */
-        isEmailVerified: true,
-
-        /**
-         * User avatar
-         * Represents as leonardo url
-         * @type {string}
-         */
-        avatar: 'leonardo-image-src',
-
-        /**
-         * User creation date
-         * @type {string}
-         */
-        createdAt: '',
-
-        /**
-         * User update date
-         * @type {string}
-         */
-        updatedAt: '',
-
-        /**
-         * Online status
-         * @type {string}
-         */
-        onlineStatus: 'online',
-
-      },
-
-    },
+    collection: {},
   };
 };
 

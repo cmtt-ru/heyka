@@ -20,7 +20,7 @@ export default {
 
     /**
      * Gather all list-items that have prop "selected"
-     * @return {Array} keys of selected items
+     * @returns {array} keys of selected items
      */
     selectedChildren() {
       const selectedArray = [];

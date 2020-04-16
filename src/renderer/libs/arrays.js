@@ -3,7 +3,7 @@
  *
  * @param {array} array – source array
  * @param {string} key – specific key
- * @return {object}
+ * @returns {object}
  */
 export function mapKeys(array, key) {
   const object = {};
@@ -24,7 +24,7 @@ export function mapKeys(array, key) {
  *   name: Key to sort if "priority" of elementys is the same
  *
  * @param {array} options – sort options
- * @return {function(...[*]=)}
+ * @returns {function(...[*]=)}
  */
 export function sortByPriority(options = {
   key: 'onlineStatus',
@@ -58,7 +58,7 @@ export function sortByPriority(options = {
  *   order: 'asc' | 'desc'
  *
  * @param {array} options – sort options
- * @return {function(...[*]=)}
+ * @returns {function(...[*]=)}
  */
 export function sortAny(options = [ {
   key: 'value',
@@ -105,7 +105,7 @@ export function sortAny(options = [ {
  * @param {array} array – array of objects
  * @param {string} key – array key
  * @param {string} keyValue – value of the key
- * @return {number}
+ * @returns {number}
  */
 export function searchIndexByKey(array, key, keyValue) {
   for (let i = 0; i < array.length; i++) {

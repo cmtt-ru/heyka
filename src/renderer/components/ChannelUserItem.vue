@@ -56,7 +56,7 @@ export default {
 
     /**
      * Prepare status icons
-     * @returns {Array} array of small icons with statuses
+     * @returns {array} array of small icons with statuses
      */
     iconArray() {
       const icons = [];

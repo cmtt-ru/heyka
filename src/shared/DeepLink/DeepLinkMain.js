@@ -3,7 +3,7 @@ import { app } from 'electron';
 /**
  * Transforms deep link string to command with hash
  * @param {string} str deep link string
- * @returns {Object} object with command and hash
+ * @returns {object} object with command and hash
  */
 function deepLinkDeconstruct(str) {
   if (str.indexOf('://') === -1) { // test deeplink
@@ -27,7 +27,7 @@ function deepLinkDeconstruct(str) {
 class DeepLinkMain {
   /**
  * Inits deep link class
- * @param {Array} commandsArray legitimate commands
+ * @param {array} commandsArray legitimate commands
  * @param {object} mainWindow mainWindow instance
  * @returns {undefined} nothing
  */
@@ -119,7 +119,7 @@ class DeepLinkMain {
 
   /**
  * Get deep link params
- * @returns {Object} deep link params
+ * @returns {object} deep link params
  */
   getParams() {
     return this.params;

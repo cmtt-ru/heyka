@@ -191,8 +191,8 @@ class TrayManager {
 
   /**
  * Alternate tray icon between given icons
-  * @param {Array} iconsArray icons array
-  * @param {Number} interval interval between alternating icons
+  * @param {array} iconsArray icons array
+  * @param {number} interval interval between alternating icons
  * @returns {void}
  */
   setAnimation(iconsArray = [], interval = 500) {
@@ -224,7 +224,7 @@ class TrayManager {
 
   /**
  * Get tray icon bounds
- * @returns {Object} Rectangle - x, y, width and height of icon
+ * @returns {object} Rectangle - x, y, width and height of icon
  */
   getBounds() {
     return this.tray.getBounds();

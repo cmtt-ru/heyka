@@ -3,7 +3,7 @@ export default {
   /**
    * Sets user id
    *
-   * @param {object} state – module me state
+   * @param {MeState} state – module me state
    * @param {string} id – user id
    * @constructor
    */
@@ -14,7 +14,7 @@ export default {
   /**
    * Sets selected workspace id
    *
-   * @param {object} state – module me state
+   * @param {MeState} state – module me state
    * @param {string} id – workspace id
    * @constructor
    */
@@ -25,7 +25,7 @@ export default {
   /**
    * Sets selected channel id
    *
-   * @param {object} state – module me state
+   * @param {MeState} state – module me state
    * @param {string} id – channel id
    * @constructor
    */
@@ -36,8 +36,8 @@ export default {
   /**
    * Sets our media state
    *
-   * @param {object} state – module me state
-   * @param {object} mediaState – our media state
+   * @param {MeState} state – module me state
+   * @param {MediaState} mediaState – our media state
    * @constructor
    */
   SET_MEDIA_STATE(state, mediaState) {

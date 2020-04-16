@@ -1,12 +1,13 @@
 import { searchIndexByKey } from '@libs/arrays';
+import Vue from 'vue';
 
 export default {
 
   /**
    * Replace full collection
    *
-   * @param {object} state – vuex state
-   * @param {object} collection — channels object
+   * @param {ChannelState} state – vuex state
+   * @param {ChannelCollection} collection — channels object
    * @constructor
    */
   SET_COLLECTION(state, collection) {
@@ -16,7 +17,7 @@ export default {
   /**
    * Remove specific user from specific channel
    *
-   * @param {object} state – vuex state
+   * @param {ChannelState} state – vuex state
    * @param {string} userId – user id
    * @param {string} channelId – channel id
    * @constructor
@@ -33,23 +34,28 @@ export default {
   /**
    * Add specific user from specific channel
    *
-   * @param {object} state – vuex state
-   * @param {object} data – user data
+   * @param {ChannelState} state – vuex state
+   * @param {string} userId – user id
+   * @param {string} channelId – channel id
+   * @param {MediaState} userMediaState – user media state
    * @constructor
    */
-  ADD_USER(state, data) {
-    const users = state.collection[data.channelId].users;
+  ADD_USER(state, { userId, channelId, userMediaState }) {
+    const users = state.collection[channelId].users;
 
-    users.push(data);
+    users.push({
+      userId,
+      ...userMediaState,
+    });
   },
 
   /**
    * Set specific user media state
    *
-   * @param {object} state – vuex state
+   * @param {ChannelState} state – vuex state
    * @param {string} userId – user id
    * @param {string} channelId – channel id
-   * @param {object} userMediaState – user media state
+   * @param {MediaState} userMediaState – user media state
    * @constructor
    */
   SET_USER_MEDIA_STATE(state, { userId, channelId, userMediaState }) {
@@ -57,7 +63,10 @@ export default {
     const userIndex = searchIndexByKey(users, 'userId', userId);
 
     if (userIndex !== undefined) {
-      users[userIndex] = Object.assign(users[userIndex], userMediaState);
+      Vue.set(users, userIndex, {
+        ...users[userIndex],
+        ...userMediaState,
+      });
     }
   },
 };
