@@ -6,7 +6,7 @@ export default {
   /**
    * Initialize store and app state
    * @param {object} context – store context
-   * @return {void}
+   * @returns {void}
    */
   async initial({ commit, dispatch, getters }) {
     /** Get authenticated user */
@@ -47,7 +47,7 @@ export default {
    * Select (join) channel
    * @param {object} context – store context
    * @param {string} id – channel id
-   * @return {object} selected channel
+   * @returns {object} selected channel
    */
   async selectChannel({ commit, getters, state }, id) {
     const response = await API.channel.select(id, getters['me/getMediaState']);
@@ -71,7 +71,7 @@ export default {
    * Unselect (join) channel
    * @param {object} context – store context
    * @param {string} id – channel id
-   * @return {object} unselected channel
+   * @returns {object} unselected channel
    */
   async unselectChannel({ commit, state }, id) {
     await API.channel.unselect(id);

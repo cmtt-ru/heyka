@@ -7,7 +7,7 @@ Vue.use(VueI18n);
 
 /**
  * Loads language files
- * @returns {Array} all translation sheets
+ * @returns {array} all translation sheets
  */
 function loadLocaleMessages() {
   const locales = require.context('./translations', true, /[A-Za-z0-9-_,\s]+\.json$/i);

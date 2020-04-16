@@ -110,7 +110,7 @@ export default {
 
     /**
      * Connect to channel
-     * @param {Object} channel selected channel
+     * @param {object} channel selected channel
      * @returns {void}
      */
     async dbclickChannelHandler(channel) {

@@ -61,7 +61,7 @@ export default {
   computed: {
     /**
      * Get users array
-     * @returns {Array} array of users
+     * @returns {array} array of users
      */
     users() {
       return this.$store.getters.getUsersByChannel(this.channel.id);
@@ -69,7 +69,7 @@ export default {
 
     /**
      * Show icon corresponding to channel status
-     * @returns {String} name of correct icon
+     * @returns {string} name of correct icon
      */
     dynamicIcon() {
       if (this.channel.isPrivate) { // TODO: lifespan
@@ -81,7 +81,7 @@ export default {
 
     /**
      * Show "+x" after "MAX_USERS" amount of avatars
-     * @returns {Number} x in "+x"
+     * @returns {number} x in "+x"
      */
     extraUsers() {
       if (this.channel.users.length > MAX_USERS) {
