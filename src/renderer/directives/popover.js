@@ -13,11 +13,12 @@ class Popover {
   constructor(props) {
     const uidMax = 1000000;
 
+    this.uid = Math.round(Math.random() * uidMax);
     this.element = props.el;
     this.options = props.options;
     this.name = props.name;
     this.instance = null;
-    this.uid = Math.round(Math.random() * uidMax);
+    this.popper = null;
   }
 
   /**
@@ -50,6 +51,11 @@ class Popover {
       this.instance.$el.remove();
       this.instance = null;
     }
+
+    if (this.popper) {
+      this.popper.destroy();
+      this.popper = null;
+    }
   }
 
   /**
@@ -60,7 +66,7 @@ class Popover {
   async show() {
     await this.mount();
 
-    createPopper(this.element, this.instance.$el, {
+    this.popper = createPopper(this.element, this.instance.$el, {
 
     });
   }
@@ -94,13 +100,17 @@ export default {
     vnode.context[`_popoverInstance${popover.uid}`] = popover;
     el.setAttribute('popover-instance-uid', popover.uid);
 
+    el.clickOutsideEvent = function (event) {
+      if (!(el === event.target || el.contains(event.target))) {
+        popover.unmount();
+      }
+    };
+
     el.addEventListener('click', event => {
       popover.show();
     });
 
-    el.addEventListener('mouseleave', event => {
-      // popover.unmount();
-    });
+    document.body.addEventListener('click', el.clickOutsideEvent);
   },
 
   unbind: (el, binding, vnode) => {
@@ -109,6 +119,8 @@ export default {
     const popover = vnode.context[`_popoverInstance${popoverUid}`];
 
     popover.unmount();
+
+    document.body.removeEventListener('click', el.clickOutsideEvent);
 
     delete vnode.context[`_popoverInstance${popoverUid}`];
   },
