@@ -21,7 +21,7 @@ const STYLE_NOFADE = {
 
 /**
  * Decide if we need to update styles
- * @param {Object} el element
+ * @param {object} el element
  * @returns {void}
  */
 function elementCheck(el) {
@@ -36,8 +36,8 @@ function elementCheck(el) {
 
 /**
  * Add needed Styles to element
- * @param {Object} el element
- * @param {Object} stylesheet stylesheet
+ * @param {object} el element
+ * @param {object} stylesheet stylesheet
  * @returns {void}
  */
 function addStyles(el, stylesheet) {
@@ -48,7 +48,7 @@ function addStyles(el, stylesheet) {
 
 /**
  * We need to repaint backgroundImage if text hs changed in place
- * @param {Object} el element
+ * @param {object} el element
  * @returns {void}
  */
 function reflowElement(el) {
