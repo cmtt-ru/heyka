@@ -16,6 +16,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@popperjs/core": "^2.3.3",
     "axios": "^0.19.2",
     "chai-as-promised": "^7.1.1",
     "core-js": "^3.6.5",
