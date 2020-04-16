@@ -77,7 +77,7 @@ export default {
 
     /**
      * Get users array
-     * @returns {Array} array of users
+     * @returns {array} array of users
      */
     users() {
       return this.$store.getters.getUsersByChannel(this.channelId);
@@ -85,7 +85,7 @@ export default {
 
     /**
      * Get channel ID from route param
-     * @returns {String} – channel ID
+     * @returns {string} – channel ID
      */
     channelId() {
       return this.$route.params.id;
@@ -109,7 +109,7 @@ export default {
 
     /**
      * Show icon corresponding to channel status
-     * @returns {String} name of correct icon
+     * @returns {string} name of correct icon
      */
     dynamicIcon() {
       if (this.channel.isPrivate) { // TODO: lifespan
@@ -143,7 +143,7 @@ export default {
 
     /**
      * Dummy click handler
-     * @param {Object} user user
+     * @param {object} user user
      * @returns {void}
      */
     clickUserHandler(user) {

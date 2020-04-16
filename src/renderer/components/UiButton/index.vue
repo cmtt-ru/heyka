@@ -133,7 +133,7 @@ export default {
   computed: {
     /**
      * Check if button caption exists. Means slot exists.
-     * @return {boolean}
+     * @returns {boolean}
      */
     withCaption() {
       return this.$slots.default !== undefined;
@@ -141,7 +141,7 @@ export default {
 
     /**
      * Check if button has icon
-     * @return {boolean}
+     * @returns {boolean}
      */
     withIcon() {
       return this.icon !== null;
@@ -150,7 +150,7 @@ export default {
     /**
      * Returns all necessary class for buttons
      *
-     * @return {Object}
+     * @returns {object}
      */
     classList() {
       const baseClass = 'ui-button';
@@ -210,7 +210,7 @@ export default {
     /**
      * Compute right icon size
      *
-     * @return {number|*}
+     * @returns {number|*}
      */
     iconSizeComp() {
       if (this.iconSize) {
@@ -225,7 +225,7 @@ export default {
     /**
      * Return true if necessary to wrap icon with div
      *
-     * @return {boolean}
+     * @returns {boolean}
      */
     needToWrapIcon() {
       // eslint-disable-next-line no-magic-numbers
@@ -235,7 +235,7 @@ export default {
     /**
      * Return altered size of icon if "height" prop is provided
      *
-     * @return {Object} style with width and height of button
+     * @returns {object} style with width and height of button
      */
     buttonSize() {
       if (this.height) {

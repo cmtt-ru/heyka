@@ -3,8 +3,8 @@ export default {
   /**
    * Replace full collection
    *
-   * @param {object} state – vuex state
-   * @param {object} collection — users object
+   * @param {UserState} state – user module state
+   * @param {UserCollection} collection — user collection object
    * @constructor
    */
   SET_COLLECTION(state, collection) {
@@ -14,7 +14,7 @@ export default {
   /**
    * Set online status
    *
-   * @param {object} state – vuex state
+   * @param {UserState} state – user module state
    * @param {object} data — online status data
    * @constructor
    */

@@ -42,7 +42,7 @@ export default {
   computed: {
     /**
      * Decide if item matches List's filter
-     * @return {Boolean}
+     * @returns {Boolean}
      */
     matchesFilter() {
       if (this.filterKey.toLowerCase().includes(this.parentFilterBy.toLowerCase())) {
@@ -53,7 +53,7 @@ export default {
     },
     /**
      * Get Parent's filter
-     * @return {String}
+     * @returns {string}
      */
     parentFilterBy() {
       return this.$parent.filterBy || '';
