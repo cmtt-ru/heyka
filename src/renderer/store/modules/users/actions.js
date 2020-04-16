@@ -7,7 +7,7 @@ export default {
    *
    * @param {function} commit – vuex commit
    * @param {string} status – online status
-   * @return {Promise<void>}
+   * @returns {Promise<void>}
    */
   async setOnlineStatus({ commit }, status) {
     commit('SET_ONLINE_STATUS', status);

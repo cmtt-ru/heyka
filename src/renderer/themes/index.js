@@ -12,7 +12,7 @@ const ThemeFileStore = new Store({
 class Themes {
   /**
  * Inits first theme
- * @param {String} name name of first theme
+ * @param {string} name name of first theme
  * @returns {null} nothing
  */
   constructor(name) {
@@ -35,7 +35,7 @@ class Themes {
 
   /**
  * Switch theme to selected
- * @param {String} name name of theme
+ * @param {string} name name of theme
  * @returns {boolean} found or not found theme
  */
   switchTheme(name) {
@@ -54,8 +54,8 @@ class Themes {
 
   /**
  * Get StyleSheet for specific layout area
- * @param {String} area name of area (navbar/content/popover/etc.)
- * @returns {Object}
+ * @param {string} area name of area (navbar/content/popover/etc.)
+ * @returns {object}
  */
   getColors(area) {
     return this.themeArray[this.currentTheme].colors[area] || {};
@@ -75,7 +75,7 @@ class Themes {
 
   /**
  * Get all app themes
- * @returns {Array} all themes
+ * @returns {array} all themes
  */
   getThemes() {
     return this.themeArray;

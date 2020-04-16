@@ -74,7 +74,7 @@ export default {
 
     /**
      * Set img as bg-image in css
-     * @returns {Object} corresponding background-image
+     * @returns {object} corresponding background-image
      */
     avatarImage() {
       if (this.image) {
@@ -86,7 +86,7 @@ export default {
 
     /**
      * Set img size in css
-     * @returns {Object} height and width
+     * @returns {object} height and width
      */
     containerSize() {
       return {
@@ -97,7 +97,7 @@ export default {
 
     /**
      * Set status-circle color
-     * @returns {Object} background-color and border-color
+     * @returns {object} background-color and border-color
      */
     statusStyle() {
       return STATUS_COLORS[this.status] || null;

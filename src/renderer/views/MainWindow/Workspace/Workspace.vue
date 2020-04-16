@@ -84,7 +84,7 @@ export default {
     },
     /**
      * Multi-pick testing
-     * @param {Number} index index of clicked channel
+     * @param {number} index index of clicked channel
      * @returns {void}
      */
     clickChannelHandler(index) {

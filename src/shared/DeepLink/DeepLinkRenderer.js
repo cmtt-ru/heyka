@@ -7,7 +7,7 @@ import { ipcRenderer } from 'electron';
 export default class DeepLinkRenderer {
   /**
  * Inits deep link class
- * @param {String} map command-router mapping
+ * @param {string} map command-router mapping
  * @returns {undefined} nothing
  */
   constructor(map) {
@@ -19,7 +19,7 @@ export default class DeepLinkRenderer {
 
   /**
  * Route to correct page with correct params
- * @param {Object} params object with command and hash
+ * @param {object} params object with command and hash
  * @returns {boolean} valid or invalid route
  */
   route(params) {

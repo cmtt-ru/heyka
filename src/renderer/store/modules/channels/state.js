@@ -1,55 +1,41 @@
+/**
+ * @typedef {object} Channel
+ * @property {string} id – channel id
+ * @property {string} name – channel name
+ * @property {string} description – channel description
+ * @property {boolean} isPrivate – private status
+ * @property {string} createdAt – creation date
+ * @property {string} updatedAt – update date
+ * @property {MediaState[]} users – array of user's media state
+ */
+
+/**
+ * @typedef {object} MediaState
+ * @property {string} [userId] – user id
+ * @property {boolean} camera – is web camera enabled
+ * @property {boolean} microphone – is microphone enabled
+ * @property {boolean} screen – is screen sharing enabled
+ * @property {boolean} speakers – is speakers enabled
+ * @property {boolean} speaking – is user speaking
+ */
+
+/**
+ * @typedef {Object.<string, Channel>} ChannelCollection
+ */
+
+/**
+ * Channel state
+ * @returns {ChannelState}
+ */
 const state = () => {
+  /**
+   * @namespace ChannelState
+   */
   return {
     /**
-     * List of all available channels in specific workspace
+     * @type ChannelCollection
      */
-    collection: {
-
-      0: {
-        /**
-         * Channel id
-         * @type {string}
-         */
-        id: '',
-
-        /**
-         * Channel name
-         * @type {string}
-         */
-        name: 'test',
-
-        /**
-         * Channel description
-         * @type {string}
-         */
-        description: '',
-
-        /**
-         * Channel private status
-         * @type {boolean}
-         */
-        isPrivate: true,
-
-        /**
-         * Channel creation date
-         * @type {string}
-         */
-        createdAt: '',
-
-        /**
-         * Channel update date
-         * @type {string}
-         */
-        updatedAt: '',
-
-        /**
-         * Channel users
-         * @type {Array}
-         */
-        users: [],
-      },
-
-    },
+    collection: {},
   };
 };
 

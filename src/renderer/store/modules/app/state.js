@@ -1,61 +1,45 @@
+/**
+ * @typedef {object} AppState
+ * @property {string} appName – app name
+ * @property {string} appVersion – app version
+ * @property {string} language – language
+ * @property {string} runAppFrom – run from tray or dock
+ * @property {boolean} autorun – autorun
+ * @property {boolean} collectAnalytics – whether to collect analytics
+ *
+ * @property {object} theme – color theme
+ * @property {string} theme.name – theme name
+ * @property {boolean} theme.auto – theme auto choose
+ *
+ * @property {object} devices – list of user devices
+ * @property {boolean} devices.speakers – speakers
+ * @property {boolean} devices.microphones – microphones
+ * @property {boolean} devices.webcams – web cameras
+ */
+
+/**
+ * App state
+ * @returns {AppState}
+ */
 const state = () => {
+  /**
+   * @namespace AppState
+   */
   return {
-    /**
-     * App name
-     * @used on about page
-     * @type {string}
-     */
     appName: 'Heyka Desktop',
-
-    /**
-     * App version
-     * @used on about page
-     * @type {string}
-     */
     appVersion: '1.1.4',
-
-    /**
-     * App language
-     * @type {string}
-     */
     language: 'en',
-
-    /**
-     * Run app from tray or dock
-     * `tray` | `dock`
-     * @type {string}
-     */
     runAppFrom: 'tray',
-
-    /**
-     * App autorun
-     * @type {boolean}
-     */
     autorun: true,
-
-    /**
-     * App color theme
-     * @type {{auto: boolean, name: string}}
-     */
     theme: {
       name: 'Dark',
       auto: true,
     },
-
-    /**
-     * List of user device
-     * @type {{speakers: array, microphones: array, webcams: array}}
-     */
     devices: {
       speakers: [],
       microphones: [],
       webcams: [],
     },
-
-    /**
-     * Whether to collect analytics
-     * @type {boolean}
-     */
     collectAnalytics: true,
   };
 };
