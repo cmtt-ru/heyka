@@ -1,15 +1,15 @@
 <template>
   <div
-    class="input-wrapper form-element"
+    class="input-wrapper"
     :class="{'input-wrapper--disabled': disabled}"
   >
-    <div v-if="icon">
-      <svg-icon
-        class="input__icon"
-        :name="icon"
-        size="medium"
-      ></svg-icon>
-    </div>
+    <svg-icon
+      v-if="icon"
+      class="input__icon"
+      :name="icon"
+      size="medium"
+    ></svg-icon>
+
     <input
       class="input"
       :class="{'input--with-icon': icon}"
@@ -18,6 +18,7 @@
       v-model="myValue"
       @change="updateText()"
     >
+
   </div>
 </template>
 

@@ -1,13 +1,13 @@
 <template>
 <div
   v-click-outside="hide"
-  class="dropdown form-element"
+  class="dropdown"
   :class="{'dropdown--disabled': disabled}"
 >
-  <div @click="HeaderClickHandler()" class="dropdown__selected">
+  <div @click="HeaderClickHandler()" class="dropdown__header">
     <div v-textfade="selectedText">{{selectedText}}</div>
     <svg-icon
-      class="dropdown__selected__icon"
+      class="dropdown__header__icon"
       name="arrow-down"
     ></svg-icon>
   </div>
@@ -171,7 +171,7 @@ export default {
     opacity 0.5
     pointer-events none
 
-  &__selected
+  &__header
     background-color var(--input)
     cursor pointer
     height 32px
