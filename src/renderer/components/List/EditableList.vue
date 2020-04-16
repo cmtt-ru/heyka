@@ -8,16 +8,17 @@
                 size="small"
                 icon="trash"
                 @click.native="deleteItem(index)"
-                />
+            />
         </div>
-            <ui-button
-            v-if="addText"
-                class="add-button"
-                :type="9"
-                icon="add"
-                @click.native="add('')"
-            >{{addText}}
-            </ui-button>
+
+        <ui-button
+        v-if="addText"
+            class="add-button"
+            :type="9"
+            icon="add"
+            @click.native="add('')"
+        >{{addText}}
+        </ui-button>
     </div>
 </template>
 
