@@ -8,10 +8,7 @@ export default {
    * @constructor
    */
   SET_OPTIONS(state, options) {
-    state = {
-      ...state,
-      ...options,
-    };
+    Object.assign(state, options);
   },
 
 };
