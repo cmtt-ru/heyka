@@ -36,6 +36,24 @@
        <div>{{channel.name}}</div>
       </list-item>
     </list>
+
+    <br><br>
+
+    <ui-button
+      :type="7"
+      size="small"
+      height="16"
+      icon="more"
+      v-popover="{name: 'popover', data: {}}"
+    />
+
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+    <p>the end</p>
   </div>
 
 </template>
@@ -44,6 +62,7 @@
 import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Avatar from '@components/Avatar';
+import UiButton from '@components/UiButton';
 import { List, ListItem } from '@components/List';
 
 let pushWindow;
@@ -53,6 +72,7 @@ export default {
     Avatar,
     List,
     ListItem,
+    UiButton,
   },
   data() {
     return {
