@@ -7,10 +7,10 @@ export default {
    * @param {object} state – channels module state
    * @param {object} getters – channels module getters
    * @param {string} id – channel id
-   * @return {array}
+   * @returns {array}
    */
   getUsersByChannel: (state, getters) => (id) => {
-    const ch = state['channels'].collection[id] || { users: [] };
+    const ch = getters['channels/getChannelById'](id) || { users: [] };
 
     const users = ch.users.map(user => {
       return {

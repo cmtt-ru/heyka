@@ -1,7 +1,14 @@
 export default {
 
-  SET_SOME(state, data) {
-    state.variable1 = data;
+  /**
+   * Set janus options
+   *
+   * @param {JanusState} state – vuex state
+   * @param {JanusState} options – janus options
+   * @constructor
+   */
+  SET_OPTIONS(state, options) {
+    Object.assign(state, options);
   },
 
 };

@@ -1,18 +1,26 @@
 <template>
-  <router-view></router-view>
+  <div>
+    <janus />
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
-import '@api/socket';
+import Janus from '@components/Janus.vue';
+import * as sockets from '@api/socket';
 
 export default {
+  components: {
+    Janus,
+  },
   data() {
     return {
       deepLink: {},
     };
   },
-  created() {
+
+  async created() {
     this.deepLink = new DeepLinkRenderer({
       invite: 'main-window/signinbylink',
       login: 'main-window/login',
@@ -21,10 +29,17 @@ export default {
       d: 'main-window/workspace',
     });
 
-    this.$store.dispatch('initial');
+    await this.$store.dispatch('initial');
+    await sockets.init();
+  },
+
+  destroyed() {
+    sockets.destroy();
+    console.error('Ой-ёй! Кажется такого не должно быть');
   },
 };
 </script>
+
 <style scoped lang="stylus">
 
 </style>

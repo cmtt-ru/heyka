@@ -9,7 +9,7 @@ const retinaMultiplicator = 2;
 /**
  * Checks if user has retina display
  *
- * @return {boolean}
+ * @returns {boolean}
  */
 function isRetina() {
   return window.devicePixelRatio > 1;
@@ -22,7 +22,7 @@ function isRetina() {
  * @param {number} width – image width
  * @param {number} height – image height
  * @param {string} scaleType – scale type, default `scale_scrop`, can be 'resize'
- * @return {string}
+ * @returns {string}
  */
 function formImageUrl(src, width, height, scaleType = 'scale_crop') {
   if (!src.includes('leonardo.osnova')) {

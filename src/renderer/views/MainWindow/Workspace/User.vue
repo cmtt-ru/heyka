@@ -81,7 +81,7 @@ export default {
 
     /**
      * Display user's time
-     * @returns {String} hh:mm
+     * @returns {string} hh:mm
      */
     time() {
       const now = new Date(); // TODO: 1) update every minute; 2) get user's timezone
@@ -94,7 +94,7 @@ export default {
 
     /**
      * Get user ID from route param
-     * @returns {String} – user ID
+     * @returns {string} – user ID
      */
     userId() {
       return this.$route.params.id;
@@ -118,7 +118,7 @@ export default {
 
     /**
      * Set status-circle color
-     * @returns {Object} background-color and border-color
+     * @returns {object} background-color and border-color
      */
     statusStyle() {
       return STATUS_COLORS[this.user.onlineStatus] || null;

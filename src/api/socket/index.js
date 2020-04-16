@@ -1,12 +1,14 @@
 import store from '@/store';
 import eventNames from './eventNames';
 import { client, connect } from './client';
-import { getAccessToken } from './accessToken';
+import { getAccessToken } from '../tokens';
 
 /**
- * Initialization
+ * Connect to socket, authorize and bind events
+ *
+ * @returns {Promise<void>}
  */
-(async () => {
+export async function init() {
   /** Trying to connect */
   try {
     await connect();
@@ -29,7 +31,17 @@ import { getAccessToken } from './accessToken';
 
   /** User events */
   bindUserEvents();
-})();
+}
+
+/**
+ * Destroy socket connection and unbind events
+ *
+ * @returns {Promise<void>}
+ */
+export async function destroy() {
+  client.off();
+  client.disconnect();
+}
 
 /**
  * Authorize in socket
@@ -37,22 +49,25 @@ import { getAccessToken } from './accessToken';
  * @returns {promise}
  */
 async function authorize() {
+  const accessToken = await getAccessToken();
+
   return new Promise((resolve, reject) => {
     client.emit(eventNames.auth, {
       transaction: 'auth',
       workspaceId: store.getters['me/getSelectedWorkspaceId'],
-      token: getAccessToken(),
+      token: accessToken,
       // todo: online status
       onlineStatus: 'online',
     });
 
     client.on(eventNames.authSuccess, data => {
-      console.log('auth-success', data);
+      console.log('socket auth success', data);
+      store.dispatch('setSocketConnected', true);
       resolve(data);
     });
 
     client.on('socket-api-error-auth', data => {
-      console.log('auth-error', data);
+      console.error('socket auth error', data);
       reject(data);
     });
   });
@@ -66,10 +81,12 @@ async function authorize() {
 function bindErrorEvents() {
   client.on('disconnect', data => {
     console.log('disconnect', data);
+    store.dispatch('setSocketConnected', false);
   });
 
   client.on('reconnect', data => {
     console.log('reconnect', data);
+    authorize();
   });
 
   client.on('error', data => {
@@ -124,6 +141,12 @@ function bindChannelEvents() {
 
   /** Unselect channel */
   client.on(eventNames.userUnselectedChannel, data => {
+    // Перемещение пользователя между каналами осуществляется
+    // методами selectChannel/unselectChannel
+    if (data.socketId === client.id) {
+      return;
+    }
+
     const userId = data.userId;
 
     dataBuffer.add(userId, data);
@@ -131,12 +154,15 @@ function bindChannelEvents() {
     dataBuffer.delay(userId, () => {
       dataBuffer.remove(userId);
       store.commit('channels/REMOVE_USER', data);
-      store.commit('me/SET_CHANNEL_ID', null);
     });
   });
 
   /** Select channel */
   client.on(eventNames.userSelectedChannel, data => {
+    if (data.socketId === client.id) {
+      return;
+    }
+
     const userId = data.userId;
     const unselectData = dataBuffer.get(userId);
 
@@ -146,7 +172,6 @@ function bindChannelEvents() {
     }
 
     store.commit('channels/ADD_USER', data);
-    store.commit('me/SET_CHANNEL_ID', data.channelId);
   });
 }
 

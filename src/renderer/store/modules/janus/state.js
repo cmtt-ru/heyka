@@ -1,33 +1,25 @@
+/**
+ * @typedef {object} JanusState
+ * @param {string} janusServerUrl – janus server url
+ * @param {string} janusAuthToken – janus auth token
+ * @param {string} channelAuthToken – channel auth token
+ * @param {number} audioRoomId – janus audio room id
+ * @param {number} videoRoomId – janus video room id
+ */
+
+/**
+ * App state
+ * @returns {JanusState}
+ */
 const state = () => {
+  /**
+   * @namespace JanusState
+   */
   return {
-    /**
-     * Janus server url
-     * @type {string}
-     */
-    url: '',
-
-    /**
-     * Janus workspace token
-     * @type {string}
-     */
-    workspaceToken: '',
-
-    /**
-     * Janus channel token
-     * @type {string}
-     */
-    channelToken: '',
-
-    /**
-     * Janus audio room id
-     * @type {number}
-     */
+    janusServerUrl: '',
+    janusAuthToken: '',
+    channelAuthToken: '',
     audioRoomId: 0,
-
-    /**
-     * Janus video room id
-     * @type {number}
-     */
     videoRoomId: 0,
   };
 };
