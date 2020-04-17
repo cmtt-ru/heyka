@@ -23,6 +23,11 @@ const User = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Work
 
 /* Settings layout */
 const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings');
+const General = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/General');
+const Devices = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Devices');
+const Network = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Network');
+const About = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/About');
+const Support = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Support');
 
 /* Signin link from deep link */
 const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
@@ -114,7 +119,31 @@ const routes = [
         name: 'settings',
         component: Settings,
         children: [
-
+          {
+            path: '',
+            name: 'general',
+            component: General,
+          },
+          {
+            path: 'devices',
+            name: 'devices',
+            component: Devices,
+          },
+          {
+            path: 'network',
+            name: 'network',
+            component: Network,
+          },
+          {
+            path: 'about',
+            name: 'about',
+            component: About,
+          },
+          {
+            path: 'support',
+            name: 'support',
+            component: Support,
+          },
         ],
       },
 
