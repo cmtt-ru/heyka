@@ -44,7 +44,28 @@
       size="small"
       height="16"
       icon="more"
-      v-popover="{name: 'popover', data: {}}"
+      v-popover.click="{name: 'Some', options: {}}"
+    />
+
+    <ui-button
+      class="l-ml-24"
+      :type="7"
+      size="small"
+      height="16"
+      icon="more"
+      v-popover.hover="{name: 'Some', options: {}}"
+    />
+
+    <div
+      style="width: 200px; height: 60px; background: #eee"
+      v-popover.mouse.click="{name: 'Some', options: {}}"
+    />
+
+    <br>
+
+    <div
+      style="width: 200px; height: 60px; background: #eee"
+      v-popover.mouse.right.click="{name: 'Some', options: {}}"
     />
 
     <br><br>
