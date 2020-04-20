@@ -48,7 +48,7 @@
       size="small"
       height="16"
       icon="more"
-      v-popover.click="{name: 'Some', options: {}}"
+      v-popover.click="{name: 'Workspace', options: {}}"
     />
 
     <ui-button
