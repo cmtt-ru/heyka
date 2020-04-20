@@ -26,6 +26,7 @@
                 "--button-bg-7": "transparent",
                 "--icon-bg": "#E8F2FE",
                 "--input": "#F2F2F2",
+                "--item-bg-hover": "#F2F2F2",
                 "--item-bg-active": "#FFFFFF",
                 "--item-bg-multi-pick": "#F4FBF7"
             },
