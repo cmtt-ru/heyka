@@ -1,5 +1,5 @@
 <template>
-  <div class="settings">
+  <div class="settings-page">
     <div class="settings__label">Language</div>
     <ui-select v-model="general.language" :data="languages"/>
     <div class="settings__label">Run app from</div>
