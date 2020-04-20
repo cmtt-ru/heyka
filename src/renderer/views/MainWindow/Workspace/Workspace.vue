@@ -15,7 +15,11 @@
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
     <button @click="trayToggle()">Из трея/в трей</button>
-    <br><br><br>
+    <br><br>
+    <router-link :to="{name: 'styleguide'}">
+      <button>Style guide</button>
+    </router-link>
+    <br><br>
 
     <list :filterBy="''">
       <list-item @click.native="clickFirstElementHandler()" filterKey="Текст 1">
