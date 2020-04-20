@@ -157,7 +157,7 @@ export default {
   mounted() {
     /* Store locally refs to sropdown and icon elements, we need them on every 'open' event */
     this.listNode = this.$el.querySelector('.dropdown__list');
-    this.arrowNode = this.$el.querySelector('.dropdown__selected__icon');
+    this.arrowNode = this.$el.querySelector('.dropdown__header__icon');
   },
 
 };

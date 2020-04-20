@@ -29,7 +29,7 @@
           icon="close">
           </ui-button></router-link>
 
-          <div class="settings-page">
+          <div>
             <router-view></router-view>
           </div>
         </div>
@@ -85,10 +85,7 @@ export default {
   justify-content flex-end
 
 .settings-page
-  padding 0 12px
-
-.settings
-  padding-bottom 12px
+  padding 0 12px 12px
 
 .settings__label
   font-size 12px
