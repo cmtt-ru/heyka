@@ -10,12 +10,12 @@
 
       <template v-slot:sidebar-body>
         <div class="l-p-8">
-          <router-link class="link" to="/main-window/settings">General</router-link>
-          <router-link class="link" to="/main-window/settings/devices">Devices</router-link>
-          <router-link class="link" to="/main-window/settings/network">Network</router-link>
-          <router-link class="link" to="/main-window/settings/about">About</router-link>
-          <router-link class="link" to="/main-window/settings/support">Support</router-link>
-          <router-link class="link" to="/main-window/styleguide">Styleguide</router-link>
+          <router-link class="link" to="/main-window/settings/">{{texts.general}}</router-link>
+          <router-link class="link" to="/main-window/settings/devices">{{texts.devices}}</router-link>
+          <router-link class="link" to="/main-window/settings/network">{{texts.network}}</router-link>
+          <router-link class="link" to="/main-window/settings/about">{{texts.about}}</router-link>
+          <router-link class="link" to="/main-window/settings/support">{{texts.support}}</router-link>
+          <router-link class="link" to="/main-window/styleguide">{{texts.styleguide}}</router-link>
         </div>
       </template>
 
@@ -25,7 +25,6 @@
           :type="7"
           class="channel-info__more"
           size="small"
-          @click.native="moreHandler()"
           icon="close">
           </ui-button></router-link>
 
@@ -48,13 +47,10 @@ export default {
     Layout,
     UiButton,
   },
-  data() {
-    return {
-
-    };
-  },
-  created() {
-
+  computed: {
+    texts() {
+      return this.$t('settings.labels');
+    },
   },
 };
 </script>
@@ -78,6 +74,8 @@ export default {
 
 .close-strip
   height 40px
+  width 40px
+  margin-left auto
   box-sizing border-box
   padding 8px
   display flex

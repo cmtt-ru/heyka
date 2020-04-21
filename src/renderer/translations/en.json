@@ -1,3 +1,39 @@
 {
-  "message": "Zero seconds | One second | {n} seconds"
+  "message": "Zero seconds | One second | {n} seconds",
+  "settings": {
+    "labels": {
+      "general": "General",
+      "devices": "Devices",
+      "network": "Network",
+      "about": "About",
+      "support": "Support",
+      "styleguide": "Styleguide"
+    },
+    "general": {
+      "languageLabel": "Language",
+      "behaviourLabel": "Run app from",
+      "behaviours": {
+        "window": "Windowed",
+        "tray": "Tray"
+      },
+      "behaviourWillChange": "Restart app to apply changes",
+      "autorunLabel": "Autorun",
+      "autorunSwitch": "Run at startup",
+      "appearanceLabel": "Appearance",
+      "theme": {
+        "light": "Light",
+        "dark": "Dark"
+      },
+      "automaticallySwitch": "Automatically"
+    },
+    "devices": {
+      "speakersLabel": "Speakers",
+      "micLabel": "Microphone",
+      "cameraLabel": "Camera"
+    },
+    "network": {
+      "transparency": "We are transparent and respect your privacy. This tab shows all requests that are made to our servers.",
+      "googleLabel": "Enable Google Analytics to make Heyka better"
+    }
+  }
 }
