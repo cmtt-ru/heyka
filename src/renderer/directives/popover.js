@@ -2,35 +2,69 @@ import Vue from 'vue';
 import router from '@/router';
 import { createPopper } from '@popperjs/core';
 
+/**
+ * @typedef {object} PopoverModes
+ * @property {boolean} click – click mode
+ * @property {boolean} hover – hover mode
+ * @property {boolean} mouse – mouse mode
+ * @property {boolean} right – right mouse button mode
+ */
+
+/**
+ * Left mouse button
+ * @type {number}
+ */
 const LEFT_MOUSE = 1;
+
+/**
+ * Right mouse button
+ * @type {number}
+ */
 const RIGHT_MOUSE = 3;
 
-const DEFAULT_OPTIONS = {
-
+/**
+ * Default popover options
+ * @type {object}
+ */
+const DEFAULT_POPOVER_OPTIONS = {
+  /* nothing yet here */
 };
 
+/**
+ * Active class when popover opened
+ * @type {string}
+ */
 const ACTIVE_CLASS = 'context-menu--opened';
 
+/**
+ * Max number for unique id
+ * @type {number}
+ */
+const UID_MAX = 1000000;
+
+/**
+ * Class for popovers
+ */
 class Popover {
   /**
    * Popover constructor
-   * @param {object} props - properties
+   * @param {HTMLElement} element – show popover near this element
+   * @param {object} options – popover options
+   * @param {string} componentName – context menu component name
+   * @param {PopoverModes} modes – popover mode
+   * @param {object} data – some data to pass to context menu component
    */
   constructor({ element, options = {}, componentName, modes, data = {} }) {
-    const uidMax = 1000000;
-
-    this.uid = Math.round(Math.random() * uidMax);
+    this.uid = Math.round(Math.random() * UID_MAX);
 
     this.element = element;
-    this.options = Object.assign({}, DEFAULT_OPTIONS, options);
+    this.options = Object.assign({}, DEFAULT_POPOVER_OPTIONS, options);
     this.componentName = componentName;
     this.modes = modes;
     this.vueProps = data;
 
     this.instance = null;
     this.popper = null;
-
-    this.events = {};
 
     this.mouseCoordinates = {
       x: 0,
@@ -239,6 +273,11 @@ class Popover {
   destroy() {
     this.unmount();
     this.unbind();
+
+    this.element = null;
+    this.instance = null;
+    this.popper = null;
+    this.vueProps = null;
   }
 }
 
