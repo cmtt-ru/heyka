@@ -43,6 +43,12 @@ const ACTIVE_CLASS = 'context-menu--opened';
 const UID_MAX = 1000000;
 
 /**
+ * Wait before destroy popover
+ * @type {number}
+ */
+const TIMEOUT_BEFORE_DESTROY = 70;
+
+/**
  * Class for popovers
  */
 class Popover {
@@ -146,9 +152,8 @@ class Popover {
       this.instance.$destroy();
       this.instance.$el.remove();
       this.instance = null;
+      this.element.classList.remove(ACTIVE_CLASS);
     }
-
-    this.element.classList.remove(ACTIVE_CLASS);
   }
 
   /**
@@ -186,7 +191,7 @@ class Popover {
         if (!(this.element === event.target || this.element.contains(event.target))) {
           setTimeout(() => {
             this.show(false);
-          }, parseInt('70'));
+          }, TIMEOUT_BEFORE_DESTROY);
         }
       };
 
