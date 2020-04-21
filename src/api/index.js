@@ -2,9 +2,11 @@ import userApi from './user';
 import authApi from './auth';
 import workspaceApi from './workspace';
 import channelApi from './channel';
-import * as ERROR from './constants';
+import { errorMessages } from './constants';
 import axios from 'axios';
 import { updateTokens } from './tokens';
+
+console.log(errorMessages);
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -44,9 +46,9 @@ function middleware(func) {
       switch (true) {
         case err.response === undefined:
           throw err;
-        case err.response.data.message === ERROR.BAD_TOKEN :
+        case err.response.data.message === errorMessages.badToken :
           break;
-        case err.response.data.message === ERROR.EXPIRED_TOKEN :
+        case err.response.data.message === errorMessages.tokenExpired :
           await updateTokens();
 
           return middleware(func).apply(null, arguments);
