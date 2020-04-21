@@ -13,7 +13,7 @@ class Popover {
    * Popover constructor
    * @param {object} props - properties
    */
-  constructor({ element, options, componentName, modes }) {
+  constructor({ element, options = {}, componentName, modes, data = {} }) {
     const uidMax = 1000000;
 
     this.uid = Math.round(Math.random() * uidMax);
@@ -22,6 +22,7 @@ class Popover {
     this.options = Object.assign({}, DEFAULT_OPTIONS, options);
     this.componentName = componentName;
     this.modes = modes;
+    this.vueProps = data;
 
     this.instance = null;
     this.popper = null;
@@ -85,7 +86,9 @@ class Popover {
     const Component = await this.loadComponent(this.componentName);
     const ComponentClass = Vue.extend(Component);
 
-    this.instance = new ComponentClass();
+    this.instance = new ComponentClass({
+      propsData: this.vueProps,
+    });
     this.instance.$mount();
 
     document.body.appendChild(this.instance.$el);
@@ -137,7 +140,9 @@ class Popover {
 
       this.element.__clickOutsideHandler = event => {
         if (!(this.element === event.target || this.element.contains(event.target))) {
-          this.show(false);
+          setTimeout(() => {
+            this.show(false);
+          }, parseInt('70'));
         }
       };
 
@@ -233,6 +238,7 @@ export default {
       element: el,
       componentName: binding.value.name,
       options: binding.value.options,
+      data: binding.value.data,
       modes: binding.modifiers,
     });
 

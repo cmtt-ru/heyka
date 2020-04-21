@@ -48,7 +48,7 @@
       size="small"
       height="16"
       icon="more"
-      v-popover.click="{name: 'Workspace', options: {}}"
+      v-popover.click="{name: 'Workspace'}"
     />
 
     <ui-button
@@ -57,19 +57,19 @@
       size="small"
       height="16"
       icon="more"
-      v-popover.hover="{name: 'Some', options: {}}"
+      v-popover.hover="{name: 'UserInChannel'}"
     />
 
     <div
       style="width: 200px; height: 60px; background: #eee"
-      v-popover.mouse.click="{name: 'Some', options: {}}"
+      v-popover.mouse.click="{name: 'UserInChannel', data: {userId: '123'}}"
     />
 
     <br>
 
     <div
       style="width: 200px; height: 60px; background: #eee"
-      v-popover.mouse.right.click="{name: 'Some', options: {}}"
+      v-popover.mouse.right.click="{name: 'UserInChannel', options: {}}"
     />
 
     <br><br>
