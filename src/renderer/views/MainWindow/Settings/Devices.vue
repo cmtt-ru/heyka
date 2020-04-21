@@ -1,13 +1,13 @@
 <template>
   <div class="settings-page">
-    <div class="settings__label">Speakers</div>
+    <div class="settings__label">{{texts.speakersLabel}}</div>
     <div class="setting-with-icon">
       <ui-select v-model="general.speaker" :data="speakers"/>
       <ui-button :type="7" size="medium" height="32" icon="sound"/>
     </div>
-    <div class="settings__label">Microphone</div>
+    <div class="settings__label">{{texts.micLabel}}</div>
     <ui-select v-model="general.mic" :data="mics"/>
-    <div class="settings__label">Camera</div>
+    <div class="settings__label">{{texts.cameraLabel}}</div>
     <ui-select v-model="general.camera" :data="cameras"/>
   </div>
 </template>
@@ -36,6 +36,12 @@ export default {
       mics: [],
       cameras: [],
     };
+  },
+
+  computed: {
+    texts() {
+      return this.$t('settings.devices');
+    },
   },
 
   methods: {

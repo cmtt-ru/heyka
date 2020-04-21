@@ -1,4 +1,5 @@
 /* eslint-disable no-magic-numbers */
+import Vue from 'vue';
 import path from 'path';
 import { app, Menu, Tray, nativeImage, ipcMain, nativeTheme } from 'electron';
 import Store from 'electron-store';
@@ -13,7 +14,7 @@ const isWin = !isMac;
 let animationTimer;
 
 /**
- * Icon names for dark&light themes. No ".png", no "@2x" stuff
+ * Icon names for dark&light themes. No ".png", no "@2x/@3x" stuff
  */
 const icons = {
   light: {
@@ -46,13 +47,30 @@ class TrayManager {
  * @returns {void}
  */
   constructor(iconPath) {
-    this.inTray = TrayFileStore.get('ifInTray', true);
+    this.storeVue = new Vue({
+      data: () => ({
+        inTray: false,
+        newInTray: null,
+      }),
+    });
+
+    this.storeVue.inTray = TrayFileStore.get('ifInTray', false);
+    this.storeVue.newInTray = this.storeVue.inTray;
+
     nativeTheme.on('updated', () => {
       this.updateTheme();
     });
-    ipcMain.on('tray-manager-toggle', (event, options) => {
-      this.toggleTrayPosition();
+
+    ipcMain.on('tray-manager-toggle', (event, arg) => {
+      this.toggleMode(event, arg);
     });
+
+    ipcMain.handle('tray-manager-get-mode', async (event, someArgument) => {
+      const result = this.isInTray() ? 'tray' : 'window';
+
+      return result;
+    });
+
     app.on('ready', () => {
       this.set(iconPath);
       const contextMenu = Menu.buildFromTemplate([
@@ -160,7 +178,7 @@ class TrayManager {
 
   /**
     * Get icon full path by icon name.
-    *!nativePath accepts only png and jpeg. No ico!
+    *! nativePath accepts only png and jpeg. No ico!
     * @param {string} icon icon path
     * @returns {string} icon full path
   */
@@ -235,17 +253,31 @@ class TrayManager {
  * @returns {boolean} if window lives in tray
  */
   isInTray() {
-    return this.inTray;
+    return this.storeVue.inTray;
   }
 
   /**
-   * Move Main Window to tray
+     * Check if window WILL change behaviour after relaunch
+     * @returns {boolean} if window WILL change behaviour
+   */
+  willChangeBehaviour() {
+    return (this.storeVue.inTray !== this.storeVue.newInTray);
+  }
+
+  /**
+   * Move Main Window to/out of tray
+   * @param {object} event event to reply to
+   * @param {string} mode mode (tray/window)
    * @returns {void}
   */
-  toggleTrayPosition() {
-    TrayFileStore.set('ifInTray', !this.inTray);
-    app.relaunch();
-    app.exit();
+  toggleMode(event, mode) {
+    if (mode === 'tray') {
+      this.storeVue.newInTray = true;
+    } else {
+      this.storeVue.newInTray = false;
+    }
+    TrayFileStore.set('ifInTray', this.storeVue.newInTray);
+    event.reply('tray-manager-will-change', this.willChangeBehaviour());
   }
 
   /**

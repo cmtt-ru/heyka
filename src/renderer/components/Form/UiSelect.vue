@@ -68,15 +68,18 @@ export default {
       listNode: {},
       arrowNode: {},
       visible: false,
-      selectedItem: this.data.find((el) => {
-        if (el.value === this.value) {
-          return el;
-        }
-      }) || null,
+      myValue: this.value,
     };
   },
 
   computed: {
+    selectedItem() {
+      return this.data.find((el) => {
+        if (el.value === this.myValue) {
+          return el;
+        }
+      }) || null;
+    },
     /**
      * Text to display on top selection. Can be selected item or initial text before first selection.
      * @returns {string} text to display
@@ -89,6 +92,12 @@ export default {
       return this.text;
     },
 
+  },
+
+  watch: {
+    value(newValue, oldValue) {
+      this.myValue = newValue;
+    },
   },
 
   methods: {
@@ -106,7 +115,7 @@ export default {
      * @returns {void}
      */
     VariantClickHandler(item) {
-      this.selectedItem = item;
+      this.myValue = item.value;
       this.hide();
       this.$emit('input', item.value);
     },

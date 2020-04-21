@@ -1,7 +1,14 @@
 export default {
 
-  SET_SOME(state, data) {
-    state.variable1 = data;
+  /**
+   * Sets app language
+   *
+   * @param {AppState} state – module app state
+   * @param {string} language – new language identifier
+   * @constructor
+   */
+  SET_LANGUAGE(state, language) {
+    state.language = language;
   },
 
 };

@@ -1,3 +1,9 @@
+import Store from 'electron-store';
+
+const appStore = new Store({
+  name: 'app',
+});
+
 /**
  * @typedef {object} AppState
  * @property {string} appName – app name
@@ -28,7 +34,7 @@ const state = () => {
   return {
     appName: 'Heyka Desktop',
     appVersion: '1.1.4',
-    language: 'en',
+    language: appStore.get('language', 'en'),
     runAppFrom: 'tray',
     autorun: true,
     theme: {
