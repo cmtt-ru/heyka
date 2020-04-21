@@ -1,6 +1,7 @@
 <template>
   <popover>
-    <ui-button :type="11">Poke</ui-button>
+    <ui-button :type="11">Open profile</ui-button>
+    <ui-button :type="11" @click="pokeClickHandler">Poke</ui-button>
     <ui-button :type="11">Mute for all</ui-button>
   </popover>
 </template>
@@ -16,7 +17,7 @@ export default {
   },
 
   props: {
-
+    userId: String,
   },
 
   computed: {
@@ -24,7 +25,9 @@ export default {
   },
 
   methods: {
-
+    pokeClickHandler() {
+      console.log(this.userId);
+    },
   },
 
   mounted() {
