@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import router from '@/router';
 import { createPopper } from '@popperjs/core';
 
 const LEFT_MOUSE = 1;
@@ -7,6 +8,8 @@ const RIGHT_MOUSE = 3;
 const DEFAULT_OPTIONS = {
 
 };
+
+const ACTIVE_CLASS = 'context-menu--opened';
 
 class Popover {
   /**
@@ -86,12 +89,17 @@ class Popover {
     const Component = await this.loadComponent(this.componentName);
     const ComponentClass = Vue.extend(Component);
 
+    ComponentClass.options.router = router;
+
     this.instance = new ComponentClass({
       propsData: this.vueProps,
     });
+
     this.instance.$mount();
 
     document.body.appendChild(this.instance.$el);
+
+    this.element.classList.add(ACTIVE_CLASS);
   }
 
   /**
@@ -105,6 +113,8 @@ class Popover {
       this.instance.$el.remove();
       this.instance = null;
     }
+
+    this.element.classList.remove(ACTIVE_CLASS);
   }
 
   /**
