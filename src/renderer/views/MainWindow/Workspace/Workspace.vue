@@ -129,8 +129,11 @@ export default {
     },
 
     async makeError() {
-      console.clear();
-      await this.$API.auth.signinByLink('');
+      try {
+        await this.$API.auth.signinByLink('');
+      } catch (e) {
+        console.log('eeeeee', e);
+      }
     },
   },
 
