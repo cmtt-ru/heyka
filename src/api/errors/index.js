@@ -7,9 +7,11 @@ import { errorHandlers } from './handlers';
  * @param {object} error – error response from api
  * @returns {void}
  */
-function callErrorHandler(errorMessage, error) {
+async function callErrorHandler(errorMessage, error) {
   if (errorHandlers[errorMessage]) {
-    errorHandlers[errorMessage](error);
+    await errorHandlers[errorMessage](error);
+  } else {
+    throw error;
   }
 }
 
@@ -22,5 +24,5 @@ function callErrorHandler(errorMessage, error) {
 export async function handleError(error) {
   const errorMessage = error.response.data.message.toLowerCase();
 
-  callErrorHandler(errorMessage, error);
+  await callErrorHandler(errorMessage, error);
 }
