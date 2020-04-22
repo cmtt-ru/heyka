@@ -17,6 +17,8 @@
     <button @click="trayToggle()">Из трея/в трей</button>
     <br><br><br>
 
+    <button @click="makeError">Ошибка</button>
+
     <list :filterBy="''">
       <list-item @click.native="clickFirstElementHandler()" filterKey="Текст 1">
         <avatar @click.native.stop="clickFirstAvatarHandler()"></avatar>
@@ -124,6 +126,11 @@ export default {
 
     async loadInitialState() {
       await this.$store.dispatch('initial');
+    },
+
+    async makeError() {
+      console.clear();
+      await this.$API.auth.signinByLink('');
     },
   },
 
