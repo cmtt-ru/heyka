@@ -6,6 +6,7 @@
  * @property {string} runAppFrom – run from tray or dock
  * @property {boolean} autorun – autorun
  * @property {boolean} collectAnalytics – whether to collect analytics
+ * @property {array} privacyLogs – privacy logs
  *
  * @property {object} theme – color theme
  * @property {string} theme.name – theme name
@@ -41,6 +42,7 @@ const state = () => {
       webcams: [],
     },
     collectAnalytics: true,
+    privacyLogs: [],
   };
 };
 

@@ -60,6 +60,12 @@ async function authorize() {
       onlineStatus: 'online',
     });
 
+    store.dispatch('app/addPrivacyLog', {
+      category: 'socket',
+      method: eventNames.auth,
+      data: [ store.getters['me/getSelectedWorkspaceId'] ],
+    });
+
     client.on(eventNames.authSuccess, data => {
       console.log('socket auth success', data);
       store.dispatch('setSocketConnected', true);
