@@ -33,23 +33,3 @@ defineErrorHandler(errorMessages.notFound, (error) => {
 
   deadlock(error);
 });
-
-defineErrorHandler(errorMessages.notFound, (error) => {
-  console.log('handler', error);
-
-  deadlock(error);
-});
-
-
-defineErrorHandler(errorMessages.notFound, (error) => {
-  console.log('handler', error);
-
-  deadlock(error);
-});
-
-
-defineErrorHandler(errorMessages.notFound, (error) => {
-  console.log('handler', error);
-
-  deadlock(error);
-});
