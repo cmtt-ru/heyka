@@ -1,13 +1,3 @@
-/**
- * Some temp comments
- *
- * [badToken, credentialsAreInvalid, refreshTokenExpired] – выкидываем авторизацию
- * accessDenied – локальный обработчик
- * internalServerError – что-то пошло не так
- * socketNotFound – если есть активный сокет и возращается эта ошибка. Пока просто выводить ошибку, но можно дисконектить сокет и заново приконектить и повторить запрос
- *
- * @type {object}
- */
 export const errorMessages = {
   badToken: 'Bad token',
   internalServerError: 'Internal Server Error',
