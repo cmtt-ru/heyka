@@ -51,6 +51,7 @@ import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Avatar from '@components/Avatar';
 import { List, ListItem } from '@components/List';
+import logout from '@api/auth/logout';
 
 let pushWindow;
 
@@ -98,18 +99,11 @@ export default {
     },
 
     async login() {
-      try {
-        const res = await this.$API.auth.signinByLink(process.env.VUE_APP_LOGIN_BY_LINK);
-
-        console.log(res);
-      } catch (err) {
-        console.log(err);
-      }
+      this.$router.replace({ name: 'auth' });
     },
 
     logout() {
-      this.$API.auth.logout();
-      this.$router.push({ name: 'auth' });
+      logout(false);
     },
 
     async openPushWindow() {
