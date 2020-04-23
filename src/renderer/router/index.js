@@ -67,11 +67,11 @@ const routes = [
        */
       {
         path: 'auth',
-        name: 'auth',
         component: Auth,
         children: [
           {
             path: '',
+            name: 'auth',
             component: AuthTemp,
           },
         ],

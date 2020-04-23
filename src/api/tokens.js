@@ -4,7 +4,6 @@ import refreshToken from './auth/refreshToken';
 
 /**
  * Auth file store
- * @type {Store}
  */
 const authFileStore = new Store({
   name: 'auth',

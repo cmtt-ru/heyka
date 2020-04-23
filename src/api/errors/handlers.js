@@ -39,14 +39,14 @@ defineErrorHandler(errorMessages.missingAuthentication, error => {
  */
 defineErrorHandler(errorMessages.internalServerError, error => {
   /** Show fancy error */
-  alert('500\n Internal server error');
+  alert('500\nInternal server error');
   console.log(error);
 });
 
 /**
  * Socket not found
  */
-defineErrorHandler(errorMessages.internalServerError, error => {
+defineErrorHandler(errorMessages.socketNotFound, error => {
   /** Show fancy error */
   alert('Huh, socket not found');
   console.log(error);

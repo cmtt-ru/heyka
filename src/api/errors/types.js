@@ -1,6 +1,6 @@
 export const errorMessages = {
   badToken: 'Bad token',
-  internalServerError: 'Internal Server Error',
+  internalServerError: 'An internal server error occurred',
   accessTokenExpired: 'Access token is expired',
   missingAuthentication: 'Missing authentication',
 
