@@ -6,7 +6,7 @@
     </div>
 
     <div class="channel-header">
-      <a href="#sidebar_channel_anchor" class="channel-header__label l-ml-4">Channels</a>
+      <a href="#sidebar_channel_anchor" class="channel-header__label l-ml-4">{{texts.channelsHeader}}</a>
       <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
@@ -25,7 +25,7 @@
 
     <div id="sidebar_user_anchor" class="user-anchor"></div>
     <div class="channel-header user-header">
-      <a href="#sidebar_user_anchor" class="channel-header__label l-ml-4">Users</a>
+      <a href="#sidebar_user_anchor" class="channel-header__label l-ml-4">{{texts.usersHeader}}</a>
       <ui-button :type="7" class="channel-header__add" @click.native="addUserHandler" size="small" height="16" icon="add"></ui-button>
     </div>
 
@@ -59,13 +59,14 @@ export default {
     SidebarUserItem,
   },
 
-  data() {
-    return {
-
-    };
-  },
-
   computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('workspace.navbar');
+    },
 
     /**
      * Sort channels by name

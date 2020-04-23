@@ -1,7 +1,12 @@
 /* eslint no-magic-numbers: 0 */
-
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import { remote } from 'electron';
+import Store from 'electron-store';
+
+const heykaStore = new Store({
+  name: 'app',
+});
 
 Vue.use(VueI18n);
 
@@ -27,7 +32,7 @@ function loadLocaleMessages() {
 }
 
 export default new VueI18n({
-  locale: process.env.VUE_APP_I18N_LOCALE || 'en',
+  locale: heykaStore.get('language') || remote.app.getLocale() || 'en',
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
   messages: loadLocaleMessages(),
 });

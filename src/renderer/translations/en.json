@@ -1,5 +1,22 @@
 {
   "message": "Zero seconds | One second | {n} seconds",
+  "workspace": {
+    "navbar": {
+      "channelsHeader": "Channels",
+      "usersHeader": "Users"
+    },
+    "channel": {
+      "join": "Join",
+      "disconnect": "Disconnect"
+    },
+    "user": {
+      "privateTalkButton": "Private talk",
+      "inviteButtonStart": "Invite to",
+      "inviteBySlackButton": "Send invite by Slack",
+      "localTime": "Local time",
+      "email": "Email"
+    }
+  },
   "settings": {
     "labels": {
       "general": "General",
@@ -33,7 +50,8 @@
     },
     "network": {
       "transparency": "We are transparent and respect your privacy. This tab shows all requests that are made to our servers.",
-      "googleLabel": "Enable Google Analytics to make Heyka better"
+      "googleLabel": "Enable Google Analytics to make Heyka better",
+      "googleSwitch": "Allow"
     }
   }
 }

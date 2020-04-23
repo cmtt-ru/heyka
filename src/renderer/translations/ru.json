@@ -1,5 +1,22 @@
 {
   "message": "Ноль секунд | {n} секунда | {n} секунды | {n} секунд",
+  "workspace": {
+    "navbar": {
+      "channelsHeader": "Каналы",
+      "usersHeader": "Юзеры"
+    },
+    "channel": {
+      "join": "Войти",
+      "disconnect": "Выйти"
+    },
+    "user": {
+      "privateTalkButton": "Приватный разговор",
+      "inviteButtonStart": "Пригласить в",
+      "inviteBySlackButton": "Отправить приглашение в Slack",
+      "localTime": "Местное время",
+      "email": "Почта"
+    }
+  },
   "settings": {
     "labels": {
       "general": "Основное",
@@ -33,7 +50,8 @@
     },
     "network": {
       "transparency": "Мы прозрачны и ценим вашу приватность: в этой вкладке всегда можно найти логи данных, которые отправляются на сервер.",
-      "googleLabel": "Отправка данных в Google Analytics для улучшения Heyka"
+      "googleLabel": "Отправка данных в Google Analytics для улучшения Heyka",
+      "googleSwitch": "Разрешить"
     }
   }
 }

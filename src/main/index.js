@@ -4,6 +4,7 @@ import { app, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
+import './classes/AutoLaunch';
 import DeepLink from '../shared/DeepLink/DeepLinkMain';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
