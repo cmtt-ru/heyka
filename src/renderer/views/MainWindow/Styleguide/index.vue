@@ -18,6 +18,7 @@
         <div class="l-p-8">
           <router-link class="link" :to="{name: 'styleguide-buttons'}">Buttons</router-link>
           <router-link class="link" :to="{name: 'styleguide-lists'}">Lists</router-link>
+          <router-link class="link" :to="{name: 'styleguide-forms'}">Forms</router-link>
           <br>
           <br>
           <router-link class="link" :to="{name: 'workspace'}">Exit</router-link>
