@@ -9,10 +9,10 @@ const { nativeTheme } = require('electron').remote;
 class Themes {
   /**
  * Inits first theme
- * @param {string} name name of first theme
- * @returns {null} nothing
+ * @returns {void}
  */
   constructor() {
+    /* Vue for data reactivity */
     this.storeVue = new Vue({
       data: () => ({
         themeArray: [],
@@ -21,6 +21,8 @@ class Themes {
       }),
     });
     this.storeVue.themeArray = themes;
+
+    /* Get current theme and auto mode from vuex store */
     const theme = { ...store.getters['app/getTheme'] };
 
     this.storeVue.auto = theme.auto;
@@ -32,6 +34,7 @@ class Themes {
       this.manualSetTheme(theme.name);
     }
 
+    /* Listen to native theme update (in case we have automode on) */
     nativeTheme.on('updated', () => {
       if (this.storeVue.auto) {
         this.autoSetTheme();
@@ -103,15 +106,15 @@ class Themes {
 
   /**
    * Get current theme name
-   * @returns {string} theme name
+   * @returns {string}
    */
   getCurrentTheme() {
     return this.storeVue.currentTheme;
   }
 
   /**
-   * Get current theme name
-   * @returns {string} theme name
+   * Get theme's automode state
+   * @returns {boolean}
    */
   getCurrentAuto() {
     return this.storeVue.auto;

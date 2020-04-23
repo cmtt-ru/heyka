@@ -10,12 +10,12 @@
 
       <template v-slot:sidebar-body>
         <div class="l-p-8">
-          <router-link class="link" to="/main-window/settings/">{{texts.general}}</router-link>
-          <router-link class="link" to="/main-window/settings/devices">{{texts.devices}}</router-link>
-          <router-link class="link" to="/main-window/settings/network">{{texts.network}}</router-link>
-          <router-link class="link" to="/main-window/settings/about">{{texts.about}}</router-link>
-          <router-link class="link" to="/main-window/settings/support">{{texts.support}}</router-link>
-          <router-link class="link" to="/main-window/styleguide">{{texts.styleguide}}</router-link>
+          <router-link class="link" :to="{name: 'settings'}">{{texts.general}}</router-link>
+          <router-link class="link" :to="{name: 'settings-devices'}">{{texts.devices}}</router-link>
+          <router-link class="link" :to="{name: 'settings-network'}">{{texts.network}}</router-link>
+          <router-link class="link" :to="{name: 'settings-about'}">{{texts.about}}</router-link>
+          <router-link class="link" :to="{name: 'settings-support'}">{{texts.support}}</router-link>
+          <router-link class="link" :to="{name: 'styleguide'}">{{texts.styleguide}}</router-link>
           <div class="app-info">{{prettyInfo}}</div>
         </div>
       </template>
@@ -54,9 +54,17 @@ export default {
     };
   },
   computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
     texts() {
       return this.$t('settings.labels');
     },
+    /**
+     * Construct app&system info plate
+     * @returns {string}
+     */
     prettyInfo() {
       if (!this.info) {
         return;
