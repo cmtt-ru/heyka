@@ -1,5 +1,5 @@
 <template>
-  <div class="l-p-8 l-w-m">
+  <div class="l-p-8 l-fw-m">
       <div v-if="workspace" class="workspace">
 
         <div @click="dropdownHandler()" class="workspace__wrapper">
