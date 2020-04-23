@@ -44,6 +44,11 @@ class TrayManager {
  * @returns {void}
  */
   constructor(iconPath) {
+    // Get behaviour from electron store.
+    // It is set and changed bu vuex store,
+    // but we don't need to communicate with vuex directly.
+    // For now, at least.
+    //
     this.mode = heykaStore.get('runAppFrom', 'window');
 
     nativeTheme.on('updated', () => {
@@ -134,7 +139,7 @@ class TrayManager {
   }
 
   /**
- * add mainWindow instance to TrayManager object
+ * Add mainWindow instance to TrayManager object
  * @param {string} window mainWindow instance
  * @returns {void}
  */

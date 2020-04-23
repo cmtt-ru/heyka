@@ -32,6 +32,7 @@ function loadLocaleMessages() {
 }
 
 export default new VueI18n({
+  /* Get theme from electron store, if none we use system language, if none/not_supported we use 'en' */
   locale: heykaStore.get('language') || remote.app.getLocale() || 'en',
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
   messages: loadLocaleMessages(),

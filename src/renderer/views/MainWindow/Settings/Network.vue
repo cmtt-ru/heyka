@@ -35,6 +35,10 @@ export default {
   },
 
   methods: {
+    /**
+     * Send Analytics state to vuex
+     * @returns {void}
+     */
     saveAnalytics() {
       this.$store.dispatch('app/setAnalytics', this.analytics);
     },

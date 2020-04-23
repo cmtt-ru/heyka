@@ -58,5 +58,12 @@ export default {
    * @returns {string}
    */
   getAnalytics: (state) => state.collectAnalytics,
+  /**
+   * Get connected devices
+   *
+   * @param {AppState} state – module app state
+   * @returns {string}
+   */
+  getDevices: (state) => state.devices,
 
 };

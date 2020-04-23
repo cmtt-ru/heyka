@@ -29,7 +29,8 @@ export default {
       language: null,
       autorun: null,
       theme: null,
-
+      // Language tag ('en') mapped to normal name ('English').
+      //  TODO: move to store maybe?
       languages: [
         {
           name: 'English',
@@ -53,9 +54,7 @@ export default {
     'theme.name': 'saveTheme',
     'theme.auto': 'saveTheme',
     autorun: 'saveAutorun',
-    mode: function (newMode, oldMode) {
-      this.$store.dispatch('app/setMode', this.mode);
-    },
+    mode: 'saveMode',
   },
 
   computed: {
@@ -66,6 +65,10 @@ export default {
     texts() {
       return this.$t('settings.general');
     },
+    /**
+     * Array for behaviour select
+     * @returns {array}
+     */
     modes() {
       return [
         {
@@ -78,9 +81,17 @@ export default {
         },
       ];
     },
+    /**
+     * Flag for "restart app to see changes" text
+     * @returns {boolean}
+     */
     modeWillChange() {
       return this.$store.getters['app/getOldMode'] !== this.$store.getters['app/getMode'];
     },
+    /**
+     * Array for theme select
+     * @returns {array}
+     */
     themes() {
       return [
         {
@@ -96,18 +107,38 @@ export default {
   },
 
   methods: {
+    /**
+     * Send theme to vuex
+     * @returns {void}
+     */
     saveTheme() {
       this.$store.dispatch('app/setTheme', { ...this.theme });
     },
+    /**
+     * Send language to vuex
+     * @returns {void}
+     */
     saveLanguage() {
       this.$store.dispatch('app/setLanguage', this.language);
     },
+    /**
+     * Send autorun state to vuex
+     * @returns {void}
+     */
     saveAutorun() {
       this.$store.dispatch('app/setAutorun', this.autorun);
+    },
+    /**
+     * Send mode (window/tray) state to vuex
+     * @returns {void}
+     */
+    saveMode() {
+      this.$store.dispatch('app/setMode', this.mode);
     },
   },
 
   created() {
+    /* Get all settings from vuex */
     this.language = this.$store.getters['app/getLang'];
     this.theme = this.$store.getters['app/getTheme'];
     this.mode = this.$store.getters['app/getMode'];

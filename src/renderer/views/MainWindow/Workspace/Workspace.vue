@@ -41,28 +41,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Detect Avatar (part of list-item) click
-     * @returns {void}
-     */
-    clickFirstAvatarHandler() {
-      console.log('нажали на аватарку');
-    },
-    /**
-     * Detect list-item click
-     * @returns {void}
-     */
-    clickFirstElementHandler() {
-      console.log('нажали на элемент');
-    },
-    /**
-     * Multi-pick testing
-     * @param {number} index index of clicked channel
-     * @returns {void}
-     */
-    clickChannelHandler(index) {
-      this.$set(this.channels[index], 'selected', !this.channels[index].selected);
-    },
     async login() {
       try {
         const res = await this.$API.auth.signinByLink(process.env.VUE_APP_LOGIN_BY_LINK);
@@ -73,7 +51,6 @@ export default {
       }
     },
     async openPushWindow() {
-      // console.log(WindowManager.create);
       if (!pushWindow) {
         pushWindow = WindowManager.create({
           route: '/push-window',
@@ -90,13 +67,6 @@ export default {
         pushWindow.close();
         pushWindow = null;
       }
-    },
-    trayToggle() {
-      ipcRenderer.send('tray-manager-toggle');
-    },
-
-    async loadInitialState() {
-      await this.$store.dispatch('initial');
     },
   },
 

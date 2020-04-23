@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron';
-import AutoLaunch from 'auto-launch'; //! Not Mac App Store friendly
+import AutoLaunch from 'auto-launch'; // ! Not Mac App Store friendly
 import Store from 'electron-store';
 const autoLauncher = new AutoLaunch({
-  name: 'Heyka 2.0',
+  name: 'Heyka 2.0', // ? retrieve name from outside? vuex store, maybe?
 });
 const heykaStore = new Store({
   name: 'app',
@@ -10,6 +10,7 @@ const heykaStore = new Store({
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
+/* Enable autolaunch if not in development mode and if setting is set to "true" */
 if (!isDevelopment && heykaStore.get('autolaunch', true)) {
   autoLauncher.isEnabled().then(function (isEnabled) {
     if (isEnabled) {
@@ -22,6 +23,7 @@ if (!isDevelopment && heykaStore.get('autolaunch', true)) {
     });
 }
 
+/* Listen to signal from renderer process and toggle autolaunch if needed */
 ipcMain.on('app-toggle-autolaunch', (event, state) => {
   if (state) {
     autoLauncher.isEnabled().then(function (isEnabled) {
@@ -29,7 +31,6 @@ ipcMain.on('app-toggle-autolaunch', (event, state) => {
         return;
       }
       autoLauncher.enable();
-      console.log('autolaunch set');
     })
       .catch(function (err) {
         console.log(err);
@@ -40,7 +41,6 @@ ipcMain.on('app-toggle-autolaunch', (event, state) => {
         return;
       }
       autoLauncher.disable();
-      console.log('autolaunch unset');
     })
       .catch(function (err) {
         console.log(err);

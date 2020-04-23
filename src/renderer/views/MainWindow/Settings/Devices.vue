@@ -2,13 +2,13 @@
   <div class="settings-page">
     <div class="settings__label">{{texts.speakersLabel}}</div>
     <div class="setting-with-icon">
-      <ui-select v-model="general.speaker" :data="speakers"/>
+      <ui-select v-model="general.speaker" :data="devices.speakers"/>
       <ui-button :type="7" size="medium" height="32" icon="sound"/>
     </div>
     <div class="settings__label">{{texts.micLabel}}</div>
-    <ui-select v-model="general.mic" :data="mics"/>
+    <ui-select v-model="general.mic" :data="devices.microphones"/>
     <div class="settings__label">{{texts.cameraLabel}}</div>
-    <ui-select v-model="general.camera" :data="cameras"/>
+    <ui-select v-model="general.camera" :data="devices.webcams"/>
   </div>
 </template>
 
@@ -28,13 +28,16 @@ export default {
   data() {
     return {
       general: {
-        speaker: '',
-        mic: '',
-        camera: '',
+        speaker: '1',
+        mic: '1',
+        camera: '1',
       },
-      speakers: [],
-      mics: [],
-      cameras: [],
+      devices: {
+        speakers: [],
+        microphones: [],
+        webcams: [],
+      },
+
     };
   },
 
@@ -53,17 +56,17 @@ export default {
       for (const device of deviceInfos) {
         // console.log(device);
         if (device.kind === 'audioinput') {
-          this.mics.push({
+          this.devices.mics.push({
             name: device.label,
             value: device.deviceId,
           });
         } else if (device.kind === 'audiooutput') {
-          this.speakers.push({
+          this.devices.speakers.push({
             name: device.label,
             value: device.deviceId,
           });
         } else if (device.kind === 'videoinput') {
-          this.cameras.push({
+          this.devices.cameras.push({
             name: device.label,
             value: device.deviceId,
           });
@@ -73,8 +76,8 @@ export default {
   },
 
   created() {
-    navigator.mediaDevices.enumerateDevices()
-      .then(this.gotDevices);
+    this.devices = this.$store.getters['app/getDevices'];
+    // navigator.mediaDevices.enumerateDevices().then(this.gotDevices);
   },
 };
 </script>

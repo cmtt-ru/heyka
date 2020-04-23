@@ -116,32 +116,31 @@ const routes = [
        */
       {
         path: 'settings',
-        name: 'settings',
         component: Settings,
         children: [
           {
             path: '',
-            name: 'general',
+            name: 'settings',
             component: General,
           },
           {
             path: 'devices',
-            name: 'devices',
+            name: 'settings-devices',
             component: Devices,
           },
           {
             path: 'network',
-            name: 'network',
+            name: 'settings-network',
             component: Network,
           },
           {
             path: 'about',
-            name: 'about',
+            name: 'settings-about',
             component: About,
           },
           {
             path: 'support',
-            name: 'support',
+            name: 'settings-support',
             component: Support,
           },
         ],

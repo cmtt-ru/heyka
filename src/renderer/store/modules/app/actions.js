@@ -18,7 +18,6 @@ export default {
    */
   setLanguage({ commit }, language) {
     commit('SET_LANGUAGE', language);
-    console.log('vuex lang set:', language);
     i18n.locale = language;
     heykaStore.set('language', language);
   },
