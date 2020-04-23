@@ -112,17 +112,4 @@ export default {
   flex-direction row
   justify-content flex-end
 
-.settings-page
-  padding 0 12px 12px
-
-.settings__label
-  font-size 12px
-  padding 12px 0 2px
-
-.dropdown
-  margin 6px 0
-
-.switch
-  padding 8px 0
-
 </style>

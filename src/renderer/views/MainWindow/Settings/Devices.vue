@@ -83,6 +83,8 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+@import './settings'
+
 .setting-with-icon
   display flex
   flex-direction row
