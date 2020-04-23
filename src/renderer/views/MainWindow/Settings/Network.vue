@@ -51,6 +51,8 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+@import './settings'
+
 .settings-page
   padding 8px 20px 12px
 
