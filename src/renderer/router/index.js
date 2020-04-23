@@ -31,6 +31,7 @@ const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/Main
 const Styleguide = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide');
 const StyleguideButtons = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Buttons');
 const StyleguideLists = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Lists');
+const StyleguideForms = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Forms');
 
 /**
  * Push window views
@@ -134,6 +135,11 @@ const routes = [
             path: 'lists',
             name: 'styleguide-lists',
             component: StyleguideLists,
+          },
+          {
+            path: 'forms',
+            name: 'styleguide-forms',
+            component: StyleguideForms,
           },
         ],
       },
