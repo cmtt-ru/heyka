@@ -1,35 +1,47 @@
 <template>
   <div class="settings-page">
     <div class="privacy-text">{{texts.transparency}}</div>
-    <textarea v-bar readonly cols="30" rows="10">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae dignissimos nam illo quasi rem modi sed architecto voluptates aperiam quas? Ea aperiam in nihil, assumenda atque a similique eaque delectus! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus pariatur beatae dolore reiciendis eveniet laudantium incidunt eaque quos laborum nobis. Saepe hic reiciendis minima at, iure vero molestiae molestias provident! Lorem ipsum dolor sit amet consectetur adipisicing elit. Non nam aut corrupti distinctio hic rem a ipsum rerum officia eaque! Sunt commodi sint obcaecati a distinctio earum ratione vel ipsam?</textarea>
+    <textarea readonly cols="30" rows="10">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae dignissimos nam illo quasi rem modi sed architecto voluptates aperiam quas? Ea aperiam in nihil, assumenda atque a similique eaque delectus! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus pariatur beatae dolore reiciendis eveniet laudantium incidunt eaque quos laborum nobis. Saepe hic reiciendis minima at, iure vero molestiae molestias provident! Lorem ipsum dolor sit amet consectetur adipisicing elit. Non nam aut corrupti distinctio hic rem a ipsum rerum officia eaque! Sunt commodi sint obcaecati a distinctio earum ratione vel ipsam?</textarea>
     <div class="settings__label">{{texts.googleLabel}}</div>
-    <ui-switch v-model="general.analytics" text="Разрешить"/>
+    <ui-switch v-model="analytics" :text="texts.googleSwitch"/>
   </div>
 </template>
 
 <script>
 
-// import UiButton from '@components/UiButton';
 import { UiSwitch } from '@components/Form';
 
 export default {
   components: {
     UiSwitch,
-    // UiSelect,
-    // UiInput,
-    // UiButton,
   },
   data() {
     return {
-      general: {
-        analytics: false,
-      },
+      analytics: null,
     };
   },
   computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
     texts() {
       return this.$t('settings.network');
     },
+  },
+
+  watch: {
+    analytics: 'saveAnalytics',
+  },
+
+  methods: {
+    saveAnalytics() {
+      this.$store.dispatch('app/setAnalytics', this.analytics);
+    },
+  },
+
+  created() {
+    this.analytics = this.$store.getters['app/getAnalytics'];
   },
 };
 </script>

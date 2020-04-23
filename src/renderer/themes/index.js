@@ -1,11 +1,7 @@
 import Vue from 'vue';
 import themes from './themes.json';
-import Store from 'electron-store';
+import store from '@/store';
 const { nativeTheme } = require('electron').remote;
-const ThemeFileStore = new Store({
-  name: 'theme',
-  encryptionKey: '31415926',
-});
 
 /**
  * A class that handles themes
@@ -16,7 +12,7 @@ class Themes {
  * @param {string} name name of first theme
  * @returns {null} nothing
  */
-  constructor(name) {
+  constructor() {
     this.storeVue = new Vue({
       data: () => ({
         themeArray: [],
@@ -25,15 +21,15 @@ class Themes {
       }),
     });
     this.storeVue.themeArray = themes;
-    this.storeVue.auto = ThemeFileStore.get('autoTheme', false);
+    const theme = { ...store.getters['app/getTheme'] };
 
-    const theme = ThemeFileStore.get('currentTheme');
+    this.storeVue.auto = theme.auto;
+    this.storeVue.currentTheme = theme.name;
 
-    if (!theme) {
-      this.manualSetTheme(name);
+    if (theme.auto) {
+      this.autoSetTheme();
     } else {
-      this.__setTheme(theme);
-      this.storeVue.currentTheme = theme;
+      this.manualSetTheme(theme.name);
     }
 
     nativeTheme.on('updated', () => {
@@ -49,7 +45,6 @@ class Themes {
    */
   autoSetTheme() {
     this.storeVue.auto = true;
-    ThemeFileStore.set('autoTheme', true);
     if (nativeTheme.shouldUseDarkColors) {
       this.__setTheme('dark');
     } else {
@@ -64,7 +59,6 @@ class Themes {
    */
   manualSetTheme(name) {
     this.storeVue.auto = false;
-    ThemeFileStore.set('autoTheme', false);
     this.__setTheme(name);
   }
 
@@ -74,9 +68,7 @@ class Themes {
  * @returns {boolean} found or not found theme
  */
   __setTheme(name) {
-    ThemeFileStore.set('currentTheme', name);
     this.storeVue.currentTheme = name;
-
     if (Object.prototype.hasOwnProperty.call(this.storeVue.themeArray, name)) {
       for (const prop in this.storeVue.themeArray[name].colors['root']) { // задаём глобальные переменные css
         document.documentElement.style.setProperty(prop, this.storeVue.themeArray[name].colors['root'][prop]);
@@ -94,7 +86,11 @@ class Themes {
  * @returns {object}
  */
   getColors(area) {
-    return this.storeVue.themeArray[this.storeVue.currentTheme].colors[area] || {};
+    if (this.storeVue.currentTheme) {
+      return this.storeVue.themeArray[this.storeVue.currentTheme].colors[area];
+    }
+
+    return {};
   }
 
   /**
@@ -122,4 +118,4 @@ class Themes {
   }
 }
 
-export default new Themes('light');
+export default new Themes();

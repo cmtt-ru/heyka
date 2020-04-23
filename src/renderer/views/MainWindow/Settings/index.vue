@@ -16,6 +16,7 @@
           <router-link class="link" to="/main-window/settings/about">{{texts.about}}</router-link>
           <router-link class="link" to="/main-window/settings/support">{{texts.support}}</router-link>
           <router-link class="link" to="/main-window/styleguide">{{texts.styleguide}}</router-link>
+          <div class="app-info">{{prettyInfo}}</div>
         </div>
       </template>
 
@@ -47,15 +48,36 @@ export default {
     Layout,
     UiButton,
   },
+  data() {
+    return {
+      info: null,
+    };
+  },
   computed: {
     texts() {
       return this.$t('settings.labels');
     },
+    prettyInfo() {
+      if (!this.info) {
+        return;
+      }
+
+      return `${this.info.name}\nver. ${this.info.version}\n${this.info.system} ${this.info.systemVer}`;
+    },
+  },
+  created() {
+    this.info = this.$store.getters['app/getGeneralInfo'];
   },
 };
 </script>
 
 <style lang="stylus">
+.app-info
+  font-size 10px
+  color var(--text-1)
+  white-space pre
+  padding 8px
+
 .link
     display block
     padding 4px 8px

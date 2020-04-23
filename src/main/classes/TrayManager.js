@@ -1,12 +1,9 @@
 /* eslint-disable no-magic-numbers */
-import Vue from 'vue';
 import path from 'path';
-import { app, Menu, Tray, nativeImage, ipcMain, nativeTheme } from 'electron';
+import { app, Menu, Tray, nativeImage, nativeTheme } from 'electron';
 import Store from 'electron-store';
-
-const TrayFileStore = new Store({
-  name: 'tray',
-  encryptionKey: '31415926',
+const heykaStore = new Store({
+  name: 'app',
 });
 
 const isMac = process.platform === 'darwin';
@@ -47,28 +44,10 @@ class TrayManager {
  * @returns {void}
  */
   constructor(iconPath) {
-    this.storeVue = new Vue({
-      data: () => ({
-        inTray: false,
-        newInTray: null,
-      }),
-    });
-
-    this.storeVue.inTray = TrayFileStore.get('ifInTray', false);
-    this.storeVue.newInTray = this.storeVue.inTray;
+    this.mode = heykaStore.get('runAppFrom', 'window');
 
     nativeTheme.on('updated', () => {
       this.updateTheme();
-    });
-
-    ipcMain.on('tray-manager-toggle', (event, arg) => {
-      this.toggleMode(event, arg);
-    });
-
-    ipcMain.handle('tray-manager-get-mode', async (event, someArgument) => {
-      const result = this.isInTray() ? 'tray' : 'window';
-
-      return result;
     });
 
     app.on('ready', () => {
@@ -253,31 +232,11 @@ class TrayManager {
  * @returns {boolean} if window lives in tray
  */
   isInTray() {
-    return this.storeVue.inTray;
-  }
-
-  /**
-     * Check if window WILL change behaviour after relaunch
-     * @returns {boolean} if window WILL change behaviour
-   */
-  willChangeBehaviour() {
-    return (this.storeVue.inTray !== this.storeVue.newInTray);
-  }
-
-  /**
-   * Move Main Window to/out of tray
-   * @param {object} event event to reply to
-   * @param {string} mode mode (tray/window)
-   * @returns {void}
-  */
-  toggleMode(event, mode) {
-    if (mode === 'tray') {
-      this.storeVue.newInTray = true;
-    } else {
-      this.storeVue.newInTray = false;
+    if (this.mode === 'tray') {
+      return true;
     }
-    TrayFileStore.set('ifInTray', this.storeVue.newInTray);
-    event.reply('tray-manager-will-change', this.willChangeBehaviour());
+
+    return false;
   }
 
   /**

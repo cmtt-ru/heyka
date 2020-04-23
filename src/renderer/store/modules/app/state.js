@@ -1,9 +1,9 @@
-import Store from 'electron-store';
+import { remote } from 'electron';
 
-const appStore = new Store({
+import Store from 'electron-store';
+const heykaStore = new Store({
   name: 'app',
 });
-
 /**
  * @typedef {object} AppState
  * @property {string} appName – app name
@@ -33,20 +33,21 @@ const state = () => {
    */
   return {
     appName: 'Heyka Desktop',
-    appVersion: '1.1.4',
-    language: appStore.get('language', 'en'),
-    runAppFrom: 'tray',
-    autorun: true,
-    theme: {
-      name: 'Dark',
+    appVersion: remote.app.getVersion(),
+    language: heykaStore.get('language', 'en'),
+    runAppFrom: heykaStore.get('runAppFrom', 'window'),
+    runAppFromOld: heykaStore.get('runAppFrom', 'window'),
+    autorun: heykaStore.get('autorun', true),
+    theme: heykaStore.get('theme', {
+      name: 'light',
       auto: true,
-    },
+    }),
     devices: {
       speakers: [],
       microphones: [],
       webcams: [],
     },
-    collectAnalytics: true,
+    collectAnalytics: heykaStore.get('collectAnalytics', true),
   };
 };
 

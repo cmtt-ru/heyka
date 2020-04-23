@@ -8,15 +8,14 @@
     <div class="settings__label">{{texts.autorunLabel}}</div>
     <ui-switch v-model="autorun" :text="texts.autorunSwitch"/>
     <div class="settings__label">{{texts.appearanceLabel}}</div>
-    <ui-select v-model="theme" :data="themes" :disabled="autoTheme"/>
-    <ui-switch v-model="autoTheme" :text="texts.automaticallySwitch"/>
+    <ui-select v-model="theme.name" :data="themes" :disabled="theme.auto"/>
+    <ui-switch v-model="theme.auto" :text="texts.automaticallySwitch"/>
   </div>
 </template>
 
 <script>
 
 import { UiSelect, UiSwitch } from '@components/Form';
-import { ipcRenderer } from 'electron';
 
 export default {
   components: {
@@ -28,10 +27,8 @@ export default {
     return {
       mode: null,
       language: null,
-      modeWillChange: false,
-      autorun: true,
-      theme: 'light',
-      autoTheme: false,
+      autorun: null,
+      theme: null,
 
       languages: [
         {
@@ -52,26 +49,20 @@ export default {
   },
 
   watch: {
-    language(newLang, oldLang) {
-      this.$i18n.locale = newLang;
-      this.$store.dispatch('app/setLanguage', newLang);
-    },
-    theme(newTheme, oldTheme) {
-      this.$themes.manualSetTheme(newTheme);
-    },
-    mode(newMode, oldMode) {
-      ipcRenderer.send('tray-manager-toggle', newMode);
-    },
-    autoTheme(newVal, oldVal) {
-      if (newVal) {
-        this.$themes.autoSetTheme(newVal);
-      } else {
-        this.$themes.manualSetTheme(this.theme);
-      }
+    language: 'saveLanguage',
+    'theme.name': 'saveTheme',
+    'theme.auto': 'saveTheme',
+    autorun: 'saveAutorun',
+    mode: function (newMode, oldMode) {
+      this.$store.dispatch('app/setMode', this.mode);
     },
   },
 
   computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
     texts() {
       return this.$t('settings.general');
     },
@@ -86,6 +77,9 @@ export default {
           value: 'tray',
         },
       ];
+    },
+    modeWillChange() {
+      return this.$store.getters['app/getOldMode'] !== this.$store.getters['app/getMode'];
     },
     themes() {
       return [
@@ -102,19 +96,22 @@ export default {
   },
 
   methods: {
-
+    saveTheme() {
+      this.$store.dispatch('app/setTheme', { ...this.theme });
+    },
+    saveLanguage() {
+      this.$store.dispatch('app/setLanguage', this.language);
+    },
+    saveAutorun() {
+      this.$store.dispatch('app/setAutorun', this.autorun);
+    },
   },
+
   created() {
     this.language = this.$store.getters['app/getLang'];
-    this.theme = this.$themes.getCurrentTheme();
-    this.autoTheme = this.$themes.getCurrentAuto();
-    ipcRenderer.invoke('tray-manager-get-mode').then((result) => {
-      this.mode = result;
-    });
-
-    ipcRenderer.on('tray-manager-will-change', (event, arg) => {
-      this.modeWillChange = arg;
-    });
+    this.theme = this.$store.getters['app/getTheme'];
+    this.mode = this.$store.getters['app/getMode'];
+    this.autorun = this.$store.getters['app/getAutorun'];
   },
 };
 </script>
