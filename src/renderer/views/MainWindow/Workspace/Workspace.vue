@@ -6,8 +6,6 @@
     <br>
     <div>{{message}}</div>
     <br><br>
-    <button @click="login()">Login</button>
-    <br><br>
     <button @click="loadInitialState()">Load initial state</button>
     <br><br>
 
@@ -16,8 +14,14 @@
     <br><br>
     <button @click="trayToggle()">Из трея/в трей</button>
     <br><br><br>
-
     <button @click="makeError">Ошибка</button>
+
+    <br><br>
+
+    <button @click="login()">Login</button>
+    <button @click="logout()">Logout</button>
+
+    <br><br>
 
     <list :filterBy="''">
       <list-item @click.native="clickFirstElementHandler()" filterKey="Текст 1">
@@ -92,6 +96,7 @@ export default {
     clickChannelHandler(index) {
       this.$set(this.channels[index], 'selected', !this.channels[index].selected);
     },
+
     async login() {
       try {
         const res = await this.$API.auth.signinByLink(process.env.VUE_APP_LOGIN_BY_LINK);
@@ -101,6 +106,12 @@ export default {
         console.log(err);
       }
     },
+
+    logout() {
+      this.$API.auth.logout();
+      this.$router.push({ name: 'auth' });
+    },
+
     async openPushWindow() {
       // console.log(WindowManager.create);
       if (!pushWindow) {

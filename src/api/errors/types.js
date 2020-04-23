@@ -2,6 +2,7 @@ export const errorMessages = {
   badToken: 'Bad token',
   internalServerError: 'Internal Server Error',
   accessTokenExpired: 'Access token is expired',
+  missingAuthentication: 'Missing authentication',
 
   // Universal error messages
   accessDenied: 'Access denied',

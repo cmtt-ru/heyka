@@ -12,8 +12,7 @@ const Start = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Sta
 
 /* Auth layout */
 const Auth = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth');
-const AuthHello = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Hello');
-const AuthCredentials = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Credentials');
+const AuthTemp = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Temp');
 
 /* Workspace layout */
 const Workspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace');
@@ -67,15 +66,12 @@ const routes = [
        */
       {
         path: 'auth',
+        name: 'auth',
         component: Auth,
         children: [
           {
             path: '',
-            component: AuthHello,
-          },
-          {
-            path: 'credentials',
-            component: AuthCredentials,
+            component: AuthTemp,
           },
         ],
       },

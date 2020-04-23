@@ -27,6 +27,14 @@ defineErrorHandler(errorMessages.refreshTokenExpired, error => {
 });
 
 /**
+ * Missing authentication
+ */
+defineErrorHandler(errorMessages.missingAuthentication, error => {
+  /** Logout code here */
+  console.log(error);
+});
+
+/**
  * Internal server error
  */
 defineErrorHandler(errorMessages.internalServerError, error => {

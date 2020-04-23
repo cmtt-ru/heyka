@@ -73,3 +73,14 @@ export async function getAccessToken() {
 
   return tokens.accessToken;
 }
+
+/**
+ * Clear tokens
+ *
+ * @returns {void}
+ */
+export function clearTokens() {
+  authFileStore.clear();
+  setAxiosTokenHeader('');
+  tokens = {};
+}

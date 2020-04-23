@@ -3,13 +3,13 @@
     <layout>
 
       <template v-slot:sidebar-header>
-        <div class="l-p-8 l-w-m">
+        <div class="l-p-8 l-fw-m">
           Styleguide
         </div>
       </template>
 
       <template v-slot:content-header>
-        <div class="l-p-8 l-w-m">
+        <div class="l-p-8 l-fw-m">
 
         </div>
       </template>
