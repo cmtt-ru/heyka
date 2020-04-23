@@ -22,7 +22,6 @@ export const errorMessages = {
 
   // Refresh token
   credentialsAreInvalid: 'Credentials are invalid',
-  tokenExpired: 'Token is expired',
   refreshTokenExpired: 'Refresh token is expired',
 
   // Sign in
