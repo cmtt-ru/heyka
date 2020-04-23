@@ -1,37 +1,34 @@
 import { errorMessages } from './types';
+import logout from '@api/auth/logout';
 
 export const errorHandlers = {};
 
 /**
  * Bad token
  */
-defineErrorHandler(errorMessages.badToken, error => {
-  /** Logout code here */
-  console.log(error);
+defineErrorHandler(errorMessages.badToken, () => {
+  logout();
 });
 
 /**
  * Credentials are invalid
  */
-defineErrorHandler(errorMessages.credentialsAreInvalid, error => {
-  /** Logout code here */
-  console.log(error);
+defineErrorHandler(errorMessages.credentialsAreInvalid, () => {
+  logout();
 });
 
 /**
  * Refresh token expired
  */
-defineErrorHandler(errorMessages.refreshTokenExpired, error => {
-  /** Logout code here */
-  console.log(error);
+defineErrorHandler(errorMessages.refreshTokenExpired, () => {
+  logout();
 });
 
 /**
  * Missing authentication
  */
-defineErrorHandler(errorMessages.missingAuthentication, error => {
-  /** Logout code here */
-  console.log(error);
+defineErrorHandler(errorMessages.missingAuthentication, () => {
+  logout();
 });
 
 /**

@@ -1,7 +1,10 @@
-// import axios from 'axios';
 import { clearTokens } from '../tokens';
+import router from '@/router';
 
-export default function () {
+export default function logout(redirectToAuth = true) {
   clearTokens();
-  // return axios.post('/logout')
+
+  if (redirectToAuth) {
+    router.replace({ name: 'auth' });
+  }
 }
