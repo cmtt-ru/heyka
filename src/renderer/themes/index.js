@@ -1,10 +1,7 @@
+import Vue from 'vue';
 import themes from './themes.json';
-import Store from 'electron-store';
+import store from '@/store';
 const { nativeTheme } = require('electron').remote;
-const ThemeFileStore = new Store({
-  name: 'theme',
-  encryptionKey: '31415926',
-});
 
 /**
  * A class that handles themes
@@ -12,25 +9,60 @@ const ThemeFileStore = new Store({
 class Themes {
   /**
  * Inits first theme
- * @param {string} name name of first theme
- * @returns {null} nothing
+ * @returns {void}
  */
-  constructor(name) {
-    this.themeArray = themes;
+  constructor() {
+    /* Vue for data reactivity */
+    this.storeVue = new Vue({
+      data: () => ({
+        themeArray: [],
+        currentTheme: '',
+        auto: false,
+      }),
+    });
+    this.storeVue.themeArray = themes;
 
-    if (nativeTheme.shouldUseDarkColors) {
-      this.userHasDarkPreference();
-    }
+    /* Get current theme and auto mode from vuex store */
+    const theme = { ...store.getters['app/getTheme'] };
 
-    const theme = ThemeFileStore.get('currentTheme');
+    this.storeVue.auto = theme.auto;
+    this.storeVue.currentTheme = theme.name;
 
-    if (theme) {
-      this.switchTheme(theme);
-      this.currentTheme = theme;
+    if (theme.auto) {
+      this.autoSetTheme();
     } else {
-      this.currentTheme = name;
-      this.switchTheme(name);
+      this.manualSetTheme(theme.name);
     }
+
+    /* Listen to native theme update (in case we have automode on) */
+    nativeTheme.on('updated', () => {
+      if (this.storeVue.auto) {
+        this.autoSetTheme();
+      }
+    });
+  }
+
+  /**
+   * Set theme depending on user's system preference
+   * @returns {void}
+   */
+  autoSetTheme() {
+    this.storeVue.auto = true;
+    if (nativeTheme.shouldUseDarkColors) {
+      this.__setTheme('dark');
+    } else {
+      this.__setTheme('light');
+    }
+  }
+
+  /**
+   * Set theme manually by name
+   * @param {string} name theme's name
+   * @returns {void}
+   */
+  manualSetTheme(name) {
+    this.storeVue.auto = false;
+    this.__setTheme(name);
   }
 
   /**
@@ -38,12 +70,11 @@ class Themes {
  * @param {string} name name of theme
  * @returns {boolean} found or not found theme
  */
-  switchTheme(name) {
-    ThemeFileStore.set('currentTheme', name);
-
-    if (Object.prototype.hasOwnProperty.call(this.themeArray, name)) {
-      for (const prop in this.themeArray[name].colors['root']) { // задаём глобальные переменные css
-        document.documentElement.style.setProperty(prop, this.themeArray[name].colors['root'][prop]);
+  __setTheme(name) {
+    this.storeVue.currentTheme = name;
+    if (Object.prototype.hasOwnProperty.call(this.storeVue.themeArray, name)) {
+      for (const prop in this.storeVue.themeArray[name].colors['root']) { // задаём глобальные переменные css
+        document.documentElement.style.setProperty(prop, this.storeVue.themeArray[name].colors['root'][prop]);
       }
 
       return true;
@@ -58,19 +89,11 @@ class Themes {
  * @returns {object}
  */
   getColors(area) {
-    return this.themeArray[this.currentTheme].colors[area] || {};
-  }
-
-  /**
- * If no theme is saved, we should use dark theme
- * @returns {void}
- */
-  userHasDarkPreference() {
-    const theme = ThemeFileStore.get('currentTheme');
-
-    if (!theme) {
-      this.switchTheme('dark');
+    if (this.storeVue.currentTheme) {
+      return this.storeVue.themeArray[this.storeVue.currentTheme].colors[area];
     }
+
+    return {};
   }
 
   /**
@@ -78,8 +101,24 @@ class Themes {
  * @returns {array} all themes
  */
   getThemes() {
-    return this.themeArray;
+    return this.storeVue.themeArray;
+  }
+
+  /**
+   * Get current theme name
+   * @returns {string}
+   */
+  getCurrentTheme() {
+    return this.storeVue.currentTheme;
+  }
+
+  /**
+   * Get theme's automode state
+   * @returns {boolean}
+   */
+  getCurrentAuto() {
+    return this.storeVue.auto;
   }
 }
 
-export default new Themes('light');
+export default new Themes();

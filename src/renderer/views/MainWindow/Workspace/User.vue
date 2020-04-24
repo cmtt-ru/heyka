@@ -17,30 +17,33 @@
 
       <div v-if="user.onlineStatus==='offline'">
         <ui-button :type="2" :wide="true" class="user-action">
-          Send invite by Slack
+          <div>{{texts.inviteBySlackButton}}</div>
         </ui-button>
       </div>
 
       <div v-else>
         <ui-button :type="1" :wide="true" class="user-action">
-          Private talk
+          <div>{{texts.privateTalkButton}}</div>
         </ui-button>
         <ui-button v-if="selectedChannelName" :type="3" :wide="true" class="user-action">
-          <div>Invite to</div>
-          <svg-icon class="icon-in-button" name="channelOnAir" size="medium" animate>
-            <channel-on-air></channel-on-air>
-          </svg-icon>
-          <div>{{selectedChannelName}}</div>
+          <div class="user-action__inner" v-textfade>
+            <div>{{texts.inviteButtonStart}}</div>
+            <svg-icon class="icon-in-button" name="channelOnAir" size="medium" animate>
+              <channel-on-air></channel-on-air>
+            </svg-icon>
+            <div>{{selectedChannelName}}</div>
+          </div>
+
         </ui-button>
       </div>
 
       <div class="user-info">
-        <div class="user-info__title">Local time</div>
+        <div class="user-info__title">{{texts.localTime}}</div>
         <div class="user-info__content">{{time}}</div>
       </div>
 
       <div class="user-info">
-        <div class="user-info__title">Email</div>
+        <div class="user-info__title">{{texts.email}}</div>
         <div class="user-info__content user-info__content--email">{{user.email}}</div>
       </div>
   </div>
@@ -78,7 +81,13 @@ export default {
   },
 
   computed: {
-
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('workspace.user');
+    },
     /**
      * Display user's time
      * @returns {string} hh:mm
@@ -202,6 +211,14 @@ export default {
 
 .user-action
   margin-bottom 8px
+
+  &__inner
+    display flex
+    flex-direction row
+    align-items center
+
+    & div, svg
+      flex-shrink 0
 
 .icon-in-button
   margin 0 4px
