@@ -16,6 +16,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "auto-launch": "^5.0.5",
     "axios": "^0.19.2",
     "chai-as-promised": "^7.1.1",
     "core-js": "^3.6.4",
@@ -23,6 +24,7 @@
     "electron-store": "^5.1.1",
     "electron-updater": "^2.2.4",
     "hark": "^1.2.3",
+    "os": "^0.1.1",
     "socket.io-client": "^2.3.0",
     "svg-sprite-loader": "^4.2.2",
     "uuid": "^7.0.3",

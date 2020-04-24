@@ -4,7 +4,7 @@
   class="dropdown"
   :class="{'dropdown--disabled': disabled}"
 >
-  <div @click="HeaderClickHandler()" class="dropdown__header">
+  <div @click="headerClickHandler()" class="dropdown__header">
     <div v-textfade="selectedText">{{selectedText}}</div>
     <svg-icon
       class="dropdown__header__icon"
@@ -15,7 +15,7 @@
   <div class="dropdown__list" :class="{'dropdown__list--visible': visible}">
     <div
       v-for="item in data" :key="item.value"
-      @click="VariantClickHandler(item)"
+      @click="variantClickHandler(item)"
       class="dropdown__item"
       :class="{'dropdown__item--selected': item == selectedItem}"
     >
@@ -68,15 +68,18 @@ export default {
       listNode: {},
       arrowNode: {},
       visible: false,
-      selectedItem: this.data.find((el) => {
-        if (el.value === this.value) {
-          return el;
-        }
-      }) || null,
+      myValue: this.value,
     };
   },
 
   computed: {
+    selectedItem() {
+      return this.data.find((el) => {
+        if (el.value === this.myValue) {
+          return el;
+        }
+      }) || null;
+    },
     /**
      * Text to display on top selection. Can be selected item or initial text before first selection.
      * @returns {string} text to display
@@ -91,12 +94,18 @@ export default {
 
   },
 
+  watch: {
+    value(newValue, oldValue) {
+      this.myValue = newValue;
+    },
+  },
+
   methods: {
     /**
      * We clicked header (open/close toggle)
      * @returns {void}
      */
-    HeaderClickHandler() {
+    headerClickHandler() {
       this.toggle();
     },
 
@@ -105,8 +114,8 @@ export default {
      * @param {object} item item which we clicked
      * @returns {void}
      */
-    VariantClickHandler(item) {
-      this.selectedItem = item;
+    variantClickHandler(item) {
+      this.myValue = item.value;
       this.hide();
       this.$emit('input', item.value);
     },
@@ -157,7 +166,7 @@ export default {
   mounted() {
     /* Store locally refs to sropdown and icon elements, we need them on every 'open' event */
     this.listNode = this.$el.querySelector('.dropdown__list');
-    this.arrowNode = this.$el.querySelector('.dropdown__selected__icon');
+    this.arrowNode = this.$el.querySelector('.dropdown__header__icon');
   },
 
 };

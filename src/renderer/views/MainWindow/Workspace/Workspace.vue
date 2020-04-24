@@ -6,36 +6,12 @@
     <br>
     <div>{{message}}</div>
     <br><br>
-    <button @click="login()">Login</button>
-    <br><br>
-    <button @click="loadInitialState()">Load initial state</button>
+    <button @click="login()">Login (by link in .ENV)</button>
     <br><br>
 
     <button @click="openPushWindow()">Открыть пуш</button>
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
-    <button @click="trayToggle()">Из трея/в трей</button>
-    <br><br><br>
-
-    <list :filterBy="''">
-      <list-item @click.native="clickFirstElementHandler()" filterKey="Текст 1">
-        <avatar @click.native.stop="clickFirstAvatarHandler()"></avatar>
-        <div>Текст 1 очень очень длинный текст</div>
-      </list-item>
-      <list-item
-        @click.native="clickChannelHandler(index)"
-        v-for="(channel, index) in channels"
-        :key="channel.name"
-        :selected="channel.selected"
-        :filterKey="channel.name"
-        class="test-item"
-        :class="{'test-item--selected': channel.selected}"
-        button
-      >
-       <avatar></avatar>
-       <div>{{channel.name}}</div>
-      </list-item>
-    </list>
   </div>
 
 </template>
@@ -44,15 +20,12 @@
 import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Avatar from '@components/Avatar';
-import { List, ListItem } from '@components/List';
 
 let pushWindow;
 
 export default {
   components: {
     Avatar,
-    List,
-    ListItem,
   },
   data() {
     return {
@@ -68,28 +41,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Detect Avatar (part of list-item) click
-     * @returns {void}
-     */
-    clickFirstAvatarHandler() {
-      console.log('нажали на аватарку');
-    },
-    /**
-     * Detect list-item click
-     * @returns {void}
-     */
-    clickFirstElementHandler() {
-      console.log('нажали на элемент');
-    },
-    /**
-     * Multi-pick testing
-     * @param {number} index index of clicked channel
-     * @returns {void}
-     */
-    clickChannelHandler(index) {
-      this.$set(this.channels[index], 'selected', !this.channels[index].selected);
-    },
     async login() {
       try {
         const res = await this.$API.auth.signinByLink(process.env.VUE_APP_LOGIN_BY_LINK);
@@ -100,7 +51,6 @@ export default {
       }
     },
     async openPushWindow() {
-      // console.log(WindowManager.create);
       if (!pushWindow) {
         pushWindow = WindowManager.create({
           route: '/push-window',
@@ -118,27 +68,15 @@ export default {
         pushWindow = null;
       }
     },
-    trayToggle() {
-      ipcRenderer.send('tray-manager-toggle');
-    },
-
-    async loadInitialState() {
-      await this.$store.dispatch('initial');
-    },
   },
 
   mounted() {
     ipcRenderer.send('page-rendered', 'Hello from Main!');
-
-    this.$i18n.locale = 'ru';
-
     const oneSecond = 1000;
 
     setInterval(() => {
       this.seconds += 1;
     }, oneSecond);
-
-    // console.log('mainWindow:', this.$route.query);
     this.message = this.$route.query.hash;
   },
 };
