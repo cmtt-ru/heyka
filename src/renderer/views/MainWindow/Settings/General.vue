@@ -30,7 +30,7 @@ export default {
       autorun: this.$store.state.app.autorun,
       theme: { ...this.$store.state.app.theme },
       // Language tag ('en') mapped to normal name ('English').
-      //  TODO: move to store maybe?
+      // ? maybe move to i18n module?
       languages: [
         {
           name: 'English',
@@ -100,9 +100,9 @@ export default {
 
   methods: {
     /**
-     * Send action to vuex
-     *
-     *
+     * Initiate state mutation
+     * @param {string} field Field to mutate. Should be part of "set___"-action name
+     * @param {any} value value to update state with
      * @returns {void}
      */
     save(field, value) {

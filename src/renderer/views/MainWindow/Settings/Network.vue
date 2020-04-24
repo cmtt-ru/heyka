@@ -3,7 +3,7 @@
     <div class="privacy-text">{{texts.transparency}}</div>
     <textarea readonly cols="30" rows="10">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae dignissimos nam illo quasi rem modi sed architecto voluptates aperiam quas? Ea aperiam in nihil, assumenda atque a similique eaque delectus! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus pariatur beatae dolore reiciendis eveniet laudantium incidunt eaque quos laborum nobis. Saepe hic reiciendis minima at, iure vero molestiae molestias provident! Lorem ipsum dolor sit amet consectetur adipisicing elit. Non nam aut corrupti distinctio hic rem a ipsum rerum officia eaque! Sunt commodi sint obcaecati a distinctio earum ratione vel ipsam?</textarea>
     <div class="settings__label">{{texts.googleLabel}}</div>
-    <ui-switch v-model="analytics" :text="texts.googleSwitch"/>
+    <ui-switch @input="save('Analytics', analytics)" v-model="analytics" :text="texts.googleSwitch"/>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      analytics: null,
+      analytics: this.$store.state.app.collectAnalytics,
     };
   },
   computed: {
@@ -30,22 +30,16 @@ export default {
     },
   },
 
-  watch: {
-    analytics: 'saveAnalytics',
-  },
-
   methods: {
     /**
-     * Send Analytics state to vuex
+     * Initiate state mutation
+     * @param {string} field Field to mutate. Should be part of "set___"-action name
+     * @param {any} value value to update state with
      * @returns {void}
      */
-    saveAnalytics() {
-      this.$store.dispatch('app/setAnalytics', this.analytics);
+    save(field, value) {
+      this.$store.dispatch(`app/set${field}`, value);
     },
-  },
-
-  created() {
-    this.analytics = this.$store.getters['app/getAnalytics'];
   },
 };
 </script>

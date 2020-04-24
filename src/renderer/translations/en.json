@@ -19,6 +19,7 @@
   },
   "settings": {
     "labels": {
+      "header": "Settings",
       "general": "General",
       "devices": "Devices",
       "network": "Network",
