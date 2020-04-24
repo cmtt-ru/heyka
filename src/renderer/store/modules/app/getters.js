@@ -36,7 +36,9 @@ export default {
    * @param {AppState} state – module app state
    * @returns {string}
    */
-  getOldMode: (state) => state.runAppFromOld,
+  getModeWillChange: (state) => {
+    return (state.runAppFromOld !== state.runAppFrom);
+  },
   /**
    * Get current autorun state
    *

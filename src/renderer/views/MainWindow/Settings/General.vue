@@ -1,15 +1,15 @@
 <template>
   <div class="settings-page">
     <div class="settings__label">{{texts.languageLabel}}</div>
-    <ui-select v-model="language" :data="languages"/>
+    <ui-select @input="save('Language', language)" v-model="language" :data="languages"/>
     <div class="settings__label">{{texts.behaviourLabel}}</div>
-    <ui-select v-model="mode" :data="modes"/>
+    <ui-select @input="save('Mode', mode)" v-model="mode" :data="modes"/>
     <div class="extra-info" v-if="modeWillChange">{{texts.behaviourWillChange}}</div>
     <div class="settings__label">{{texts.autorunLabel}}</div>
-    <ui-switch v-model="autorun" :text="texts.autorunSwitch"/>
+    <ui-switch @input="save('Autorun', autorun)" v-model="autorun" :text="texts.autorunSwitch"/>
     <div class="settings__label">{{texts.appearanceLabel}}</div>
-    <ui-select v-model="theme.name" :data="themes" :disabled="theme.auto"/>
-    <ui-switch v-model="theme.auto" :text="texts.automaticallySwitch"/>
+    <ui-select @input="save('Theme', {...theme})" v-model="theme.name" :data="themes" :disabled="theme.auto"/>
+    <ui-switch @input="save('Theme', {...theme})" v-model="theme.auto" :text="texts.automaticallySwitch"/>
   </div>
 </template>
 
@@ -25,10 +25,10 @@ export default {
 
   data() {
     return {
-      mode: null,
-      language: null,
-      autorun: null,
-      theme: null,
+      mode: this.$store.state.app.runAppFrom,
+      language: this.$store.state.app.language,
+      autorun: this.$store.state.app.autorun,
+      theme: { ...this.$store.state.app.theme },
       // Language tag ('en') mapped to normal name ('English').
       //  TODO: move to store maybe?
       languages: [
@@ -47,14 +47,6 @@ export default {
       ],
 
     };
-  },
-
-  watch: {
-    language: 'saveLanguage',
-    'theme.name': 'saveTheme',
-    'theme.auto': 'saveTheme',
-    autorun: 'saveAutorun',
-    mode: 'saveMode',
   },
 
   computed: {
@@ -86,7 +78,7 @@ export default {
      * @returns {boolean}
      */
     modeWillChange() {
-      return this.$store.getters['app/getOldMode'] !== this.$store.getters['app/getMode'];
+      return this.$store.getters['app/getModeWillChange'];
     },
     /**
      * Array for theme select
@@ -108,41 +100,14 @@ export default {
 
   methods: {
     /**
-     * Send theme to vuex
+     * Send action to vuex
+     *
+     *
      * @returns {void}
      */
-    saveTheme() {
-      this.$store.dispatch('app/setTheme', { ...this.theme });
+    save(field, value) {
+      this.$store.dispatch(`app/set${field}`, value);
     },
-    /**
-     * Send language to vuex
-     * @returns {void}
-     */
-    saveLanguage() {
-      this.$store.dispatch('app/setLanguage', this.language);
-    },
-    /**
-     * Send autorun state to vuex
-     * @returns {void}
-     */
-    saveAutorun() {
-      this.$store.dispatch('app/setAutorun', this.autorun);
-    },
-    /**
-     * Send mode (window/tray) state to vuex
-     * @returns {void}
-     */
-    saveMode() {
-      this.$store.dispatch('app/setMode', this.mode);
-    },
-  },
-
-  created() {
-    /* Get all settings from vuex */
-    this.language = this.$store.getters['app/getLang'];
-    this.theme = this.$store.getters['app/getTheme'];
-    this.mode = this.$store.getters['app/getMode'];
-    this.autorun = this.$store.getters['app/getAutorun'];
   },
 };
 </script>
