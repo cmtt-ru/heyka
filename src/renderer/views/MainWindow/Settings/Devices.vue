@@ -83,7 +83,7 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-@import './settings'
+@import './styles'
 
 .setting-with-icon
   display flex
