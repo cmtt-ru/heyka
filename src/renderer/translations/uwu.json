@@ -2,23 +2,24 @@
   "message": "Zewo seconds | Onye second | {n} seconds",
   "workspace": {
     "navbar": {
-      "channelsHeader": "Channels",
-      "usersHeader": "Users"
+      "channelsHeader": "Channyews",
+      "usersHeader": "Usews"
     },
     "channel": {
       "join": "Join",
-      "disconnect": "Disconnect"
+      "disconnect": "Disconnyect"
     },
     "user": {
-      "privateTalkButton": "Private talk",
+      "privateTalkButton": "Pwivate tawk",
       "inviteButtonStart": "Invite to",
-      "inviteBySlackButton": "Send invite by Slack",
-      "localTime": "Local time",
-      "email": "Email"
+      "inviteBySlackButton": "Send invite by Swack",
+      "localTime": "Wocaw time",
+      "email": "Emaiw"
     }
   },
   "settings": {
     "labels": {
+      "header": "Settings",
       "general": "Genyewaw",
       "devices": "Devices",
       "network": "Nyetwowk",

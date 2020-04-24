@@ -4,7 +4,7 @@
 
       <template v-slot:sidebar-header>
         <div class="l-p-8 l-w-m">
-          Settings
+          {{texts.header}}
         </div>
       </template>
 
@@ -30,7 +30,7 @@
           </ui-button></router-link>
 
           <div>
-            <router-view></router-view>
+            <router-view/>
           </div>
         </div>
       </template>
@@ -50,7 +50,7 @@ export default {
   },
   data() {
     return {
-      info: null,
+      info: this.$store.getters['app/getGeneralInfo'],
     };
   },
   computed: {
@@ -72,9 +72,6 @@ export default {
 
       return `${this.info.name}\nver. ${this.info.version}\n${this.info.system} ${this.info.systemVer}`;
     },
-  },
-  created() {
-    this.info = this.$store.getters['app/getGeneralInfo'];
   },
 };
 </script>
