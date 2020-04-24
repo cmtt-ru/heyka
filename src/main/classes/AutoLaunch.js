@@ -1,8 +1,8 @@
-import { ipcMain } from 'electron';
+import { ipcMain, app } from 'electron';
 import AutoLaunch from 'auto-launch'; // ! Not Mac App Store friendly
 import Store from 'electron-store';
 const autoLauncher = new AutoLaunch({
-  name: 'Heyka 2.0', // ? retrieve name from outside? vuex store, maybe?
+  name: app.getName(),
 });
 const heykaStore = new Store({
   name: 'app',

@@ -24,6 +24,6 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-@import './settings'
+@import './styles'
 
 </style>

@@ -17,13 +17,13 @@
 
       <div v-if="user.onlineStatus==='offline'">
         <ui-button :type="2" :wide="true" class="user-action">
-          <div v-textfade>{{texts.inviteBySlackButton}}</div>
+          <div>{{texts.inviteBySlackButton}}</div>
         </ui-button>
       </div>
 
       <div v-else>
         <ui-button :type="1" :wide="true" class="user-action">
-          <div v-textfade="texts.privateTalkButton">{{texts.privateTalkButton}}</div>
+          <div>{{texts.privateTalkButton}}</div>
         </ui-button>
         <ui-button v-if="selectedChannelName" :type="3" :wide="true" class="user-action">
           <div class="user-action__inner" v-textfade>

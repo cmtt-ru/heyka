@@ -4,7 +4,7 @@
   class="dropdown"
   :class="{'dropdown--disabled': disabled}"
 >
-  <div @click="HeaderClickHandler()" class="dropdown__header">
+  <div @click="headerClickHandler()" class="dropdown__header">
     <div v-textfade="selectedText">{{selectedText}}</div>
     <svg-icon
       class="dropdown__header__icon"
@@ -15,7 +15,7 @@
   <div class="dropdown__list" :class="{'dropdown__list--visible': visible}">
     <div
       v-for="item in data" :key="item.value"
-      @click="VariantClickHandler(item)"
+      @click="variantClickHandler(item)"
       class="dropdown__item"
       :class="{'dropdown__item--selected': item == selectedItem}"
     >
@@ -105,7 +105,7 @@ export default {
      * We clicked header (open/close toggle)
      * @returns {void}
      */
-    HeaderClickHandler() {
+    headerClickHandler() {
       this.toggle();
     },
 
@@ -114,7 +114,7 @@ export default {
      * @param {object} item item which we clicked
      * @returns {void}
      */
-    VariantClickHandler(item) {
+    variantClickHandler(item) {
       this.myValue = item.value;
       this.hide();
       this.$emit('input', item.value);

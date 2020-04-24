@@ -113,7 +113,7 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-@import './settings'
+@import './styles'
 
 .extra-info
   font-size 10px
