@@ -21,7 +21,7 @@
           <router-link class="link" :to="{name: 'styleguide-forms'}">Forms</router-link>
           <br>
           <br>
-          <router-link class="link" :to="{name: 'workspace'}">Exit</router-link>
+          <router-link class="link" :to="{name: 'settings'}">Exit</router-link>
         </div>
       </template>
 
@@ -53,7 +53,7 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped> //? scoped или нет? пока убрал, чтобы не мешало в списке каналов
+<style lang="stylus" scoped>
   .link
     display block
     padding 4px 8px

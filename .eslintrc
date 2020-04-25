@@ -171,5 +171,6 @@
     "Paragraph": true,
     "Header": true,
     "Embed": true,
+    "System": true
   }
 }

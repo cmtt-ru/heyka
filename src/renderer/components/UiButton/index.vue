@@ -4,6 +4,7 @@
        v-if="!withIcon"
        :class="classList"
        :style="buttonSize"
+       @click="$emit('click')"
   >
     <slot></slot>
   </div>

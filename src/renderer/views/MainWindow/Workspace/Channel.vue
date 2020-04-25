@@ -22,7 +22,7 @@
           class="channel-info__connect"
           size="small"
           @click.native="clickConnectHandler()">
-          Join
+          {{texts.join}}
         </ui-button>
         <ui-button
           v-if="isConnected"
@@ -30,14 +30,13 @@
           class="channel-info__connect"
           size="small"
           @click.native="clickDisconnectHandler()">
-          Disconnect
+          {{texts.disconnect}}
         </ui-button>
 
       </div>
 
     <list :filterBy="''">
       <list-item
-        @click.native="clickUserHandler(user)"
         v-for="user in users"
         :key="user.name"
         :filterKey="user.name"
@@ -74,7 +73,13 @@ export default {
   },
 
   computed: {
-
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('workspace.channel');
+    },
     /**
      * Get users array
      * @returns {array} array of users
@@ -139,15 +144,6 @@ export default {
     async clickDisconnectHandler() {
       // TODO: добавить дисконнект от сокетов и всё такое
       await this.$store.dispatch('unselectChannel', this.channelId);
-    },
-
-    /**
-     * Dummy click handler
-     * @param {object} user user
-     * @returns {void}
-     */
-    clickUserHandler(user) {
-      console.log(user.name);
     },
 
     /**
