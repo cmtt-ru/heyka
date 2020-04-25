@@ -11,7 +11,6 @@
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
 
-    <button @click="makeError">Ошибка</button>
     <br>
     <button @click="loadInitialState()">Load initial state</button>
     <button @click="login()">Login</button>
@@ -119,13 +118,6 @@ export default {
       await this.$store.dispatch('initial');
     },
 
-    async makeError() {
-      try {
-        await this.$API.auth.signinByLink('');
-      } catch (e) {
-        console.log('eeeeee', e);
-      }
-    },
   },
 
   mounted() {
