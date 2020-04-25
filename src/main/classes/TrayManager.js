@@ -1,11 +1,9 @@
 /* eslint-disable no-magic-numbers */
 import path from 'path';
-import { app, Menu, Tray, nativeImage, ipcMain, nativeTheme } from 'electron';
+import { app, Menu, Tray, nativeImage, nativeTheme } from 'electron';
 import Store from 'electron-store';
-
-const TrayFileStore = new Store({
-  name: 'tray',
-  encryptionKey: '31415926',
+const heykaStore = new Store({
+  name: 'app',
 });
 
 const isMac = process.platform === 'darwin';
@@ -13,7 +11,7 @@ const isWin = !isMac;
 let animationTimer;
 
 /**
- * Icon names for dark&light themes. No ".png", no "@2x" stuff
+ * Icon names for dark&light themes. No ".png", no "@2x/@3x" stuff
  */
 const icons = {
   light: {
@@ -46,13 +44,17 @@ class TrayManager {
  * @returns {void}
  */
   constructor(iconPath) {
-    this.inTray = TrayFileStore.get('ifInTray', true);
+    // Get behaviour from electron store.
+    // It is set and changed bu vuex store,
+    // but we don't need to communicate with vuex directly.
+    // For now, at least.
+    //
+    this.mode = heykaStore.get('runAppFrom', 'window');
+
     nativeTheme.on('updated', () => {
       this.updateTheme();
     });
-    ipcMain.on('tray-manager-toggle', (event, options) => {
-      this.toggleTrayPosition();
-    });
+
     app.on('ready', () => {
       this.set(iconPath);
       const contextMenu = Menu.buildFromTemplate([
@@ -137,7 +139,7 @@ class TrayManager {
   }
 
   /**
- * add mainWindow instance to TrayManager object
+ * Add mainWindow instance to TrayManager object
  * @param {string} window mainWindow instance
  * @returns {void}
  */
@@ -160,7 +162,7 @@ class TrayManager {
 
   /**
     * Get icon full path by icon name.
-    *!nativePath accepts only png and jpeg. No ico!
+    *! nativePath accepts only png and jpeg. No ico!
     * @param {string} icon icon path
     * @returns {string} icon full path
   */
@@ -235,17 +237,11 @@ class TrayManager {
  * @returns {boolean} if window lives in tray
  */
   isInTray() {
-    return this.inTray;
-  }
+    if (this.mode === 'tray') {
+      return true;
+    }
 
-  /**
-   * Move Main Window to tray
-   * @returns {void}
-  */
-  toggleTrayPosition() {
-    TrayFileStore.set('ifInTray', !this.inTray);
-    app.relaunch();
-    app.exit();
+    return false;
   }
 
   /**

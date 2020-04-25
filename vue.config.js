@@ -57,15 +57,13 @@ module.exports = {
         spriteFilename: 'img/icons.[hash:8].svg', // or 'img/icons.svg' if filenameHashing == false
       },
       pluginOptions: {
-        plainSprite: true,
+        plainSprite: false,
       },
     },
   },
 
   chainWebpack: config => {
     config.module
-      .rule('svg-sprite')
-      .use('svgo-loader')
-      .loader('svgo-loader');
+      .rule('svg-sprite');
   },
 };

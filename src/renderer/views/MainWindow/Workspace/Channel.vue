@@ -22,7 +22,7 @@
           class="channel-info__connect"
           size="small"
           @click.native="clickConnectHandler()">
-          Join
+          {{texts.join}}
         </ui-button>
         <ui-button
           v-if="isConnected"
@@ -30,7 +30,7 @@
           class="channel-info__connect"
           size="small"
           @click.native="clickDisconnectHandler()">
-          Disconnect
+          {{texts.disconnect}}
         </ui-button>
 
       </div>
@@ -73,7 +73,13 @@ export default {
   },
 
   computed: {
-
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('workspace.channel');
+    },
     /**
      * Get users array
      * @returns {array} array of users
