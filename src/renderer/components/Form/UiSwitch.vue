@@ -1,10 +1,11 @@
 <template>
 <div
  class="switch"
-:class="{'switch--disabled': disabled, 'switch--checked': value}"
+:class="{'switch--disabled': disabled}"
 @click="ClickHandler()"
 >
   <div v-textfade="text" class="switch__text">{{text}}</div>
+  <div class="switch__toggle" :class="{'switch__toggle--checked': value}"></div>
 </div>
 </template>
 
@@ -59,29 +60,22 @@ export default {
 
 <style lang="stylus" scoped>
 .switch
-  display inline-block
-  position relative
+  display flex
+  flex-direction row
+  justify-content space-between
+  align-items center
   width 100%
-  height 34px
-  box-sizing border-box
+  height 18px
   border-radius 4px
-  padding 8px
-  overflow hidden
   cursor pointer
-
-  &:hover
-    background-color var(--item-bg-hover)
 
   &--disabled
     opacity 0.5
     pointer-events none
 
-  &:before
-    content ''
+  &__toggle
     box-sizing border-box
-    position absolute
-    top 12px
-    right 8px
+    position relative
     width 24px
     height 10px
     background-color var(--icon-2)
@@ -90,32 +84,33 @@ export default {
     z-index 1
     -webkit-transition background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1)
     transition background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1)
+    flex-shrink 0
 
-  &:after
-    content ''
-    box-sizing border-box
-    position absolute
-    top 11px
-    right 20px
-    width 12px
-    height 12px
-    background-color #fff //?: move this color to themes.json?
-    border-radius 12px
-    border 0.5px solid var(--line-stroke)
-    box-shadow 0px 1px 2px rgba(0, 0, 0, 0.15)
-    z-index 2
-    -webkit-transition all 0.28s cubic-bezier(0.4, 0, 0.2, 1)
-    transition all 0.28s cubic-bezier(0.4, 0, 0.2, 1)
-    -webkit-transition-property right, background-color
-    transition-property right, background-color
+    &:after
+      content ''
+      box-sizing border-box
+      position absolute
+      top -1.5px
+      right 11.5px
+      width 12px
+      height 12px
+      background-color #fff //?: move this color to themes.json?
+      border-radius 12px
+      border 0.5px solid var(--line-stroke)
+      box-shadow 0px 1px 2px rgba(0, 0, 0, 0.15)
+      z-index 2
+      -webkit-transition all 0.28s cubic-bezier(0.4, 0, 0.2, 1)
+      transition all 0.28s cubic-bezier(0.4, 0, 0.2, 1)
+      -webkit-transition-property right, background-color
+      transition-property right, background-color
 
-  &--checked:before
-    background-color var(--color-2)
+    &--checked
+      background-color var(--color-2)
 
-  &--checked:after
-    right 8px
+      &:after
+        right -0.5px
 
   &__text
-    margin-right 32px
+    margin-right 8px
 
 </style>

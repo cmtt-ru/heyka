@@ -3,9 +3,9 @@
     <form name="styleguideform">
       <h3 class="l-mt-24">Switch</h3>
       <br>
-      <ui-switch v-model="formData.themeToggle" text="Тёмная тема"/>
-      <ui-switch v-model="formData.defaultEnabledToggle"  text="Я изначально включён"/>
-      <ui-switch v-model="formData.disabledToggle" disabled text="А я не работаю"/>
+      <ui-switch class="ui-switch" v-model="formData.themeToggle" text="Тёмная тема"/>
+      <ui-switch class="ui-switch" v-model="formData.defaultEnabledToggle"  text="Я изначально включён"/>
+      <ui-switch class="ui-switch" v-model="formData.disabledToggle" disabled text="А я не работаю"/>
       <br>
 
       <h3 class="l-mt-24">Select</h3>
@@ -96,4 +96,6 @@ export default {
 <style scoped lang="stylus">
   h3
     color var(--text-0)
+  .ui-switch
+    margin 16px 0
 </style>

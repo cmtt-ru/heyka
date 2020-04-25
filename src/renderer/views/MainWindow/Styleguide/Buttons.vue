@@ -26,6 +26,8 @@
 
       <ui-button :type="3" class="l-mr-8">Type --3</ui-button>
 
+      <ui-button :type="11" class="l-mr-8">Type --11</ui-button>
+
     </div>
 
     <div class="l-mt-12">
@@ -57,12 +59,14 @@
     </div>
 
     <h3 class="l-mt-24">With icon</h3>
-    <div class="l-mt-12" style="width: 260px">
+    <div class="l-mt-12">
       <ui-button :type="9" icon="headphones" class="l-mr-8">Type --9</ui-button>
     </div>
-    <div class="l-mt-12" style="width: 260px">
+    <div class="l-mt-12">
       <ui-button :type="10" icon="headphones" class="l-mr-8">Type --10</ui-button>
     </div>
+
+    <ui-button :type="11" icon="headphones" class="l-mr-8">Type --11</ui-button>
 
     <h3 class="l-mt-24">Icon only, type --7</h3>
     <div class="l-mt-12">

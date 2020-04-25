@@ -4,30 +4,34 @@
 
       <template v-slot:sidebar-header>
         <div class="l-p-8 l-fw-m">
-          Settings
+          {{texts.header}}
         </div>
       </template>
 
       <template v-slot:sidebar-body>
         <div class="l-p-8">
-          <router-link to="">General</router-link>
-          <br>
-          <router-link to="">Devices</router-link>
-          <br>
-          <router-link to="">Network</router-link>
-          <br>
-          <router-link to="">About</router-link>
-          <br>
-          <router-link to="">Support</router-link>
-          <br>
-          <router-link :to="{name: 'styleguide'}">Styleguide</router-link>
+          <router-link class="link" :to="{name: 'settings'}">{{texts.general}}</router-link>
+          <router-link class="link" :to="{name: 'settings-devices'}">{{texts.devices}}</router-link>
+          <router-link class="link" :to="{name: 'settings-network'}">{{texts.network}}</router-link>
+          <router-link class="link" :to="{name: 'settings-about'}">{{texts.about}}</router-link>
+          <router-link class="link" :to="{name: 'settings-support'}">{{texts.support}}</router-link>
+          <router-link class="link" :to="{name: 'styleguide'}">{{texts.styleguide}}</router-link>
+          <div class="app-info">{{prettyInfo}}</div>
         </div>
       </template>
 
       <template v-slot:content-body>
-        <div class="l-p-8">
-          <router-link :to="{name: 'workspace'}">Close</router-link>
-          <router-view></router-view>
+        <div>
+          <router-link class="close-strip" :to="{name: 'workspace'}"><ui-button
+          :type="7"
+          class="channel-info__more"
+          size="small"
+          icon="close">
+          </ui-button></router-link>
+
+          <div>
+            <router-view/>
+          </div>
         </div>
       </template>
 
@@ -37,22 +41,72 @@
 
 <script>
 import Layout from './../Layout';
+import UiButton from '@components/UiButton';
 
 export default {
   components: {
     Layout,
+    UiButton,
   },
   data() {
     return {
-
+      info: this.$store.getters['app/getGeneralInfo'],
     };
   },
-  created() {
+  computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('settings.labels');
+    },
+    /**
+     * Construct app&system info plate
+     * @returns {string}
+     */
+    prettyInfo() {
+      if (!this.info) {
+        return;
+      }
 
+      return `${this.info.name}\nver. ${this.info.version}\n${this.info.system} ${this.info.systemVer}`;
+    },
   },
 };
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
+.app-info
+  font-size 10px
+  color var(--text-1)
+  white-space pre
+  padding 8px
+
+.link
+    display block
+    padding 4px 8px
+    border-radius 4px
+    font-size 14px
+    text-decoration none
+    color var(--text-0)
+    margin-bottom 2px
+
+    &:hover:not(.router-link-exact-active)
+      background-color var(--item-bg-hover)
+
+  .router-link-exact-active
+    background-color var(--item-bg-active)
+    box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
+
+.close-strip
+  height 40px
+  width 40px
+  margin-left auto
+  box-sizing border-box
+  padding 8px
+  display flex
+  flex-direction row
+  justify-content flex-end
 
 </style>
