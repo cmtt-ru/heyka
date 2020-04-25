@@ -1,5 +1,5 @@
 <template>
-    <div class="user">
+    <div class="user" v-popover.mouse.click="{name: 'UserInChannel', data: {userId: user.id}}">
 
         <avatar class="user__avatar" :image="user.avatar" :size="24" :onair="user.speaking"></avatar>
 
@@ -90,7 +90,8 @@ export default {
     width 100%
     border-radius 4px
 
-    &:hover
+    &:hover,
+    &.context-menu--opened
         background-color var(--item-bg-hover)
 
     &__avatar
