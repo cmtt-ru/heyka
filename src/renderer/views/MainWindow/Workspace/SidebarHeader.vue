@@ -43,6 +43,7 @@ export default {
      */
     dropdownHandler() {
       console.log('popover with settings and all workspaces');
+      this.$router.push('/main-window/settings/');
     },
   },
 

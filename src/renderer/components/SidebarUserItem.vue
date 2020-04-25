@@ -85,6 +85,11 @@ export default {
 
     &--offline
         opacity 0.5
+        filter grayscale(1)
+
+        &:hover
+          background-color var(--item-bg-hover)
+          opacity 0.8
 
     &__avatar
         flex-shrink 0
