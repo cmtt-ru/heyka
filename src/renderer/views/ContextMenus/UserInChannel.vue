@@ -22,27 +22,26 @@ export default {
     userId: String,
   },
 
-  computed: {
-
-  },
-
   methods: {
+    /**
+     * Poke click handler
+     * @returns {void}
+     */
     pokeClickHandler() {
       console.log('poke to user', this.userId);
     },
 
+    /**
+     * Mute click handler
+     * @returns {void}
+     */
     muteClickHandler() {
       console.log('mute user', this.userId);
     },
-  },
-
-  mounted() {
   },
 };
 </script>
 
 <style lang="stylus" scoped>
-  a
-    .ui-button
-      width 100%
+
 </style>

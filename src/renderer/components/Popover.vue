@@ -10,7 +10,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   .popover
     display flex
     background #fff
@@ -22,4 +22,8 @@ export default {
     flex-direction column
     min-width 130px
     box-sizing border-box
+
+    /deep/ a
+      .ui-button
+        width 100%
 </style>
