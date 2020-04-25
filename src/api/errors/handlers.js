@@ -68,13 +68,3 @@ defineErrorHandler(errorMessages.accessDenied, error => {
 export function defineErrorHandler(errorMessage, handler) {
   errorHandlers[errorMessage.toLowerCase()] = handler;
 }
-
-/**
- * Do nothing but throw error
- *
- * @param {object} error – error
- * @returns {void}
- */
-export function deadlock(error) {
-  throw error;
-}
