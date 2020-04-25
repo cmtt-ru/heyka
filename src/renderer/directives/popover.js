@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import router from '@/router';
+import store from '@/store';
 import { createPopper } from '@popperjs/core';
 
 /**
@@ -23,10 +24,10 @@ const LEFT_MOUSE = 1;
 const RIGHT_MOUSE = 3;
 
 /**
- * Default popover options
+ * Default popper options
  * @type {object}
  */
-const DEFAULT_POPOVER_OPTIONS = {
+const DEFAULT_POPPER_OPTIONS = {
   /* nothing yet here */
 };
 
@@ -64,7 +65,7 @@ class Popover {
     this.uid = Math.round(Math.random() * UID_MAX);
 
     this.element = element;
-    this.options = Object.assign({}, DEFAULT_POPOVER_OPTIONS, options);
+    this.options = Object.assign({}, DEFAULT_POPPER_OPTIONS, options);
     this.componentName = componentName;
     this.modes = modes;
     this.vueProps = data;
@@ -130,6 +131,7 @@ class Popover {
     const ComponentClass = Vue.extend(Component);
 
     ComponentClass.options.router = router;
+    ComponentClass.options.store = store;
 
     this.instance = new ComponentClass({
       propsData: this.vueProps,

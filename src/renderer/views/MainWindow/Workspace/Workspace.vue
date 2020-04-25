@@ -12,6 +12,45 @@
     <button @click="openPushWindow()">Открыть пуш</button>
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
+
+    <br><br>
+
+    <ui-button
+      :type="7"
+      size="small"
+      height="16"
+      icon="more"
+      v-popover.click="{name: 'Workspace'}"
+    />
+
+    <ui-button
+      class="l-ml-24"
+      :type="7"
+      size="small"
+      height="16"
+      icon="more"
+      v-popover.hover="{name: 'UserInChannel'}"
+    />
+
+    <div
+      style="width: 200px; height: 60px; background: #eee"
+      v-popover.mouse.click="{name: 'UserInChannel', data: {userId: '123'}}"
+    />
+
+    <br>
+
+    <div
+      style="width: 200px; height: 60px; background: #eee"
+      v-popover.mouse.right.click="{name: 'UserInChannel', options: {}}"
+    />
+
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+    <br><br>
+    <p>the end</p>
   </div>
 
 </template>
@@ -20,12 +59,14 @@
 import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Avatar from '@components/Avatar';
+import UiButton from '@components/UiButton';
 
 let pushWindow;
 
 export default {
   components: {
     Avatar,
+    UiButton,
   },
   data() {
     return {
