@@ -37,7 +37,6 @@
 
     <list :filterBy="''">
       <list-item
-        @click.native="clickUserHandler(user)"
         v-for="user in users"
         :key="user.name"
         :filterKey="user.name"
@@ -145,15 +144,6 @@ export default {
     async clickDisconnectHandler() {
       // TODO: добавить дисконнект от сокетов и всё такое
       await this.$store.dispatch('unselectChannel', this.channelId);
-    },
-
-    /**
-     * Dummy click handler
-     * @param {object} user user
-     * @returns {void}
-     */
-    clickUserHandler(user) {
-      console.log(user.name);
     },
 
     /**
