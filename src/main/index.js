@@ -132,6 +132,7 @@ app.on('will-quit', function () {
   mainWindow = null;
 });
 
+// Open external links (with target="_blank") in browser
 app.on('web-contents-created', (e, contents) => {
   contents.on('new-window', (el, url) => {
     el.preventDefault();
