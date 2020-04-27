@@ -17,6 +17,7 @@ export default {
      * Whether item is selected (for multi pick, eg. when sending invites to multiple people)
      */
       selected: false,
+      parent: this.$parent,
     };
   },
 
@@ -53,7 +54,7 @@ export default {
      * @returns {string}
      */
     parentFilterBy() {
-      return this.$parent.filterBy || '';
+      return this.parent.filterBy || '';
     },
   },
 
@@ -63,8 +64,11 @@ export default {
      * @returns {string}
      */
     clickHandler() {
+      if (!this.parent.selectable) {
+        return;
+      }
       this.selected = !this.selected;
-      this.$parent.$emit('selected');
+      this.parent.$emit('selected');
     },
   },
 

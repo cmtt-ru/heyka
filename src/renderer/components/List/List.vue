@@ -14,6 +14,9 @@ export default {
       type: String,
       default: '',
     },
+    /**
+     * Determive if list's items can be selected
+     */
     selectable: {
       type: Boolean,
       default: false,
@@ -26,9 +29,6 @@ export default {
      * @returns {array} keys of selected items
      */
     selectedChildren() {
-      if (!this.selectable) {
-        return;
-      }
       const selectedArray = this.$children.filter(el => el.selected).map(el => el.filterKey);
 
       this.$emit('multipick', selectedArray);
