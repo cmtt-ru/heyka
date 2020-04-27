@@ -1,9 +1,10 @@
 import { remote } from 'electron';
-
 import Store from 'electron-store';
+
 const heykaStore = new Store({
   name: 'app',
 });
+
 /**
  * @typedef {object} AppState
  * @property {string} appName – app name
@@ -12,6 +13,7 @@ const heykaStore = new Store({
  * @property {string} runAppFrom – run from tray or dock
  * @property {boolean} autorun – autorun
  * @property {boolean} collectAnalytics – whether to collect analytics
+ * @property {array} privacyLogs – privacy logs
  *
  * @property {object} theme – color theme
  * @property {string} theme.name – theme name
@@ -66,6 +68,7 @@ const state = () => {
       } ],
     },
     collectAnalytics: heykaStore.get('collectAnalytics', true),
+    privacyLogs: [],
   };
 };
 

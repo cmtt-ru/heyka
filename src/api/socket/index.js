@@ -39,8 +39,11 @@ export async function init() {
  * @returns {Promise<void>}
  */
 export async function destroy() {
-  client.off();
   client.disconnect();
+
+  Object.values(eventNames).forEach(eventName => {
+    client.removeAllListeners(eventName);
+  });
 }
 
 /**
@@ -60,13 +63,19 @@ async function authorize() {
       onlineStatus: 'online',
     });
 
+    store.dispatch('app/addPrivacyLog', {
+      category: 'socket',
+      method: eventNames.auth,
+      data: [ store.getters['me/getSelectedWorkspaceId'] ],
+    });
+
     client.on(eventNames.authSuccess, data => {
       console.log('socket auth success', data);
       store.dispatch('setSocketConnected', true);
       resolve(data);
     });
 
-    client.on('socket-api-error-auth', data => {
+    client.on(eventNames.authSuccessError, data => {
       console.error('socket auth error', data);
       reject(data);
     });
@@ -79,21 +88,21 @@ async function authorize() {
  * @returns {void}
  */
 function bindErrorEvents() {
-  client.on('disconnect', data => {
+  client.on(eventNames.disconnect, data => {
     console.log('disconnect', data);
     store.dispatch('setSocketConnected', false);
   });
 
-  client.on('reconnect', data => {
+  client.on(eventNames.reconnect, data => {
     console.log('reconnect', data);
     authorize();
   });
 
-  client.on('error', data => {
+  client.on(eventNames.error, data => {
     console.error('error', data);
   });
 
-  client.on('socket-api-error', error => {
+  client.on(eventNames.socketApiError, error => {
     console.error('socket-api-error', error.event, error.message);
   });
 }

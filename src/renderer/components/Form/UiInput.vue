@@ -115,11 +115,14 @@ export default {
 .input
   width 100%
   min-height 32px
-  padding 8px
+  padding 0 12px
   box-sizing border-box
   border 1px solid var(--stroke-3)
   border-radius 4px
   background-color var(--input)
+  font-family Inter, sans-serif
+  font-size 14px
+  line-height 18px
 
   &__icon
     position absolute

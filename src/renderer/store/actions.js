@@ -1,5 +1,6 @@
 import API from '@api';
 import { mapKeys } from '@libs/arrays';
+import * as sockets from '@api/socket';
 
 export default {
 
@@ -38,6 +39,8 @@ export default {
       commit('workspaces/SET_COLLECTION', mapKeys(workspaces, 'id'));
       commit('channels/SET_COLLECTION', mapKeys(workspace.channels, 'id'));
       commit('users/SET_COLLECTION', mapKeys(workspace.users, 'id'));
+
+      await sockets.init();
     } else {
       console.error('AUTH REQUIRED');
     }
@@ -58,12 +61,15 @@ export default {
         channelId: state.me.selectedChannelId,
       });
     }
+
     commit('janus/SET_OPTIONS', response.connectionOptions);
+
     commit('channels/ADD_USER', {
       userId: state.me.id,
       channelId: id,
       userMediaState: getters['me/getMediaState'],
     });
+
     commit('me/SET_CHANNEL_ID', id);
   },
 
