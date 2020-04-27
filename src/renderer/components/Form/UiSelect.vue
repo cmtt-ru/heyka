@@ -223,7 +223,7 @@ export default {
     display none
     margin 6px 0
     padding 4px
-    max-height 100px // TODO: дождаться варианта покрасивее от Кости
+    max-height 300px // TODO: дождаться варианта покрасивее от Кости
     overflow-y auto
 
     &--visible

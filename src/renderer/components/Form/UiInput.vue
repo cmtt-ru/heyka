@@ -16,7 +16,7 @@
       :type="type"
       :placeholder="placeholder"
       v-model="myValue"
-      @change="updateText()"
+      @input="updateText()"
     >
 
   </div>
