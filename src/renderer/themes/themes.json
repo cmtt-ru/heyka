@@ -27,7 +27,9 @@
                 "--icon-bg": "#E8F2FE",
                 "--input": "#F2F2F2",
                 "--item-bg-active": "#FFFFFF",
-                "--item-bg-multi-pick": "#F4FBF7"
+                "--item-bg-multi-pick": "#F4FBF7",
+                "--shadow-15": "rgba(0,0,0,0.15)",
+                "--shadow-20": "rgba(0,0,0,0.20)"
             },
             "navbar": {
                 "--app-bg": "#EFEFF1",
@@ -88,7 +90,9 @@
                 "--icon-bg": "#E8F2FE",
                 "--input": "#222222",
                 "--item-bg-hover": "#333333",
-                "--item-bg-multi-pick": "#222222"
+                "--item-bg-multi-pick": "#222222",
+                "--shadow-15": "rgba(255,255,255,0.15)",
+                "--shadow-20": "rgba(255,255,255,0.20)"
             },
             "navbar": {
                 "--app-bg": "#191919",
