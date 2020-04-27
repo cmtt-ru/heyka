@@ -1,3 +1,4 @@
+import {ipcRenderer} from "electron";
 <template>
   <div>
     <janus />
@@ -6,9 +7,9 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron';
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
-import * as sockets from '@api/socket';
 
 export default {
   components: {
@@ -20,22 +21,32 @@ export default {
     };
   },
 
-  async created() {
-    this.deepLink = new DeepLinkRenderer({
-      invite: 'main-window/signinbylink',
-      login: 'main-window/login',
-      join: 'main-window/workspace',
-      call: 'main-window/workspace',
-      d: 'main-window/workspace',
-    });
+  methods: {
 
-    await this.$store.dispatch('initial');
-    await sockets.init();
   },
 
-  destroyed() {
-    sockets.destroy();
-    console.error('Ой-ёй! Кажется такого не должно быть');
+  async created() {
+    try {
+      await this.$API.auth.check();
+
+      ipcRenderer.on('default-behaviour', (event, arg) => {
+        this.$router.replace('/main-window/workspace');
+      });
+
+      ipcRenderer.send('start-is-ready');
+
+      this.deepLink = new DeepLinkRenderer({
+        invite: 'main-window/signinbylink',
+        login: 'main-window/login',
+        join: 'main-window/workspace',
+        call: 'main-window/workspace',
+        d: 'main-window/workspace',
+      });
+
+      await this.$store.dispatch('initial');
+    } catch (e) {
+      console.log('redirecting to login');
+    }
   },
 };
 </script>

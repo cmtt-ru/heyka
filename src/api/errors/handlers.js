@@ -6,29 +6,37 @@ export const errorHandlers = {};
 /**
  * Bad token
  */
-defineErrorHandler(errorMessages.badToken, () => {
+defineErrorHandler(errorMessages.badToken, error => {
   logout();
+
+  throw error;
 });
 
 /**
  * Credentials are invalid
  */
-defineErrorHandler(errorMessages.credentialsAreInvalid, () => {
+defineErrorHandler(errorMessages.credentialsAreInvalid, error => {
   logout();
+
+  throw error;
 });
 
 /**
  * Refresh token expired
  */
-defineErrorHandler(errorMessages.refreshTokenExpired, () => {
+defineErrorHandler(errorMessages.refreshTokenExpired, error => {
   logout();
+
+  throw error;
 });
 
 /**
  * Missing authentication
  */
-defineErrorHandler(errorMessages.missingAuthentication, () => {
+defineErrorHandler(errorMessages.missingAuthentication, error => {
   logout();
+
+  throw error;
 });
 
 /**
@@ -38,6 +46,8 @@ defineErrorHandler(errorMessages.internalServerError, error => {
   /** Show fancy error */
   alert('500\nInternal server error');
   console.log(error);
+
+  throw error;
 });
 
 /**
@@ -47,6 +57,8 @@ defineErrorHandler(errorMessages.socketNotFound, error => {
   /** Show fancy error */
   alert('Huh, socket not found');
   console.log(error);
+
+  throw error;
 });
 
 /**
@@ -56,6 +68,8 @@ defineErrorHandler(errorMessages.accessDenied, error => {
   /** Show fancy error */
   alert('It seems you don\'t have access');
   console.log(error);
+
+  throw error;
 });
 
 /**

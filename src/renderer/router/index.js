@@ -7,9 +7,6 @@ import VueRouter from 'vue-router';
  */
 const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
 
-/* Initial window loading */
-const Start = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Start');
-
 /* Auth layout */
 const Auth = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth');
 const AuthTemp = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Temp');
@@ -58,15 +55,6 @@ const routes = [
     path: '/main-window',
     component: MainWindow,
     children: [
-
-      /**
-       * Route for initial window loading
-       */
-      {
-        path: '',
-        component: Start,
-      },
-
       /**
        * Auth layout
        */
