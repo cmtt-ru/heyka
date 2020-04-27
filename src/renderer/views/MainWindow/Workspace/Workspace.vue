@@ -91,7 +91,7 @@ export default {
     },
 
     logout() {
-      logout(false);
+      logout();
     },
 
     async openPushWindow() {

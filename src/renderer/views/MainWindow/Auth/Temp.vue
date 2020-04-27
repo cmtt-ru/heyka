@@ -57,6 +57,8 @@ export default {
 
         this.invalidCode = false;
 
+        await this.$store.dispatch('initial');
+
         await this.$router.replace({
           name: 'workspace',
         });
