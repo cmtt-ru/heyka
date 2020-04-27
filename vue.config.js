@@ -56,7 +56,7 @@ module.exports = {
         spriteFilename: 'img/icons.[hash:8].svg', // or 'img/icons.svg' if filenameHashing == false
       },
       pluginOptions: {
-        plainSprite: false,
+        plainSprite: true,
       },
     },
   },

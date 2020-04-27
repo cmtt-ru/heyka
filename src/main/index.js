@@ -132,6 +132,19 @@ app.on('will-quit', function () {
   mainWindow = null;
 });
 
+app.on('web-contents-created', (e, contents) => {
+  contents.on('new-window', (el, url) => {
+    el.preventDefault();
+    require('open')(url);
+  });
+  contents.on('will-navigate', (el, url) => {
+    if (url !== contents.getURL()) {
+      require('open')(url);
+      el.preventDefault();
+    }
+  });
+});
+
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
