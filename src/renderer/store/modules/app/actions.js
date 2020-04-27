@@ -2,12 +2,34 @@ import themes from '@/themes';
 import i18n from '@/i18n';
 import { ipcRenderer } from 'electron';
 import Store from 'electron-store';
+import dateFormat from 'dateformat';
 
 const heykaStore = new Store({
   name: 'app',
 });
 
+/**
+ * @typedef PrivacyLogData
+ * @property {string} category – category, e.g. API or SOCKET
+ * @property {string} method – method name, e.g. getWorkspaces
+ * @property {object} data – data sent, e.g. {userId: '...'}
+ */
+
 export default {
+  /**
+   * Add privacy log
+   *
+   * @param {function} commit – store commit
+   * @param {PrivacyLogData} logData – log data
+   * @returns {void}
+   */
+  addPrivacyLog({ commit }, logData) {
+    const date = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss');
+    const dataSent = JSON.stringify(logData.data);
+    const logEntry = `[${date}][${logData.category.toUpperCase()}] ${logData.method}, ${dataSent}`;
+
+    commit('ADD_PRIVACY_LOG', logEntry);
+  },
 
   /**
    * Set app language
@@ -21,6 +43,7 @@ export default {
     i18n.locale = language;
     heykaStore.set('language', language);
   },
+
   /**
    * Set mode (window/tray)
    *
@@ -32,6 +55,7 @@ export default {
     commit('SET_MODE', mode);
     heykaStore.set('runAppFrom', mode);
   },
+
   /**
    * Set app autorun state
    *
@@ -44,6 +68,7 @@ export default {
     commit('SET_AUTORUN', autorun);
     heykaStore.set('autorun', autorun);
   },
+
   /**
    * Set app theme
    *

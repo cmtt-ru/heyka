@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import eventNames from './eventNames';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -23,11 +24,15 @@ function connect() {
       return;
     }
 
-    client.on('connect', data => {
+    if (client.disconnected) {
+      client.connect();
+    }
+
+    client.once('connect', data => {
       resolve(data);
     });
 
-    client.on('connect_error', data => {
+    client.once(eventNames.connectError, data => {
       reject(data);
     });
   });

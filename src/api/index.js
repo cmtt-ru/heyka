@@ -2,9 +2,11 @@ import userApi from './user';
 import authApi from './auth';
 import workspaceApi from './workspace';
 import channelApi from './channel';
-import * as ERROR from './constants';
+import { errorMessages } from './errors/types';
+import { handleError } from './errors';
 import axios from 'axios';
 import { updateTokens } from './tokens';
+import store from '@/store';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -24,7 +26,7 @@ function injectMiddleware(functions) {
   Object.keys(functions).forEach(name => {
     const origFunc = functions[name];
 
-    functions[name] = middleware(origFunc);
+    functions[name] = middleware(origFunc, name);
   });
 
   return functions;
@@ -34,25 +36,29 @@ function injectMiddleware(functions) {
  * Middleware function
  *
  * @param {function} func – specific function
+ * @param {string} functionName – function name
  * @returns {function(...[*]=)}
  */
-function middleware(func) {
+function middleware(func, functionName) {
   return async function () {
+    store.dispatch('app/addPrivacyLog', {
+      category: 'api',
+      method: functionName,
+      data: Array.prototype.slice.call(arguments),
+    });
+
     try {
       return await func.apply(null, arguments);
     } catch (err) {
-      switch (true) {
-        case err.response === undefined:
-          throw err;
-        case err.response.data.message === ERROR.BAD_TOKEN :
-          break;
-        case err.response.data.message === ERROR.EXPIRED_TOKEN :
-          await updateTokens();
+      /** Update tokens if token is expired */
+      if (err.response.data.message === errorMessages.accessTokenExpired) {
+        await updateTokens();
 
-          return middleware(func).apply(null, arguments);
-        default:
-          throw err;
+        return middleware(func).apply(null, arguments);
       }
+
+      /** Global error handler */
+      await handleError(err);
     }
   };
 }

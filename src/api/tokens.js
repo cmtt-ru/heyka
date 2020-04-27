@@ -4,7 +4,6 @@ import refreshToken from './auth/refreshToken';
 
 /**
  * Auth file store
- * @type {Store}
  */
 const authFileStore = new Store({
   name: 'auth',
@@ -72,4 +71,15 @@ export async function getAccessToken() {
   await updateTokens();
 
   return tokens.accessToken;
+}
+
+/**
+ * Clear tokens
+ *
+ * @returns {void}
+ */
+export function clearTokens() {
+  authFileStore.clear();
+  setAxiosTokenHeader('');
+  tokens = {};
 }

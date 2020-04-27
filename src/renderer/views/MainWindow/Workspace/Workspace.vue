@@ -6,12 +6,15 @@
     <br>
     <div>{{message}}</div>
     <br><br>
-    <button @click="login()">Login (by link in .ENV)</button>
-    <br><br>
 
     <button @click="openPushWindow()">Открыть пуш</button>
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
+
+    <br>
+    <button @click="loadInitialState()">Load initial state</button>
+    <button @click="login()">Login</button>
+    <button @click="logout()">Logout</button>
 
     <br><br>
 
@@ -59,6 +62,7 @@
 import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Avatar from '@components/Avatar';
+import logout from '@api/auth/logout';
 import UiButton from '@components/UiButton';
 
 let pushWindow;
@@ -83,14 +87,13 @@ export default {
 
   methods: {
     async login() {
-      try {
-        const res = await this.$API.auth.signinByLink(process.env.VUE_APP_LOGIN_BY_LINK);
-
-        console.log(res);
-      } catch (err) {
-        console.log(err);
-      }
+      this.$router.replace({ name: 'auth' });
     },
+
+    logout() {
+      logout();
+    },
+
     async openPushWindow() {
       if (!pushWindow) {
         pushWindow = WindowManager.create({
@@ -103,12 +106,18 @@ export default {
         });
       }
     },
+
     closePushWindow() {
       if (pushWindow) {
         pushWindow.close();
         pushWindow = null;
       }
     },
+
+    async loadInitialState() {
+      await this.$store.dispatch('initial');
+    },
+
   },
 
   mounted() {
