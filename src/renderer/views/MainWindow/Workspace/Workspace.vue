@@ -11,6 +11,10 @@
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
 
+    <button @click="openCallWindow">Открыть окно звонка</button>
+    <button @click="closeCallWindow">Закрыть</button>
+    <br><br>
+
     <br>
     <button @click="loadInitialState()">Load initial state</button>
     <button @click="login()">Login</button>
@@ -66,6 +70,7 @@ import logout from '@api/auth/logout';
 import UiButton from '@components/UiButton';
 
 let pushWindow;
+let callWindow;
 
 export default {
   components: {
@@ -111,6 +116,27 @@ export default {
       if (pushWindow) {
         pushWindow.close();
         pushWindow = null;
+      }
+    },
+
+    openCallWindow() {
+      if (!callWindow) {
+        callWindow = WindowManager.create({
+          route: '/call-window',
+          position: 'center',
+          template: 'call',
+          alwaysOnTop: true,
+          onClose: () => {
+            callWindow = null;
+          },
+        });
+      }
+    },
+
+    closeCallWindow() {
+      if (callWindow) {
+        callWindow.close();
+        callWindow = null;
       }
     },
 

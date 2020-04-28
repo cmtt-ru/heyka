@@ -41,6 +41,13 @@ const StyleguideForms = () => import(/* webpackChunkName: "main" */ '@views/Main
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/PushWindow');
 const PushWindowPoke = () => import(/* webpackChunkName: "push" */ '@views/PushWindow/Poke');
 
+/**
+ * Call window views
+ * @constructor
+ */
+const CallWindow = () => import(/* webpackChunkName: "call" */ '@views/CallWindow');
+const CallWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallWindow/Call');
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -178,6 +185,20 @@ const routes = [
       {
         path: '',
         component: PushWindowPoke,
+      },
+    ],
+  },
+
+  /**
+   * Call window routes
+   */
+  {
+    path: '/call-window',
+    component: CallWindow,
+    children: [
+      {
+        path: '',
+        component: CallWindowMain,
       },
     ],
   },
