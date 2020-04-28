@@ -23,6 +23,7 @@ export default {
    * @returns {string}
    */
   getLang: (state) => state.language,
+
   /**
    * Get current mode (window/tray)
    *
@@ -30,6 +31,7 @@ export default {
    * @returns {string}
    */
   getMode: (state) => state.runAppFrom,
+
   /**
    * Get OLD mode state (to see if it will change after restart)
    *
@@ -39,6 +41,7 @@ export default {
   getModeWillChange: (state) => {
     return (state.runAppFromOld !== state.runAppFrom);
   },
+
   /**
    * Get current autorun state
    *
@@ -46,6 +49,7 @@ export default {
    * @returns {string}
    */
   getAutorun: (state) => state.autorun,
+
   /**
    * Get current theme
    *
@@ -53,6 +57,7 @@ export default {
    * @returns {object}
    */
   getTheme: (state) => state.theme,
+
   /**
    * Get current collectAnalytics state
    *
@@ -60,12 +65,34 @@ export default {
    * @returns {string}
    */
   getAnalytics: (state) => state.collectAnalytics,
+
   /**
-   * Get connected devices
+   * Get devices
    *
    * @param {AppState} state – module app state
    * @returns {string}
    */
-  getDevices: (state) => state.devices,
+  getDevices: (state) => {
+    const devices = {};
+
+    Object.keys(state.devices).forEach((key) => {
+      devices[key] = state.devices[key].map(d => {
+        return {
+          name: d.label,
+          value: d.id,
+        };
+      });
+    });
+
+    return devices;
+  },
+
+  /**
+   * Get selected devices
+   *
+   * @param {AppState} state – module app state
+   * @returns {object}
+   */
+  getSelectedDevices: (state) => state.selectedDevices,
 
 };

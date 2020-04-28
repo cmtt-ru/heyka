@@ -73,13 +73,28 @@ export default {
   },
 
   /**
-   * Set media devices
+   * Set device list
    *
    * @param {AppState} state – module app state
-   * @param {object} devices – list of media devices
+   * @param {object} devices – list of devices
    * @constructor
    */
   SET_DEVICES(state, devices) {
     state.devices = devices;
+
+    if (!state.selectedDevices.camera) {
+      state.selectedDevices.camera = devices.cameras[0].id;
+    }
+  },
+
+  /**
+   * Set selected devices
+   *
+   * @param {AppState} state – module app state
+   * @param {object} devices – list of selected devices
+   * @constructor
+   */
+  SET_SELECTED_DEVICES(state, devices) {
+    state.selectedDevices = devices;
   },
 };
