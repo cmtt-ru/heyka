@@ -13,9 +13,10 @@
 
     <button @click="openCallWindow">Открыть окно звонка</button>
     <button @click="closeCallWindow">Закрыть</button>
-    <br><br>
-
     <br>
+    <button @click="testHandler">Тест +1</button>
+
+    <br><br>
     <button @click="loadInitialState()">Load initial state</button>
     <button @click="login()">Login</button>
     <button @click="logout()">Logout</button>
@@ -138,6 +139,10 @@ export default {
         callWindow.close();
         callWindow = null;
       }
+    },
+
+    testHandler() {
+      this.$store.commit('app/SET_TEST', Math.round(Math.random() * parseInt('100000')));
     },
 
     async loadInitialState() {
