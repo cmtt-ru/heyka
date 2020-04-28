@@ -55,6 +55,7 @@ export default {
       janusWrapper.on('remote-audio-stream', this.onRemoteAudioStream.bind(this));
       janusWrapper.on('audio-stream-active', this.onAudioStreamActive.bind(this));
       janusWrapper.on('speaking', this.onSpeakingChange.bind(this));
+      janusWrapper.on('volume-change', this.onVolumeChange.bind(this));
 
       await janusWrapper.join();
     },
@@ -134,6 +135,15 @@ export default {
           speaking: isSpeaking,
         });
       }
+    },
+
+    /**
+     * Handles change microphone volume
+     * @param {number} db Microphone volume in decibels
+     * @returns {void}
+     */
+    onVolumeChange(db) {
+      this.$store.dispatch('app/setMicrophoneVolume', db);
     },
 
     /**

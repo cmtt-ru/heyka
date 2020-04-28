@@ -72,4 +72,15 @@ export default {
     state.collectAnalytics = collectAnalytics;
   },
 
+  /**
+   * Set microphone volume
+   *
+   * @param {AppState} state – module app state
+   * @param {number} volume – new microphone volume
+   * @constructor
+   */
+  SET_MICROPHONE_VOLUME(state, volume) {
+    state.microphoneVolume = volume;
+  },
+
 };
