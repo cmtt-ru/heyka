@@ -23,6 +23,8 @@ const heykaStore = new Store({
  * @property {boolean} devices.speakers – speakers
  * @property {boolean} devices.microphones – microphones
  * @property {boolean} devices.webcams – web cameras
+ *
+ * @property {number} microphoneVolume – current microphone volume in decibels
  */
 
 /**
@@ -69,6 +71,7 @@ const state = () => {
     },
     collectAnalytics: heykaStore.get('collectAnalytics', true),
     privacyLogs: [],
+    microphoneVolume: -100,
   };
 };
 

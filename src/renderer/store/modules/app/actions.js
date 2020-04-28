@@ -98,4 +98,23 @@ export default {
     heykaStore.set('collectAnalytics', collectAnalytics);
   },
 
+  /**
+   * Set microphone volume
+   *
+   * @param {function} commit – store commit
+   * @param {number} volume – microphone volume
+   * @returns {void}
+   */
+  setMicrophoneVolume({ commit }, volume) {
+    const quietestVolume = -100;
+    const loudestVolume = 0;
+
+    if (volume < quietestVolume) {
+      volume = quietestVolume;
+    }
+    if (volume > loudestVolume) {
+      volume = loudestVolume;
+    }
+    commit('SET_MICROPHONE_VOLUME', volume);
+  },
 };
