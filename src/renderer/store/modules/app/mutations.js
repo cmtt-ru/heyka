@@ -72,4 +72,8 @@ export default {
     state.collectAnalytics = collectAnalytics;
   },
 
+  SET_TEST(state, value) {
+    state.test = value;
+  },
+
 };

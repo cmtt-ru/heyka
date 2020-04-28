@@ -1,6 +1,7 @@
 <template>
     <div>
       <div>Call window</div>
+      <div>Test: {{$store.state.app.test}}</div>
     </div>
 </template>
 
