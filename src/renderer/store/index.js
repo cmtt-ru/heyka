@@ -17,7 +17,10 @@ const debug = process.env.NODE_ENV !== 'production';
 
 const plugins = [
   createMutationsSharer({
-    predicate: [ 'app/SET_TEST' ],
+    predicate: [
+      'me/SET_MEDIA_STATE',
+      'me/SET_CHANNEL_ID',
+    ],
   }),
 ];
 

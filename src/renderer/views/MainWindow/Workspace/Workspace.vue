@@ -1,7 +1,9 @@
 <template>
   <div class="l-p-8">
     <br><br>
+
     <avatar :status="'online'" :onair="false"></avatar>
+
     <div>Main window. {{ $tc("message", seconds) }}</div>
     <br>
     <div>{{message}}</div>
@@ -13,8 +15,6 @@
 
     <button @click="openCallWindow">Открыть окно звонка</button>
     <button @click="closeCallWindow">Закрыть</button>
-    <br>
-    <button @click="testHandler">Тест +1</button>
 
     <br><br>
     <button @click="loadInitialState()">Load initial state</button>
@@ -139,10 +139,6 @@ export default {
         callWindow.close();
         callWindow = null;
       }
-    },
-
-    testHandler() {
-      this.$store.commit('app/SET_TEST', Math.round(Math.random() * parseInt('100000')));
     },
 
     async loadInitialState() {
