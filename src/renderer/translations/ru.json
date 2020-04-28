@@ -47,7 +47,8 @@
     "devices": {
       "speakersLabel": "Колонки",
       "micLabel": "Microphone",
-      "cameraLabel": "Camera"
+      "cameraLabel": "Camera",
+      "defaultDevice": "По умолчанию"
     },
     "network": {
       "transparency": "Мы прозрачны и ценим вашу приватность: в этой вкладке всегда можно найти логи данных, которые отправляются на сервер.",

@@ -1,4 +1,5 @@
 import OS from 'os';
+import i18n from '@/i18n';
 
 export default {
   /**
@@ -74,11 +75,12 @@ export default {
    */
   getDevices: (state) => {
     const devices = {};
+    const defaultLabel = i18n.t('settings.devices.defaultDevice');
 
     Object.keys(state.devices).forEach((key) => {
       devices[key] = state.devices[key].map(d => {
         return {
-          name: d.label,
+          name: d.label === 'Default' ? defaultLabel : d.label,
           value: d.id,
         };
       });
