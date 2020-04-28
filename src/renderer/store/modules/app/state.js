@@ -44,28 +44,10 @@ const state = () => {
       name: 'light',
       auto: true,
     }),
-    devices: { // TODO: get real devices here
-      speakers: [ {
-        name: 'Speaker 1',
-        value: '1',
-      }, {
-        name: 'Speaker 2',
-        value: '2',
-      } ],
-      microphones: [ {
-        name: 'Microphone 1',
-        value: '1',
-      }, {
-        name: 'Microphone 2',
-        value: '2',
-      } ],
-      webcams: [ {
-        name: 'Camera 1',
-        value: '1',
-      }, {
-        name: 'Camera 2',
-        value: '2',
-      } ],
+    devices: {
+      speakers: [],
+      microphones: [],
+      cameras: [],
     },
     collectAnalytics: heykaStore.get('collectAnalytics', true),
     privacyLogs: [],
