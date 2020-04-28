@@ -71,9 +71,4 @@ export default {
   SET_ANALYTICS(state, collectAnalytics) {
     state.collectAnalytics = collectAnalytics;
   },
-
-  SET_TEST(state, value) {
-    state.test = value;
-  },
-
 };

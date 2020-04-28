@@ -69,7 +69,6 @@ const state = () => {
     },
     collectAnalytics: heykaStore.get('collectAnalytics', true),
     privacyLogs: [],
-    test: 0,
   };
 };
 
