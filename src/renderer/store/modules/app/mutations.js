@@ -72,4 +72,14 @@ export default {
     state.collectAnalytics = collectAnalytics;
   },
 
+  /**
+   * Set media devices
+   *
+   * @param {AppState} state – module app state
+   * @param {object} devices – list of media devices
+   * @constructor
+   */
+  SET_DEVICES(state, devices) {
+    state.devices = devices;
+  },
 };

@@ -6,6 +6,7 @@ import actions from './actions';
 import getters from './getters';
 import state from './state';
 import mutations from './mutations';
+import mediaDevices from '@classes/mediaDevices';
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -19,6 +20,14 @@ const store = new Vuex.Store({
   getters,
   strict: debug,
   plugins: debug ? [ createLogger() ] : [],
+});
+
+mediaDevices.on('change', (devices) => {
+  store.commit('app/SET_DEVICES', devices);
+});
+
+mediaDevices.on('bluetooth-microphone', (microphone) => {
+  console.log('bluetooth microphone detected', microphone);
 });
 
 export default store;
