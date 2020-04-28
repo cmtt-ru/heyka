@@ -29,7 +29,7 @@ export default {
      * @returns {array} keys of selected items
      */
     selectedChildren() {
-      const selectedArray = this.$children.filter(el => el.selected).map(el => el.filterKey);
+      const selectedArray = this.$children.filter(el => el.selected).map(el => el.filterKey); // TODO: mb some kind of "multiPickData, not filterKey"
 
       this.$emit('multipick', selectedArray);
     },

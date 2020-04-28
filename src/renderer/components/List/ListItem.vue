@@ -29,13 +29,6 @@ export default {
       type: String,
       default: '',
     },
-    /**
-     * whether we should add button behaviour (cursor: pointer)
-     */
-    button: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     /**
