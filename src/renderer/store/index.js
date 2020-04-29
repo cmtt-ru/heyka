@@ -6,8 +6,9 @@ import actions from './actions';
 import getters from './getters';
 import state from './state';
 import mutations from './mutations';
-import createMutationsSharer from "vuex-shared-mutations";
-import Store from "electron-store";
+import mediaDevices from '@classes/mediaDevices';
+import createMutationsSharer from 'vuex-shared-mutations';
+import Store from 'electron-store';
 
 const stateStore = new Store({
   name: 'state',
@@ -48,5 +49,19 @@ if (stateStore.has('state')) {
   store.replaceState(stateStore.get('state'));
   stateStore.delete('state');
 }
+
+/**
+ * Listen for device change event
+ */
+mediaDevices.on('change', (devices) => {
+  store.commit('app/SET_DEVICES', devices);
+});
+
+/**
+ * Listen for bluetooth microphone becomes default
+ */
+mediaDevices.on('bluetooth-microphone', (microphone) => {
+  console.log('bluetooth microphone detected', microphone);
+});
 
 export default store;

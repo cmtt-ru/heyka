@@ -71,4 +71,30 @@ export default {
   SET_ANALYTICS(state, collectAnalytics) {
     state.collectAnalytics = collectAnalytics;
   },
+
+  /**
+   * Set device list
+   *
+   * @param {AppState} state – module app state
+   * @param {object} devices – list of devices
+   * @constructor
+   */
+  SET_DEVICES(state, devices) {
+    state.devices = devices;
+
+    if (!state.selectedDevices.camera && devices.cameras.length > 0) {
+      state.selectedDevices.camera = devices.cameras[0].id;
+    }
+  },
+
+  /**
+   * Set selected devices
+   *
+   * @param {AppState} state – module app state
+   * @param {object} devices – list of selected devices
+   * @constructor
+   */
+  SET_SELECTED_DEVICES(state, devices) {
+    state.selectedDevices = devices;
+  },
 };

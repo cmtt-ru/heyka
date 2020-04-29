@@ -1,4 +1,5 @@
 import OS from 'os';
+import i18n from '@/i18n';
 
 export default {
   /**
@@ -17,20 +18,6 @@ export default {
   },
 
   /**
-   * Get current Language
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getLang: (state) => state.language,
-  /**
-   * Get current mode (window/tray)
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getMode: (state) => state.runAppFrom,
-  /**
    * Get OLD mode state (to see if it will change after restart)
    *
    * @param {AppState} state – module app state
@@ -39,33 +26,34 @@ export default {
   getModeWillChange: (state) => {
     return (state.runAppFromOld !== state.runAppFrom);
   },
+
   /**
-   * Get current autorun state
+   * Get devices
    *
    * @param {AppState} state – module app state
    * @returns {string}
    */
-  getAutorun: (state) => state.autorun,
+  getDevices: (state) => {
+    const devices = {};
+    const defaultLabel = i18n.t('settings.devices.defaultDevice');
+
+    Object.keys(state.devices).forEach((key) => {
+      devices[key] = state.devices[key].map(d => {
+        return {
+          name: d.label === 'Default' ? defaultLabel : d.label,
+          value: d.id,
+        };
+      });
+    });
+
+    return devices;
+  },
+
   /**
-   * Get current theme
+   * Get selected devices
    *
    * @param {AppState} state – module app state
    * @returns {object}
    */
-  getTheme: (state) => state.theme,
-  /**
-   * Get current collectAnalytics state
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getAnalytics: (state) => state.collectAnalytics,
-  /**
-   * Get connected devices
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getDevices: (state) => state.devices,
-
+  getSelectedDevices: (state) => state.selectedDevices,
 };
