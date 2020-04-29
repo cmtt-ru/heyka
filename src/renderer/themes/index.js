@@ -20,7 +20,6 @@ class Themes {
         auto: false,
       }),
     });
-    console.log(store);
     this.storeVue.themeArray = themes;
 
     /* Get current theme and auto mode from vuex store */
