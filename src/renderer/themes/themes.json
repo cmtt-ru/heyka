@@ -56,6 +56,7 @@
             "popover": {
                 "--app-bg": "#000000",
                 "--text-0": "#E5E5E5",
+                "--text-1": "#7D7F81",
                 "--icon-0": "#FFFFFF",
                 "--button-bg-5": "#191919",
                 "--button-bg-6": "#262626",
