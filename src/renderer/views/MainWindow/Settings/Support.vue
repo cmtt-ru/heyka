@@ -1,29 +1,30 @@
 <template>
-  <div>
-    Support
+  <div class="settings-page">
+    <a class="about-link" href="https://cmtt-ru.slack.com/archives/CLA674QEN" target="_blank">{{texts.tellerror}}</a>
   </div>
 </template>
 
 <script>
 
-// import UiButton from '@components/UiButton';
-// import { UiSwitch, UiSelect, UiInput } from '@components/Form';
-
 export default {
-  components: {
-    // UiSwitch,
-    // UiSelect,
-    // UiInput,
-    // UiButton,
+
+  computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('settings.support');
+    },
   },
 
-  methods: {
-
-  },
 };
 </script>
 
 <style scoped lang="stylus">
 @import './styles'
 
+.about-link
+  padding-top 12px
+  color var(--color-2)
 </style>

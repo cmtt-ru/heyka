@@ -1,8 +1,9 @@
 <template>
     <div
       class="list-item"
+      :class="{'list-item--selected': selected}"
       v-if="matchesFilter"
-      :class="{'list-item--button': button}"
+      @click="clickHandler()"
     >
     <slot></slot>
     </div>
@@ -12,7 +13,11 @@
 export default {
   data: function () {
     return {
-
+      /**
+     * Whether item is selected (for multi pick, eg. when sending invites to multiple people)
+     */
+      selected: false,
+      parent: this.$parent,
     };
   },
 
@@ -23,20 +28,6 @@ export default {
     filterKey: {
       type: String,
       default: '',
-    },
-    /**
-     * whether we should add button behaviour (cursor: pointer)
-     */
-    button: {
-      type: Boolean,
-      default: false,
-    },
-    /**
-     * Whether item is selected (for multi pick, eg. when sending invites to multiple people)
-     */
-    selected: {
-      type: Boolean,
-      default: false,
     },
   },
   computed: {
@@ -56,7 +47,21 @@ export default {
      * @returns {string}
      */
     parentFilterBy() {
-      return this.$parent.filterBy || '';
+      return this.parent.filterBy || '';
+    },
+  },
+
+  methods: {
+    /**
+     * Change 'selected' state
+     * @returns {string}
+     */
+    clickHandler() {
+      if (!this.parent.selectable) {
+        return;
+      }
+      this.selected = !this.selected;
+      this.parent.$emit('selected');
     },
   },
 
@@ -72,6 +77,6 @@ export default {
   border-radius 4px
   box-sizing border-box
 
-  &--button
-    cursor pointer
+  &--selected
+    background-color var(--item-bg-multi-pick)
 </style>

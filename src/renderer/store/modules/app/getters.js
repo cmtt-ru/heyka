@@ -18,22 +18,6 @@ export default {
   },
 
   /**
-   * Get current Language
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getLang: (state) => state.language,
-
-  /**
-   * Get current mode (window/tray)
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getMode: (state) => state.runAppFrom,
-
-  /**
    * Get OLD mode state (to see if it will change after restart)
    *
    * @param {AppState} state – module app state
@@ -42,30 +26,6 @@ export default {
   getModeWillChange: (state) => {
     return (state.runAppFromOld !== state.runAppFrom);
   },
-
-  /**
-   * Get current autorun state
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getAutorun: (state) => state.autorun,
-
-  /**
-   * Get current theme
-   *
-   * @param {AppState} state – module app state
-   * @returns {object}
-   */
-  getTheme: (state) => state.theme,
-
-  /**
-   * Get current collectAnalytics state
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getAnalytics: (state) => state.collectAnalytics,
 
   /**
    * Get devices
@@ -96,5 +56,4 @@ export default {
    * @returns {object}
    */
   getSelectedDevices: (state) => state.selectedDevices,
-
 };

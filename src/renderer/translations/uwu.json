@@ -53,6 +53,13 @@
       "transparency": "We awe twanspawent and wespect youw pwivacy. This tab shows aww wequests that awe made to ouw sewvews.",
       "googleLabel": "Enyabwe Googwe Anyawytics to make Heyka bettew",
       "googleSwitch": "Awwow"
+    },
+    "about": {
+      "version": "vewsion",
+      "notice": "Nyotice & Acknyowwedgements"
+    },
+    "support": {
+      "tellerror": "Wepowt an ewwow"
     }
   }
 }

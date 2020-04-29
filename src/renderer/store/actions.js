@@ -23,11 +23,12 @@ export default {
        *       Перекинуть юзера на веб страницу где можно создать воркспейс
        */
       const workspaces = await API.workspace.getWorkspaces();
+      const workspacesIdList = workspaces.map(w => w.id);
 
       /** Selected workspace id */
       let selectedWorkspaceId = getters['me/getSelectedWorkspaceId'];
 
-      if (!selectedWorkspaceId) {
+      if (!selectedWorkspaceId || !workspacesIdList.includes(selectedWorkspaceId)) {
         selectedWorkspaceId = workspaces[0].id;
         dispatch('me/setSelectedWorkspaceId', selectedWorkspaceId);
       }
