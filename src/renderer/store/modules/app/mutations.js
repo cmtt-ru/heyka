@@ -82,7 +82,7 @@ export default {
   SET_DEVICES(state, devices) {
     state.devices = devices;
 
-    if (!state.selectedDevices.camera) {
+    if (!state.selectedDevices.camera && devices.cameras.length > 0) {
       state.selectedDevices.camera = devices.cameras[0].id;
     }
   },
