@@ -22,7 +22,12 @@ const heykaStore = new Store({
  * @property {object} devices – list of user devices
  * @property {boolean} devices.speakers – speakers
  * @property {boolean} devices.microphones – microphones
- * @property {boolean} devices.webcams – web cameras
+ * @property {boolean} devices.cameras – web cameras
+ *
+ * @property {object} selectedDevices – list of selected devices
+ * @property {string} selectedDevices.speaker – selected speaker
+ * @property {string} selectedDevices.microphone – selected microphone
+ * @property {string} selectedDevices.camera – selected camera
  */
 
 /**
@@ -44,28 +49,15 @@ const state = () => {
       name: 'light',
       auto: true,
     }),
-    devices: { // TODO: get real devices here
-      speakers: [ {
-        name: 'Speaker 1',
-        value: '1',
-      }, {
-        name: 'Speaker 2',
-        value: '2',
-      } ],
-      microphones: [ {
-        name: 'Microphone 1',
-        value: '1',
-      }, {
-        name: 'Microphone 2',
-        value: '2',
-      } ],
-      webcams: [ {
-        name: 'Camera 1',
-        value: '1',
-      }, {
-        name: 'Camera 2',
-        value: '2',
-      } ],
+    devices: {
+      speakers: [],
+      microphones: [],
+      cameras: [],
+    },
+    selectedDevices: {
+      speaker: heykaStore.get('selectedSpeaker', 'default'),
+      microphone: heykaStore.get('selectedMicrophone', 'default'),
+      camera: heykaStore.get('selectedCamera', ''),
     },
     collectAnalytics: heykaStore.get('collectAnalytics', true),
     privacyLogs: [],
