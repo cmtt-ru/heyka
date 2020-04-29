@@ -14,10 +14,11 @@
        v-else-if="withIcon"
        :class="classList"
        :style="buttonSize"
+       @click="$emit('click')"
   >
 
     <conditional-wrapper :wrap="needToWrapIcon">
-      <div class="ui-button__icon-bg">
+      <div class="ui-button__icon-bg" @click="$emit('click')">
         <svg-icon
           class="ui-button__icon"
           :name="icon"
