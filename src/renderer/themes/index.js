@@ -23,7 +23,7 @@ class Themes {
     this.storeVue.themeArray = themes;
 
     /* Get current theme and auto mode from vuex store */
-    const theme = { ...store.getters['app/getTheme'] };
+    const theme = { ...store.state.app.theme };
 
     this.storeVue.auto = theme.auto;
     this.storeVue.currentTheme = theme.name;

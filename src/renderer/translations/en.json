@@ -47,12 +47,20 @@
     "devices": {
       "speakersLabel": "Speakers",
       "micLabel": "Microphone",
-      "cameraLabel": "Camera"
+      "cameraLabel": "Camera",
+      "defaultDevice": "Default"
     },
     "network": {
       "transparency": "We are transparent and respect your privacy. This tab shows all requests that are made to our servers.",
       "googleLabel": "Enable Google Analytics to make Heyka better",
       "googleSwitch": "Allow"
+    },
+    "about": {
+      "version": "version",
+      "notice": "Notice & Acknowledgements"
+    },
+    "support": {
+      "tellerror": "Report an error"
     }
   }
 }
