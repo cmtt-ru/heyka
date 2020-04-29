@@ -15,10 +15,34 @@
       </div>
 
       <div class="call-controls__row call-controls__row--controls">
-        <ui-button :type="7" class="call-controls__button" :icon="buttonIcons.screen"/>
-        <ui-button :type="7" class="call-controls__button" :icon="buttonIcons.microphone"/>
-        <ui-button :type="7" class="call-controls__button" icon="grid"/>
-        <ui-button :type="7" class="call-controls__button call-controls__button--disconnect" icon="disconnect"/>
+
+        <ui-button
+          :type="7"
+          class="call-controls__button"
+          :icon="buttonIcons.screen"
+          @click="switchProp('screen')"
+        />
+
+        <ui-button
+          :type="7"
+          class="call-controls__button"
+          :icon="buttonIcons.microphone"
+          @click="switchProp('microphone')"
+        />
+
+        <ui-button
+          :type="7"
+          class="call-controls__button"
+          icon="grid"
+          @click="gridHandler"
+        />
+
+        <ui-button
+          :type="7"
+          class="call-controls__button call-controls__button--disconnect"
+          icon="disconnect"
+          @click="disconnectHandler"
+        />
       </div>
 
     </div>
@@ -117,7 +141,7 @@ export default {
         return this.speakingUser.name;
       }
 
-      return 'no user';
+      return 'no speaking user';
     },
 
     /**
@@ -161,7 +185,33 @@ export default {
   },
 
   methods: {
+    /**
+     * Change our media state depending on which button was clicked
+     * @param {string} property mediastate's property name
+     * @returns {void}
+     */
+    switchProp(property) {
+      const newState = { ...this.mediaState };
 
+      newState[property] = !this.mediaState[property];
+      this.$store.dispatch('me/setMediaState', newState);
+    },
+
+    /**
+     * Grid button handler
+     * @returns {void}
+     */
+    gridHandler() {
+      console.log('grid click');
+    },
+
+    /**
+     * Disconnect button handler
+     * @returns {void}
+     */
+    disconnectHandler() {
+      console.log('disconnect click');
+    },
   },
 };
 </script>
@@ -178,6 +228,9 @@ export default {
 
       &--controls
         flex-shrink: 0;
+
+      &:last-child
+        margin-bottom 0
 
     &__col
       margin-left 8px
