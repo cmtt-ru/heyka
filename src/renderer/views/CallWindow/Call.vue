@@ -1,19 +1,37 @@
 <template>
-    <div>
-      <svg-icon class="channel-info__type" name="channel" size="medium"></svg-icon>
+    <div class="call-controls">
 
-      <ui-button :type="7" class="user__status" :icon="icons.screen"/>
-      <ui-button :type="7" class="user__status" :icon="icons.speakers"/>
-      <ui-button :type="7" class="user__status" :icon="icons.microphone"/>
+      <div class="call-controls__row">
 
-      <avatar class="user__avatar" :image="user.avatar" :status="user.onlineStatus" :size="24"/>
+        <img class="call-controls__avatar" :src="speakingUser.avatar|formImageUrl(36)">
+
+        <div class="call-controls__col">
+
+          <p class="call-controls__user-name">Username</p>
+
+          <div class="call-controls__channel">
+            <svg-icon name="channel" size="small"></svg-icon>
+            <span>design</span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="call-controls__row">
+
+        <ui-button :type="7" class="call-controls__button" :icon="icons.screen"/>
+        <ui-button :type="7" class="call-controls__button" :icon="icons.microphone"/>
+        <ui-button :type="7" class="call-controls__button" icon="grid"/>
+        <ui-button :type="7" class="call-controls__button" icon="disconnect"/>
+
+      </div>
 
     </div>
 </template>
 
 <script>
 import UiButton from '@components/UiButton';
-import Avatar from '@components/Avatar';
 
 /**
  * Map media state points to corresponding icons
@@ -36,7 +54,6 @@ const ICON_MAP = {
 export default {
   components: {
     UiButton,
-    Avatar,
   },
   data() {
     return {
@@ -78,12 +95,60 @@ export default {
         screen: ICON_MAP.screen[this.user.screen],
       };
     },
+
+    /**
+     * Speaking user avatar
+     * @return {string}
+     */
+    speakingUser() {
+      return this.user;
+    },
   },
 
   methods: {
   },
 
   mounted() {
+    console.log(this.speakingUser);
   },
 };
 </script>
+
+<style lang="stylus" scoped>
+  .call-controls
+    display flex
+    flex-direction column
+    padding 8px
+
+    &__row
+      display flex
+      margin-bottom 8px
+
+    &__col
+      margin-left 8px
+
+    &__avatar
+      display block
+      width 36px
+      height 36px
+      border-radius 4px
+
+    &__user-name
+      margin-top 3px
+
+    &__channel
+      display flex
+      color var(--text-1)
+      align-items center
+      font-size 12px
+      line-height 14px
+      margin-left -2px
+      margin-top 1px
+
+    &__button
+      margin-right 8px
+
+      &:last-child
+        margin-right 0
+
+</style>
