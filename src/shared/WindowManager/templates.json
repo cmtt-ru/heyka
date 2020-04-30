@@ -1,29 +1,30 @@
 {
-    "main": {
-        "width": 1200,
-        "height": 1000,
-        "frame": true
-    },
-    "maintray": {
-        "width": 500,
-        "height": 700
-    },
-    "splash": {
-        "width": 90,
-        "height": 90,
-        "transparent": true,
-        "movable": false,
-        "fullscreenable": false,
-        "resizable": false,
-        "frame": false
-    },
-    "push": {
-        "width": 400,
-        "height": 100
-    },
-    "call": {
-        "width": 184,
-        "height": 96,
-        "alwaysOnTop": true
-    }
+  "main": {
+    "width": 1200,
+    "height": 1000,
+    "frame": true
+  },
+  "maintray": {
+    "width": 500,
+    "height": 700
+  },
+  "splash": {
+    "width": 90,
+    "height": 90,
+    "transparent": true,
+    "movable": false,
+    "fullscreenable": false,
+    "resizable": false,
+    "frame": false
+  },
+  "push": {
+    "width": 400,
+    "height": 100
+  },
+  "call": {
+    "width": 184,
+    "height": 96,
+    "alwaysOnTop": true,
+    "backgroundColor": "#000"
+  }
 }
