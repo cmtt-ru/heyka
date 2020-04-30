@@ -14,29 +14,29 @@ export default {
       type: String,
       default: '',
     },
+    /**
+     * Determive if list's items can be selected
+     */
+    selectable: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   methods: {
-
     /**
      * Gather all list-items that have prop "selected"
      * @returns {array} keys of selected items
      */
     selectedChildren() {
-      const selectedArray = [];
+      const selectedArray = this.$children.filter(el => el.selected).map(el => el.filterKey); // TODO: mb some kind of "multiPickData, not filterKey"
 
-      for (const child of this.$children) {
-        if (child.selected) {
-          selectedArray.push(child.filterKey);
-        }
-      }
-
-      return selectedArray;
+      this.$emit('multipick', selectedArray);
     },
   },
 
   mounted() {
-    this.selectedChildren();
+    this.$on('selected', this.selectedChildren);
   },
 
 };

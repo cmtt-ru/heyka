@@ -17,9 +17,14 @@
       v-for="item in data" :key="item.value"
       @click="variantClickHandler(item)"
       class="dropdown__item"
-      :class="{'dropdown__item--selected': item == selectedItem}"
     >
       <div v-textfade>{{item.name}}</div>
+      <svg-icon
+          v-if="item == selectedItem"
+          class="dropdown__item__icon"
+          name="check"
+          size="medium"
+        ></svg-icon>
     </div>
   </div>
 
@@ -140,6 +145,7 @@ export default {
       this.visible = true;
       /* By default dropdown is UNDER select header, and arrow icon is pointing down */
       this.listNode.style.top = '100%';
+      this.listNode.style.bottom = 'unset';
       this.arrowNode.style.transform = 'rotate(0deg)';
 
       this.$nextTick(() => {
@@ -148,7 +154,8 @@ export default {
         // Next tick after showing dropdown we check if it is fully visible.
         // If not - put it on top of select and rotate arrow by 180 deg.
         if (position.bottom > window.innerHeight || position.top <= 0) {
-          this.listNode.style.top = position.height * (-1) + 'px';
+          this.listNode.style.top = 'unset';
+          this.listNode.style.bottom = '100%';
           this.arrowNode.style.transform = 'rotate(180deg)';
         }
       });
@@ -200,32 +207,42 @@ export default {
       color var(--icon-1)
       margin-left 8px
 
+  black = var(--icon-1)
+
   &__list
     position absolute
-    background-color var(--input)
+    background-color var(--app-bg)
     top 100%
     left 0
     right 0
     z-index 99
     border-radius 4px
+    border 1px solid var(--shadow-20)
+    box-shadow 0px 3px 8px var(--shadow-15), 0px 0px 8px var(--shadow-15)
     overflow hidden
     display none
-    //max-height 100px
-    //overflow-y auto
+    margin 6px 0
+    padding 4px
+    max-height 300px // TODO: дождаться варианта покрасивее от Кости
+    overflow-y auto
 
     &--visible
       display block
 
   &__item
-    padding 7px 12px
+    padding 8px 8px
+    border-radius 4px
     box-sizing border-box
     height 32px
-    border-bottom 1px solid var(--stroke-3)
     cursor pointer
+    display flex
+    flex-direction row
+    justify-content space-between
+    align-items center
 
     &:hover
-      background-color var(--button-bg-4)
+      background-color var(--item-bg-hover)
 
-    &--selected
-      color var(--color-2)
+    &__icon
+      color var(--color-1)
 </style>
