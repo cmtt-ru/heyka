@@ -74,6 +74,36 @@ class Window {
       id: this.windowId,
     });
   }
+
+  /**
+   * Show window - send signal to main process
+   * @returns {void}
+   */
+  showInactive() {
+    ipcRenderer.sendSync('window-manager-show-inactive', {
+      id: this.windowId,
+    });
+  }
+
+  /**
+   * Focus window - send signal to main process
+   * @returns {void}
+   */
+  focus() {
+    ipcRenderer.sendSync('window-manager-focus', {
+      id: this.windowId,
+    });
+  }
+
+  /**
+   * Blur window - send signal to main process
+   * @returns {void}
+   */
+  blur() {
+    ipcRenderer.sendSync('window-manager-blur', {
+      id: this.windowId,
+    });
+  }
 }
 
 export default new WindowManager();
