@@ -28,7 +28,7 @@ class CallWindow {
       });
     }
 
-    this.window.show();
+    this.window.showInactive();
   }
 
   /**

@@ -1,8 +1,8 @@
-import { ipcMain, BrowserWindow } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+import {ipcMain, BrowserWindow} from 'electron';
+import {createProtocol} from 'vue-cli-plugin-electron-builder/lib';
 import Positioner from './Positioner';
 import templates from './templates.json';
-import { v4 as uuidV4 } from 'uuid';
+import {v4 as uuidV4} from 'uuid';
 
 // const isMac = process.platform === 'darwin';
 // const isLinux = process.platform === 'linux';
@@ -33,10 +33,10 @@ const DEFAULT_WINDOW_OPTIONS = {
  */
 class WindowManager {
   /**
- * Inits windowmanager class, assigns mainwindow
- * @param {object} mainWindow mainWindow instance
- * @returns {void}
- */
+   * Inits windowmanager class, assigns mainwindow
+   * @param {object} mainWindow mainWindow instance
+   * @returns {void}
+   */
   constructor() {
     this.windows = [];
 
@@ -66,6 +66,21 @@ class WindowManager {
       event.returnValue = true;
     });
 
+    ipcMain.on('window-manager-show-inactive', (event, options) => {
+      this.showInactiveWindow(options.id);
+      event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-focus', (event, options) => {
+      this.focusWindow(options.id);
+      event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-blur', (event, options) => {
+      this.blurWindow(options.id);
+      event.returnValue = true;
+    });
+
     ipcMain.on('window-manager-move-me', (event, options) => {
       // console.log('window-manager-show', options);
       const { x, y } = screen.getCursorScreenPoint();
@@ -80,7 +95,8 @@ class WindowManager {
       Object.keys(this.windows).forEach(windowId => {
         try {
           this.windows[windowId].close();
-        } catch (e) {}
+        } catch (e) {
+        }
         this.windows[windowId] = null;
         delete this.windows[windowId];
       });
@@ -88,22 +104,22 @@ class WindowManager {
   }
 
   /**
- * Get BrowserWindow instance by ID
- * @param {string} windowId window ID
- * @returns {object} BrowserWindow instance
- */
+   * Get BrowserWindow instance by ID
+   * @param {string} windowId window ID
+   * @returns {object} BrowserWindow instance
+   */
   getWindow(windowId) {
     return this.windows[windowId];
   }
 
   /**
- * Create secondary Window
- * @param {object} options mainWindow instance
- * @returns {string} ID of created window
- */
+   * Create secondary Window
+   * @param {object} options mainWindow instance
+   * @returns {string} ID of created window
+   */
   createWindow(options) {
     if (options.template && templates[options.template]) {
-      options.window = { ...templates[options.template] };
+      options.window = {...templates[options.template]};
     }
     const newWindow = new BrowserWindow(Object.assign({}, DEFAULT_WINDOW_OPTIONS, options.window || {}));
 
@@ -145,11 +161,11 @@ class WindowManager {
   }
 
   /**
- * Set window position
- * @param {object} wnd window instance
- * @param {string} pos position of window
- * @returns {string} ID of created window
- */
+   * Set window position
+   * @param {object} wnd window instance
+   * @param {string} pos position of window
+   * @returns {string} ID of created window
+   */
   setPosition(wnd, pos = 'center') {
     const position = getWindowPosition(wnd, pos);
 
@@ -157,10 +173,10 @@ class WindowManager {
   }
 
   /**
- * Destroy window
- * @param {string} windowId ID of window in question
- * @returns {void}
- */
+   * Destroy window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
   closeWindow(windowId) {
     if (this.windows[windowId]) {
       try {
@@ -175,10 +191,10 @@ class WindowManager {
   }
 
   /**
- * Hide window
- * @param {string} windowId ID of window in question
- * @returns {void}
- */
+   * Hide window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
   hideWindow(windowId) {
     if (this.windows[windowId]) {
       this.windows[windowId].hide();
@@ -186,13 +202,46 @@ class WindowManager {
   }
 
   /**
- * Show window
- * @param {string} windowId ID of window in question
- * @returns {void}
- */
+   * Show window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
   showWindow(windowId) {
     if (this.windows[windowId]) {
       this.windows[windowId].show();
+    }
+  }
+
+  /**
+   * Show window inactive
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
+  showInactiveWindow(windowId) {
+    if (this.windows[windowId]) {
+      this.windows[windowId].showInactive();
+    }
+  }
+
+  /**
+   * Focus window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
+  focusWindow(windowId) {
+    if (this.windows[windowId]) {
+      this.windows[windowId].focus();
+    }
+  }
+
+  /**
+   * Blur window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
+  blurWindow(windowId) {
+    if (this.windows[windowId]) {
+      this.windows[windowId].blur();
     }
   }
 }
