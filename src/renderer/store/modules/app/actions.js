@@ -107,5 +107,19 @@ export default {
 
     commit('ADD_NOTIFICATION', data);
   },
+  /**
+   * Set selected devices
+   *
+   * @param {function} commit – store commit
+   * @param {object} selectedDevices – selected devices
+   * @returns {void}
+   */
+  setSelectedDevices({ commit }, selectedDevices) {
+    commit('SET_SELECTED_DEVICES', selectedDevices);
+
+    heykaStore.set('selectedSpeaker', selectedDevices.speaker);
+    heykaStore.set('selectedMicrophone', selectedDevices.microphone);
+    heykaStore.set('selectedCamera', selectedDevices.camera);
+  },
 
 };

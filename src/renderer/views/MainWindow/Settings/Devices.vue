@@ -2,13 +2,13 @@
   <div class="settings-page">
     <div class="settings__label">{{texts.speakersLabel}}</div>
     <div class="setting-with-icon">
-      <ui-select v-model="general.speaker" :data="devices.speakers"/>
+      <ui-select v-model="selectedDevices.speaker" :data="devices.speakers"/>
       <ui-button :type="7" size="medium" height="32" icon="sound"/>
     </div>
     <div class="settings__label">{{texts.micLabel}}</div>
-    <ui-select v-model="general.mic" :data="devices.microphones"/>
+    <ui-select v-model="selectedDevices.microphone" :data="devices.microphones"/>
     <div class="settings__label">{{texts.cameraLabel}}</div>
-    <ui-select v-model="general.camera" :data="devices.webcams"/>
+    <ui-select v-model="selectedDevices.camera" :data="devices.cameras"/>
   </div>
 </template>
 
@@ -27,17 +27,7 @@ export default {
 
   data() {
     return {
-      general: {
-        speaker: '1',
-        mic: '1',
-        camera: '1',
-      },
-      devices: {
-        speakers: [],
-        microphones: [],
-        webcams: [],
-      },
-
+      selectedDevices: { ...this.$store.getters['app/getSelectedDevices'] },
     };
   },
 
@@ -49,36 +39,25 @@ export default {
     texts() {
       return this.$t('settings.devices');
     },
-  },
 
-  methods: {
-    gotDevices(deviceInfos) {
-      for (const device of deviceInfos) {
-        // console.log(device);
-        if (device.kind === 'audioinput') {
-          this.devices.mics.push({
-            name: device.label,
-            value: device.deviceId,
-          });
-        } else if (device.kind === 'audiooutput') {
-          this.devices.speakers.push({
-            name: device.label,
-            value: device.deviceId,
-          });
-        } else if (device.kind === 'videoinput') {
-          this.devices.cameras.push({
-            name: device.label,
-            value: device.deviceId,
-          });
-        }
-      }
+    /**
+     * Device list
+     * @return {object}
+     */
+    devices() {
+      return this.$store.getters['app/getDevices'];
     },
   },
 
-  created() {
-    this.devices = this.$store.getters['app/getDevices'];
-    // navigator.mediaDevices.enumerateDevices().then(this.gotDevices);
+  watch: {
+    selectedDevices: {
+      handler() {
+        this.$store.dispatch('app/setSelectedDevices', { ...this.selectedDevices });
+      },
+      deep: true,
+    },
   },
+
 };
 </script>
 
