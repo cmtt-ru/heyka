@@ -98,4 +98,14 @@ export default {
     heykaStore.set('collectAnalytics', collectAnalytics);
   },
 
+  addNotification({ commit, state }, notif) {
+    commit('INCREMENT_ID');
+    const data = {
+      id: state.uniqueId,
+      ...notif,
+    };
+
+    commit('ADD_NOTIFICATION', data);
+  },
+
 };

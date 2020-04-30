@@ -11,6 +11,9 @@
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
 
+    <button @click="AddNotif()"> + нотификация</button>
+    <br><br>
+
     <br>
     <button @click="loadInitialState()">Load initial state</button>
     <button @click="login()">Login</button>
@@ -112,6 +115,14 @@ export default {
         pushWindow.close();
         pushWindow = null;
       }
+    },
+
+    AddNotif() {
+      const data = {
+        text: 'Test ' + Math.random(),
+      };
+
+      this.$store.dispatch('app/addNotification', data);
     },
 
     async loadInitialState() {

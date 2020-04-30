@@ -72,4 +72,30 @@ export default {
     state.collectAnalytics = collectAnalytics;
   },
 
+  /**
+   * Add new notification
+   *
+   * @param {AppState} state – module app state
+   * @param {object} notif – new notification
+   * @constructor
+   */
+  ADD_NOTIFICATION(state, notif) {
+    state.notifications.push(notif);
+  },
+
+  /**
+   * Remove notification by id
+   *
+   * @param {AppState} state – module app state
+   * @param {string} id id
+   * @constructor
+   */
+  REMOVE_NOTIFICATION(state, id) {
+    state.notifications = state.notifications.filter(el => el.id != id);
+  },
+
+  INCREMENT_ID(state) {
+    state.uniqueId += 1;
+  },
+
 };
