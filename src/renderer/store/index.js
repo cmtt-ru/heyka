@@ -9,6 +9,7 @@ import mutations from './mutations';
 import mediaDevices from '@classes/mediaDevices';
 import createMutationsSharer from 'vuex-shared-mutations';
 import Store from 'electron-store';
+import broadcastActions from '@classes/broadcastActions';
 
 const stateStore = new Store({
   name: 'state',
@@ -65,6 +66,13 @@ mediaDevices.on('change', (devices) => {
  */
 mediaDevices.on('bluetooth-microphone', (microphone) => {
   console.log('bluetooth microphone detected', microphone);
+});
+
+/**
+ * Listen for broadcasted actions and dispatch them
+ */
+broadcastActions.on('action', ({ action, data }) => {
+  store.dispatch(action, data);
 });
 
 export default store;

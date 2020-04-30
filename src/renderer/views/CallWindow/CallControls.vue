@@ -50,6 +50,7 @@
 
 <script>
 import UiButton from '@components/UiButton';
+import broadcastActions from '@classes/broadcastActions';
 
 /**
  * Map media state points to corresponding icons
@@ -194,7 +195,9 @@ export default {
       const newState = { ...this.mediaState };
 
       newState[property] = !this.mediaState[property];
-      this.$store.dispatch('me/setMediaState', newState);
+
+      // this.$store.dispatch('me/setMediaState', newState);
+      broadcastActions.dispatch('me/setMediaState', newState);
     },
 
     /**
@@ -212,6 +215,14 @@ export default {
     disconnectHandler() {
       console.log('disconnect click');
     },
+  },
+
+  mounted() {
+    const bc = new BroadcastChannel('test');
+
+    bc.onmessage = (val) => {
+      console.log(val);
+    };
   },
 };
 </script>
