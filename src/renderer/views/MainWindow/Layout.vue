@@ -29,6 +29,8 @@
         </div>
 
       </div>
+
+      <notifications/>
     </div>
   </div>
 </template>
@@ -39,9 +41,14 @@ import Vue from 'vue';
 import Vuebar from 'vuebar';
 import '@styles/vuebar.styl';
 
+import Notifications from '@components/Notifications/Wrapper';
+
 Vue.use(Vuebar);
 
 export default {
+  components: {
+    Notifications,
+  },
   data() {
     return {};
   },
