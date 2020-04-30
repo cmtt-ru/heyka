@@ -196,7 +196,6 @@ export default {
 
       newState[property] = !this.mediaState[property];
 
-      // this.$store.dispatch('me/setMediaState', newState);
       broadcastActions.dispatch('me/setMediaState', newState);
     },
 
@@ -213,7 +212,7 @@ export default {
      * @returns {void}
      */
     disconnectHandler() {
-      console.log('disconnect click');
+      broadcastActions.dispatch('unselectChannel', this.selectedChannel.id);
     },
   },
 

@@ -1,6 +1,7 @@
 import API from '@api';
 import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
+import callWindow from '@classes/callWindow';
 
 export default {
 
@@ -72,6 +73,8 @@ export default {
     });
 
     commit('me/SET_CHANNEL_ID', id);
+
+    callWindow.show();
   },
 
   /**
@@ -88,6 +91,8 @@ export default {
       channelId: id,
     });
     commit('me/SET_CHANNEL_ID', null);
+
+    callWindow.hide();
   },
 
   /**
