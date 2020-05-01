@@ -146,7 +146,7 @@ class WindowManager {
     }
 
     newWindow.once('close', e => {
-      ipcMain.emit(`window-close-${windowId}`);
+      this.send(`window-close-${windowId}`);
     });
 
     newWindow.on('ready-to-show', (event) => {
@@ -242,6 +242,27 @@ class WindowManager {
   blurWindow(windowId) {
     if (this.windows[windowId]) {
       this.windows[windowId].blur();
+    }
+  }
+
+  /**
+   * Set's main window id
+   * @param {string} windowId – main window id
+   * @returns {void}
+   */
+  setMainWindowId(windowId) {
+    this.mainWindowId = windowId;
+  }
+
+  /**
+   * Send message to main window
+   * @param {string} event – event name
+   * @param {*} [data] – event data
+   * @returns {void}
+   */
+  send(event, data) {
+    if (this.windows[this.mainWindowId]) {
+      this.windows[this.mainWindowId].webContents.send(event, data);
     }
   }
 }
