@@ -40,6 +40,8 @@ function createWindow() {
 
   const mainWindowid = WindowManager.createWindow(params);
 
+  WindowManager.setMainWindowId(mainWindowid);
+
   mainWindow = WindowManager.getWindow(mainWindowid);
   DeepLink.bindMainWindow(mainWindow);
   TrayManager.bindMainWindow(mainWindow);
