@@ -98,6 +98,16 @@ export default {
     },
 
     /**
+     * Get our full info
+     * @returns {object}
+     */
+    user() {
+      const myId = this.$store.getters['me/getMyId'];
+
+      return this.$store.getters['users/getUserById'](myId);
+    },
+
+    /**
      * Determine which icons to show
      * @returns {object}
      */
@@ -142,7 +152,7 @@ export default {
         return this.speakingUser.name;
       }
 
-      return 'no speaking user';
+      return this.user.name;
     },
 
     /**
@@ -154,7 +164,7 @@ export default {
         return this.speakingUser.avatar;
       }
 
-      return 'https://leonardo.osnova.io/d88552dc-5807-ea3c-a227-7c2d90209fc0/';
+      return this.user.avatar;
     },
 
     /**
