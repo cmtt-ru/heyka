@@ -1,6 +1,7 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Positioner from './Positioner';
+import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -78,6 +79,11 @@ class WindowManager {
 
     ipcMain.on('window-manager-blur', (event, options) => {
       this.blurWindow(options.id);
+      event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-size', (event, options) => {
+      this.sizeWindow(options);
       event.returnValue = true;
     });
 
@@ -246,12 +252,28 @@ class WindowManager {
   }
 
   /**
+   * Set's size of the window
+   * @param {string} id – window id
+   * @param {number} width – window width
+   * @param {number} height – window height
+   * @returns {void}
+   */
+  sizeWindow({ id, width, height }) {
+    if (this.windows[id]) {
+      this.windows[id].setSize(width, height);
+      adjustBounds(this.windows[id], '20');
+    }
+  }
+
+  /**
    * Set's main window id
    * @param {string} windowId – main window id
    * @returns {void}
    */
   setMainWindowId(windowId) {
     this.mainWindowId = windowId;
+
+    console.log(this.windows[this.mainWindowId].getSize());
   }
 
   /**

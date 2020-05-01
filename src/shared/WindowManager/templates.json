@@ -20,11 +20,5 @@
   "push": {
     "width": 400,
     "height": 100
-  },
-  "call": {
-    "width": 184,
-    "height": 96,
-    "alwaysOnTop": true,
-    "backgroundColor": "#000"
   }
 }

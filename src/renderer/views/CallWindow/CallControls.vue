@@ -291,6 +291,9 @@ export default {
     &--row
       flex-direction row
 
+      .call-controls__row
+        margin-bottom 0
+
       .call-controls__row--controls
         margin-left auto
 
