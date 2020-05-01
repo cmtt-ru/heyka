@@ -3,6 +3,7 @@ import i18n from '@/i18n';
 import { ipcRenderer } from 'electron';
 import Store from 'electron-store';
 import dateFormat from 'dateformat';
+import { v4 as uuidV4 } from 'uuid';
 
 const heykaStore = new Store({
   name: 'app',
@@ -98,14 +99,16 @@ export default {
     heykaStore.set('collectAnalytics', collectAnalytics);
   },
 
-  addNotification({ commit, state }, notif) {
-    commit('INCREMENT_ID');
-    const data = {
-      id: state.uniqueId,
+  addNotification({ commit }, notif) {
+    const id = uuidV4();
+    const notification = {
+      id,
       ...notif,
     };
 
-    commit('ADD_NOTIFICATION', data);
+    commit('ADD_NOTIFICATION', notification);
+
+    return id;
   },
   /**
    * Set selected devices

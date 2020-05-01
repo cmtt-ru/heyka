@@ -39,7 +39,6 @@ const state = () => {
    * @namespace AppState
    */
   return {
-    uniqueId: 1,
     appName: 'Heyka Desktop',
     appVersion: remote.app.getVersion(),
     language: heykaStore.get('language', 'en'),
@@ -62,10 +61,7 @@ const state = () => {
     },
     collectAnalytics: heykaStore.get('collectAnalytics', true),
     privacyLogs: [],
-    notifications: [ {
-      id: '1221',
-      text: 'TestTest',
-    } ],
+    notifications: [],
   };
 };
 
