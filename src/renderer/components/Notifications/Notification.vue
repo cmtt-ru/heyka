@@ -1,9 +1,36 @@
 <template>
-    <div v-hammer:pan.horizontal="pan" v-hammer:panstart="onPanStart" v-hammer:panend="onPanEnd" ref="notification" :style="cStyles" class="notification">{{data.text}}<br>{{holding}}</div>
+<transition name="notification-fade">
+
+  <div v-if="mounted"
+    v-hammer:pan.horizontal="pan"
+    v-hammer:panstart="onPanStart"
+    v-hammer:panend="onPanEnd"
+    :style="styles"
+    class="notification"
+  >
+
+    <div class="notification__text">{{data.text}}</div>
+    <div class="notification__button-wrapper">
+      <ui-button
+          v-for="button in data.buttons"
+          :key="button.text"
+          :type="button.type || 8"
+          size="small"
+          class="notification__button"
+          @click="clickHandler(button)"
+
+        >
+          {{button.text}}
+      </ui-button>
+
+    </div>
+  </div>
+</transition>
 </template>
 
 <script>
 /* eslint-disable no-magic-numbers */
+import UiButton from '@components/UiButton';
 import Vue from 'vue';
 import { VueHammer } from 'vue2-hammer';
 Vue.use(VueHammer);
@@ -11,218 +38,259 @@ VueHammer.config.pan = {
   threshold: 10,
 };
 
+/* distance after which notification is concidered swiped out */
+const TRESHOLD = 90;
+
+/* distance that notification travels to the side during closing sequence */
+const SIDETRAVEL = 100;
+
 export default {
 
+  components: {
+    UiButton,
+  },
+
   props: {
+
+    /* unique id of notification */
+    id: {
+      type: String,
+      required: true,
+    },
+
+    /**
+      * inner data with "text" and "buttons"
+      * Buttons is an array with fields:
+      * "text", "type", "action" (outer function to trigger),
+      * and "close" (flag that shows we shoud close notification after clicking this button)
+    */
     data: {
       type: Object,
+      required: true,
+    },
+
+    /* if the notification self-destructs after a certain amount of time */
+    infinite: {
+      type: Boolean,
+      default: false,
+    },
+
+    /* time before self-destruct */
+    lifespan: {
+      type: Number,
+      default: 10000,
+    },
+
+    /* prevent swiping logic */
+    preventSwipe: {
+      type: Boolean,
+      default: false,
     },
   },
 
   data() {
     return {
-      notificationsss: this.$store.state.app.notifications,
-      notifications: [],
-      transition: 330,
-      timeout: 20000,
-      marginY: 10,
-      marginX: 20,
-      opacity: 1,
-      tempTransition: null,
-      preventClose: false,
-      treshold: 90,
+      mounted: false,
       holding: false,
       timeoutEnded: false,
       closeRunning: false,
-      position: 'bottom center',
-      appear: {
-        'top left': 'NotifyFromLeft',
-        'top right': 'NotifyFromRight',
-        'top center': 'NotifyFromTop',
-        'bottom left': 'NotifyFromLeft',
-        'bottom right': 'NotifyFromRight',
-        'bottom center': 'NotifyFromBottom',
-      },
       styles: {
         transition: null,
         opacity: null,
-        left: null,
-        right: null,
-        top: null,
-        bottom: null,
         transform: null,
-        animation: null,
-        pointerEvents: null,
+        height: null,
+        padding: null,
+        margin: null,
       },
-      lastTimes: [],
     };
   },
 
-  computed: {
-    ypos() {
-      return this.position.split(' ')[0];
-    },
-    center() {
-      return `calc(50vw - ${(this.$el.clientWidth / 2)}px)`;
-    },
-    cStyles() {
-      const styles = Object.assign({}, this.styles);
-
-      for (const key in styles) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (styles.hasOwnProperty(key) && key != 'opacity' && typeof styles[key] == 'number') {
-          styles[key] = styles[key] + 'px';
-        }
-      }
-
-      return styles;
-    },
-  },
   methods: {
-    onPanStart(event) {
-      console.log('pan start');
-      this.holding = true;
-      this.tempTransition = this.styles.transition;
-      this.styles.transition = null;
-    },
-    onPanEnd(event) {
-      console.log('pan end');
-      this.holding = false;
-      const overTreshold = Math.abs(event.deltaX) > this.treshold;
 
-      this.styles.transition = this.tempTransition;
-      this.tempTransition = null;
+    /**
+     * Handle clicked button: strart closing sequence if button.close, or just trigger button action
+     *
+     * @param {object} button – clicked button
+     * @returns {void}
+    */
+    clickHandler(button) {
+      if (button.close) {
+        this.close();
+      } else if (button.action) {
+        button.action();
+      }
+    },
+
+    /**
+     * Handle start of panning: remove transitions for smooth panning
+     *
+     * @param {object} event – hammer's event
+     * @returns {void}
+    */
+    onPanStart(event) {
+      if (this.preventSwipe) {
+        return;
+      }
+      this.holding = true;
+      this.styles.transition = 'all 0ms';
+    },
+
+    /**
+     * Handle end of panning:
+     * 1. Bring back transitions for smooth animations
+     * 2. If we are over TRESHOLD, add fade-to-side-animation and trigger this.close
+     *
+     * @param {object} event – hammer's event
+     * @returns {void}
+    */
+    onPanEnd(event) {
+      if (this.preventSwipe) {
+        return;
+      }
+      this.holding = false;
+      this.styles.transition = null;
+
+      /* if timer is present and over, close notificaton */
       if (this.timeoutEnded) {
         this.close();
       }
-      if (overTreshold) {
-        const target = event.deltaX + (event.deltaX > 0 ? 100 : -100);
 
-        this.styles.transform = `translateX(${(this.close() ? target : 0)}px)`;
-      } else {
+      const overTreshold = Math.abs(event.deltaX) > TRESHOLD;
+
+      if (!overTreshold) {
         this.styles.transform = null;
+      } else {
+        const target = event.deltaX + (event.deltaX > 0 ? SIDETRAVEL : -SIDETRAVEL);
+
+        this.styles.transform = `translateX(${target}px)`;
+        this.styles.opacity = 0;
+        this.$nextTick(() => {
+          this.close();
+        });
       }
     },
+
+    /**
+     * Handle every panning event: translate notification and add opacity if over TRESHOLD
+     *
+     * @param {object} event – hammer's event
+     * @returns {void}
+    */
     pan(event) {
-      const overTreshold = Math.abs(event.deltaX) > this.treshold;
-
+      if (this.preventSwipe) {
+        return;
+      }
       this.styles.transform = `translateX(${event.deltaX}px)`;
-      this.styles.opacity = overTreshold ? 0.5 : this.opacity;
+
+      const overTreshold = Math.abs(event.deltaX) > TRESHOLD;
+
+      this.styles.opacity = overTreshold ? 0.5 : 1;
     },
-    startingPos() {
-      const pos = {};
-      const yx = this.position.split(' ');
-      const x = yx[1] === 'center' ? 'left' : yx[1]; // x = left or right
-      const y = yx[0]; //  y = top or bottom
 
-      pos[y] = this.marginY;
-      pos[x] = yx[1] === 'center' ? this.center : this.marginX;
-
-      return pos;
-    },
-    close(forced) {
-      console.log('closed');
-
+    /**
+     * Start removing the notification:
+     * 1. If close sequence is already running, do nothing
+     * 2. find button with "close" field set to true and trigger its action (if found)
+     * 3. emit "close" event so that NotificationWrapper can remove this notification from store
+     *
+     * @returns {void}
+    */
+    close() {
       if (this.closeRunning) {
         return false;
       } else {
         this.closeRunning = true;
       }
-      // this.fire('before-close', this);
-      if (!forced && this.preventClose) {
-        this.preventClose = this.closeRunning = false;
+      const cancelbutton = this.data.buttons.find(el => el.close);
 
-        return false;
+      if (cancelbutton.action) {
+        cancelbutton.action();
       }
-      this.styles.opacity = 0;
-      this.styles.pointerEvents = 'none';
-      setTimeout(() => {
-        this.$destroy();
-        this.$el.remove();
-        // this.fire('destroyed', this);
-      }, this.transition);
-
-      return true;
+      this.$emit('close', this.id);
     },
+
   },
 
+  /**
+   * 1. flag "mounted" to true (so we can show notification)
+   * 2. emit "mounted" event (for future use)
+   * 3. if notification is not infinite, set timeout with self-destruct
+   *
+   * @returns {void}
+  */
   mounted() {
-    this.styles.transition = `all ${this.transition}ms ease`;
-    this.styles.opacity = 0;
-    // this.mounted = true;
+    this.mounted = true;
     this.$nextTick(() => {
-      // this.fire('mounted', this)
-      this.styles.opacity = this.opacity;
-      this.styles.animation = `${this.appear[this.position]} ${this.transition}ms forwards`;
-      setTimeout(() => {
-        this.styles.animation = null;
-      }, this.transition);
-      Object.assign(this.styles, this.startingPos());
-      this.notifications
-        .filter(item => item.position == this.position)
-        .forEach(item => {
-          item.styles[this.ypos] += this.$el.clientHeight + this.marginY;
-        });
+      this.$emit('mounted', this.id);
     });
 
-    if (this.timeout && this.timeout > 0) {
+    if (!this.infinite) {
       setTimeout(() => {
         this.timeoutEnded = true;
-        if (!this.holding) {
+        /* if we are holding the notification, or notification is already destroyed, do nothing */
+        if (!this.holding && !this.closeRunning) {
           this.close();
         }
-      }, this.timeout);
+      }, this.lifespan);
     }
   },
 };
 </script>
 
 <style lang="stylus" scoped>
-.notification
-    pointer-events all
-    background-color var(--app-bg)
-    color var(--text-0)
-    display flex
-    flex-direction row
-    justify-content space-around
-    align-items center
-    padding 20px
-    margin 0 8px 8px
-    width 50%
-    box-sizing border-box
-    border-radius 6px
-    box-shadow 0px 3px 8px rgba(0, 0, 0, 0.15)
 
-@keyframes NotifyFromLeft {
-  from {
-    transform: translateX(-100%)
-  }
-  to {
-    transform: translateX(0%)
-  }
-}
-@keyframes NotifyFromRight {
-  from {
-    transform: translateX(100%)
-  }
-  to {
-    transform: translateX(0%)
-  }
-}
-@keyframes NotifyFromTop {
-  from {
-    transform: translateY(-100%)
-  }
-  to {
-    transform: translateY(0%)
-  }
-}
-@keyframes NotifyFromBottom {
-  from {
-    transform: translateY(100%)
-  }
-  to {
-    transform: translateY(0%)
-  }
-}
+$ANIM = 330ms
+$ANIM_DELAY = 200ms
+
+.notification
+  pointer-events all
+  background-color var(--app-bg)
+  color var(--text-0)
+  flex-shrink 0
+  display flex
+  flex-direction row
+  justify-content space-between
+  align-items flex-start
+  padding 12px
+  margin 0 12px 12px
+  overflow hidden
+  width calc(100% - 24px)
+  height 60px // TODO: if notifications will be with auto height, we need to do js-height-calculation for smooth animations
+  box-sizing border-box
+  border-radius 6px
+  box-shadow 0px 3px 8px rgba(0, 0, 0, 0.15)
+  pointer-events auto
+  transition all $ANIM ease
+  opacity 1
+
+  &__button-wrapper
+    flex-shrink 0
+    flex-grow 0
+    margin-left 8px
+    margin-bottom 12px
+
+  &__button
+    margin 0 4px
+
+.notification-fade-enter
+  height 0
+  padding 0px 12px
+  margin 0px 12px
+  opacity 0
+
+.notification-fade-enter-active
+  pointer-events none
+  transition opacity $ANIM ease $ANIM_DELAY, height $ANIM ease, padding $ANIM ease, margin $ANIM ease, min-height $ANIM ease
+
+.notification-fade-leave
+  height 0
+  opacity 0
+
+.notification-fade-leave-active
+  padding 0px 12px
+  margin 0px 12px
+  opacity 0
+  height 0
+  transition opacity $ANIM ease, height $ANIM ease $ANIM_DELAY, padding $ANIM ease $ANIM_DELAY, margin $ANIM ease $ANIM_DELAY, min-height $ANIM ease $ANIM_DELAY, transform $ANIM ease
+
 </style>

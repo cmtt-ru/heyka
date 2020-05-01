@@ -94,10 +94,6 @@ export default {
     state.notifications = state.notifications.filter(el => el.id != id);
   },
 
-  INCREMENT_ID(state) {
-    state.uniqueId += 1;
-  },
-
   /**
    * Set device list
    *

@@ -1,6 +1,6 @@
 <template>
   <div :style="$themes.getColors('popover')" class="notification-wrapper">
-      <notification :data="notif" v-for="notif in notifications" :key="notif.id"/>
+      <notification @close="closeHandler" :id="notif.id" :lifespan="notif.lifespan" :infinite="notif.infinite" :preventSwipe="notif.preventSwipe" :data="notif.data" v-for="notif in notifications" :key="notif.id"/>
   </div>
 </template>
 
@@ -13,8 +13,29 @@ export default {
   },
   data() {
     return {
-      notifications: this.$store.state.app.notifications,
+
     };
+  },
+  computed: {
+    /**
+     * Get all notifications from store
+     *
+     * @returns {array}
+    */
+    notifications() {
+      return this.$store.state.app.notifications;
+    },
+  },
+  methods: {
+    /**
+     * Close notification by its id
+     *
+     * @param {string} id id
+     * @returns {void}
+    */
+    closeHandler(id) {
+      this.$store.commit('app/REMOVE_NOTIFICATION', id);
+    },
   },
 };
 </script>
@@ -29,5 +50,5 @@ export default {
     flex-direction column
     justify-content flex-end
     align-items center
-    z-index 1000
+    z-index 200
 </style>
