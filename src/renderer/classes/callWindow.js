@@ -19,16 +19,16 @@ class CallWindow {
     if (this.window === null) {
       this.window = WindowManager.create({
         route: '/call-window',
-        position: 'center',
+        position: 'bottomRight',
         template: 'call',
         alwaysOnTop: true,
         onClose: () => {
           this.window = null;
         },
       });
+    } else {
+      this.window.showInactive();
     }
-
-    this.window.showInactive();
   }
 
   /**

@@ -124,7 +124,7 @@ export default {
       if (!callWindow) {
         callWindow = WindowManager.create({
           route: '/call-window',
-          position: 'center',
+          position: 'bottomRight',
           template: 'call',
           alwaysOnTop: true,
           onClose: () => {

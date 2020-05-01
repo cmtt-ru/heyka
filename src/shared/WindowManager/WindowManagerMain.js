@@ -1,8 +1,8 @@
-import {ipcMain, BrowserWindow} from 'electron';
-import {createProtocol} from 'vue-cli-plugin-electron-builder/lib';
+import { ipcMain, BrowserWindow } from 'electron';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Positioner from './Positioner';
 import templates from './templates.json';
-import {v4 as uuidV4} from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 
 // const isMac = process.platform === 'darwin';
 // const isLinux = process.platform === 'linux';
@@ -119,7 +119,7 @@ class WindowManager {
    */
   createWindow(options) {
     if (options.template && templates[options.template]) {
-      options.window = {...templates[options.template]};
+      options.window = { ...templates[options.template] };
     }
     const newWindow = new BrowserWindow(Object.assign({}, DEFAULT_WINDOW_OPTIONS, options.window || {}));
 
