@@ -12,7 +12,7 @@ import { ipcRenderer } from 'electron';
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
 
-import Notifications from '@components/Notifications/Wrapper';
+import Notifications from '@components/Notifications';
 
 export default {
   components: {
