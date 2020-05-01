@@ -104,6 +104,20 @@ class Window {
       id: this.windowId,
     });
   }
+
+  /**
+   * Set window size
+   * @param {number} width - window width
+   * @param {number} height - window height
+   * @returns {void}
+   */
+  setSize(width, height) {
+    ipcRenderer.sendSync('window-manager-size', {
+      id: this.windowId,
+      width,
+      height,
+    });
+  }
 }
 
 export default new WindowManager();
