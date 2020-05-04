@@ -19,6 +19,7 @@
           <router-link class="link" :to="{name: 'styleguide-buttons'}">Buttons</router-link>
           <router-link class="link" :to="{name: 'styleguide-lists'}">Lists</router-link>
           <router-link class="link" :to="{name: 'styleguide-forms'}">Forms</router-link>
+          <router-link class="link" :to="{name: 'styleguide-notifications'}">Notifications</router-link>
           <br>
           <br>
           <router-link class="link" :to="{name: 'settings'}">Exit</router-link>
