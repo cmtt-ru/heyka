@@ -33,7 +33,7 @@ export default {
     commit('SET_MEDIA_STATE', mediaState);
     meStore.set('mediaState', mediaState);
 
-    callWindow.setScreenSharingMode(mediaState.screen);
+    callWindow.setMediaSharingMode(mediaState.screen);
 
     if (selectedChannelId) {
       await API.user.setMediaState(mediaState);
