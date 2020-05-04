@@ -11,9 +11,6 @@
     <button @click="closePushWindow()">Закрыть пуш</button>
     <br><br>
 
-    <button @click="AddNotif()"> + нотификация</button>
-    <br><br>
-
     <br>
     <button @click="loadInitialState()">Load initial state</button>
     <button @click="login()">Login</button>
@@ -115,38 +112,6 @@ export default {
         pushWindow.close();
         pushWindow = null;
       }
-    },
-
-    async AddNotif() {
-      const notification = {
-        lifespan: 5000,
-        data: {
-          text: 'You can watch the broadcast only by connecting to the channel ' + Math.random(),
-          buttons: [
-            {
-              text: 'Connect',
-              type: 12,
-              action: this.alert,
-            },
-            {
-              text: 'Cancel',
-              close: true,
-              action: this.close,
-            },
-          ],
-        },
-
-      };
-
-      await this.$store.dispatch('app/addNotification', notification);
-    },
-
-    alert() {
-      console.log('Connect');
-    },
-
-    close() {
-      console.log('cancel');
     },
 
     async loadInitialState() {

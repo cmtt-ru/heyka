@@ -1,6 +1,19 @@
 <template>
-  <div :style="$themes.getColors('popover')" class="notification-wrapper">
-      <notification @close="closeHandler" :id="notif.id" :lifespan="notif.lifespan" :infinite="notif.infinite" :preventSwipe="notif.preventSwipe" :data="notif.data" v-for="notif in notifications" :key="notif.id"/>
+  <div
+    :style="$themes.getColors('popover')"
+    class="notification-wrapper"
+    :class="{'notification-wrapper--modal': isModal}"
+  >
+      <notification
+      @close="closeHandler"
+      :id="notif.id"
+      :lifespan="notif.lifespan"
+      :infinite="notif.infinite"
+      :preventSwipe="notif.preventSwipe"
+      :data="notif.data"
+
+      v-for="notif in notifications"
+      :key="notif.id"/>
   </div>
 </template>
 
@@ -24,6 +37,15 @@ export default {
     */
     notifications() {
       return this.$store.state.app.notifications;
+    },
+
+    /**
+     * Get all notifications from store
+     *
+     * @returns {array}
+    */
+    isModal() {
+      return !!this.notifications.find((el) => el.modal);
     },
   },
   methods: {
@@ -51,4 +73,10 @@ export default {
     justify-content flex-end
     align-items center
     z-index 200
+    background-color transparent
+    transition background-color 0.5s ease
+
+    &--modal
+      pointer-events auto
+      background-color rgba(255, 255, 255, 0.3)
 </style>
