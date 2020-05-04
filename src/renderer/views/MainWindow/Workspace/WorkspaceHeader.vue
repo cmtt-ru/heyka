@@ -4,7 +4,12 @@
 
             <ui-button :type="7" class="user__status" @click.native="switchProp('screen')" size="small" :icon="icons.screen"/>
             <ui-button :type="7" class="user__status" @click.native="switchProp('speakers')" size="small" :icon="icons.speakers"/>
-            <ui-button :type="7" class="user__status" @click.native="switchProp('microphone')" size="small" :icon="icons.microphone"/>
+<!--             <ui-button :type="7" class="user__status" @click.native="switchProp('microphone')" size="small" :icon="icons.microphone> -->
+            <microphone
+              class="user__status"
+              @click.native="switchProp('microphone')"
+              :active="user.microphone"
+            />
 
             <avatar class="user__avatar" :image="user.avatar" :status="user.onlineStatus" :size="24"/>
 
@@ -16,6 +21,7 @@
 
 <script>
 import UiButton from '@components/UiButton';
+import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
 
 /**
@@ -40,6 +46,7 @@ export default {
   components: {
     UiButton,
     Avatar,
+    Microphone,
   },
 
   computed: {
