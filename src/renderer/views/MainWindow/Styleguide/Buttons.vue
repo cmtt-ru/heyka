@@ -14,6 +14,8 @@
 
       <ui-button :type="3" size="small" class="l-mr-8">Type --3</ui-button>
 
+      <ui-button :type="12" size="small" class="l-mr-8">Type --12</ui-button>
+
     </div>
 
     <h3 class="l-mt-24">Medium</h3>

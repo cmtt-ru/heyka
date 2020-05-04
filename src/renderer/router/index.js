@@ -33,6 +33,7 @@ const Styleguide = () => import(/* webpackChunkName: "main" */ '@views/MainWindo
 const StyleguideButtons = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Buttons');
 const StyleguideLists = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Lists');
 const StyleguideForms = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Forms');
+const StyleguideNotifications = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Notifications');
 
 /**
  * Push window views
@@ -159,6 +160,11 @@ const routes = [
             path: 'forms',
             name: 'styleguide-forms',
             component: StyleguideForms,
+          },
+          {
+            path: 'notifications',
+            name: 'styleguide-notifications',
+            component: StyleguideNotifications,
           },
         ],
       },
