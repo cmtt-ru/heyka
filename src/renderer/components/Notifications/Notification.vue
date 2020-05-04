@@ -108,16 +108,30 @@ export default {
   methods: {
 
     /**
-     * Handle clicked button: strart closing sequence if button.close, or just trigger button action
+     * Handle clicked button: strart closing sequence and trigger button action if found one
      *
      * @param {object} button – clicked button
      * @returns {void}
     */
     clickHandler(button) {
-      if (button.close) {
-        this.close();
-      } else if (button.action) {
+      if (button.action) {
         button.action();
+      }
+      this.close(true);
+    },
+
+    /**
+     * Find and trigger default-close-button action
+     *
+     * @returns {void}
+    */
+    closeButtonAction() {
+      if (this.data.buttons) {
+        const cancelbutton = this.data.buttons.find(el => el.close);
+
+        if (cancelbutton.action) {
+          cancelbutton.action();
+        }
       }
     },
 
@@ -152,13 +166,17 @@ export default {
 
       /* if timer is present and over, close notificaton */
       if (this.timeoutEnded) {
-        this.close();
+        this.styles.opacity = 0;
+        this.$nextTick(() => {
+          this.close();
+        });
       }
 
       const overTreshold = Math.abs(event.deltaX) > TRESHOLD;
 
       if (!overTreshold) {
         this.styles.transform = null;
+        this.styles.opacity = null;
       } else {
         const target = event.deltaX + (event.deltaX > 0 ? SIDETRAVEL : -SIDETRAVEL);
 
@@ -193,18 +211,17 @@ export default {
      * 2. find button with "close" field set to true and trigger its action (if found)
      * 3. emit "close" event so that NotificationWrapper can remove this notification from store
      *
+     * @param {boolean} clicked true if this function was called after clicking the button
      * @returns {void}
     */
-    close() {
+    close(clicked) {
       if (this.closeRunning) {
         return false;
       } else {
         this.closeRunning = true;
       }
-      const cancelbutton = this.data.buttons.find(el => el.close);
-
-      if (cancelbutton.action) {
-        cancelbutton.action();
+      if (!clicked) {
+        this.closeButtonAction();
       }
       this.$emit('close', this.id);
     },
@@ -234,6 +251,7 @@ export default {
       }, this.lifespan);
     }
   },
+
 };
 </script>
 
@@ -243,7 +261,6 @@ $ANIM = 330ms
 $ANIM_DELAY = 200ms
 
 .notification
-  pointer-events all
   background-color var(--app-bg)
   color var(--text-0)
   flex-shrink 0
@@ -280,7 +297,7 @@ $ANIM_DELAY = 200ms
 
 .notification-fade-enter-active
   pointer-events none
-  transition opacity $ANIM ease $ANIM_DELAY, height $ANIM ease, padding $ANIM ease, margin $ANIM ease, min-height $ANIM ease
+  transition opacity $ANIM ease $ANIM_DELAY, height $ANIM ease, padding $ANIM ease, margin $ANIM ease
 
 .notification-fade-leave
   height 0
@@ -291,6 +308,6 @@ $ANIM_DELAY = 200ms
   margin 0px 12px
   opacity 0
   height 0
-  transition opacity $ANIM ease, height $ANIM ease $ANIM_DELAY, padding $ANIM ease $ANIM_DELAY, margin $ANIM ease $ANIM_DELAY, min-height $ANIM ease $ANIM_DELAY, transform $ANIM ease
+  transition opacity $ANIM ease, height $ANIM ease $ANIM_DELAY, padding $ANIM ease $ANIM_DELAY, margin $ANIM ease $ANIM_DELAY, transform $ANIM ease
 
 </style>
