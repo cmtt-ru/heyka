@@ -5,7 +5,7 @@ const WINDOW_SIZES = {
     width: 184,
     height: 96,
   },
-  screenSharing: {
+  mediaSharing: {
     width: 340,
     height: 265,
   },
@@ -46,12 +46,12 @@ class CallWindow {
   }
 
   /**
-   * Enable or disable screen sharing mode
+   * Enable or disable media sharing mode
    * @param {boolean} state – enable or disable
    * @returns {void}
    */
-  setScreenSharingMode(state) {
-    const { width, height } = WINDOW_SIZES[state ? 'screenSharing' : 'default'];
+  setMediaSharingMode(state) {
+    const { width, height } = WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
 
     if (this.window !== null) {
       this.window.setSize(width, height);

@@ -261,7 +261,7 @@ class WindowManager {
   sizeWindow({ id, width, height }) {
     if (this.windows[id]) {
       this.windows[id].setSize(width, height);
-      adjustBounds(this.windows[id], '20');
+      adjustBounds(this.windows[id]);
     }
   }
 

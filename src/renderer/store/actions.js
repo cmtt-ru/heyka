@@ -75,6 +75,7 @@ export default {
     commit('me/SET_CHANNEL_ID', id);
 
     callWindow.show();
+    callWindow.setMediaSharingMode(getters['me/getMediaState'].screen);
   },
 
   /**
