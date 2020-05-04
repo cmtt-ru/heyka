@@ -2,6 +2,7 @@ import {ipcRenderer} from "electron";
 <template>
   <div>
     <janus />
+    <notifications/>
     <router-view></router-view>
   </div>
 </template>
@@ -11,9 +12,12 @@ import { ipcRenderer } from 'electron';
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
 
+import Notifications from '@components/Notifications';
+
 export default {
   components: {
     Janus,
+    Notifications,
   },
   data() {
     return {
