@@ -12,7 +12,9 @@
         :filterKey="user.name"
         button
       >
-      <channel-user-item :user="user"></channel-user-item>
+      <div v-textfade class="styleguide-user">
+        {{user.name}}
+      </div>
       </list-item>
     </list>
 
@@ -28,14 +30,12 @@
 
 import { List, ListItem } from '@components/List';
 import { UiInput } from '@components/Form';
-import ChannelUserItem from '@components/ChannelUserItem';
 
 export default {
   components: {
     List,
     ListItem,
     UiInput,
-    ChannelUserItem,
   },
   data() {
     return {
@@ -69,4 +69,14 @@ export default {
 <style scoped lang="stylus">
   h3
     color var(--text-0)
+
+  .styleguide-user
+    width 100%
+    border-radius 4px
+    margin-top 4px
+    cursor pointer
+    padding 8px 8px 8px 16px
+
+    &:hover
+      background-color var(--item-bg-hover)
 </style>

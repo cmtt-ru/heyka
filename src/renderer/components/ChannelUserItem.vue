@@ -1,7 +1,12 @@
 <template>
     <div class="user" v-popover.mouse.click="{name: 'UserInChannel', data: {userId: user.id}}">
 
-        <avatar class="user__avatar" :image="user.avatar" :size="24" :onair="user.speaking"></avatar>
+        <avatar
+          class="user__avatar"
+          :image="user.avatar"
+          :size="24"
+          :mic="user.microphone"
+          :onair="user.speaking"/>
 
         <div v-textfade :key="user.name" class="user__name">{{user.name}}</div>
 
@@ -11,8 +16,7 @@
                 :key="icon"
                 class="user__statuses__icon"
                 :name="icon"
-                size="small"
-            ></svg-icon>
+                size="small"/>
         </div>
 
         <ui-button
@@ -20,8 +24,7 @@
             class="user__sharing"
             :type="7"
             size="small"
-            icon="cast">
-        </ui-button>
+            icon="cast"/>
 
     </div>
 </template>
