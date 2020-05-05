@@ -29,6 +29,10 @@ export default {
       return this.$t('settings.network');
     },
 
+    /**
+     * Privacy logs in string format
+     * @returns {string}
+     */
     privacyLogs() {
       return this.$store.state.app.privacyLogs.join('\n');
     },
