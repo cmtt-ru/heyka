@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import router from '@/router';
 import store from '@/store';
+import i18n from '@/i18n';
 import { createPopper } from '@popperjs/core';
 
 /**
@@ -29,6 +30,15 @@ const RIGHT_MOUSE = 3;
  */
 const DEFAULT_POPPER_OPTIONS = {
   /* nothing yet here */
+  modifiers: [
+    {
+      name: 'offset',
+      options: {
+        // eslint-disable-next-line no-magic-numbers
+        offset: [8, 8],
+      },
+    },
+  ],
 };
 
 /**
@@ -132,6 +142,7 @@ class Popover {
 
     ComponentClass.options.router = router;
     ComponentClass.options.store = store;
+    ComponentClass.options.i18n = i18n;
 
     this.instance = new ComponentClass({
       propsData: this.vueProps,
@@ -168,6 +179,7 @@ class Popover {
     if (this.modes.click) {
       this.element.__clickHandler = event => {
         if (this.modes.mouse) {
+          this.options = {};
           this.options.placement = 'bottom-start';
 
           this.mouseCoordinates = {
