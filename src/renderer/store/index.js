@@ -19,7 +19,22 @@ const store = new Vuex.Store({
   actions,
   getters,
   strict: debug,
-  plugins: debug ? [ createLogger() ] : [],
+  plugins: debug ? [
+    createLogger({
+      /**
+       * Filter mutations to be logged
+       * @param {object} mutation Mutation type and payload
+       * @returns {void}
+       */
+      filter(mutation) {
+        const ignoreList = [
+          'app/SET_MICROPHONE_VOLUME',
+        ];
+
+        return !ignoreList.includes(mutation.type);
+      },
+    }),
+  ] : [],
 });
 
 mediaDevices.on('change', (devices) => {

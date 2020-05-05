@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import hark from 'hark';
 const JANUS_PLUGIN = 'janus.plugin.audiobridge';
+const HARK_UPDATE_INTERVAL_MS = 75;
 
 /**
  * Handle communication with audiobridge plugin
@@ -277,13 +278,16 @@ class AudiobridgePlugin extends EventEmitter {
    */
   _onLocalAudioStream(stream) {
     this.__harkStream = hark(stream, {
-      interval: 75,
+      interval: HARK_UPDATE_INTERVAL_MS,
     });
     this.__harkStream.on('speaking', () => {
       this.emit('start-speaking');
     });
     this.__harkStream.on('stopped_speaking', () => {
       this.emit('stop-speaking');
+    });
+    this.__harkStream.on('volume_change', (db, threshold) => {
+      this.emit('volume-change', db);
     });
   }
 };
