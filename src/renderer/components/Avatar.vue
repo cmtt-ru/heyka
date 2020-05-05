@@ -9,7 +9,7 @@
         <div :style="statusStyle" class="avatar__status__dot"></div>
     </div>
 
-    <div v-if="onair" class="avatar__onair"></div>
+    <div v-if="onair && mic" class="avatar__onair"></div>
 </div>
 </template>
 
@@ -67,6 +67,14 @@ export default {
     onair: {
       type: [ Boolean ],
       default: false,
+    },
+
+    /**
+     * If person has mic on (in addition to onair)
+     */
+    mic: {
+      type: [ Boolean ],
+      default: true,
     },
   },
 

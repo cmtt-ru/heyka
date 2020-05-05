@@ -30,7 +30,20 @@ const plugins = [
 ];
 
 if (debug) {
-  plugins.push(createLogger());
+  plugins.push(createLogger({
+    /**
+     * Filter mutations to be logged
+     * @param {object} mutation Mutation type and payload
+     * @returns {boolean}
+     */
+    filter(mutation) {
+      const ignoreList = [
+        'app/SET_MICROPHONE_VOLUME',
+      ];
+
+      return !ignoreList.includes(mutation.type);
+    },
+  }));
 }
 
 Vue.use(Vuex);

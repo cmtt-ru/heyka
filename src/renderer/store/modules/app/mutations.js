@@ -119,4 +119,16 @@ export default {
   SET_SELECTED_DEVICES(state, devices) {
     state.selectedDevices = devices;
   },
+
+  /**
+   * Set microphone volume
+   *
+   * @param {AppState} state – module app state
+   * @param {number} volume – new microphone volume
+   * @constructor
+   */
+  SET_MICROPHONE_VOLUME(state, volume) {
+    state.microphoneVolume = volume;
+  },
+
 };
