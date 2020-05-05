@@ -89,6 +89,10 @@ export default {
       const newState = { ...this.mediaState };
 
       newState[property] = !this.mediaState[property];
+      /* Disable 'speaking' avatar stroke if we mute mic */
+      if (!newState.microphone) {
+        newState.speaking = false;
+      }
       this.$store.dispatch('me/setMediaState', newState);
     },
 
