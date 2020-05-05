@@ -14,9 +14,8 @@ export default {
   .popover
     display flex
     background #fff
-    padding 4px
-    border 0.5px solid rgba(0, 0, 0, 0.2)
-    box-shadow 0 3px 8px rgba(0, 0, 0, 0.15), 0 0 8px rgba(0, 0, 0, 0.15)
+    border 1px solid var(--shadow-20)
+    box-shadow 0 3px 8px var(--shadow-15), 0 0 8px var(--shadow-15)
     border-radius 4px
     z-index 100
     flex-direction column
@@ -26,4 +25,15 @@ export default {
     /deep/ a
       .ui-button
         width 100%
+
+    /deep/ .delimiter
+      height 1px
+      width 100%
+      background var(--button-bg-4)
+      margin 4px 0
+
+    /deep/ .buttons
+      padding 4px
+      display flex
+      flex-direction column
 </style>
