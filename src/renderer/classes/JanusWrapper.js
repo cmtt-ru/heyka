@@ -108,6 +108,7 @@ class JanusWrapper extends EventEmitter {
     audiobridgePlugin.on('media-state', isActive => this.emit('audio-stream-active', isActive));
     audiobridgePlugin.on('start-speaking', () => this.emit('speaking', true));
     audiobridgePlugin.on('stop-speaking', () => this.emit('speaking', false));
+    audiobridgePlugin.on('volume-change', (db) => this.emit('volume-change', db));
 
     this.__audiobridgePlugin = audiobridgePlugin;
   }
