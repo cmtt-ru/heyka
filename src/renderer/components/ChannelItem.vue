@@ -1,9 +1,6 @@
 <template>
     <router-link :to="'/main-window/workspace/channel/'+channel.id" class="channel">
-        <svg-icon v-if="!channel.talking" class="channel__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"></svg-icon>
-        <svg-icon v-if="channel.talking" class="channel__type" name="channelOnAir" size="medium" animate>
-          <channel-on-air></channel-on-air>
-        </svg-icon>
+        <svg-icon class="channel__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"/>
 
         <div class="channel__content">
 
@@ -16,13 +13,12 @@
                 size="small"
                 height="16"
                 @click.native="$emit('more')"
-                icon="more">
-              </ui-button>
+                icon="more"/>
             </div>
 
             <div v-show="channel.users.length" class="channel__users">
                 <div class="channel__users__avatars">
-                  <avatar v-for="person in users" :key="person.name" :image="person.avatar" :size="12"></avatar>
+                  <avatar v-for="person in users" :key="person.name" :image="person.avatar" :size="12"/>
                 </div>
                 <div v-if="extraUsers" class="channel__users__more">+{{extraUsers}}</div>
             </div>
@@ -34,11 +30,11 @@
 
 <script>
 import Avatar from '@components/Avatar';
-import channelOnAir from '@assets/iconsAnimate/channelOnAir.vue';
 import UiButton from '@components/UiButton';
 
 const ICON_MAP = {
   public: 'channel',
+  publicOnline: 'channelOnAir',
   private: 'lock',
   temp: 'clock',
   default: 'channel',
@@ -48,7 +44,6 @@ const MAX_USERS = 8;
 export default {
   components: {
     Avatar,
-    channelOnAir, // TODO: добавить и остальные анимированные иконки
     UiButton,
   },
   props: {
@@ -75,7 +70,11 @@ export default {
       if (this.channel.isPrivate) { // TODO: lifespan
         return ICON_MAP['private'];
       } else {
-        return ICON_MAP['public'];
+        if (this.channel.talking) {
+          return ICON_MAP['publicOnline'];
+        } else {
+          return ICON_MAP['public'];
+        }
       }
     },
 

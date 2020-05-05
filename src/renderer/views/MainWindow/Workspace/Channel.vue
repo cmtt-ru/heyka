@@ -2,10 +2,7 @@
   <div class="l-p-8">
 
       <div v-if="channel" class="channel-info">
-        <svg-icon v-if="!channel.talking" class="channel-info__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"></svg-icon>
-        <svg-icon v-if="channel.talking" class="channel-info__type" name="channelOnAir" size="medium" animate>
-          <channel-on-air></channel-on-air>
-        </svg-icon>
+        <svg-icon class="channel-info__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"/>
         <div v-textfade="channel.name" class="channel-info__name">{{channel.name}}</div>
         <ui-button
           :type="7"
@@ -13,8 +10,7 @@
           size="small"
           height="16"
           @click.native="moreHandler()"
-          icon="more">
-        </ui-button>
+          icon="more"/>
 
         <ui-button
           v-if="!isConnected"
@@ -42,7 +38,7 @@
         :filterKey="user.name"
         button
       >
-      <channel-user-item :user="user"></channel-user-item>
+      <channel-user-item :user="user"/>
       </list-item>
 
     </list>
@@ -54,10 +50,10 @@
 import { List, ListItem } from '@components/List';
 import ChannelUserItem from '@components/ChannelUserItem';
 import UiButton from '@components/UiButton';
-import channelOnAir from '@assets/iconsAnimate/channelOnAir.vue';
 
 const ICON_MAP = {
   public: 'channel',
+  publicOnline: 'channelOnAir',
   private: 'lock',
   temp: 'clock',
   default: 'channel',
@@ -69,7 +65,6 @@ export default {
     ListItem,
     ChannelUserItem,
     UiButton,
-    channelOnAir, // TODO: добавить и остальные анимированные иконки
   },
 
   computed: {
@@ -120,7 +115,11 @@ export default {
       if (this.channel.isPrivate) { // TODO: lifespan
         return ICON_MAP['private'];
       } else {
-        return ICON_MAP['public'];
+        if (this.channel.talking) {
+          return ICON_MAP['publicOnline'];
+        } else {
+          return ICON_MAP['public'];
+        }
       }
     },
 
