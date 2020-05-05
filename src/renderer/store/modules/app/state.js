@@ -64,6 +64,7 @@ const state = () => {
     collectAnalytics: heykaStore.get('collectAnalytics', true),
     privacyLogs: [],
     microphoneVolume: -100,
+    notifications: [],
   };
 };
 
