@@ -28,9 +28,7 @@
         <ui-button v-if="selectedChannelName" :type="3" :wide="true" class="user-action">
           <div class="user-action__inner" v-textfade>
             <div>{{texts.inviteButtonStart}}</div>
-            <svg-icon class="icon-in-button" name="channelOnAir" size="medium" animate>
-              <channel-on-air></channel-on-air>
-            </svg-icon>
+            <svg-icon class="icon-in-button" name="channelOnAir" size="medium"/>
             <div>{{selectedChannelName}}</div>
           </div>
 
@@ -53,7 +51,6 @@
 <script>
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
-import channelOnAir from '@assets/iconsAnimate/channelOnAir.vue';
 
 /**
  * status-to-color map (small circle to the right of username)
@@ -77,7 +74,6 @@ export default {
   components: {
     Avatar,
     UiButton,
-    channelOnAir,
   },
 
   computed: {

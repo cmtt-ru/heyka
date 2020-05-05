@@ -8,14 +8,9 @@
     <title v-if="title">{{ title }}</title>
 
     <use
-    v-if="!animate"
     :style="{strokeWidth, stroke}"
     :xlink:href="iconPath"
     xmlns:xlink="http://www.w3.org/1999/xlink"/>
-
-    <g v-if="animate" :style="{strokeWidth, stroke}">
-      <slot></slot>
-    </g>
 
   </svg>
 </template>
@@ -87,14 +82,6 @@ export default {
     },
 
     /**
-     * Defines if icon is moving or not. If it is moving, it should NOT be included in svg-sprite (because of animation issues), but passed as a vue component in default slot. Animated icons are stored at /assets/icons/iconsAnimate
-     */
-    animate: {
-      type: Boolean,
-      default: false,
-    },
-
-    /**
      * Icon title. For now it's just tooltip helper
      */
     title: {
@@ -126,22 +113,16 @@ export default {
     },
 
     /**
-     * Import icon from svg-sprite
-     * @returns {string} icon url
+     * Make id from icon name
+     * @returns {string} icon url by id
      */
     iconPath() {
-      let icon = require(`@assets/icons/${this.name}.svg`);
-
-      if (Object.prototype.hasOwnProperty.call(icon, 'default')) {
-        icon = icon.default;
-      }
-
-      return icon.url;
+      return '#' + this.name;
     },
 
     /**
      * Attach additional classes to icon elements for possible future styling
-     * @returns {string} 'icon' and 'icon-#icon_name#' as classes
+     * @returns {string} 'icon' and 'icon--#icon_name#' as classes
      */
     classList() {
       return 'icon icon--' + this.name;
