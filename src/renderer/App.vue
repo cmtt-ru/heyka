@@ -9,7 +9,7 @@ require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
 export default {
 
   methods: {
-    loasSvgSprite() {
+    loadSvgSprite() {
       const ajax = new XMLHttpRequest();
 
       ajax.open('GET', 'img/icons.svg', true);
@@ -25,7 +25,7 @@ export default {
     },
   },
   created() {
-    this.loasSvgSprite();
+    this.loadSvgSprite();
   },
 };
 </script>
