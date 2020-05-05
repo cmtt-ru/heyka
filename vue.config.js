@@ -49,21 +49,19 @@ module.exports = {
       enableInSFC: true,
     },
     svgSprite: {
-
       dir: 'src/assets/icons',
       test: /\.svg$/,
       loaderOptions: {
         extract: true,
-        spriteFilename: 'img/icons.[hash:8].svg', // or 'img/icons.svg' if filenameHashing == false
-      },
-      pluginOptions: {
-        plainSprite: false,
+        spriteFilename: 'img/icons.svg',
       },
     },
   },
 
   chainWebpack: config => {
     config.module
-      .rule('svg-sprite');
+      .rule('svg-sprite')
+      .use('svgo-loader')
+      .loader('svgo-loader');
   },
 };
