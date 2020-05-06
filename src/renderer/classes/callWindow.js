@@ -1,6 +1,6 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
-const WINDOW_SIZES = {
+const OVERLAY_WINDOW_SIZES = {
   default: {
     width: 184,
     height: 96,
@@ -12,37 +12,78 @@ const WINDOW_SIZES = {
 };
 
 /**
- * Class for controlling call window
+ * Class for controlling call windows
  */
 class CallWindow {
   /**
    * Call window constructor
    */
   constructor() {
-    this.window = null;
+    this.overlayWindow = null;
+    this.sharingWindow = null;
   }
 
   /**
-   * Show call window
+   * Show call overlay
    * @returns {void}
    */
-  show() {
-    if (this.window === null) {
-      this.window = WindowManager.create({
+  showOverlay() {
+    if (this.overlayWindow === null) {
+      this.overlayWindow = WindowManager.create({
         route: '/call-overlay',
         position: 'bottomRight',
         window: {
-          ...WINDOW_SIZES['default'],
+          ...OVERLAY_WINDOW_SIZES['default'],
           alwaysOnTop: true,
           backgroundColor: '#000',
         },
         onClose: () => {
-          this.window = null;
+          this.overlayWindow = null;
         },
       });
     } else {
-      this.window.showInactive();
+      this.overlayWindow.showInactive();
     }
+  }
+
+  /**
+   * Hide call overlay
+   * @returns {void}
+   */
+  hideOverlay() {
+    this.overlayWindow.hide();
+  }
+
+  /**
+   * Show sharing window
+   * @returns {void}
+   */
+  showSharing() {
+    if (this.sharingWindow === null) {
+      this.sharingWindow = WindowManager.create({
+        route: '/call-sharing',
+        position: 'center',
+        window: {
+          width: 500,
+          height: 500,
+          alwaysOnTop: true,
+          backgroundColor: '#000',
+        },
+        onClose: () => {
+          this.sharingWindow = null;
+        },
+      });
+    } else {
+      this.sharingWindow.showInactive();
+    }
+  }
+
+  /**
+   * Hide sharing window
+   * @returns {void}
+   */
+  hideSharing() {
+    this.sharingWindow.hide();
   }
 
   /**
@@ -51,19 +92,11 @@ class CallWindow {
    * @returns {void}
    */
   setMediaSharingMode(state) {
-    const { width, height } = WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
+    const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
 
-    if (this.window !== null) {
-      this.window.setSize(width, height);
+    if (this.overlayWindow !== null) {
+      this.overlayWindow.setSize(width, height);
     }
-  }
-
-  /**
-   * Hide call window
-   * @returns {void}
-   */
-  hide() {
-    this.window.hide();
   }
 }
 
