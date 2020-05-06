@@ -54,7 +54,7 @@ function middleware(func, functionName) {
       if (err.response.data.message === errorMessages.accessTokenExpired) {
         await updateTokens();
 
-        return middleware(func).apply(null, arguments);
+        return middleware(func, functionName).apply(null, arguments);
       }
 
       /** Global error handler */
