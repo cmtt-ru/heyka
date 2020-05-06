@@ -98,6 +98,7 @@ export default {
     &__name
         padding-left 4px
         flex-grow 1
+        line-height 16px
 
     &__more
         margin-left 4px
