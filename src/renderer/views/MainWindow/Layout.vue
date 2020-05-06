@@ -8,10 +8,8 @@
           <slot name="sidebar-header"/>
         </div>
 
-        <div class="layout__row layout__row--body" v-bar>
-          <div>
+        <div class="layout__row layout__row--body scroll">
             <slot name="sidebar-body"/>
-          </div>
         </div>
 
       </div>
@@ -22,10 +20,8 @@
           <slot name="content-header"/>
         </div>
 
-        <div class="layout__row layout__row--body" v-bar>
-          <div>
+        <div class="layout__row layout__row--body scroll">
             <slot name="content-body"/>
-          </div>
         </div>
 
       </div>
@@ -34,12 +30,6 @@
 </template>
 
 <script>
-
-import Vue from 'vue';
-import Vuebar from 'vuebar';
-import '@styles/vuebar.styl';
-
-Vue.use(Vuebar);
 
 export default {
   data() {
