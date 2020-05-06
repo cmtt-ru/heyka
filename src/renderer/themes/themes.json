@@ -29,6 +29,7 @@
                 "--item-bg-hover": "#F2F2F2",
                 "--item-bg-active": "#FFFFFF",
                 "--item-bg-multi-pick": "#F4FBF7",
+                "--shadow-10": "rgba(0,0,0,0.10)",
                 "--shadow-15": "rgba(0,0,0,0.15)",
                 "--shadow-20": "rgba(0,0,0,0.20)"
             },
@@ -40,7 +41,7 @@
                 "--text-1": "#76787B",
                 "--icon-0": "#000000",
                 "--icon-1": "#76787B",
-                "--scroll-bar": "rgba(0,0,0,0.12)"
+                "--scroll-bar": "0, 0, 0"
             },
             "content": {
                 "--app-bg": "#FFFFFF",
@@ -51,7 +52,7 @@
                 "--icon-0": "#000000",
                 "--icon-1": "#76787B",
                 "--icon-2": "#B1B3B5",
-                "--scroll-bar": "rgba(0,0,0,0.12)"
+                "--scroll-bar": "0, 0, 0"
             },
             "popover": {
                 "--app-bg": "#000000",
@@ -103,7 +104,8 @@
                 "--text-0": "#FFFFFF",
                 "--text-1": "#76787B",
                 "--icon-0": "#FFFFFF",
-                "--icon-1": "#76787B"
+                "--icon-1": "#76787B",
+                "--scroll-bar": "255, 255, 255"
             },
             "content": {
                 "--app-bg": "#333333",
@@ -113,7 +115,8 @@
                 "--text-1": "#76787B",
                 "--icon-0": "#FFFFFF",
                 "--icon-1": "#76787B",
-                "--icon-2": "#B1B3B5"
+                "--icon-2": "#B1B3B5",
+                "--scroll-bar": "255, 255, 255"
             },
             "popover": {
                 "--app-bg": "#000000",

@@ -2,7 +2,7 @@
   <div class="l-p-8 l-fw-m">
       <div v-if="workspace" class="workspace">
 
-        <div @click="dropdownHandler()" class="workspace__wrapper">
+        <div v-popover.click="{name: 'Workspace'}" class="workspace__wrapper">
             <img class="workspace__avatar" :src="workspace.avatar">
             <div>{{workspace.name}}</div>
             <ui-button :type="7" class="workspace__expand" size="small" height="16" icon="arrow-down"/>

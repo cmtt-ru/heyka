@@ -132,10 +132,12 @@ export default {
     font-style normal
     font-weight normal
     width 136px
+    line-height 16px
 
   &__more
     color var(--icon-1)
     margin 0 4px
+    align-self flex-start
 
   &__users
     height 12px
