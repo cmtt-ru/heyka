@@ -15,64 +15,21 @@
       </div>
 
       <div class="call-controls__row call-controls__row--controls">
-
-        <ui-button
-          :type="7"
-          class="call-controls__button"
-          :icon="buttonIcons.screen"
-          @click="switchProp('screen')"
-        />
-
-        <ui-button
-          :type="7"
-          class="call-controls__button"
-          :icon="buttonIcons.microphone"
-          @click="switchProp('microphone')"
-        />
-
-        <ui-button
-          :type="7"
-          class="call-controls__button"
-          icon="grid"
-          @click="gridHandler"
-        />
-
-        <ui-button
-          :type="7"
-          class="call-controls__button call-controls__button--disconnect"
-          icon="disconnect"
-          @click="disconnectHandler"
-        />
+        <call-buttons :buttons="['screen', 'microphone', 'grid', 'leave']"></call-buttons>
       </div>
 
     </div>
 </template>
 
 <script>
-import UiButton from '@components/UiButton';
-import broadcastActions from '@classes/broadcastActions';
-
-/**
- * Map media state points to corresponding icons
- */
-const ICON_MAP = {
-  microphone: {
-    true: 'mic',
-    false: 'mic-off',
-  },
-  speakers: {
-    true: 'headphones',
-    false: 'headphones-off',
-  },
-  screen: {
-    true: 'cast',
-    false: 'video-off', //! поведение будет сложнее, со сменой цвета. поправим, когда будет скриншаринг
-  },
-};
+// import UiButton from '@components/UiButton';
+// import broadcastActions from '@classes/broadcastActions';
+import CallButtons from './CallButtons';
 
 export default {
   components: {
-    UiButton,
+    // UiButton,
+    CallButtons,
   },
 
   props: {
@@ -90,14 +47,6 @@ export default {
 
   computed: {
     /**
-     * Get our media state
-     * @returns {object}
-     */
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
-    },
-
-    /**
      * Get our full info
      * @returns {object}
      */
@@ -105,18 +54,6 @@ export default {
       const myId = this.$store.getters['me/getMyId'];
 
       return this.$store.getters['users/getUserById'](myId);
-    },
-
-    /**
-     * Determine which icons to show
-     * @returns {object}
-     */
-    buttonIcons() {
-      return {
-        microphone: ICON_MAP.microphone[this.mediaState.microphone],
-        speakers: ICON_MAP.speakers[this.mediaState.speakers],
-        screen: ICON_MAP.screen[this.mediaState.screen],
-      };
     },
 
     /**
@@ -196,42 +133,7 @@ export default {
   },
 
   methods: {
-    /**
-     * Change our media state depending on which button was clicked
-     * @param {string} property mediastate's property name
-     * @returns {void}
-     */
-    switchProp(property) {
-      const newState = { ...this.mediaState };
 
-      newState[property] = !this.mediaState[property];
-
-      broadcastActions.dispatch('me/setMediaState', newState);
-    },
-
-    /**
-     * Grid button handler
-     * @returns {void}
-     */
-    gridHandler() {
-      console.log('grid click');
-    },
-
-    /**
-     * Disconnect button handler
-     * @returns {void}
-     */
-    disconnectHandler() {
-      broadcastActions.dispatch('unselectChannel', this.selectedChannel.id);
-    },
-  },
-
-  mounted() {
-    const bc = new BroadcastChannel('test');
-
-    bc.onmessage = (val) => {
-      console.log(val);
-    };
   },
 };
 </script>
