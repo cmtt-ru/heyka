@@ -62,5 +62,14 @@
     "support": {
       "tellerror": "Report an error"
     }
+  },
+  "popover": {
+    "workspace": {
+      "invite": "Invite members",
+      "manage": "Manager workspace",
+      "new": "New workspace",
+      "settings": "Settings",
+      "quit": "Quit Heyka"
+    }
   }
 }

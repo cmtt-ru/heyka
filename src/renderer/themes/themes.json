@@ -29,6 +29,7 @@
                 "--item-bg-hover": "#F2F2F2",
                 "--item-bg-active": "#FFFFFF",
                 "--item-bg-multi-pick": "#F4FBF7",
+                "--shadow-10": "rgba(0,0,0,0.10)",
                 "--shadow-15": "rgba(0,0,0,0.15)",
                 "--shadow-20": "rgba(0,0,0,0.20)"
             },
