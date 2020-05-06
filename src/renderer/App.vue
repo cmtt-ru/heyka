@@ -17,8 +17,7 @@ export default {
       ajax.onload = function (e) {
         const div = document.createElement('div');
 
-        div.style.position = 'absolute';
-        div.style.pointerEvents = 'none';
+        div.style.display = 'none';
         div.innerHTML = ajax.responseText;
         document.body.insertBefore(div, document.body.childNodes[0]);
       };

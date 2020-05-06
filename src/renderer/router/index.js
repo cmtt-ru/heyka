@@ -46,8 +46,12 @@ const PushWindowPoke = () => import(/* webpackChunkName: "push" */ '@views/PushW
  * Call window views
  * @constructor
  */
+
 const CallWindow = () => import(/* webpackChunkName: "call" */ '@views/CallWindow');
-const CallWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallWindow/Call');
+const CallWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallWindow/Grid');
+
+const CallOverlayWindow = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow');
+const CallOverlayWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow/Call');
 
 Vue.use(VueRouter);
 
@@ -198,6 +202,17 @@ const routes = [
   /**
    * Call window routes
    */
+  {
+    path: '/call-overlay',
+    component: CallOverlayWindow,
+    children: [
+      {
+        path: '',
+        component: CallOverlayWindowMain,
+      },
+    ],
+  },
+
   {
     path: '/call-window',
     component: CallWindow,

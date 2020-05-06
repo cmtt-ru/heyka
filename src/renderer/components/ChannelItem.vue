@@ -137,7 +137,6 @@ export default {
   &__more
     color var(--icon-1)
     margin 0 4px
-    align-self flex-start
 
   &__users
     height 12px

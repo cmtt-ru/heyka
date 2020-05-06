@@ -1,9 +1,7 @@
 <template>
   <div class="call-window">
 
-    <div class="call-window__media" v-if="mediaState.screen">
-      <video></video>
-    </div>
+    <div>Future grid with avatars</div>
 
     <call-controls :row="mediaState.screen"></call-controls>
   </div>
