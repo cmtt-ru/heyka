@@ -43,6 +43,7 @@ if (debug) {
 
       return !ignoreList.includes(mutation.type);
     },
+    logActions: false,
   }));
 }
 

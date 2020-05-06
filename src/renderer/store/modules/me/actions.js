@@ -31,7 +31,12 @@ export default {
     const selectedChannelId = getters['getSelectedChannelId'];
 
     commit('SET_MEDIA_STATE', mediaState);
-    meStore.set('mediaState', mediaState);
+
+    try {
+      meStore.set('mediaState', mediaState);
+    } catch (err) {
+      console.log(err);
+    }
 
     callWindow.setMediaSharingMode(mediaState.screen);
 

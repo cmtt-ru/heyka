@@ -7,7 +7,7 @@ const WINDOW_SIZES = {
   },
   mediaSharing: {
     width: 340,
-    height: 265,
+    height: 222,
   },
 };
 
@@ -29,7 +29,7 @@ class CallWindow {
   show() {
     if (this.window === null) {
       this.window = WindowManager.create({
-        route: '/call-window',
+        route: '/call-overlay',
         position: 'bottomRight',
         window: {
           ...WINDOW_SIZES['default'],
