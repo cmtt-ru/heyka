@@ -10,6 +10,7 @@ import mediaDevices from '@classes/mediaDevices';
 import createMutationsSharer from 'vuex-shared-mutations';
 import Store from 'electron-store';
 import broadcastActions from '@classes/broadcastActions';
+import isMainWindow from '@shared/WindowManager/isMainWindow';
 
 const stateStore = new Store({
   name: 'state',
@@ -85,8 +86,10 @@ mediaDevices.on('bluetooth-microphone', (microphone) => {
 /**
  * Listen for broadcasted actions and dispatch them
  */
-broadcastActions.on('action', ({ action, data }) => {
-  store.dispatch(action, data);
-});
+if (isMainWindow()) {
+  broadcastActions.on('action', ({ action, data }) => {
+    store.dispatch(action, data);
+  });
+}
 
 export default store;

@@ -9,7 +9,7 @@ import { v4 as uuidV4 } from 'uuid';
 // const isLinux = process.platform === 'linux';
 // const isWin = !isMac && !isLinux;
 
-const DEFAULT_WINDOW_OPTIONS = {
+const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   width: 780,
   height: 560,
   x: 0,
@@ -27,7 +27,7 @@ const DEFAULT_WINDOW_OPTIONS = {
     nodeIntegration: true,
     webSecurity: false,
   },
-};
+});
 
 /**
  * A class that handles all windows
@@ -87,6 +87,10 @@ class WindowManager {
       event.returnValue = true;
     });
 
+    ipcMain.on('window-manager-is-main-window', (event, options) => {
+      event.returnValue = this.mainWindowId === options.id;
+    });
+
     ipcMain.on('window-manager-move-me', (event, options) => {
       // console.log('window-manager-show', options);
       const { x, y } = screen.getCursorScreenPoint();
@@ -124,12 +128,20 @@ class WindowManager {
    * @returns {string} ID of created window
    */
   createWindow(options) {
+    const windowId = uuidV4();
+
     if (options.template && templates[options.template]) {
       options.window = { ...templates[options.template] };
     }
-    const newWindow = new BrowserWindow(Object.assign({}, DEFAULT_WINDOW_OPTIONS, options.window || {}));
 
-    const windowId = uuidV4();
+    const windowOptions = {
+      ...DEFAULT_WINDOW_OPTIONS,
+      ...options.window || {},
+    };
+
+    windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
+
+    const newWindow = new BrowserWindow(windowOptions);
 
     this.windows[windowId] = newWindow;
 
@@ -272,8 +284,6 @@ class WindowManager {
    */
   setMainWindowId(windowId) {
     this.mainWindowId = windowId;
-
-    console.log(this.windows[this.mainWindowId].getSize());
   }
 
   /**
