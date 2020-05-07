@@ -1,5 +1,4 @@
 import { ipcMain, BrowserWindow } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Positioner from './Positioner';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
