@@ -12,7 +12,7 @@ export default {
     loadSvgSprite() {
       const ajax = new XMLHttpRequest();
 
-      ajax.open('GET', 'img/icons.svg', true);
+      ajax.open('GET', '/img/icons.svg', true);
       ajax.send();
       ajax.onload = function (e) {
         const div = document.createElement('div');
