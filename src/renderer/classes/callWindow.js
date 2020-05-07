@@ -66,7 +66,7 @@ class CallWindow {
         window: {
           width: 500,
           height: 500,
-          alwaysOnTop: true,
+          // alwaysOnTop: true,
           backgroundColor: '#000',
         },
         onClose: () => {
