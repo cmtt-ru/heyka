@@ -24,7 +24,7 @@ const DEFAULT_WINDOW_OPTIONS = {
   skipTaskBar: true,
   webPreferences: {
     nodeIntegration: true,
-    webSecurity: false,
+    webSecurity: true,
   },
 };
 
@@ -125,7 +125,6 @@ class WindowManager {
       //   newWindow.webContents.openDevTools();
       // }
     } else {
-      createProtocol('heyka');
       newWindow.loadURL(prodUrl);
     }
 
