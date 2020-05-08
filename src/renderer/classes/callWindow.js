@@ -21,6 +21,7 @@ class CallWindow {
   constructor() {
     this.overlayWindow = null;
     this.sharingWindow = null;
+    this.gridWindow = null;
   }
 
   /**
@@ -38,6 +39,7 @@ class CallWindow {
           backgroundColor: '#000',
         },
         onClose: () => {
+          console.log('closing: ', this.overlayWindow);
           this.overlayWindow = null;
         },
       });
@@ -51,7 +53,9 @@ class CallWindow {
    * @returns {void}
    */
   hideOverlay() {
-    this.overlayWindow.hide();
+    if (this.overlayWindow) {
+      this.overlayWindow.hide();
+    }
   }
 
   /**
@@ -83,7 +87,49 @@ class CallWindow {
    * @returns {void}
    */
   hideSharing() {
-    this.sharingWindow.hide();
+    if (this.sharingWindow) {
+      this.sharingWindow.hide();
+    }
+  }
+
+  /**
+   * Show grid (main) window
+   * @returns {void}
+   */
+  showGrid() {
+    if (this.gridWindow === null) {
+      this.gridWindow = WindowManager.create({
+        route: '/call-window',
+        position: 'center',
+        template: 'call',
+        alwaysOnTop: true,
+        onClose: () => {
+          this.gridWindow = null;
+        },
+      });
+    } else {
+      this.gridWindow.showInactive();
+    }
+  }
+
+  /**
+   * Hide grid (main) window
+   * @returns {void}
+   */
+  hideGrid() {
+    if (this.gridWindow) {
+      this.gridWindow.hide();
+    }
+  }
+
+  /**
+   * Hide ALL call windows
+   * @returns {void}
+   */
+  hideAll() {
+    this.hideGrid();
+    this.hideSharing();
+    this.hideOverlay();
   }
 
   /**
