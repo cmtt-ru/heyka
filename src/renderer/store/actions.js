@@ -93,7 +93,16 @@ export default {
     });
     commit('me/SET_CHANNEL_ID', null);
 
+    callWindow.hideAll();
+  },
+
+  /**
+   * Open Grid (main call window)
+   * @returns {void}
+   */
+  async openGrid() {
     callWindow.hideOverlay();
+    callWindow.showGrid();
   },
 
   /**
