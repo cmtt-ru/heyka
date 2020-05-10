@@ -13,6 +13,7 @@
       class="call-buttons__button"
       v-if="buttons.includes('speakers')"
       :type="7"
+      :size="size"
       :icon="buttonIcons.speakers"
       @click.native="switchProp('speakers')"
     />
@@ -32,7 +33,7 @@
       :type="7"
       :size="size"
       icon="grid"
-      @click="gridHandler"
+      @click="gridHandler()"
     />
 
     <ui-button
@@ -130,7 +131,7 @@ export default {
      * @returns {void}
      */
     gridHandler() {
-      console.log('grid click');
+      broadcastActions.dispatch('openGrid');
     },
 
     /**
