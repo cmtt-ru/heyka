@@ -14,10 +14,10 @@
     <div class="sharing-window__content">
 
       <div class="sharing-window__options">
-        <ui-button class="l-mr-8" :type="3" size="small">Screen</ui-button>
-        <ui-button class="l-mr-8" :type="3" size="small">Camera</ui-button>
+        <ui-button class="l-mr-8" :type="3" size="small" @click="updateSources('screen')">Screen</ui-button>
+        <ui-button class="l-mr-8" :type="3" size="small" @click="handleCamera">Camera</ui-button>
         <ui-button class="l-mr-8" :type="3" size="small">Screen and camera</ui-button>
-        <ui-button class="l-mr-8" :type="3" size="small">Window</ui-button>
+        <ui-button class="l-mr-8" :type="3" size="small" @click="updateSources('window')">Window</ui-button>
       </div>
 
       <div class="sharing-window__sources">
@@ -30,7 +30,7 @@
         >
       </div>
 
-      <video ref="video"></video>
+      <video ref="video"/>
 
     </div>
 
@@ -56,7 +56,7 @@
 
 <script>
 import UiButton from '@components/UiButton';
-import { desktopCapturer } from 'electron';
+import mediaCapturer from '@classes/mediaCapturer';
 
 export default {
   components: {
@@ -71,33 +71,24 @@ export default {
   },
 
   methods: {
-    async updateSources() {
-      this.sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
+    async updateSources(type) {
+      this.sources = await mediaCapturer.getSources(type);
     },
 
     async handleSource(source) {
       this.selectedSource = source;
 
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: 'desktop',
-              chromeMediaSourceId: source.id,
-              minWidth: 1280,
-              maxWidth: 1280,
-              minHeight: 720,
-              maxHeight: 720,
-            },
-          },
-        });
+      const stream = await mediaCapturer.getStream(source.id);
 
-        this.$refs.video.srcObject = stream;
-        this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
-      } catch (e) {
-        console.log(e);
-      }
+      this.$refs.video.srcObject = stream;
+      this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
+    },
+
+    async handleCamera() {
+      const stream = await mediaCapturer.getCameraStream();
+
+      this.$refs.video.srcObject = stream;
+      this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
     },
   },
 
@@ -112,7 +103,7 @@ export default {
   },
 
   async mounted() {
-    this.updateSources();
+    this.updateSources('screen');
   },
 };
 </script>
