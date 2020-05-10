@@ -20,5 +20,10 @@
   "push": {
     "width": 400,
     "height": 100
+  },
+  "call": {
+    "width": 1500,
+    "height": 1000,
+    "frame": true
   }
 }
