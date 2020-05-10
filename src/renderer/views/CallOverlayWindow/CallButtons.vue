@@ -6,7 +6,7 @@
       :type="7"
       :size="size"
       icon="cast"
-      @click="switchProp('screen')"
+      @click="sharingHandler"
     />
 
     <ui-button
@@ -140,6 +140,14 @@ export default {
      */
     disconnectHandler() {
       broadcastActions.dispatch('unselectChannel', this.$store.getters['me/getSelectedChannelId']);
+    },
+
+    /**
+     * Sharing button handler
+     * @returns {void}
+     */
+    sharingHandler() {
+      broadcastActions.dispatch('openSharingWindow');
     },
   },
 };
