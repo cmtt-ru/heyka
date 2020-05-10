@@ -115,4 +115,12 @@ export default {
     commit('SET_SOCKET_CONNECTED', value);
   },
 
+  /**
+   * Open Grid (main call window)
+   * @returns {void}
+   */
+  async openSharingWindow() {
+    callWindow.showSharing();
+  },
+
 };
