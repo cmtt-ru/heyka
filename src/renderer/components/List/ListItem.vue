@@ -1,25 +1,16 @@
 <template>
-    <div
-      class="list-item"
-      :class="{'list-item--selected': selected}"
-      v-if="matchesFilter"
-      @click="clickHandler()"
-    >
-    <slot></slot>
-    </div>
+  <div
+    v-if="matchesFilter"
+    class="list-item"
+    :class="{'list-item--selected': selected}"
+    @click="clickHandler()"
+  >
+    <slot />
+  </div>
 </template>
 
 <script>
 export default {
-  data: function () {
-    return {
-      /**
-     * Whether item is selected (for multi pick, eg. when sending invites to multiple people)
-     */
-      selected: false,
-      parent: this.$parent,
-    };
-  },
 
   props: {
     /**
@@ -29,6 +20,15 @@ export default {
       type: String,
       default: '',
     },
+  },
+  data: function () {
+    return {
+      /**
+     * Whether item is selected (for multi pick, eg. when sending invites to multiple people)
+     */
+      selected: false,
+      parent: this.$parent,
+    };
   },
   computed: {
     /**

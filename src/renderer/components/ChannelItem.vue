@@ -1,31 +1,55 @@
 <template>
-    <router-link :to="'/main-window/workspace/channel/'+channel.id" class="channel">
-        <svg-icon class="channel__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"/>
+  <router-link
+    :to="'/main-window/workspace/channel/'+channel.id"
+    class="channel"
+  >
+    <svg-icon
+      class="channel__type"
+      :name="dynamicIcon"
+      size="medium"
+      stroke="var(--icon-1)"
+    />
 
-        <div class="channel__content">
-
-            <div class="channel__name-wrapper">
-              <div v-textfade="channel.name" class="channel__name">{{channel.name}}</div>
-              <ui-button
-                v-show="isSelected"
-                :type="7"
-                class="channel__more"
-                size="small"
-                height="16"
-                @click.native="$emit('more')"
-                icon="more"/>
-            </div>
-
-            <div v-show="channel.users.length" class="channel__users">
-                <div class="channel__users__avatars">
-                  <avatar v-for="person in users" :key="person.name" :image="person.avatar" :size="12"/>
-                </div>
-                <div v-if="extraUsers" class="channel__users__more">+{{extraUsers}}</div>
-            </div>
-
+    <div class="channel__content">
+      <div class="channel__name-wrapper">
+        <div
+          v-textfade="channel.name"
+          class="channel__name"
+        >
+          {{ channel.name }}
         </div>
+        <ui-button
+          v-show="isSelected"
+          :type="7"
+          class="channel__more"
+          size="small"
+          height="16"
+          icon="more"
+          @click.native="$emit('more')"
+        />
+      </div>
 
-    </router-link>
+      <div
+        v-show="channel.users.length"
+        class="channel__users"
+      >
+        <div class="channel__users__avatars">
+          <avatar
+            v-for="person in users"
+            :key="person.name"
+            :image="person.avatar"
+            :size="12"
+          />
+        </div>
+        <div
+          v-if="extraUsers"
+          class="channel__users__more"
+        >
+          +{{ extraUsers }}
+        </div>
+      </div>
+    </div>
+  </router-link>
 </template>
 
 <script>

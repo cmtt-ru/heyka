@@ -1,34 +1,44 @@
 <template>
-<div
-  v-click-outside="hide"
-  class="dropdown"
-  :class="{'dropdown--disabled': disabled}"
->
-  <div @click="headerClickHandler()" class="dropdown__header">
-    <div v-textfade="selectedText">{{selectedText}}</div>
-    <svg-icon
-      class="dropdown__header__icon"
-      name="arrow-down"
-    ></svg-icon>
-  </div>
-
-  <div class="dropdown__list" :class="{'dropdown__list--visible': visible}">
+  <div
+    v-click-outside="hide"
+    class="dropdown"
+    :class="{'dropdown--disabled': disabled}"
+  >
     <div
-      v-for="item in data" :key="item.value"
-      @click="variantClickHandler(item)"
-      class="dropdown__item"
+      class="dropdown__header"
+      @click="headerClickHandler()"
     >
-      <div v-textfade>{{item.name}}</div>
+      <div v-textfade="selectedText">
+        {{ selectedText }}
+      </div>
       <svg-icon
+        class="dropdown__header__icon"
+        name="arrow-down"
+      />
+    </div>
+
+    <div
+      class="dropdown__list"
+      :class="{'dropdown__list--visible': visible}"
+    >
+      <div
+        v-for="item in data"
+        :key="item.value"
+        class="dropdown__item"
+        @click="variantClickHandler(item)"
+      >
+        <div v-textfade>
+          {{ item.name }}
+        </div>
+        <svg-icon
           v-if="item == selectedItem"
           class="dropdown__item__icon"
           name="check"
           size="medium"
-        ></svg-icon>
+        />
+      </div>
     </div>
   </div>
-
-</div>
 </template>
 
 <script>
@@ -105,6 +115,12 @@ export default {
     },
   },
 
+  mounted() {
+    /* Store locally refs to sropdown and icon elements, we need them on every 'open' event */
+    this.listNode = this.$el.querySelector('.dropdown__list');
+    this.arrowNode = this.$el.querySelector('.dropdown__header__icon');
+  },
+
   methods: {
     /**
      * We clicked header (open/close toggle)
@@ -168,12 +184,6 @@ export default {
     hide() {
       this.visible = false;
     },
-  },
-
-  mounted() {
-    /* Store locally refs to sropdown and icon elements, we need them on every 'open' event */
-    this.listNode = this.$el.querySelector('.dropdown__list');
-    this.arrowNode = this.$el.querySelector('.dropdown__header__icon');
   },
 
 };

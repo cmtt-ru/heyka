@@ -4,16 +4,17 @@
     class="notification-wrapper"
     :class="{'notification-wrapper--modal': isModal}"
   >
-      <notification
-      @close="closeHandler"
+    <notification
       :id="notif.id"
-      :lifespan="notif.lifespan"
-      :infinite="notif.infinite"
-      :preventSwipe="notif.preventSwipe"
-      :data="notif.data"
-
       v-for="notif in notifications"
-      :key="notif.id"/>
+      :lifespan="notif.lifespan"
+      :key="notif.id"
+      :infinite="notif.infinite"
+      :prevent-swipe="notif.preventSwipe"
+
+      :data="notif.data"
+      @close="closeHandler"
+    />
   </div>
 </template>
 

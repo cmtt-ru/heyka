@@ -1,7 +1,7 @@
 <template>
-    <div class="list-view">
-        <slot></slot>
-    </div>
+  <div class="list-view">
+    <slot />
+  </div>
 </template>
 
 <script>
@@ -23,6 +23,10 @@ export default {
     },
   },
 
+  mounted() {
+    this.$on('selected', this.selectedChildren);
+  },
+
   methods: {
     /**
      * Gather all list-items that have prop "selected"
@@ -33,10 +37,6 @@ export default {
 
       this.$emit('multipick', selectedArray);
     },
-  },
-
-  mounted() {
-    this.$on('selected', this.selectedChildren);
   },
 
 };

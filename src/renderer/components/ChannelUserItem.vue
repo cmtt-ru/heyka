@@ -1,32 +1,42 @@
 <template>
-    <div class="user" v-popover.mouse.click="{name: 'UserInChannel', data: {userId: user.id}}">
+  <div
+    v-popover.mouse.click="{name: 'UserInChannel', data: {userId: user.id}}"
+    class="user"
+  >
+    <avatar
+      class="user__avatar"
+      :image="user.avatar"
+      :size="24"
+      :mic="user.microphone"
+      :onair="user.speaking"
+    />
 
-        <avatar
-          class="user__avatar"
-          :image="user.avatar"
-          :size="24"
-          :mic="user.microphone"
-          :onair="user.speaking"/>
-
-        <div v-textfade :key="user.name" class="user__name">{{user.name}}</div>
-
-        <div class="user__statuses">
-            <svg-icon
-                v-for="icon in iconArray"
-                :key="icon"
-                class="user__statuses__icon"
-                :name="icon"
-                size="small"/>
-        </div>
-
-        <ui-button
-            v-if="user.screen"
-            class="user__sharing"
-            :type="7"
-            size="small"
-            icon="cast"/>
-
+    <div
+      :key="user.name"
+      v-textfade
+      class="user__name"
+    >
+      {{ user.name }}
     </div>
+
+    <div class="user__statuses">
+      <svg-icon
+        v-for="icon in iconArray"
+        :key="icon"
+        class="user__statuses__icon"
+        :name="icon"
+        size="small"
+      />
+    </div>
+
+    <ui-button
+      v-if="user.screen"
+      class="user__sharing"
+      :type="7"
+      size="small"
+      icon="cast"
+    />
+  </div>
 </template>
 
 <script>

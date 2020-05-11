@@ -1,35 +1,83 @@
 <template>
   <div>
     <form name="styleguideform">
-      <h3 class="l-mt-24">Switch</h3>
+      <h3 class="l-mt-24">
+        Switch
+      </h3>
       <br>
-      <ui-switch class="ui-switch" v-model="formData.themeToggle" text="Тёмная тема"/>
-      <ui-switch class="ui-switch" v-model="formData.defaultEnabledToggle"  text="Я изначально включён"/>
-      <ui-switch class="ui-switch" v-model="formData.disabledToggle" disabled text="А я не работаю"/>
+      <ui-switch
+        v-model="formData.themeToggle"
+        class="ui-switch"
+        text="Тёмная тема"
+      />
+      <ui-switch
+        v-model="formData.defaultEnabledToggle"
+        class="ui-switch"
+        text="Я изначально включён"
+      />
+      <ui-switch
+        v-model="formData.disabledToggle"
+        class="ui-switch"
+        disabled
+        text="А я не работаю"
+      />
       <br>
 
-      <h3 class="l-mt-24">Select</h3>
+      <h3 class="l-mt-24">
+        Select
+      </h3>
       <br>
-      <ui-select v-model="formData.carFirstSelect" :data="carDropdownData" text="Выбрать машину"/>
+      <ui-select
+        v-model="formData.carFirstSelect"
+        :data="carDropdownData"
+        text="Выбрать машину"
+      />
       <br>
-      <ui-select v-model="formData.carSecondSelect" :data="carDropdownData"/>
+      <ui-select
+        v-model="formData.carSecondSelect"
+        :data="carDropdownData"
+      />
       <br>
-      <ui-select v-model="formData.carDisabledSelect" disabled :data="carDropdownData"/>
+      <ui-select
+        v-model="formData.carDisabledSelect"
+        disabled
+        :data="carDropdownData"
+      />
       <br>
 
-      <h3 class="l-mt-24">Input</h3>
+      <h3 class="l-mt-24">
+        Input
+      </h3>
       <br>
-      <ui-input v-model="formData.nameText" placeholder="Введите имя"/>
+      <ui-input
+        v-model="formData.nameText"
+        placeholder="Введите имя"
+      />
       <br>
-      <ui-input v-model="formData.settingsText" icon="settings"/>
+      <ui-input
+        v-model="formData.settingsText"
+        icon="settings"
+      />
       <br>
-      <ui-input v-model="formData.disabledText" disabled/>
+      <ui-input
+        v-model="formData.disabledText"
+        disabled
+      />
       <br>
-      <editable-list v-model="formData.deletableText" addText="Add email" placeholder="Меня можно удалить"/>
+      <editable-list
+        v-model="formData.deletableText"
+        add-text="Add email"
+        placeholder="Меня можно удалить"
+      />
       <br>
       <br>
       <br>
-      <ui-button @click.native="submit()" :type="5">Submit</ui-button>
+      <ui-button
+        :type="5"
+        @click.native="submit()"
+      >
+        Submit
+      </ui-button>
     </form>
   </div>
 </template>

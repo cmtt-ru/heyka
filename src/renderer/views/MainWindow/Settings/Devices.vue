@@ -1,19 +1,41 @@
 <template>
   <div class="settings-page">
-
-    <div class="settings__label">{{texts.speakersLabel}}</div>
+    <div class="settings__label">
+      {{ texts.speakersLabel }}
+    </div>
     <div class="setting-with-icon">
-      <ui-select v-model="selectedDevices.speaker" :data="devices.speakers"/>
-      <ui-button :type="7" size="medium" height="32" icon="sound" @click.native="playTestSound"/>
+      <ui-select
+        v-model="selectedDevices.speaker"
+        :data="devices.speakers"
+      />
+      <ui-button
+        :type="7"
+        size="medium"
+        height="32"
+        icon="sound"
+        @click.native="playTestSound"
+      />
     </div>
 
-    <div class="settings__label">{{texts.micLabel}}</div>
-    <ui-select v-model="selectedDevices.microphone" :data="devices.microphones"/>
-    <progress-bar class="l-mt-8" :value="microphoneVolume"></progress-bar>
+    <div class="settings__label">
+      {{ texts.micLabel }}
+    </div>
+    <ui-select
+      v-model="selectedDevices.microphone"
+      :data="devices.microphones"
+    />
+    <progress-bar
+      class="l-mt-8"
+      :value="microphoneVolume"
+    />
 
-    <div class="settings__label">{{texts.cameraLabel}}</div>
-    <ui-select v-model="selectedDevices.camera" :data="devices.cameras"/>
-
+    <div class="settings__label">
+      {{ texts.cameraLabel }}
+    </div>
+    <ui-select
+      v-model="selectedDevices.camera"
+      :data="devices.cameras"
+    />
   </div>
 </template>
 
@@ -71,6 +93,24 @@ export default {
     },
   },
 
+  watch: {
+    selectedDevices: {
+      handler() {
+        this.$store.dispatch('app/setSelectedDevices', { ...this.selectedDevices });
+        this.changeDevice();
+      },
+      deep: true,
+    },
+  },
+
+  mounted() {
+    this.changeDevice();
+  },
+
+  destroyed() {
+    this.destroyMediaStream();
+  },
+
   methods: {
     /**
      * Play test sound
@@ -114,24 +154,6 @@ export default {
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
       }
-    },
-  },
-
-  mounted() {
-    this.changeDevice();
-  },
-
-  destroyed() {
-    this.destroyMediaStream();
-  },
-
-  watch: {
-    selectedDevices: {
-      handler() {
-        this.$store.dispatch('app/setSelectedDevices', { ...this.selectedDevices });
-        this.changeDevice();
-      },
-      deep: true,
     },
   },
 };

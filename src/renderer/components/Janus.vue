@@ -1,6 +1,10 @@
 <template>
   <div>
-    <audio ref="audio" autoplay muted/>
+    <audio
+      ref="audio"
+      autoplay
+      muted
+    />
   </div>
 </template>
 
@@ -31,6 +35,79 @@ export default {
       camera: state => state.mediaState.camera,
     }),
     ...mapState([ 'isSocketConnected' ]),
+  },
+  watch: {
+    /**
+     * Reacts on channel is changed
+     * @param {string} id New channel id
+     * @param {string} oldId Previous channel id
+     * @returns {nothing}
+     */
+    selectedChannelId(id, oldId) {
+      if (id === null || id === '') {
+        this.unselectChannel();
+
+        return this.log('Channel is deselected');
+      }
+
+      if (oldId === null || oldId === '') {
+        this.selectChannel();
+
+        return this.log('Channel is selected for the first time');
+      }
+
+      this.unselectChannel();
+      this.selectChannel();
+    },
+
+    /**
+     * Reacts on microphone state is changed
+     * @param {boolean} state Is microphone enabled
+     * @returns {undefined}
+     */
+    microphone(state) {
+      if (!this.janusWrapper) {
+        return;
+      }
+      this.janusWrapper.setMuting(!state);
+    },
+
+    /**
+     * Reacts on speakers state is changed
+     * @param {boolean} state Is speakers enabled
+     * @returns {undefined}
+     */
+    speakers(state) {
+      this.$refs.audio.muted = !state;
+    },
+
+    isSocketConnected(value) {
+      const disconnectedReactionDelay = 1000; // milliseconds
+      const isChannelSelected = this.selectedChannelId !== '' && this.selectedChannelId !== null;
+
+      if (!isChannelSelected) {
+        return;
+      }
+
+      if (!value) {
+        if (this.socketDisconnectedDelay) {
+          clearTimeout(this.socketDisconnectedDelay);
+          this.socketDisconnectedDelay = null;
+        }
+        this.socketDisconnectedDelay = setTimeout(() => {
+          this.onSocketDisconnected();
+        }, disconnectedReactionDelay);
+      } else {
+        if (this.socketDisconnectedDelay) {
+          clearTimeout(this.socketDisconnectedDelay);
+          this.socketDisconnectedDelay = null;
+        }
+
+        if (!this.janusWrapper) {
+          this.selectChannel();
+        }
+      }
+    },
   },
   async created() {
     await JanusWrapper.init();
@@ -160,79 +237,6 @@ export default {
      */
     log() {
       console.log('JANUS.VUE: ', ...arguments);
-    },
-  },
-  watch: {
-    /**
-     * Reacts on channel is changed
-     * @param {string} id New channel id
-     * @param {string} oldId Previous channel id
-     * @returns {nothing}
-     */
-    selectedChannelId(id, oldId) {
-      if (id === null || id === '') {
-        this.unselectChannel();
-
-        return this.log('Channel is deselected');
-      }
-
-      if (oldId === null || oldId === '') {
-        this.selectChannel();
-
-        return this.log('Channel is selected for the first time');
-      }
-
-      this.unselectChannel();
-      this.selectChannel();
-    },
-
-    /**
-     * Reacts on microphone state is changed
-     * @param {boolean} state Is microphone enabled
-     * @returns {undefined}
-     */
-    microphone(state) {
-      if (!this.janusWrapper) {
-        return;
-      }
-      this.janusWrapper.setMuting(!state);
-    },
-
-    /**
-     * Reacts on speakers state is changed
-     * @param {boolean} state Is speakers enabled
-     * @returns {undefined}
-     */
-    speakers(state) {
-      this.$refs.audio.muted = !state;
-    },
-
-    isSocketConnected(value) {
-      const disconnectedReactionDelay = 1000; // milliseconds
-      const isChannelSelected = this.selectedChannelId !== '' && this.selectedChannelId !== null;
-
-      if (!isChannelSelected) {
-        return;
-      }
-
-      if (!value) {
-        if (this.socketDisconnectedDelay) {
-          clearTimeout(this.socketDisconnectedDelay);
-          this.socketDisconnectedDelay = null;
-        }
-        this.socketDisconnectedDelay = setTimeout(() => {
-          this.onSocketDisconnected();
-        }, disconnectedReactionDelay);
-      } else {
-        if (this.socketDisconnectedDelay) {
-          clearTimeout(this.socketDisconnectedDelay);
-          this.socketDisconnectedDelay = null;
-        }
-
-        if (!this.janusWrapper) {
-          this.selectChannel();
-        }
-      }
     },
   },
 };

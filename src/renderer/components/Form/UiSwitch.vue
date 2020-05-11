@@ -1,12 +1,20 @@
 <template>
-<div
- class="switch"
-:class="{'switch--disabled': disabled}"
-@click="ClickHandler()"
->
-  <div v-textfade="text" class="switch__text">{{text}}</div>
-  <div class="switch__toggle" :class="{'switch__toggle--checked': value}"></div>
-</div>
+  <div
+    class="switch"
+    :class="{'switch--disabled': disabled}"
+    @click="ClickHandler()"
+  >
+    <div
+      v-textfade="text"
+      class="switch__text"
+    >
+      {{ text }}
+    </div>
+    <div
+      class="switch__toggle"
+      :class="{'switch__toggle--checked': value}"
+    />
+  </div>
 </template>
 
 <script>

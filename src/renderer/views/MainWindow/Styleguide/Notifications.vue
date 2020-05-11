@@ -1,18 +1,48 @@
 <template>
   <div>
+    <h1 class="l-mt-12">
+      Notifications
+    </h1>
 
-    <h1 class="l-mt-12">Notifications</h1>
+    <ui-button
+      :type="1"
+      class="l-mt-12"
+      @click="simpleNotif()"
+    >
+      Обычное уведомление
+    </ui-button>
 
-      <ui-button :type="1" class="l-mt-12" @click="simpleNotif()">Обычное уведомление</ui-button>
+    <ui-button
+      :type="1"
+      class="l-mt-12"
+      @click="shortNotif()"
+    >
+      Уведомление на 5 секунд
+    </ui-button>
 
-      <ui-button :type="1" class="l-mt-12" @click="shortNotif()">Уведомление на 5 секунд</ui-button>
+    <ui-button
+      :type="2"
+      class="l-mt-12"
+      @click="infiniteNotif()"
+    >
+      Бесконечное уведомление
+    </ui-button>
 
-      <ui-button :type="2" class="l-mt-12" @click="infiniteNotif()">Бесконечное уведомление</ui-button>
+    <ui-button
+      :type="3"
+      class="l-mt-12"
+      @click="notSwipableNotif()"
+    >
+      Нельзя смахнуть
+    </ui-button>
 
-      <ui-button :type="3" class="l-mt-12" @click="notSwipableNotif()">Нельзя смахнуть</ui-button>
-
-      <ui-button :type="12" class="l-mt-12" @click="modalNotif()">Модальное уведомление</ui-button>
-
+    <ui-button
+      :type="12"
+      class="l-mt-12"
+      @click="modalNotif()"
+    >
+      Модальное уведомление
+    </ui-button>
   </div>
 </template>
 

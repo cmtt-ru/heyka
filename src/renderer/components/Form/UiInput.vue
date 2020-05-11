@@ -8,17 +8,16 @@
       class="input__icon"
       :name="icon"
       size="medium"
-    ></svg-icon>
+    />
 
     <input
+      v-model="myValue"
       class="input"
       :class="{'input--with-icon': icon}"
       :type="type"
       :placeholder="placeholder"
-      v-model="myValue"
       @input="updateText()"
     >
-
   </div>
 </template>
 

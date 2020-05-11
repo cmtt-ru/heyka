@@ -1,9 +1,8 @@
 <template>
-    <div>
-      <div>Poke!</div>
-      <div>{{message}}</div>
-    </div>
-
+  <div>
+    <div>Poke!</div>
+    <div>{{ message }}</div>
+  </div>
 </template>
 
 <script>
@@ -15,10 +14,10 @@ export default {
     };
   },
 
-  methods: {
+  mounted() {
   },
 
-  mounted() {
+  methods: {
   },
 };
 </script>

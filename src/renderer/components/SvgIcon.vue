@@ -8,9 +8,10 @@
     <title v-if="title">{{ title }}</title>
 
     <use
-    :style="{strokeWidth, stroke}"
-    :xlink:href="iconPath"
-    xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      :style="{strokeWidth, stroke}"
+      :xlink:href="iconPath"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+    />
 
   </svg>
 </template>
@@ -37,7 +38,7 @@ const ICON_SIZES = {
 };
 
 export default {
-  name: 'svg-icon',
+  name: 'SvgIcon',
 
   props: {
 

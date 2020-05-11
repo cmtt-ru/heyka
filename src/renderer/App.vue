@@ -1,12 +1,15 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
 require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
 export default {
+  created() {
+    this.loadSvgSprite();
+  },
 
   methods: {
     loadSvgSprite() {
@@ -23,9 +26,6 @@ export default {
         document.body.insertBefore(div, document.body.childNodes[0]);
       };
     },
-  },
-  created() {
-    this.loadSvgSprite();
   },
 };
 </script>
