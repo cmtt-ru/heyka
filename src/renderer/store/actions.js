@@ -117,11 +117,19 @@ export default {
   },
 
   /**
-   * Open Grid (main call window)
+   * Open sharing window
    * @returns {void}
    */
   async openSharingWindow() {
     callWindow.showSharing();
+  },
+
+  /**
+   * Close sharing window
+   * @returns {void}
+   */
+  async closeSharingWindow() {
+    callWindow.closeSharing();
   },
 
 };
