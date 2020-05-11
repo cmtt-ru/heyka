@@ -202,8 +202,9 @@ class Popover {
       };
 
       this.element.__clickOutsideHandler = event => {
-        if (!(this.element === event.target || this.element.contains(event.target))) {
+        if (!(this.instance.$el === event.target || this.instance.$el.contains(event.target))) {
           setTimeout(() => {
+            console.log('clicked outside:', event.target, this.instance.$el); //! a lot of detections! needs to be fixed
             this.show(false);
           }, TIMEOUT_BEFORE_DESTROY);
         }
