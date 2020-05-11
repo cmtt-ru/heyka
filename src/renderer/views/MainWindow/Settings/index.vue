@@ -1,42 +1,75 @@
 <template>
+  <layout>
+    <template #sidebar-header>
+      <div class="l-p-8 l-fw-m">
+        {{ texts.header }}
+      </div>
+    </template>
 
-    <layout>
-
-      <template v-slot:sidebar-header>
-        <div class="l-p-8 l-fw-m">
-          {{texts.header}}
+    <template #sidebar-body>
+      <div class="l-p-8">
+        <router-link
+          class="link"
+          :to="{name: 'settings'}"
+        >
+          {{ texts.general }}
+        </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'settings-devices'}"
+        >
+          {{ texts.devices }}
+        </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'settings-network'}"
+        >
+          {{ texts.network }}
+        </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'settings-about'}"
+        >
+          {{ texts.about }}
+        </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'settings-support'}"
+        >
+          {{ texts.support }}
+        </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'styleguide'}"
+        >
+          {{ texts.styleguide }}
+        </router-link>
+        <div class="app-info">
+          {{ prettyInfo }}
         </div>
-      </template>
+      </div>
+    </template>
 
-      <template v-slot:sidebar-body>
-        <div class="l-p-8">
-          <router-link class="link" :to="{name: 'settings'}">{{texts.general}}</router-link>
-          <router-link class="link" :to="{name: 'settings-devices'}">{{texts.devices}}</router-link>
-          <router-link class="link" :to="{name: 'settings-network'}">{{texts.network}}</router-link>
-          <router-link class="link" :to="{name: 'settings-about'}">{{texts.about}}</router-link>
-          <router-link class="link" :to="{name: 'settings-support'}">{{texts.support}}</router-link>
-          <router-link class="link" :to="{name: 'styleguide'}">{{texts.styleguide}}</router-link>
-          <div class="app-info">{{prettyInfo}}</div>
-        </div>
-      </template>
+    <template #content-body>
+      <div>
+        <router-link
+          class="close-strip"
+          :to="{name: 'workspace'}"
+        >
+          <ui-button
+            :type="7"
+            class="channel-info__more"
+            size="small"
+            icon="close"
+          />
+        </router-link>
 
-      <template v-slot:content-body>
         <div>
-          <router-link class="close-strip" :to="{name: 'workspace'}"><ui-button
-          :type="7"
-          class="channel-info__more"
-          size="small"
-          icon="close">
-          </ui-button></router-link>
-
-          <div>
-            <router-view/>
-          </div>
+          <router-view />
         </div>
-      </template>
-
-    </layout>
-
+      </div>
+    </template>
+  </layout>
 </template>
 
 <script>

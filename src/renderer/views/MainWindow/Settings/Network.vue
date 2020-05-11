@@ -1,9 +1,23 @@
 <template>
   <div class="settings-page">
-    <div class="privacy-text">{{ texts.transparency }}</div>
-    <textarea class="scroll scroll-vh" readonly cols="30" rows="10" v-model="privacyLogs"></textarea>
-    <div class="settings__label">{{ texts.googleLabel }}</div>
-    <ui-switch @input="save('Analytics', analytics)" v-model="analytics" :text="texts.googleSwitch"/>
+    <div class="privacy-text">
+      {{ texts.transparency }}
+    </div>
+    <textarea
+      v-model="privacyLogs"
+      class="scroll scroll-vh"
+      readonly
+      cols="30"
+      rows="10"
+    />
+    <div class="settings__label">
+      {{ texts.googleLabel }}
+    </div>
+    <ui-switch
+      v-model="analytics"
+      :text="texts.googleSwitch"
+      @input="save('Analytics', analytics)"
+    />
   </div>
 </template>
 

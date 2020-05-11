@@ -1,21 +1,34 @@
 <template>
-    <router-link :to="'/main-window/workspace/user/'+user.id" class="user" :class="{'user--offline': isOffline}">
+  <router-link
+    :to="'/main-window/workspace/user/'+user.id"
+    class="user"
+    :class="{'user--offline': isOffline}"
+  >
+    <avatar
+      class="user__avatar"
+      :image="user.avatar"
+      :status="isStrangeStatus"
+      :size="14"
+    />
 
-        <avatar class="user__avatar" :image="user.avatar" :status="isStrangeStatus" :size="14"></avatar>
+    <div
+      :key="user.name"
+      v-textfade
+      class="user__name"
+    >
+      {{ user.name }}
+    </div>
 
-        <div v-textfade :key="user.name" class="user__name">{{user.name}}</div>
-
-        <ui-button
-            v-show="isSelected"
-            :type="7"
-            class="user__more"
-            size="small"
-            height="16"
-            @click.native="$emit('more')"
-            icon="more">
-        </ui-button>
-
-    </router-link>
+    <ui-button
+      v-show="isSelected"
+      :type="7"
+      class="user__more"
+      size="small"
+      height="16"
+      icon="more"
+      @click.native="$emit('more')"
+    />
+  </router-link>
 </template>
 
 <script>

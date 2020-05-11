@@ -1,47 +1,88 @@
 <template>
-  <div id="sidebar_channel_anchor" class="l-p-8">
-
-    <div class="connected-channel" v-if="selectedChannel">
-       <channel-item @more="moreHandler()" :channel="selectedChannel"/>
+  <div
+    id="sidebar_channel_anchor"
+    class="l-p-8"
+  >
+    <div
+      v-if="selectedChannel"
+      class="connected-channel"
+    >
+      <channel-item
+        :channel="selectedChannel"
+        @more="moreHandler()"
+      />
     </div>
 
     <div class="channel-header">
-      <a href="#sidebar_channel_anchor" class="channel-header__label l-ml-4">{{texts.channelsHeader}}</a>
-      <ui-button :type="7" class="channel-header__add" @click.native="createChannelHandler" size="small" height="16" icon="add"></ui-button>
+      <a
+        href="#sidebar_channel_anchor"
+        class="channel-header__label l-ml-4"
+      >{{ texts.channelsHeader }}</a>
+      <ui-button
+        :type="7"
+        class="channel-header__add"
+        size="small"
+        height="16"
+        icon="add"
+        @click.native="createChannelHandler"
+      />
     </div>
 
-    <list :filterBy="''" v-if="sortedChannels.length">
+    <list
+      v-if="sortedChannels.length"
+      :filter-by="''"
+    >
       <list-item
-        @dblclick.native="dbclickChannelHandler(channel)"
         v-for="channel in sortedChannels"
         :key="channel.name"
-        :filterKey="channel.name"
+        :filter-key="channel.name"
         button
+        @dblclick.native="dbclickChannelHandler(channel)"
       >
-       <channel-item @more="moreHandler()" v-show="notSelected(channel.id)" :channel="channel"/>
+        <channel-item
+          v-show="notSelected(channel.id)"
+          :channel="channel"
+          @more="moreHandler()"
+        />
       </list-item>
-
     </list>
 
-    <div id="sidebar_user_anchor" class="user-anchor"></div>
+    <div
+      id="sidebar_user_anchor"
+      class="user-anchor"
+    />
     <div class="channel-header user-header">
-      <a href="#sidebar_user_anchor" class="channel-header__label l-ml-4">{{texts.usersHeader}}</a>
-      <ui-button :type="7" class="channel-header__add" @click.native="addUserHandler" size="small" height="16" icon="add"></ui-button>
+      <a
+        href="#sidebar_user_anchor"
+        class="channel-header__label l-ml-4"
+      >{{ texts.usersHeader }}</a>
+      <ui-button
+        :type="7"
+        class="channel-header__add"
+        size="small"
+        height="16"
+        icon="add"
+        @click.native="addUserHandler"
+      />
     </div>
 
-    <list :filterBy="''" v-if="sortedUsers.length">
+    <list
+      v-if="sortedUsers.length"
+      :filter-by="''"
+    >
       <list-item
         v-for="user in sortedUsers"
         :key="user.name"
-        :filterKey="user.name"
+        :filter-key="user.name"
         button
       >
-       <sidebar-user-item @more="moreHandler()" :user="user"/>
+        <sidebar-user-item
+          :user="user"
+          @more="moreHandler()"
+        />
       </list-item>
-
     </list>
   </div>
-
 </template>
 
 <script>
@@ -98,6 +139,10 @@ export default {
 
   },
 
+  created() {
+
+  },
+
   methods: {
 
     /**
@@ -142,10 +187,6 @@ export default {
     moreHandler() {
       console.log('more');
     },
-  },
-
-  created() {
-
   },
 
 };
