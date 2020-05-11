@@ -1,38 +1,51 @@
 <template>
   <div class="call-window">
+
     <div class="top-content">
       <div class="left-info">
         <span class="channel-name">{{ selectedChannelName }}</span>
-        <div>{{people}} users</div>
-
+        <div>{{usersCount}} users</div>
       </div>
-
       <ui-button
       class="call-buttons__button"
       :type="7"
       size="medium"
       icon="more"
+      v-popover.click="{name: 'Devices'}"
     />
     </div>
+
     <div
-      id="avatar-grid"
-      class="avatar-grid"
+      id="cell-grid"
+      class="cell-grid"
       :style="padding"
     >
-      <div class="avatar-container"
-        v-for="index in people" :key="index"
-        :style="avatarDimensions(index-1)"
+
+      <div class="cell"
+        v-for="(user, index) in users" :key="index"
+        :style="cellDimensions(index)"
       >
-        <div class="avatar__inner">
-          <div>Ivan Bushmin</div>
-<!--           <avatar
-          class="user__avatar"
+        <div class="cell__inner">
+
+          <div class="cell__feed"></div>
+
+          <ui-button
+            class="cell__more"
+            :type="7"
+            size="medium"
+            icon="more"
+          />
+           <avatar
+          class="cell__avatar"
           :image="user.avatar"
-          :size="50"
+          :size="100"
+          square
           :mic="user.microphone"
-          :onair="user.speaking"/> -->
+          :onair="user.speaking"/>
+          <div class="cell__username">{{user.name}}</div>
         </div>
       </div>
+
     </div>
 
     <call-buttons class="bottom-control" :buttons="['screen', 'speakers', 'microphone', 'leave']"
@@ -44,7 +57,7 @@
 /* eslint-disable no-magic-numbers */
 import CallButtons from '../CallOverlayWindow/CallButtons';
 import UiButton from '@components/UiButton';
-/* import Avatar from '@components/Avatar'; */
+import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
 
 const ASPECT_RATIO = 124 / 168;
@@ -54,11 +67,10 @@ export default {
   components: {
     CallButtons,
     UiButton,
-    // Avatar,
+    Avatar,
   },
   data() {
     return {
-      people: 25,
       currentGrid: [],
       avatarWidth: null,
       padding: {},
@@ -66,7 +78,7 @@ export default {
   },
   computed: {
     grids() {
-      return GRIDS[this.people];
+      return GRIDS[this.usersCount];
     },
     /**
      * Get our media state
@@ -91,18 +103,36 @@ export default {
     },
 
     /**
+     * Get channel ID from route param
+     * @returns {string} – channel ID
+     */
+    channelId() {
+      return this.$store.getters['me/getSelectedChannelId'];
+    },
+
+    /**
      * Selected channel
      * @return {object}
      */
     selectedChannel() {
-      const selectedChannelId = this.$store.getters['me/getSelectedChannelId'];
-      const selectedChannel = this.$store.getters['channels/getChannelById'](selectedChannelId);
+      const selectedChannel = this.$store.getters['channels/getChannelById'](this.channelId);
 
       if (selectedChannel) {
         return selectedChannel;
       }
 
       return false;
+    },
+    /**
+     * Get users array
+     * @returns {array} array of users
+     */
+    users() {
+      return this.$store.getters.getUsersByChannel(this.channelId);
+    },
+
+    usersCount() {
+      return this.users.length;
     },
 
     /**
@@ -120,9 +150,7 @@ export default {
   },
   methods: {
 
-    avatarDimensions(index) {
-      // console.log(this.currentGrid);
-
+    cellDimensions(index) {
       return {
         width: this.avatarWidth * this.currentGrid[index] + 'px',
         height: this.avatarWidth * ASPECT_RATIO * this.currentGrid[index] + 'px',
@@ -130,7 +158,7 @@ export default {
     },
 
     resize() {
-      const bounds = document.getElementById('avatar-grid');
+      const bounds = document.getElementById('cell-grid');
       const boundHeight = bounds.offsetHeight - PADDING * 2;
       const boundWidth = bounds.offsetWidth - PADDING * 2;
       const closest = this.findClosest(boundHeight / boundWidth, this.grids);
@@ -188,7 +216,7 @@ export default {
     line-height 18px
     color var(--text-1)
 
-  .avatar-grid
+  .cell-grid
     height calc(100vh - 272px)
     //border 2px solid white
     display flex
@@ -199,18 +227,57 @@ export default {
     align-content center
     box-sizing border-box
 
-  .avatar-container
-    //border 1px solid white
+  .cell
     padding 4px
     box-sizing border-box
 
-  .avatar__inner
-    background-color rgb(230,230,230)
-    color black
-    border-radius 8px
-    height 100%
-    padding 8px
-    box-sizing border-box
+    &__inner
+      border 1px solid rgba(255,255,255,0.5)
+      border-radius 8px
+      height 100%
+      padding 8px
+      box-sizing border-box
+      display flex
+      flex-direction column
+      justify-content space-between
+      align-items center
+      position relative
+
+    &__feed
+      position absolute
+      top 0
+      left 0
+      right 0
+      bottom 0
+      background-color #222d22
+      border-radius 8px
+
+    &__more
+      margin-left auto
+      flex-shrink 0
+      opacity 0
+      transition opacity 0.15s ease
+      position relative
+
+    .cell__inner:hover .cell__more
+      opacity 1
+
+    &__avatar
+      border-radius 4px
+      overflow hidden
+
+    &__username
+      background-color var(--app-bg)
+      padding 8px
+      border-radius 4px
+      flex-shrink 0
+      max-width 200px
+      width calc(100% - 16px)
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
+      text-align center
+      position relative
 
   .bottom-control
     margin 48px auto 0
