@@ -44,4 +44,15 @@ export default {
     state.mediaState = mediaState;
   },
 
+  /**
+   * Set's sharing source id
+   *
+   * @param {MeState} state – module me state
+   * @param {string} id – our media state
+   * @constructor
+   */
+  SET_SHARING_SOURCE_ID(state, id) {
+    state.sharingSourceId = id;
+  },
+
 };

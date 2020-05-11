@@ -11,6 +11,7 @@ const meStore = new Store({
  * @property {string} selectedChannelId – selected channel id
  * @property {MediaState} mediaState – my media state
  * @property {array} pokes – list of pokes
+ * @property {string} sharingSourceId – sharing source id
  */
 
 /**
@@ -38,6 +39,7 @@ const state = () => {
     selectedChannelId: '',
     mediaState: initialMediaState,
     pokes: [],
+    sharingSourceId: null,
   };
 };
 
