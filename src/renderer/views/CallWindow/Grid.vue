@@ -3,14 +3,17 @@
 
     <div class="top-content">
       <div class="left-info">
-        <span class="channel-name">{{ selectedChannelName }}</span>
-        <div>{{usersCount}} users</div>
+        <div class="channel-name">
+            <svg-icon name="channel" size="small"/>
+            <span>{{ selectedChannelName }}</span>
+          </div>
+        <div>{{ $tc("call.grid.users", usersCount) }}</div>
       </div>
       <ui-button
       class="call-buttons__button"
       :type="7"
       size="medium"
-      icon="more"
+      icon="settings"
       v-popover.click="{name: 'Devices'}"
     />
     </div>
@@ -25,7 +28,7 @@
         v-for="(user, index) in users" :key="index"
         :style="cellDimensions(index)"
       >
-        <div class="cell__inner">
+        <div class="cell__inner" :class="{'cell__inner--talking': user.speaking}">
 
           <div class="cell__feed"></div>
 
@@ -34,15 +37,22 @@
             :type="7"
             size="medium"
             icon="more"
+            v-popover.click="{name: 'GridUser', data: {userId: user.id}}"
           />
            <avatar
           class="cell__avatar"
           :image="user.avatar"
           :size="100"
-          square
-          :mic="user.microphone"
-          :onair="user.speaking"/>
-          <div class="cell__username">{{user.name}}</div>
+          square/>
+          <div  class="cell__username">
+            <div v-textfade>{{user.name}}</div>
+            <div v-if="user.id === myId" class="cell__username__you">{{texts.you}}</div>
+            <svg-icon
+                v-if="!user.microphone"
+                class="cell__username__mic-off"
+                name="mic-off"
+                size="small"/>
+            </div>
         </div>
       </div>
 
@@ -77,6 +87,14 @@ export default {
     };
   },
   computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('call.grid');
+    },
+
     grids() {
       return GRIDS[this.usersCount];
     },
@@ -89,17 +107,11 @@ export default {
     },
 
     /**
-     * Get our full info
+     * Get our ID
      * @returns {object}
      */
-    user() {
-      const myId = this.$store.getters['me/getMyId'];
-      const commonInfo = this.$store.getters['users/getUserById'](myId);
-
-      return {
-        ...commonInfo,
-        ...this.mediaState,
-      };
+    myId() {
+      return this.$store.getters['me/getMyId'];
     },
 
     /**
@@ -197,7 +209,7 @@ export default {
     height 100vh
 
   .top-content
-    height 136px
+    height 116px
     box-sizing border-box
     padding 24px 40px
     font-weight 500
@@ -217,7 +229,7 @@ export default {
     color var(--text-1)
 
   .cell-grid
-    height calc(100vh - 272px)
+    height calc(100vh - 232px)
     //border 2px solid white
     display flex
     flex-direction row
@@ -232,7 +244,6 @@ export default {
     box-sizing border-box
 
     &__inner
-      border 1px solid rgba(255,255,255,0.5)
       border-radius 8px
       height 100%
       padding 8px
@@ -243,13 +254,17 @@ export default {
       align-items center
       position relative
 
+      &--talking
+        border 2px solid var(--color-1)
+        padding 6px
+
     &__feed
       position absolute
       top 0
       left 0
       right 0
       bottom 0
-      background-color #222d22
+      background-color #222c2d
       border-radius 8px
 
     &__more
@@ -262,6 +277,9 @@ export default {
     .cell__inner:hover .cell__more
       opacity 1
 
+    .cell__more.context-menu--opened
+      opacity 1
+
     &__avatar
       border-radius 4px
       overflow hidden
@@ -271,14 +289,22 @@ export default {
       padding 8px
       border-radius 4px
       flex-shrink 0
-      max-width 200px
-      width calc(100% - 16px)
-      white-space nowrap
+      max-width calc(100% - 16px)
+      width auto
       overflow hidden
-      text-overflow ellipsis
+      display flex
+      flex-direction row
+      align-items center
       text-align center
       position relative
 
+      &__you
+        color var(--text-1)
+        margin-left 8px
+
+      &__mic-off
+        margin-left 8px
+
   .bottom-control
-    margin 48px auto 0
+    margin 28px auto 0
 </style>

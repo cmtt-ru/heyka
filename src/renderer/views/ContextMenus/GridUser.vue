@@ -1,17 +1,18 @@
 <template>
-  <popover class="device-popover-wrapper">
-    <devices :style="$themes.getColors('content')" class="device-popover"/>
+  <popover>
+    <ui-button :type="11" @click="fullscreenClickHandler">Fullscreen</ui-button>
+    <ui-button :type="11" @click="muteClickHandler">Mute for all</ui-button>
   </popover>
 </template>
 
 <script>
 import Popover from '@components/Popover';
-import Devices from '@views/MainWindow/Settings/Devices';
+import UiButton from '@components/UiButton';
 
 export default {
   components: {
     Popover,
-    Devices,
+    UiButton,
   },
 
   props: {
@@ -23,8 +24,8 @@ export default {
      * Poke click handler
      * @returns {void}
      */
-    pokeClickHandler() {
-      console.log('poke to user', this.userId);
+    fullscreenClickHandler() {
+      console.log('fullscreen user', this.userId);
     },
 
     /**
@@ -40,8 +41,4 @@ export default {
 
 <style lang="stylus" scoped>
 
-.device-popover
-  width 300px
-  height 235px
-  margin-right 12px
 </style>

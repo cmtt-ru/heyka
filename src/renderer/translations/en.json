@@ -63,6 +63,12 @@
       "tellerror": "Report an error"
     }
   },
+  "call": {
+    "grid": {
+      "users": "1 user | {n} users",
+      "you": "(you)"
+    }
+  },
   "popover": {
     "workspace": {
       "invite": "Invite members",
