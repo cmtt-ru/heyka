@@ -5,10 +5,10 @@
     :class="{'notification-wrapper--modal': isModal}"
   >
     <notification
-      :id="notif.id"
       v-for="notif in notifications"
-      :lifespan="notif.lifespan"
+      :id="notif.id"
       :key="notif.id"
+      :lifespan="notif.lifespan"
       :infinite="notif.infinite"
       :prevent-swipe="notif.preventSwipe"
 

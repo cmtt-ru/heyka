@@ -74,7 +74,12 @@ export default {
     /**
      * Object with full channel info
      */
-    channel: Object,
+    channel: {
+      type: Object,
+      default: function () {
+        return {};
+      },
+    },
   },
 
   computed: {
