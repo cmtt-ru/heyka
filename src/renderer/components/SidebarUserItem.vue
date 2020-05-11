@@ -44,7 +44,12 @@ export default {
     /**
      * Object with full user info (id, name, avatar, statuses)
      */
-    user: Object,
+    user: {
+      type: Object,
+      default: function () {
+        return {};
+      },
+    },
   },
 
   computed: {

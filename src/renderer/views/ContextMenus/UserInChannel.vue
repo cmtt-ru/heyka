@@ -31,7 +31,13 @@ export default {
   },
 
   props: {
-    userId: String,
+    /**
+     * User id
+     */
+    userId: {
+      type: String,
+      default: '',
+    },
   },
 
   methods: {
