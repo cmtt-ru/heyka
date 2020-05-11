@@ -67,6 +67,18 @@ class MediaCapturer extends EventEmitter {
 
     return stream;
   }
+
+  /**
+   * Destroy active stream
+   *
+   * @param {MediaStream} stream – media stream
+   * @returns {void}
+   */
+  destroyStream(stream) {
+    stream.getVideoTracks().forEach(track => {
+      track.stop();
+    });
+  }
 }
 
 export default new MediaCapturer();

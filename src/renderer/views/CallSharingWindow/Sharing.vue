@@ -76,18 +76,26 @@ export default {
     },
 
     async handleSource(source) {
+      if (this.$refs.video.srcObject) {
+        mediaCapturer.destroyStream(this.$refs.video.srcObject);
+      }
+
       this.selectedSource = source;
 
       const stream = await mediaCapturer.getStream(source.id);
+
+      console.log(stream);
 
       this.$refs.video.srcObject = stream;
       this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
     },
 
     async handleCamera() {
-      const stream = await mediaCapturer.getCameraStream();
+      if (this.$refs.video.srcObject) {
+        mediaCapturer.destroyStream(this.$refs.video.srcObject);
+      }
 
-      this.$refs.video.srcObject = stream;
+      this.$refs.video.srcObject = await mediaCapturer.getCameraStream();
       this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
     },
   },
@@ -141,6 +149,10 @@ export default {
 
         &.active
           border-color var(--color-2)
-        /*object-fit cover*/
+
+    &__content
+
+      video
+        width 100%
 
 </style>
