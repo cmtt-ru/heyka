@@ -7,17 +7,42 @@
         class="sharing-window__close"
         :type="7"
         size="small"
-        icon="close">
-      </ui-button>
+        icon="close"
+        @click="close"
+      />
     </div>
 
     <div class="sharing-window__content">
 
       <div class="sharing-window__options">
-        <ui-button class="l-mr-8" :type="3" size="small" @click="updateSources('screen')">Screen</ui-button>
-        <ui-button class="l-mr-8" :type="3" size="small" @click="handleCamera">Camera</ui-button>
-        <ui-button class="l-mr-8" :type="3" size="small">Screen and camera</ui-button>
-        <ui-button class="l-mr-8" :type="3" size="small" @click="updateSources('window')">Window</ui-button>
+
+        <ui-button
+          class="l-mr-8"
+          :type="3"
+          size="small"
+          @click="updateSources('screen')"
+        >Screen</ui-button>
+
+        <ui-button
+          class="l-mr-8"
+          :type="3"
+          size="small"
+          @click="handleCamera"
+        >Camera</ui-button>
+
+        <ui-button
+          class="l-mr-8"
+          :type="3"
+          size="small"
+        >Screen and camera</ui-button>
+
+        <ui-button
+          class="l-mr-8"
+          :type="3"
+          size="small"
+          @click="updateSources('window')"
+        >Window</ui-button>
+
       </div>
 
       <div class="sharing-window__sources">
@@ -40,15 +65,21 @@
         v-if="!isSharingEnabled"
         class="l-mr-8"
         :type="1"
+        :disabled="nothingSelected"
+        @click="startSharing"
       >Start sharing</ui-button>
 
       <ui-button
         v-if="isSharingEnabled"
         class="l-mr-8"
         :type="12"
+        @click="stopSharing"
       >Stop sharing</ui-button>
 
-      <ui-button :type="8">Cancel</ui-button>
+      <ui-button
+        :type="8"
+        @click="close"
+      >Cancel</ui-button>
     </div>
 
   </div>
@@ -57,6 +88,7 @@
 <script>
 import UiButton from '@components/UiButton';
 import mediaCapturer from '@classes/mediaCapturer';
+import broadcastActions from '@classes/broadcastActions';
 
 export default {
   components: {
@@ -67,7 +99,27 @@ export default {
     return {
       sources: [],
       selectedSource: {},
+      sharingType: null,
+
+      localMediaState: {
+        screen: this.$store.getters['me/getMediaState'].screen,
+        camera: this.$store.getters['me/getMediaState'].camera,
+      },
     };
+  },
+
+  computed: {
+    isSharingEnabled() {
+      return this.mediaState.screen === true || this.mediaState.camera === true;
+    },
+
+    nothingSelected() {
+      return this.localMediaState.screen === false && this.localMediaState.camera === false;
+    },
+
+    mediaState() {
+      return this.$store.getters['me/getMediaState'];
+    },
   },
 
   methods: {
@@ -82,12 +134,11 @@ export default {
 
       this.selectedSource = source;
 
-      const stream = await mediaCapturer.getStream(source.id);
-
-      console.log(stream);
-
-      this.$refs.video.srcObject = stream;
+      this.$refs.video.srcObject = await mediaCapturer.getStream(source.id);
       this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
+
+      this.localMediaState.screen = true;
+      this.localMediaState.camera = false;
     },
 
     async handleCamera() {
@@ -97,16 +148,39 @@ export default {
 
       this.$refs.video.srcObject = await mediaCapturer.getCameraStream();
       this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
-    },
-  },
 
-  computed: {
-    isSharingEnabled() {
-      return this.mediaState.screen === true || this.mediaState.camera === true;
+      this.localMediaState.screen = false;
+      this.localMediaState.camera = true;
     },
 
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
+    close() {
+      broadcastActions.dispatch('closeSharingWindow');
+    },
+
+    startSharing() {
+      if (this.localMediaState.screen) {
+        broadcastActions.dispatch('me/setSharingSourceId', this.selectedSource.id);
+      }
+
+      this.setMediaState();
+    },
+
+    stopSharing() {
+      this.localMediaState.screen = false;
+      this.localMediaState.camera = false;
+
+      broadcastActions.dispatch('me/setSharingSourceId', null);
+
+      this.setMediaState();
+    },
+
+    setMediaState() {
+      const newState = {
+        ...this.mediaState,
+        ...this.localMediaState,
+      };
+
+      broadcastActions.dispatch('me/setMediaState', newState);
     },
   },
 

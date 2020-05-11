@@ -93,6 +93,16 @@ class CallWindow {
   }
 
   /**
+   * Close sharing window
+   * @returns {void}
+   */
+  closeSharing() {
+    if (this.sharingWindow) {
+      this.sharingWindow.close();
+    }
+  }
+
+  /**
    * Show grid (main) window
    * @returns {void}
    */
