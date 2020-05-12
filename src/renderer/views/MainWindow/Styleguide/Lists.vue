@@ -1,28 +1,41 @@
 <template>
   <div>
+    <h1 class="l-mt-12">
+      Lists
+    </h1>
 
-    <h1 class="l-mt-12">Lists</h1>
-
-    <h3 class="l-mt-24">Selectable and searchable list.<br><br></h3>
-    <ui-input v-model="filterKey" icon="search" placeholder="Filter by..."/>
-    <list selectable :filterBy="filterKey" @multipick="selectItem">
+    <h3 class="l-mt-24">
+      Selectable and searchable list.<br><br>
+    </h3>
+    <ui-input
+      v-model="filterKey"
+      icon="search"
+      placeholder="Filter by..."
+    />
+    <list
+      selectable
+      :filter-by="filterKey"
+      @multipick="selectItem"
+    >
       <list-item
         v-for="user in elements"
         :key="user.name"
-        :filterKey="user.name"
+        :filter-key="user.name"
         button
       >
-      <div v-textfade class="styleguide-user">
-        {{user.name}}
-      </div>
+        <div
+          v-textfade
+          class="styleguide-user"
+        >
+          {{ user.name }}
+        </div>
       </list-item>
     </list>
 
     <div class="l-mt-12">
-      <div></div>
-      <div>{{selectedArray}}</div>
+      <div />
+      <div>{{ selectedArray }}</div>
     </div>
-
   </div>
 </template>
 
@@ -54,14 +67,14 @@ export default {
       ],
     };
   },
+
+  created() {
+
+  },
   methods: {
     selectItem(data) {
       this.selectedArray = data;
     },
-  },
-
-  created() {
-
   },
 };
 </script>

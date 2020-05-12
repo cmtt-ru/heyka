@@ -1,15 +1,49 @@
 <template>
   <div class="settings-page">
-    <div class="settings__label">{{texts.languageLabel}}</div>
-    <ui-select @input="save('Language', language)" v-model="language" :data="languages"/>
-    <div class="settings__label">{{texts.behaviourLabel}}</div>
-    <ui-select @input="save('Mode', mode)" v-model="mode" :data="modes"/>
-    <div class="extra-info" v-if="modeWillChange">{{texts.behaviourWillChange}}</div>
-    <div class="settings__label">{{texts.autorunLabel}}</div>
-    <ui-switch @input="save('Autorun', autorun)" v-model="autorun" :text="texts.autorunSwitch"/>
-    <div class="settings__label">{{texts.appearanceLabel}}</div>
-    <ui-select @input="save('Theme', {...theme})" v-model="theme.name" :data="themes" :disabled="theme.auto"/>
-    <ui-switch @input="save('Theme', {...theme})" v-model="theme.auto" :text="texts.automaticallySwitch"/>
+    <div class="settings__label">
+      {{ texts.languageLabel }}
+    </div>
+    <ui-select
+      v-model="language"
+      :data="languages"
+      @input="save('Language', language)"
+    />
+    <div class="settings__label">
+      {{ texts.behaviourLabel }}
+    </div>
+    <ui-select
+      v-model="mode"
+      :data="modes"
+      @input="save('Mode', mode)"
+    />
+    <div
+      v-if="modeWillChange"
+      class="extra-info"
+    >
+      {{ texts.behaviourWillChange }}
+    </div>
+    <div class="settings__label">
+      {{ texts.autorunLabel }}
+    </div>
+    <ui-switch
+      v-model="autorun"
+      :text="texts.autorunSwitch"
+      @input="save('Autorun', autorun)"
+    />
+    <div class="settings__label">
+      {{ texts.appearanceLabel }}
+    </div>
+    <ui-select
+      v-model="theme.name"
+      :data="themes"
+      :disabled="theme.auto"
+      @input="save('Theme', {...theme})"
+    />
+    <ui-switch
+      v-model="theme.auto"
+      :text="texts.automaticallySwitch"
+      @input="save('Theme', {...theme})"
+    />
   </div>
 </template>
 

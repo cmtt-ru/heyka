@@ -1,8 +1,11 @@
 <template>
-    <div class="layout__popover" :style="$themes.getColors('popover')">
+  <div
+    class="layout__popover"
+    :style="$themes.getColors('popover')"
+  >
     <div>Push Wrapper</div>
-    <router-view></router-view>
-</div>
+    <router-view />
+  </div>
 </template>
 
 <script>

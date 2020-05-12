@@ -8,17 +8,16 @@
       class="input__icon"
       :name="icon"
       size="medium"
-    ></svg-icon>
+    />
 
     <input
+      v-model="myValue"
       class="input"
       :class="{'input--with-icon': icon}"
       :type="type"
       :placeholder="placeholder"
-      v-model="myValue"
       @input="updateText()"
     >
-
   </div>
 </template>
 
@@ -29,7 +28,7 @@ export default {
   props: {
 
     /**
-     * input's value
+     * Input's value
      */
     value: {
       type: String,
@@ -41,10 +40,11 @@ export default {
      */
     name: {
       type: String,
+      default: '',
     },
 
     /**
-     * input's type
+     * Input's type
      */
     type: {
       type: String,
@@ -52,7 +52,7 @@ export default {
     },
 
     /**
-     * input's placeholder
+     * Input's placeholder
      */
     placeholder: {
       type: String,
@@ -60,13 +60,16 @@ export default {
     },
 
     /**
-     * input's icon
+     * Input's icon
      */
     icon: {
       type: String,
       default: null,
     },
 
+    /**
+     * Is textarea?
+     */
     textarea: {
       type: Boolean,
       default: false,

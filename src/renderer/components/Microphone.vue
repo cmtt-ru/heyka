@@ -1,19 +1,17 @@
 <template>
   <div class="mic">
+    <div
+      v-if="active"
+      class="mic__volume"
+      :style="volume"
+    />
 
-      <div
-        v-if="active"
-        class="mic__volume"
-        :style="volume"
-      ></div>
-
-      <svg-icon
-          class="mic__icon"
-          :name="icon"
-          width="16"
-          height="16"
-        ></svg-icon>
-
+    <svg-icon
+      class="mic__icon"
+      :name="icon"
+      width="16"
+      height="16"
+    />
   </div>
 </template>
 

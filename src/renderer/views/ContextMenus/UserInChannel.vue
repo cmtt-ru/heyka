@@ -1,10 +1,22 @@
 <template>
   <popover>
     <router-link :to="{ name: 'user', params: { id: userId }}">
-      <ui-button :type="11">Open profile</ui-button>
+      <ui-button :type="11">
+        Open profile
+      </ui-button>
     </router-link>
-    <ui-button :type="11" @click="pokeClickHandler">Poke</ui-button>
-    <ui-button :type="11" @click="muteClickHandler">Mute for all</ui-button>
+    <ui-button
+      :type="11"
+      @click="pokeClickHandler"
+    >
+      Poke
+    </ui-button>
+    <ui-button
+      :type="11"
+      @click="muteClickHandler"
+    >
+      Mute for all
+    </ui-button>
   </popover>
 </template>
 
@@ -19,7 +31,13 @@ export default {
   },
 
   props: {
-    userId: String,
+    /**
+     * User id
+     */
+    userId: {
+      type: String,
+      default: '',
+    },
   },
 
   methods: {

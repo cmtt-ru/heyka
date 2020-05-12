@@ -1,49 +1,61 @@
 <template>
   <div class="l-p-8">
-
-      <div v-if="channel" class="channel-info">
-        <svg-icon class="channel-info__type" :name="dynamicIcon" size="medium" stroke="var(--icon-1)"/>
-        <div v-textfade="channel.name" class="channel-info__name">{{channel.name}}</div>
-        <ui-button
-          :type="7"
-          class="channel-info__more"
-          size="small"
-          height="16"
-          @click.native="moreHandler()"
-          icon="more"/>
-
-        <ui-button
-          v-if="!isConnected"
-          :type="1"
-          class="channel-info__connect"
-          size="small"
-          @click.native="clickConnectHandler()">
-          {{texts.join}}
-        </ui-button>
-        <ui-button
-          v-if="isConnected"
-          :type="4"
-          class="channel-info__connect"
-          size="small"
-          @click.native="clickDisconnectHandler()">
-          {{texts.disconnect}}
-        </ui-button>
-
+    <div
+      v-if="channel"
+      class="channel-info"
+    >
+      <svg-icon
+        class="channel-info__type"
+        :name="dynamicIcon"
+        size="medium"
+        stroke="var(--icon-1)"
+      />
+      <div
+        v-textfade="channel.name"
+        class="channel-info__name"
+      >
+        {{ channel.name }}
       </div>
+      <ui-button
+        :type="7"
+        class="channel-info__more"
+        size="small"
+        height="16"
+        icon="more"
+        @click.native="moreHandler()"
+      />
 
-    <list :filterBy="''">
+      <ui-button
+        v-if="!isConnected"
+        :type="1"
+        class="channel-info__connect"
+        size="small"
+        @click.native="clickConnectHandler()"
+      >
+        {{ texts.join }}
+      </ui-button>
+      <ui-button
+        v-if="isConnected"
+        :type="4"
+        class="channel-info__connect"
+        size="small"
+        @click.native="clickDisconnectHandler()"
+      >
+        {{ texts.disconnect }}
+      </ui-button>
+    </div>
+
+    <list :filter-by="''">
       <list-item
         v-for="user in users"
         :key="user.name"
-        :filterKey="user.name"
+        :filter-key="user.name"
         button
       >
-      <channel-user-item :user="user"/>
+        <channel-user-item :user="user" />
       </list-item>
-
     </list>
   </div>
-
 </template>
 
 <script>

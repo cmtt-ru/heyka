@@ -1,29 +1,36 @@
 <template>
   <div>
     <div class="layout">
-
-      <div :style="$themes.getColors('navbar')" class="layout__column layout__column--sidebar">
-
-        <div class="layout__row layout__row--header" v-if="$slots['sidebar-header']">
-          <slot name="sidebar-header"/>
+      <div
+        :style="$themes.getColors('navbar')"
+        class="layout__column layout__column--sidebar"
+      >
+        <div
+          v-if="$slots['sidebar-header']"
+          class="layout__row layout__row--header"
+        >
+          <slot name="sidebar-header" />
         </div>
 
         <div class="layout__row layout__row--body scroll">
-            <slot name="sidebar-body"/>
+          <slot name="sidebar-body" />
         </div>
-
       </div>
 
-      <div :style="$themes.getColors('content')" class="layout__column layout__column--content">
-
-        <div class="layout__row layout__row--header" v-if="$slots['content-header']">
-          <slot name="content-header"/>
+      <div
+        :style="$themes.getColors('content')"
+        class="layout__column layout__column--content"
+      >
+        <div
+          v-if="$slots['content-header']"
+          class="layout__row layout__row--header"
+        >
+          <slot name="content-header" />
         </div>
 
         <div class="layout__row layout__row--body scroll">
-            <slot name="content-body"/>
+          <slot name="content-body" />
         </div>
-
       </div>
     </div>
   </div>
