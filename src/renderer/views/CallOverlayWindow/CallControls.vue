@@ -15,7 +15,7 @@
       </div>
 
       <div class="call-controls__row call-controls__row--controls">
-        <call-buttons :buttons="['screen', 'microphone', 'grid', 'leave']"></call-buttons>
+        <call-buttons :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"></call-buttons>
       </div>
 
     </div>

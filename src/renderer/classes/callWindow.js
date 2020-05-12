@@ -2,7 +2,7 @@ import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
-    width: 184,
+    width: 228,
     height: 96,
   },
   mediaSharing: {
