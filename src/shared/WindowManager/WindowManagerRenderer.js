@@ -1,10 +1,4 @@
 import { ipcRenderer } from 'electron';
-import Store from 'electron-store';
-import store from '@/store';
-
-const stateStore = new Store({
-  name: 'state',
-});
 
 /**
  * A class that tells info to main window manager upon window creation
@@ -17,9 +11,6 @@ class WindowManager {
    * @returns {Window}
    */
   create(options) {
-    /** Save actual state to store */
-    stateStore.set('state', store.state);
-
     const windowData = ipcRenderer.sendSync('window-manager-create', options);
 
     return new Window(windowData.id, options.onClose);

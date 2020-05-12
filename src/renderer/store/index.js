@@ -8,13 +8,9 @@ import state from './state';
 import mutations from './mutations';
 import mediaDevices from '@classes/mediaDevices';
 import createMutationsSharer from 'vuex-shared-mutations';
-import Store from 'electron-store';
 import broadcastActions from '@classes/broadcastActions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
-
-const stateStore = new Store({
-  name: 'state',
-});
+import broadcastState from '../classes/broadcastState';
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -61,15 +57,6 @@ const store = new Vuex.Store({
 });
 
 /**
- * Used for new windows to get actual state from local store
- * @see WindowManagerRenderer
- */
-if (stateStore.has('state')) {
-  store.replaceState(stateStore.get('state'));
-  stateStore.delete('state');
-}
-
-/**
  * Listen for device change event
  */
 mediaDevices.on('change', (devices) => {
@@ -89,6 +76,20 @@ mediaDevices.on('bluetooth-microphone', (microphone) => {
 if (isMainWindow()) {
   broadcastActions.on('action', ({ action, data }) => {
     store.dispatch(action, data);
+  });
+
+  /** Used for new windows to get actual state */
+  broadcastState.on('state-request', (state) => {
+    broadcastState.resolveState(store.state);
+  });
+} else {
+  /** Request state */
+  console.log('REQUEST STATE');
+  broadcastState.requestState();
+
+  /** Listen to state event and replace state */
+  broadcastState.on('state', (state) => {
+    store.replaceState(state);
   });
 }
 
