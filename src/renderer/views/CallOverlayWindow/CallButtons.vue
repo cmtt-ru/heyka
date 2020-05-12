@@ -2,10 +2,19 @@
   <div class="call-buttons" :size="size">
     <ui-button
       class="call-buttons__button"
-      v-if="buttons.includes('screen')"
+      v-if="buttons.includes('camera')"
       :type="7"
       :size="size"
       icon="cast"
+      @click="sharingHandler"
+    />
+
+    <ui-button
+      class="call-buttons__button"
+      v-if="buttons.includes('screen')"
+      :type="7"
+      :size="size"
+      icon="screencast"
       @click="sharingHandler"
     />
 
@@ -73,7 +82,7 @@ export default {
   props: {
     /**
      * Buttons list
-     * @example ['screen', 'speakers', 'microphone', 'grid', 'leave']
+     * @example ['screen', 'camera', 'speakers', 'microphone', 'grid', 'leave']
      */
     buttons: {
       type: Array,
