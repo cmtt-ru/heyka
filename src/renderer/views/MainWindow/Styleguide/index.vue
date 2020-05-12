@@ -1,39 +1,58 @@
 <template>
+  <layout>
+    <template #sidebar-header>
+      <div class="l-p-8 l-fw-m">
+        Styleguide
+      </div>
+    </template>
 
-    <layout>
+    <template #content-header>
+      <div class="l-p-8 l-fw-m" />
+    </template>
 
-      <template v-slot:sidebar-header>
-        <div class="l-p-8 l-fw-m">
-          Styleguide
-        </div>
-      </template>
+    <template #sidebar-body>
+      <div class="l-p-8">
+        <router-link
+          class="link"
+          :to="{name: 'styleguide-buttons'}"
+        >
+          Buttons
+        </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'styleguide-lists'}"
+        >
+          Lists
+        </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'styleguide-forms'}"
+        >
+          Forms
+        </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'styleguide-notifications'}"
+        >
+          Notifications
+        </router-link>
+        <br>
+        <br>
+        <router-link
+          class="link"
+          :to="{name: 'settings'}"
+        >
+          Exit
+        </router-link>
+      </div>
+    </template>
 
-      <template v-slot:content-header>
-        <div class="l-p-8 l-fw-m">
-
-        </div>
-      </template>
-
-      <template v-slot:sidebar-body>
-        <div class="l-p-8">
-          <router-link class="link" :to="{name: 'styleguide-buttons'}">Buttons</router-link>
-          <router-link class="link" :to="{name: 'styleguide-lists'}">Lists</router-link>
-          <router-link class="link" :to="{name: 'styleguide-forms'}">Forms</router-link>
-          <router-link class="link" :to="{name: 'styleguide-notifications'}">Notifications</router-link>
-          <br>
-          <br>
-          <router-link class="link" :to="{name: 'settings'}">Exit</router-link>
-        </div>
-      </template>
-
-      <template v-slot:content-body>
-        <div class="l-p-8">
-          <router-view></router-view>
-        </div>
-      </template>
-
-    </layout>
-
+    <template #content-body>
+      <div class="l-p-8">
+        <router-view />
+      </div>
+    </template>
+  </layout>
 </template>
 
 <script>

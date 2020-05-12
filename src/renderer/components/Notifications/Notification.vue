@@ -1,31 +1,30 @@
 <template>
-<transition name="notification-fade">
-
-  <div v-if="mounted"
-    v-hammer:pan.horizontal="pan"
-    v-hammer:panstart="onPanStart"
-    v-hammer:panend="onPanEnd"
-    :style="styles"
-    class="notification"
-  >
-
-    <div class="notification__text">{{data.text}}</div>
-    <div class="notification__button-wrapper">
-      <ui-button
+  <transition name="notification-fade">
+    <div
+      v-if="mounted"
+      v-hammer:pan.horizontal="pan"
+      v-hammer:panstart="onPanStart"
+      v-hammer:panend="onPanEnd"
+      :style="styles"
+      class="notification"
+    >
+      <div class="notification__text">
+        {{ data.text }}
+      </div>
+      <div class="notification__button-wrapper">
+        <ui-button
           v-for="button in data.buttons"
           :key="button.text"
           :type="button.type || 8"
           size="small"
           class="notification__button"
           @click="clickHandler(button)"
-
         >
-          {{button.text}}
-      </ui-button>
-
+          {{ button.text }}
+        </ui-button>
+      </div>
     </div>
-  </div>
-</transition>
+  </transition>
 </template>
 
 <script>
@@ -51,15 +50,16 @@ export default {
   },
 
   props: {
-
-    /* unique id of notification */
+    /**
+     * Unique id of notification
+     */
     id: {
       type: String,
       required: true,
     },
 
     /**
-      * inner data with "text" and "buttons"
+      * Inner data with "text" and "buttons"
       * Buttons is an array with fields:
       * "text", "type", "action" (outer function to trigger),
       * and "close" (flag that shows we shoud close notification after clicking this button)
@@ -69,19 +69,25 @@ export default {
       required: true,
     },
 
-    /* if the notification self-destructs after a certain amount of time */
+    /**
+     * If the notification self-destructs after a certain amount of time
+     */
     infinite: {
       type: Boolean,
       default: false,
     },
 
-    /* time before self-destruct */
+    /**
+     * Time before self-destruct
+     */
     lifespan: {
       type: Number,
       default: 10000,
     },
 
-    /* prevent swiping logic */
+    /**
+     * Prevent swiping logic
+     */
     preventSwipe: {
       type: Boolean,
       default: false,
@@ -103,6 +109,30 @@ export default {
         margin: null,
       },
     };
+  },
+
+  /**
+   * 1. flag "mounted" to true (so we can show notification)
+   * 2. emit "mounted" event (for future use)
+   * 3. if notification is not infinite, set timeout with self-destruct
+   *
+   * @returns {void}
+  */
+  mounted() {
+    this.mounted = true;
+    this.$nextTick(() => {
+      this.$emit('mounted', this.id);
+    });
+
+    if (!this.infinite) {
+      setTimeout(() => {
+        this.timeoutEnded = true;
+        /* if we are holding the notification, or notification is already destroyed, do nothing */
+        if (!this.holding && !this.closeRunning) {
+          this.close();
+        }
+      }, this.lifespan);
+    }
   },
 
   methods: {
@@ -226,30 +256,6 @@ export default {
       this.$emit('close', this.id);
     },
 
-  },
-
-  /**
-   * 1. flag "mounted" to true (so we can show notification)
-   * 2. emit "mounted" event (for future use)
-   * 3. if notification is not infinite, set timeout with self-destruct
-   *
-   * @returns {void}
-  */
-  mounted() {
-    this.mounted = true;
-    this.$nextTick(() => {
-      this.$emit('mounted', this.id);
-    });
-
-    if (!this.infinite) {
-      setTimeout(() => {
-        this.timeoutEnded = true;
-        /* if we are holding the notification, or notification is already destroyed, do nothing */
-        if (!this.holding && !this.closeRunning) {
-          this.close();
-        }
-      }, this.lifespan);
-    }
   },
 
 };

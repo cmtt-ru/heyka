@@ -1,23 +1,41 @@
 <template>
   <layout>
-
-    <template v-slot:sidebar-body>
-      <img width="100%" src="https://leonardo.osnova.io/0658b525-8db3-fe95-69bd-fd64537802c6/">
+    <template #sidebar-body>
+      <img
+        width="100%"
+        src="https://leonardo.osnova.io/0658b525-8db3-fe95-69bd-fd64537802c6/"
+      >
     </template>
 
-    <template v-slot:content-body>
+    <template #content-body>
       <div class="auth l-p-18">
-        <p class="l-fs-18">Welcome to Heyka</p>
+        <p class="l-fs-18">
+          Welcome to Heyka
+        </p>
 
         <div class="auth__code">
-          <ui-input v-model="code" placeholder="Paste invite code here"/>
-          <p v-if="invalidCode" class="l-fs-12" style="color: var(--color-0)">Invalid invite code</p>
-          <ui-button @click.native="signinHandler" class="l-mt-12" :type="6" wide>Login</ui-button>
+          <ui-input
+            v-model="code"
+            placeholder="Paste invite code here"
+          />
+          <p
+            v-if="invalidCode"
+            class="l-fs-12"
+            style="color: var(--color-0)"
+          >
+            Invalid invite code
+          </p>
+          <ui-button
+            class="l-mt-12"
+            :type="6"
+            wide
+            @click.native="signinHandler"
+          >
+            Login
+          </ui-button>
         </div>
-
       </div>
     </template>
-
   </layout>
 </template>
 
