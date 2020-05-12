@@ -43,6 +43,8 @@ class Window {
     ipcRenderer.on(`window-close-${windowId}`, () => {
       this.onClose();
     });
+    // ipcRenderer.on(`window-blur-${windowId}`, () => {
+    // });
   }
 
   /**
