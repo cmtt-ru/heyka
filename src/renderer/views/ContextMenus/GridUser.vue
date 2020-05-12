@@ -1,7 +1,19 @@
 <template>
   <popover>
-    <ui-button :type="11" @click="fullscreenClickHandler">Fullscreen</ui-button>
-    <ui-button :type="11" @click="muteClickHandler">Mute for all</ui-button>
+    <div class="buttons">
+      <ui-button
+        :type="11"
+        @click="fullscreenClickHandler"
+      >
+        {{ texts.fullscreen }}
+      </ui-button>
+      <ui-button
+        :type="11"
+        @click="muteClickHandler"
+      >
+        {{ texts.mute }}
+      </ui-button>
+    </div>
   </popover>
 </template>
 
@@ -16,12 +28,27 @@ export default {
   },
 
   props: {
-    userId: String,
+    /**
+     * User ID
+     */
+    userId: {
+      type: String,
+      default: null,
+    },
   },
 
   methods: {
     /**
-     * Poke click handler
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      console.log(this.$t);
+
+      return this.$t('popover.gridUser');
+    },
+    /**
+     * fullscreen click handler
      * @returns {void}
      */
     fullscreenClickHandler() {

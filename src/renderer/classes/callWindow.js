@@ -1,4 +1,5 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import { ipcRenderer } from 'electron';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
@@ -117,8 +118,21 @@ class CallWindow {
           this.gridWindow = null;
         },
       });
+
+      const gridBlurTime = 200;
+      let gridTimeout = null;
+
+      ipcRenderer.on(`window-blur-${this.gridWindow.windowId}`, () => {
+        gridTimeout = setTimeout(() => {
+          this.showOverlay();
+        }, gridBlurTime);
+      });
+      ipcRenderer.on(`window-focus-${this.gridWindow.windowId}`, () => {
+        clearTimeout(gridTimeout);
+        this.hideOverlay();
+      });
     } else {
-      this.gridWindow.showInactive();
+      this.gridWindow.show();
     }
   }
 

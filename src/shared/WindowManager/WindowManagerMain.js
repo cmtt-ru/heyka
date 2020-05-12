@@ -173,6 +173,13 @@ class WindowManager {
       newWindow.show();
     });
 
+    newWindow.on('blur', (event) => {
+      this.send(`window-blur-${windowId}`);
+    });
+    newWindow.on('focus', (event) => {
+      this.send(`window-focus-${windowId}`);
+    });
+
     return windowId;
   }
 
@@ -293,6 +300,23 @@ class WindowManager {
   send(event, data) {
     if (this.windows[this.mainWindowId]) {
       this.windows[this.mainWindowId].webContents.send(event, data);
+    }
+  }
+
+  sendAll(event, data = null) {
+    const windows = BrowserWindow.getAllWindows();
+
+    windows.forEach((w) => {
+      w.webContents.send(event, data);
+    });
+  }
+
+  closeAll() {
+    for (const w in this.windows) {
+      if (w != this.mainWindowId) {
+        console.log('closing:', w);
+        this.closeWindow(w);
+      }
     }
   }
 }

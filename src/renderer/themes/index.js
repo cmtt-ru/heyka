@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import themes from './themes.json';
 import store from '@/store';
+import { ipcRenderer } from 'electron';
 const { nativeTheme } = require('electron').remote;
 
 /**
@@ -35,7 +36,7 @@ class Themes {
     }
 
     /* Listen to native theme update (in case we have automode on) */
-    nativeTheme.on('updated', () => {
+    ipcRenderer.on('nativetheme-updated', () => {
       if (this.storeVue.auto) {
         this.autoSetTheme();
       }

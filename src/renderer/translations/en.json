@@ -76,6 +76,10 @@
       "new": "New workspace",
       "settings": "Settings",
       "quit": "Quit Heyka"
+    },
+    "gridUser": {
+      "fullscreen": "Fullscreen",
+      "mute": "Mute for all"
     }
   }
 }
