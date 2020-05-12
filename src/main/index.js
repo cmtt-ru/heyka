@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain, protocol } from 'electron';
+import { app, ipcMain, protocol, nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
@@ -53,6 +53,10 @@ function createWindow() {
   DeepLink.bindMainWindow(mainWindow);
   TrayManager.bindMainWindow(mainWindow);
 
+  nativeTheme.on('updated', () => {
+    WindowManager.sendAll('nativetheme-updated');
+  });
+
   ipcMain.on('start-is-ready', () => {
     if (DeepLink.getParams()) {
       mainWindow.webContents.send('deep-link', DeepLink.getParams());
@@ -72,6 +76,9 @@ function createWindow() {
 
   if (!isDevelopment) {
     Autoupdater.init(mainWindow);
+    mainWindow.webContents.on('did-finish-load', () => {
+      WindowManager.closeAll();
+    });
   }
 
   mainWindow.on('close', (event) => {

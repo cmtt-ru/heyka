@@ -28,7 +28,7 @@
         v-for="(user, index) in users" :key="index"
         :style="cellDimensions(index)"
       >
-        <div class="cell__inner" :class="{'cell__inner--talking': user.speaking}">
+        <div class="cell__inner" :class="{'cell__inner--talking': user.speaking && user.microphone}">
 
           <div class="cell__feed"></div>
 
@@ -39,6 +39,7 @@
             icon="more"
             v-popover.click="{name: 'GridUser', data: {userId: user.id}}"
           />
+
            <avatar
           class="cell__avatar"
           :image="user.avatar"
