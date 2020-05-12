@@ -33,6 +33,9 @@ export default {
   },
 
   props: {
+    /**
+     * Arrange buttons in row
+     */
     row: {
       type: Boolean,
       default: false,
