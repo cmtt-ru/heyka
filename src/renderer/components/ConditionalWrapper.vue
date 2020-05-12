@@ -1,7 +1,12 @@
 <script>
 export default {
   functional: true,
-  props: [ 'wrap' ],
+  props: {
+    wrap: {
+      type: Boolean,
+      default: false,
+    },
+  },
   render(h, ctx) {
     const children = ctx.children.filter(vnode => vnode.tag);
 

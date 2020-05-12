@@ -1,22 +1,23 @@
 <template>
   <!-- Simple button  -->
-  <div class="ui-button"
-       v-if="!withIcon"
-       :class="classList"
-       :style="buttonSize"
-       @click="$emit('click')"
+  <div
+    v-if="!withIcon"
+    class="ui-button"
+    :class="classList"
+    :style="buttonSize"
+    @click="$emit('click')"
   >
-    <slot></slot>
+    <slot />
   </div>
 
   <!-- Button with icon  -->
-  <div class="ui-button"
-       v-else-if="withIcon"
-       :class="classList"
-       :style="buttonSize"
-       @click="$emit('click')"
+  <div
+    v-else-if="withIcon"
+    class="ui-button"
+    :class="classList"
+    :style="buttonSize"
+    @click="$emit('click')"
   >
-
     <conditional-wrapper :wrap="needToWrapIcon">
       <div class="ui-button__icon-bg" @click="$emit('click')">
         <svg-icon
@@ -24,17 +25,16 @@
           :name="icon"
           :width="iconSizeComp"
           :height="iconSizeComp"
-        ></svg-icon>
+        />
       </div>
     </conditional-wrapper>
 
     <span class="ui-button__caption">
-      <slot></slot>
+      <slot />
     </span>
 
-    <slot name="right"></slot>
+    <slot name="right" />
   </div>
-
 </template>
 
 <script>

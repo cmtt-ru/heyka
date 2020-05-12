@@ -8,14 +8,23 @@
       class="avatar__image"
       :class="{'avatar__image--square': square}"
       alt=""
-      :src="avatarImage"/>
+      :src="avatarImage">
 
-    <div v-if="statusStyle" class="avatar__status">
-        <div :style="statusStyle" class="avatar__status__dot"></div>
+    <div
+      v-if="statusStyle"
+      class="avatar__status"
+    >
+      <div
+        :style="statusStyle"
+        class="avatar__status__dot"
+      />
     </div>
 
-    <div v-if="onair && mic" class="avatar__onair"></div>
-</div>
+    <div
+      v-if="onair && mic"
+      class="avatar__onair"
+    />
+  </div>
 </template>
 
 <script>
@@ -162,8 +171,8 @@ export default {
             &__dot
                 position absolute
                 box-sizing border-box
-                bottom 0px
-                right 0px
+                bottom 0
+                right 0
                 width 100%
                 height 100%
                 border-radius 50%

@@ -1,5 +1,4 @@
 import { ipcMain, BrowserWindow } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
@@ -25,7 +24,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   skipTaskBar: true,
   webPreferences: {
     nodeIntegration: true,
-    webSecurity: false,
+    webSecurity: true,
   },
 });
 
@@ -159,7 +158,6 @@ class WindowManager {
       //   newWindow.webContents.openDevTools();
       // }
     } else {
-      createProtocol('heyka');
       newWindow.loadURL(prodUrl);
     }
 

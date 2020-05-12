@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain } from 'electron';
+import { app, ipcMain, protocol } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
@@ -17,6 +17,13 @@ console.time('before-load');
 let mainWindow,
     loadingScreenID;
 
+protocol.registerSchemesAsPrivileged([ {
+  scheme: 'heyka',
+  privileges: {
+    secure: true,
+    standard: true,
+  },
+} ]);
 app.setAsDefaultProtocolClient('heyka');
 
 /**

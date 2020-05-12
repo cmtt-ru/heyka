@@ -1,51 +1,92 @@
 <template>
-  <div v-if="user" class="l-p-12">
-
-      <div class="user">
-        <avatar class="user__avatar" :key="user.avatar" :image="user.avatar" :size="40"></avatar>
-        <div v-textfade="user.name" class="user__name">{{user.name}}</div>
-        <!-- <div>TODO: user role</div> -->
-        <div :style="statusStyle" class="user__status"></div>
-        <ui-button
-            :type="7"
-            class="user__more"
-            size="small"
-            @click.native="$emit('more')"
-            icon="more">
-        </ui-button>
+  <div
+    v-if="user"
+    class="l-p-12"
+  >
+    <div class="user">
+      <avatar
+        :key="user.avatar"
+        class="user__avatar"
+        :image="user.avatar"
+        :size="40"
+      />
+      <div
+        v-textfade="user.name"
+        class="user__name"
+      >
+        {{ user.name }}
       </div>
+      <!-- <div>TODO: user role</div> -->
+      <div
+        :style="statusStyle"
+        class="user__status"
+      />
+      <ui-button
+        :type="7"
+        class="user__more"
+        size="small"
+        icon="more"
+        @click.native="$emit('more')"
+      />
+    </div>
 
-      <div v-if="user.onlineStatus==='offline'">
-        <ui-button :type="2" :wide="true" class="user-action">
-          <div>{{texts.inviteBySlackButton}}</div>
-        </ui-button>
+    <div v-if="user.onlineStatus==='offline'">
+      <ui-button
+        :type="2"
+        :wide="true"
+        class="user-action"
+      >
+        <div>{{ texts.inviteBySlackButton }}</div>
+      </ui-button>
+    </div>
+
+    <div v-else>
+      <ui-button
+        :type="1"
+        :wide="true"
+        class="user-action"
+      >
+        <div>{{ texts.privateTalkButton }}</div>
+      </ui-button>
+      <ui-button
+        v-if="selectedChannelName"
+        :type="3"
+        :wide="true"
+        class="user-action"
+      >
+        <div
+          v-textfade
+          class="user-action__inner"
+        >
+          <div>{{ texts.inviteButtonStart }}</div>
+          <svg-icon
+            class="icon-in-button"
+            name="channelOnAir"
+            size="medium"
+          />
+          <div>{{ selectedChannelName }}</div>
+        </div>
+      </ui-button>
+    </div>
+
+    <div class="user-info">
+      <div class="user-info__title">
+        {{ texts.localTime }}
       </div>
-
-      <div v-else>
-        <ui-button :type="1" :wide="true" class="user-action">
-          <div>{{texts.privateTalkButton}}</div>
-        </ui-button>
-        <ui-button v-if="selectedChannelName" :type="3" :wide="true" class="user-action">
-          <div class="user-action__inner" v-textfade>
-            <div>{{texts.inviteButtonStart}}</div>
-            <svg-icon class="icon-in-button" name="channelOnAir" size="medium"/>
-            <div>{{selectedChannelName}}</div>
-          </div>
-
-        </ui-button>
+      <div class="user-info__content">
+        {{ time }}
       </div>
+    </div>
 
-      <div class="user-info">
-        <div class="user-info__title">{{texts.localTime}}</div>
-        <div class="user-info__content">{{time}}</div>
+    <div class="user-info">
+      <div class="user-info__title">
+        {{ texts.email }}
       </div>
-
-      <div class="user-info">
-        <div class="user-info__title">{{texts.email}}</div>
-        <div class="user-info__content user-info__content--email">{{user.email}}</div>
+      <div class="user-info__content user-info__content--email">
+        {{ user.email }}
       </div>
+    </div>
   </div>
-
 </template>
 
 <script>

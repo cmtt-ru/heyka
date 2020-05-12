@@ -1,16 +1,20 @@
 <template>
   <div class="settings-page">
-
     <svg-icon
-       class="about-logo"
+      class="about-logo"
       name="logo"
       width="40"
-      height="35"/>
+      height="35"
+    />
 
-    <div class="about-name">{{info.name}}</div>
-    <div class="about-version">{{texts.version}} {{info.version}}</div>
+    <div class="about-name">
+      {{ info.name }}
+    </div>
+    <div class="about-version">
+      {{ texts.version }} {{ info.version }}
+    </div>
 
-    <a class="about-link">{{texts.notice}}</a>
+    <a class="about-link">{{ texts.notice }}</a>
   </div>
 </template>
 
