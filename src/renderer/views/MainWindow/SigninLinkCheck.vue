@@ -1,10 +1,12 @@
 <template>
-    <div>пожалуйста, подождите...</div>
-
+  <div>пожалуйста, подождите...</div>
 </template>
 
 <script>
 export default {
+  mounted() {
+    this.login(this.$route.query.hash);
+  },
   methods: {
     async login(link) {
       try {
@@ -20,9 +22,6 @@ export default {
         // TODO: show popup with "sorry, link is not valid!" and redirect to login page
       }
     },
-  },
-  mounted() {
-    this.login(this.$route.query.hash);
   },
 };
 </script>

@@ -1,22 +1,38 @@
 <template>
   <div class="l-p-8">
-        <div v-if="user" class="user">
+    <div
+      v-if="user"
+      class="user"
+    >
+      <ui-button
+        :type="7"
+        class="user__status"
+        size="small"
+        :icon="icons.screen"
+        @click.native="switchProp('screen')"
+      />
+      <ui-button
+        :type="7"
+        class="user__status"
+        size="small"
+        :icon="icons.speakers"
+        @click.native="switchProp('speakers')"
+      />
+      <!--             <ui-button :type="7" class="user__status" @click.native="switchProp('microphone')" size="small" :icon="icons.microphone> -->
+      <microphone
+        class="user__status"
+        :active="user.microphone"
+        @click.native="switchProp('microphone')"
+      />
 
-            <ui-button :type="7" class="user__status" @click.native="switchProp('screen')" size="small" :icon="icons.screen"/>
-            <ui-button :type="7" class="user__status" @click.native="switchProp('speakers')" size="small" :icon="icons.speakers"/>
-<!--             <ui-button :type="7" class="user__status" @click.native="switchProp('microphone')" size="small" :icon="icons.microphone> -->
-            <microphone
-              class="user__status"
-              @click.native="switchProp('microphone')"
-              :active="user.microphone"
-            />
-
-            <avatar class="user__avatar" :image="user.avatar" :status="user.onlineStatus" :size="24"/>
-
-        </div>
-
+      <avatar
+        class="user__avatar"
+        :image="user.avatar"
+        :status="user.onlineStatus"
+        :size="24"
+      />
+    </div>
   </div>
-
 </template>
 
 <script>

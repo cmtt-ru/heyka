@@ -1,32 +1,67 @@
 <template>
   <popover>
     <div class="buttons">
-      <ui-button :type="11" icon="add">{{ texts.invite }}</ui-button>
-      <ui-button :type="11" icon="edit">{{ texts.manage }}</ui-button>
+      <ui-button
+        :type="11"
+        icon="add"
+      >
+        {{ texts.invite }}
+      </ui-button>
+      <ui-button
+        :type="11"
+        icon="edit"
+      >
+        {{ texts.manage }}
+      </ui-button>
     </div>
 
-    <div class="delimiter"></div>
+    <div class="delimiter" />
 
     <div class="buttons">
-
-      <ui-button v-for="workspace in workspaces" :key="workspace.id" :type="11">
-        <img class="workspace-avatar" src="workspace.avatar">
+      <ui-button
+        v-for="workspace in workspaces"
+        :key="workspace.id"
+        :type="11"
+      >
+        <img
+          class="workspace-avatar"
+          src="workspace.avatar"
+        >
         {{ workspace.name }}
 
-        <svg-icon v-if="workspace.id === selectedWorkspaceId" class="workspace--checked" name="check"></svg-icon>
+        <svg-icon
+          v-if="workspace.id === selectedWorkspaceId"
+          class="workspace--checked"
+          name="check"
+        />
       </ui-button>
 
-      <ui-button :type="11" icon="workspace">{{ texts.new }}</ui-button>
-
+      <ui-button
+        :type="11"
+        icon="workspace"
+      >
+        {{ texts.new }}
+      </ui-button>
     </div>
 
-    <div class="delimiter"></div>
+    <div class="delimiter" />
 
     <div class="buttons">
       <router-link :to="{name: 'settings'}">
-        <ui-button :type="11" icon="settings">{{ texts.settings }}</ui-button>
+        <ui-button
+          :type="11"
+          icon="settings"
+        >
+          {{ texts.settings }}
+        </ui-button>
       </router-link>
-      <ui-button :type="11" icon="disconnect" @click.native="quitAppHandler">{{ texts.quit }}</ui-button>
+      <ui-button
+        :type="11"
+        icon="disconnect"
+        @click.native="quitAppHandler"
+      >
+        {{ texts.quit }}
+      </ui-button>
     </div>
   </popover>
 </template>
@@ -74,6 +109,10 @@ export default {
     },
   },
 
+  mounted() {
+
+  },
+
   methods: {
     /**
      * Quit app handler
@@ -82,10 +121,6 @@ export default {
     quitAppHandler() {
       electron.remote.app.quit();
     },
-  },
-
-  mounted() {
-
   },
 };
 </script>

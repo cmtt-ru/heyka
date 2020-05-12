@@ -1,16 +1,30 @@
 <template>
-<div
-  class="avatar"
-  :style="containerSize"
->
-    <img loading="lazy" class="avatar__image" alt="" :src="avatarImage"/>
+  <div
+    class="avatar"
+    :style="containerSize"
+  >
+    <img
+      loading="lazy"
+      class="avatar__image"
+      alt=""
+      :src="avatarImage"
+    >
 
-    <div v-if="statusStyle" class="avatar__status">
-        <div :style="statusStyle" class="avatar__status__dot"></div>
+    <div
+      v-if="statusStyle"
+      class="avatar__status"
+    >
+      <div
+        :style="statusStyle"
+        class="avatar__status__dot"
+      />
     </div>
 
-    <div v-if="onair && mic" class="avatar__onair"></div>
-</div>
+    <div
+      v-if="onair && mic"
+      class="avatar__onair"
+    />
+  </div>
 </template>
 
 <script>

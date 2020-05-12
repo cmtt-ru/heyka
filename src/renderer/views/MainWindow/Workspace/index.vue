@@ -1,25 +1,21 @@
 <template>
+  <layout>
+    <template #sidebar-header>
+      <sidebar-header />
+    </template>
 
-    <layout>
+    <template #sidebar-body>
+      <sidebar />
+    </template>
 
-      <template v-slot:sidebar-header>
-        <sidebar-header/>
-      </template>
+    <template #content-header>
+      <workspace-header />
+    </template>
 
-      <template v-slot:sidebar-body>
-          <sidebar/>
-      </template>
-
-      <template v-slot:content-header>
-         <workspace-header/>
-      </template>
-
-      <template v-slot:content-body>
-        <router-view/>
-      </template>
-
-    </layout>
-
+    <template #content-body>
+      <router-view />
+    </template>
+  </layout>
 </template>
 
 <script>

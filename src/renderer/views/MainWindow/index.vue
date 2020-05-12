@@ -2,8 +2,8 @@ import {ipcRenderer} from "electron";
 <template>
   <div>
     <janus />
-    <notifications/>
-    <router-view></router-view>
+    <notifications />
+    <router-view />
   </div>
 </template>
 
@@ -23,10 +23,6 @@ export default {
     return {
       deepLink: {},
     };
-  },
-
-  methods: {
-
   },
 
   async created() {
@@ -51,6 +47,10 @@ export default {
     } catch (e) {
       console.log('redirecting to login');
     }
+  },
+
+  methods: {
+
   },
 };
 </script>

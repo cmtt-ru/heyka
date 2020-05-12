@@ -1,25 +1,34 @@
 <template>
-    <div>
-        <div class="list-item" v-for="(input, index) in listData" :key="input.id" >
-            <ui-input @input="update()" v-model="input.value" :placeholder="placeholder"/>
-            <ui-button
-                class="icon-delete"
-                :type="7"
-                size="small"
-                icon="trash"
-                @click.native="deleteItem(index)"
-            />
-        </div>
-
-        <ui-button
-        v-if="addText"
-            class="add-button"
-            :type="9"
-            icon="add"
-            @click.native="add('')"
-        >{{addText}}
-        </ui-button>
+  <div>
+    <div
+      v-for="(input, index) in listData"
+      :key="input.id"
+      class="list-item"
+    >
+      <ui-input
+        v-model="input.value"
+        :placeholder="placeholder"
+        @input="update()"
+      />
+      <ui-button
+        class="icon-delete"
+        :type="7"
+        size="small"
+        icon="trash"
+        @click.native="deleteItem(index)"
+      />
     </div>
+
+    <ui-button
+      v-if="addText"
+      class="add-button"
+      :type="9"
+      icon="add"
+      @click.native="add('')"
+    >
+      {{ addText }}
+    </ui-button>
+  </div>
 </template>
 
 <script>
