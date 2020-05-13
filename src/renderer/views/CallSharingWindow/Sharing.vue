@@ -1,17 +1,17 @@
 <template>
   <div class="sharing-window">
     <div class="sharing-window__header">
-      <span class="sharing-window__title">Sharing preview</span>
-      <ui-button
-        class="sharing-window__close"
-        :type="7"
-        size="small"
-        icon="close"
-        @click="close"
-      />
-    </div>
+      <div class="sharing-window__header__title">
+        <span class="sharing-window__title">Sharing preview</span>
+        <ui-button
+          class="sharing-window__close"
+          :type="7"
+          size="small"
+          icon="close"
+          @click="close"
+        />
+      </div>
 
-    <div class="sharing-window__content">
       <div class="sharing-window__options">
         <ui-button
           class="l-mr-8"
@@ -31,8 +31,10 @@
           Window
         </ui-button>
       </div>
+    </div>
 
-      <div class="sharing-window__sources">
+    <div class="sharing-window__content scroll">
+      <div class="sharing-window__sources" :count="sources.length">
         <div
           v-for="source in sources"
           :key="source.id"
@@ -54,8 +56,6 @@
           </p>
         </div>
       </div>
-
-      <video ref="video" />
     </div>
 
     <div class="sharing-window__footer">
@@ -92,6 +92,8 @@
 import UiButton from '@components/UiButton';
 import mediaCapturer from '@classes/mediaCapturer';
 import broadcastActions from '@classes/broadcastActions';
+
+const THUMBNAIL_SIZE = 460;
 
 export default {
   components: {
@@ -131,7 +133,7 @@ export default {
 
   methods: {
     async updateSources(type) {
-      this.sources = await mediaCapturer.getSources(type, parseInt('460'));
+      this.sources = await mediaCapturer.getSources(type, THUMBNAIL_SIZE);
     },
 
     async handleSource(source) {
@@ -197,31 +199,44 @@ export default {
   .sharing-window
     display flex
     flex-direction column
-    padding 20px
     height 100vh
     box-sizing border-box
-
-    &__header
-      display flex
-      margin-bottom 16px
-      align-items center
 
     &__close
       margin-left auto
 
+    &__header
+      flex 0 0 auto
+      padding 20px
+
+      &__title
+        display flex
+        align-items center
+
     &__footer
-      margin-top auto
+      flex 0 0 auto
+      padding 20px
+
+    &__content
+      flex 1 1 auto
+      display flex
 
     &__sources
       display flex
       flex-wrap wrap
       align-items center
-      margin-top 12px
       justify-content space-between
+      padding 0 20px
+      flex-grow 1
+
+      &[count="1"]
+        & ^[-2]__source
+          width 100%
 
     &__source
       width calc(50% - 6px)
-      margin-bottom 24px
+      margin 12px 0
+      cursor pointer
 
       &__image
         position relative
@@ -273,10 +288,5 @@ export default {
 
         span
           background var(--button-bg-7)
-
-    &__content
-
-      video
-        width 100%
 
 </style>
