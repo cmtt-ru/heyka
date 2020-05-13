@@ -19,12 +19,16 @@
     @click="$emit('click')"
   >
     <conditional-wrapper :wrap="needToWrapIcon">
-      <div class="ui-button__icon-bg" @click="$emit('click')">
+      <div
+        class="ui-button__icon-bg"
+        @click="$emit('click')"
+      >
         <svg-icon
           class="ui-button__icon"
           :name="icon"
           :width="iconSizeComp"
           :height="iconSizeComp"
+          :stroke="stroke"
         />
       </div>
     </conditional-wrapper>
@@ -130,6 +134,13 @@ export default {
       default: null,
     },
 
+    /**
+     * Icon stroke color
+     */
+    stroke: {
+      type: String,
+      default: undefined,
+    },
   },
 
   computed: {
