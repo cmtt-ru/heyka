@@ -1,10 +1,12 @@
 export default {
-
-  action({ commit }) {
-    return new Promise((resolve, reject) => {
-      commit('SET_SOME', 1);
-      resolve();
-    });
+  /**
+   * Set sharing source id
+   *
+   * @param {function} commit – store commit
+   * @param {string} id – source id
+   * @returns {void}
+   */
+  setSharingSourceId({ commit }, id) {
+    commit('SET_SHARING_SOURCE_ID', id);
   },
-
 };
