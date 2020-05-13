@@ -1,6 +1,8 @@
 <template>
   <div class="sharing-window">
+
     <div class="sharing-window__header">
+
       <div class="sharing-window__header__title">
         <span class="sharing-window__title">Sharing preview</span>
         <ui-button
@@ -8,7 +10,7 @@
           :type="7"
           size="small"
           icon="close"
-          @click="close"
+          @click="closeHandler"
         />
       </div>
 
@@ -31,17 +33,24 @@
           Window
         </ui-button>
       </div>
+
     </div>
 
     <div class="sharing-window__content scroll">
-      <div class="sharing-window__sources" :count="sources.length">
+
+      <div
+        class="sharing-window__sources"
+        :count="sources.length"
+      >
+
         <div
           v-for="source in sources"
           :key="source.id"
           class="sharing-window__source"
-          :class="{'sharing-window__source--active': source.id === selectedSource.id}"
+          :class="activeSourceClass(source.id)"
           @click="handleSource(source)"
         >
+
           <div class="sharing-window__source__image">
             <div class="sharing-window__source__image__wrapper">
               <img
@@ -49,13 +58,17 @@
               >
             </div>
           </div>
+
           <p class="sharing-window__source__name">
             <span>
               {{ source.name }}
             </span>
           </p>
+
         </div>
+
       </div>
+
     </div>
 
     <div class="sharing-window__footer">
@@ -64,7 +77,7 @@
         class="l-mr-8"
         :type="1"
         :disabled="nothingSelected"
-        @click="startSharing"
+        @click="startSharingHandler"
       >
         Start sharing
       </ui-button>
@@ -73,14 +86,14 @@
         v-if="isSharingEnabled"
         class="l-mr-8"
         :type="12"
-        @click="stopSharing"
+        @click="stopSharingHandler"
       >
         Stop sharing
       </ui-button>
 
       <ui-button
         :type="8"
-        @click="close"
+        @click="closeHandler"
       >
         Cancel
       </ui-button>
@@ -103,13 +116,7 @@ export default {
   data() {
     return {
       sources: [],
-      selectedSource: {},
-      sharingType: null,
-
-      localMediaState: {
-        screen: this.$store.getters['me/getMediaState'].screen,
-        camera: this.$store.getters['me/getMediaState'].camera,
-      },
+      selectedSource: null,
     };
   },
 
@@ -119,7 +126,7 @@ export default {
     },
 
     nothingSelected() {
-      return this.localMediaState.screen === false && this.localMediaState.camera === false;
+      return this.selectedSource === null;
     },
 
     mediaState() {
@@ -128,65 +135,54 @@ export default {
   },
 
   async mounted() {
-    this.updateSources('window');
+    this.updateSources('screen');
   },
 
   methods: {
     async updateSources(type) {
       this.sources = await mediaCapturer.getSources(type, THUMBNAIL_SIZE);
+      this.selectedSource = null;
     },
 
-    async handleSource(source) {
+    activeSourceClass(id) {
+      if (this.selectedSource) {
+        return {
+          'sharing-window__source--active': id === this.selectedSource.id,
+        };
+      }
+
+      return false;
+    },
+
+    handleSource(source) {
+      this.selectedSource = source;
       // if (this.$refs.video.srcObject) {
       //   mediaCapturer.destroyStream(this.$refs.video.srcObject);
       // }
-
-      this.selectedSource = source;
-
       // this.$refs.video.srcObject = await mediaCapturer.getStream(source.id);
       // this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
-
-      this.localMediaState.screen = true;
-      this.localMediaState.camera = false;
     },
 
-    async handleCamera() {
-      if (this.$refs.video.srcObject) {
-        mediaCapturer.destroyStream(this.$refs.video.srcObject);
-      }
-
-      this.$refs.video.srcObject = await mediaCapturer.getCameraStream();
-      this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
-
-      this.localMediaState.screen = false;
-      this.localMediaState.camera = true;
-    },
-
-    close() {
+    closeHandler() {
       broadcastActions.dispatch('closeSharingWindow');
     },
 
-    startSharing() {
-      if (this.localMediaState.screen) {
-        broadcastActions.dispatch('janus/setSharingSourceId', this.selectedSource.id);
-      }
-
-      this.setMediaState();
+    startSharingHandler() {
+      broadcastActions.dispatch('janus/setSharingSourceId', this.selectedSource.id);
+      this.setScreenState(true);
+      this.closeHandler();
     },
 
-    stopSharing() {
-      this.localMediaState.screen = false;
-      this.localMediaState.camera = false;
-
+    stopSharingHandler() {
       broadcastActions.dispatch('janus/setSharingSourceId', null);
-
-      this.setMediaState();
+      this.setScreenState(false);
+      this.closeHandler();
     },
 
-    setMediaState() {
+    setScreenState(state) {
       const newState = {
         ...this.mediaState,
-        ...this.localMediaState,
+        ...{ screen: state },
       };
 
       broadcastActions.dispatch('me/setMediaState', newState);
@@ -277,10 +273,10 @@ export default {
 
       &--active
         img
-          box-shadow 0 0 0 3px var(--color-2)
+          box-shadow 0 0 0 3px var(--color-1)
 
         span
-          background var(--color-2)
+          background var(--color-1)
 
       &:hover:not(.sharing-window__source--active)
         img
