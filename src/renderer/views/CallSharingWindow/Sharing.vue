@@ -159,7 +159,7 @@ export default {
 
     startSharing() {
       if (this.localMediaState.screen) {
-        broadcastActions.dispatch('me/setSharingSourceId', this.selectedSource.id);
+        broadcastActions.dispatch('janus/setSharingSourceId', this.selectedSource.id);
       }
 
       this.setMediaState();
@@ -169,7 +169,7 @@ export default {
       this.localMediaState.screen = false;
       this.localMediaState.camera = false;
 
-      broadcastActions.dispatch('me/setSharingSourceId', null);
+      broadcastActions.dispatch('janus/setSharingSourceId', null);
 
       this.setMediaState();
     },

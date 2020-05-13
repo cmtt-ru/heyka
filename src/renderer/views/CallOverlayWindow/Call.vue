@@ -1,11 +1,13 @@
 <template>
   <div class="call-window">
-
-    <div class="call-window__media" v-if="mediaState.screen">
-      <video></video>
+    <div
+      v-if="isMediaSharing"
+      class="call-window__media"
+    >
+      <video />
     </div>
 
-    <call-controls :row="mediaState.screen"></call-controls>
+    <call-controls :row="isMediaSharing" />
   </div>
 </template>
 
@@ -19,6 +21,11 @@ export default {
   computed: {
     mediaState() {
       return this.$store.getters['me/getMediaState'];
+    },
+
+    isMediaSharing() {
+      return false;
+      // return this.mediaState.screen || this.mediaState.camera;
     },
   },
 };
