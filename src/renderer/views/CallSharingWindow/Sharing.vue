@@ -42,7 +42,7 @@
           v-for="source in sources"
           :key="source.id"
           class="sharing-window__source"
-          :class="activeSourceClass(source.id)"
+          :class="{'sharing-window__source--active': isActiveSource(source.id)}"
           @click="handleSource(source)"
         >
           <div class="sharing-window__source__image">
@@ -124,6 +124,10 @@ export default {
       return this.mediaState.screen === true;
     },
 
+    activeSourceId() {
+      return this.$store.state.janus.sharingSourceId;
+    },
+
     /**
      * Determines that nothing source is selected
      * @returns {boolean}
@@ -163,14 +167,18 @@ export default {
      * @param {string} id – source id
      * @returns {boolean|object}}
      */
-    activeSourceClass(id) {
-      if (this.selectedSource) {
-        return {
-          'sharing-window__source--active': id === this.selectedSource.id,
-        };
+    isActiveSource(id) {
+      let state = false;
+
+      if (this.activeSourceId) {
+        state = this.activeSourceId === id;
       }
 
-      return false;
+      if (this.selectedSource) {
+        return this.selectedSource.id === id;
+      }
+
+      return state;
     },
 
     /**
@@ -203,9 +211,9 @@ export default {
      * @returns {void}
      */
     startSharingHandler() {
+      this.closeHandler();
       broadcastActions.dispatch('janus/setSharingSourceId', this.selectedSource.id);
       this.setScreenState(true);
-      this.closeHandler();
     },
 
     /**
@@ -214,9 +222,9 @@ export default {
      * @returns {void}
      */
     stopSharingHandler() {
+      this.closeHandler();
       broadcastActions.dispatch('janus/setSharingSourceId', null);
       this.setScreenState(false);
-      this.closeHandler();
     },
 
     /**
