@@ -1,6 +1,9 @@
 <template>
-  <div class="layout__popover" :style="$themes.getColors('popover')">
-    <router-view></router-view>
+  <div
+    class="layout__popover"
+    :style="$themes.getColors('popover')"
+  >
+    <router-view />
   </div>
 </template>
 

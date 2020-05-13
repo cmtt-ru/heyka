@@ -69,14 +69,12 @@
 <script>
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
-import SvgIcon from '@components/SvgIcon';
 import electron from 'electron';
 
 export default {
   components: {
     Popover,
     UiButton,
-    SvgIcon,
   },
 
   props: {

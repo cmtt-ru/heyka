@@ -1,21 +1,25 @@
 <template>
-  <div class="call-window">
-
+  <div
+    class="call-window"
+  >
     <div class="top-content">
       <div class="left-info">
         <div class="channel-name">
-            <svg-icon name="channel" size="small"/>
-            <span>{{ selectedChannelName }}</span>
-          </div>
+          <svg-icon
+            name="channel"
+            size="small"
+          />
+          <span>{{ selectedChannelName }}</span>
+        </div>
         <div>{{ $tc("call.grid.users", usersCount) }}</div>
       </div>
       <ui-button
-      class="call-buttons__button"
-      :type="7"
-      size="medium"
-      icon="settings"
-      v-popover.click="{name: 'Devices'}"
-    />
+        v-popover.click="{name: 'Devices'}"
+        class="call-buttons__button"
+        :type="7"
+        size="medium"
+        icon="settings"
+      />
     </div>
 
     <div
@@ -23,44 +27,58 @@
       class="cell-grid"
       :style="padding"
     >
-
-      <div class="cell"
-        v-for="(user, index) in users" :key="index"
+      <div
+        v-for="(user, index) in users"
+        :key="index"
+        class="cell"
         :style="cellDimensions(index)"
       >
-        <div class="cell__inner" :class="{'cell__inner--talking': user.speaking && user.microphone}">
-
-          <div class="cell__feed"></div>
+        <div
+          class="cell__inner"
+          :class="{'cell__inner--talking': user.speaking && user.microphone}"
+        >
+          <div class="cell__feed" />
 
           <ui-button
+            v-popover.click="{name: 'GridUser', data: {userId: user.id}}"
             class="cell__more"
             :type="7"
             size="medium"
             icon="more"
-            v-popover.click="{name: 'GridUser', data: {userId: user.id}}"
           />
 
-           <avatar
-          class="cell__avatar"
-          :image="user.avatar"
-          :size="100"
-          square/>
-          <div  class="cell__username">
-            <div v-textfade>{{user.name}}</div>
-            <div v-if="user.id === myId" class="cell__username__you">{{texts.you}}</div>
-            <svg-icon
-                v-if="!user.microphone"
-                class="cell__username__mic-off"
-                name="mic-off"
-                size="small"/>
+          <avatar
+            class="cell__avatar"
+            :image="user.avatar"
+            :size="100"
+            square
+          />
+          <div class="cell__username">
+            <div v-textfade>
+              {{ user.name }}
             </div>
+            <div
+              v-if="user.id === myId"
+              class="cell__username__you"
+            >
+              {{ texts.you }}
+            </div>
+            <svg-icon
+              v-if="!user.microphone"
+              class="cell__username__mic-off"
+              name="mic-off"
+              size="small"
+            />
+          </div>
         </div>
       </div>
-
     </div>
 
-    <call-buttons class="bottom-control" :buttons="['screen', 'speakers', 'microphone', 'leave']"
-  size="large"></call-buttons>
+    <call-buttons
+      class="bottom-control"
+      :buttons="['camera', 'screen', 'speakers', 'microphone', 'leave']"
+      size="large"
+    />
   </div>
 </template>
 
@@ -82,6 +100,7 @@ export default {
   },
   data() {
     return {
+      mounted: false,
       currentGrid: [],
       avatarWidth: null,
       padding: {},
@@ -161,6 +180,19 @@ export default {
     },
 
   },
+  watch: {
+    usersCount: function () {
+      this.resize();
+    },
+  },
+  mounted() {
+    this.mounted = true;
+    window.addEventListener('resize', this.resize, false); // TODO: add small debounce for performance
+    this.resize();
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.resize, false);
+  },
   methods: {
 
     cellDimensions(index) {
@@ -172,6 +204,10 @@ export default {
 
     resize() {
       const bounds = document.getElementById('cell-grid');
+
+      if (!bounds || !this.grids) {
+        return;
+      }
       const boundHeight = bounds.offsetHeight - PADDING * 2;
       const boundWidth = bounds.offsetWidth - PADDING * 2;
       const closest = this.findClosest(boundHeight / boundWidth, this.grids);
@@ -192,13 +228,6 @@ export default {
         return Math.abs(b.ratio - val) < Math.abs(a.ratio - val) ? b : a;
       });
     },
-  },
-  mounted() {
-    window.addEventListener('resize', this.resize, false); // TODO: add small debounce for performance
-    this.resize();
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.resize, false);
   },
 };
 </script>
