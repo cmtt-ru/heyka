@@ -1,8 +1,7 @@
 <template>
   <div class="sharing-window">
-
     <div class="sharing-window__header">
-      <span class="sharing-window__title">Sharing</span>
+      <span class="sharing-window__title">Sharing preview</span>
       <ui-button
         class="sharing-window__close"
         :type="7"
@@ -13,75 +12,79 @@
     </div>
 
     <div class="sharing-window__content">
-
       <div class="sharing-window__options">
-
         <ui-button
           class="l-mr-8"
           :type="3"
           size="small"
           @click="updateSources('screen')"
-        >Screen</ui-button>
-
-        <ui-button
-          class="l-mr-8"
-          :type="3"
-          size="small"
-          @click="handleCamera"
-        >Camera</ui-button>
-
-        <ui-button
-          class="l-mr-8"
-          :type="3"
-          size="small"
-        >Screen and camera</ui-button>
+        >
+          Screen
+        </ui-button>
 
         <ui-button
           class="l-mr-8"
           :type="3"
           size="small"
           @click="updateSources('window')"
-        >Window</ui-button>
-
+        >
+          Window
+        </ui-button>
       </div>
 
       <div class="sharing-window__sources">
-        <img
+        <div
           v-for="source in sources"
-          :src="source.thumbnail.toDataURL()"
           :key="source.id"
-          :class="{active: source.id === selectedSource.id}"
+          class="sharing-window__source"
+          :class="{'sharing-window__source--active': source.id === selectedSource.id}"
           @click="handleSource(source)"
         >
+          <div class="sharing-window__source__image">
+            <div class="sharing-window__source__image__wrapper">
+              <img
+                :src="source.thumbnail.toDataURL()"
+              >
+            </div>
+          </div>
+          <p class="sharing-window__source__name">
+            <span>
+              {{ source.name }}
+            </span>
+          </p>
+        </div>
       </div>
 
-      <video ref="video"/>
-
+      <video ref="video" />
     </div>
 
     <div class="sharing-window__footer">
-
       <ui-button
         v-if="!isSharingEnabled"
         class="l-mr-8"
         :type="1"
         :disabled="nothingSelected"
         @click="startSharing"
-      >Start sharing</ui-button>
+      >
+        Start sharing
+      </ui-button>
 
       <ui-button
         v-if="isSharingEnabled"
         class="l-mr-8"
         :type="12"
         @click="stopSharing"
-      >Stop sharing</ui-button>
+      >
+        Stop sharing
+      </ui-button>
 
       <ui-button
         :type="8"
         @click="close"
-      >Cancel</ui-button>
+      >
+        Cancel
+      </ui-button>
     </div>
-
   </div>
 </template>
 
@@ -122,20 +125,24 @@ export default {
     },
   },
 
+  async mounted() {
+    this.updateSources('window');
+  },
+
   methods: {
     async updateSources(type) {
-      this.sources = await mediaCapturer.getSources(type);
+      this.sources = await mediaCapturer.getSources(type, parseInt('460'));
     },
 
     async handleSource(source) {
-      if (this.$refs.video.srcObject) {
-        mediaCapturer.destroyStream(this.$refs.video.srcObject);
-      }
+      // if (this.$refs.video.srcObject) {
+      //   mediaCapturer.destroyStream(this.$refs.video.srcObject);
+      // }
 
       this.selectedSource = source;
 
-      this.$refs.video.srcObject = await mediaCapturer.getStream(source.id);
-      this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
+      // this.$refs.video.srcObject = await mediaCapturer.getStream(source.id);
+      // this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
 
       this.localMediaState.screen = true;
       this.localMediaState.camera = false;
@@ -183,10 +190,6 @@ export default {
       broadcastActions.dispatch('me/setMediaState', newState);
     },
   },
-
-  async mounted() {
-    this.updateSources('screen');
-  },
 };
 </script>
 
@@ -212,17 +215,64 @@ export default {
     &__sources
       display flex
       flex-wrap wrap
-      align-items: center
+      align-items center
       margin-top 12px
+      justify-content space-between
 
-      img
-        border 2px solid var(--color-4)
-        margin 0 8px 8px 0
-        border-radius 4px
-        width 75px
+    &__source
+      width calc(50% - 6px)
+      margin-bottom 24px
 
-        &.active
-          border-color var(--color-2)
+      &__image
+        position relative
+        padding-bottom 62%
+
+        &__wrapper
+          position absolute
+          left 0
+          right 0
+          width 100%
+          height 100%
+          display flex
+          flex-direction column
+          align-items center
+          justify-content center
+
+          img
+            border-radius 4px
+            max-width 100%
+            max-height 100%
+
+      &__name
+        font-size 12px
+        line-height 20px
+        text-align center
+        margin-top 12px
+        padding 0 24px
+
+        span
+          display inline-block
+          border-radius 20px
+          padding 0 12px
+          overflow hidden
+          text-overflow ellipsis
+          white-space nowrap
+          max-width 100%
+          box-sizing border-box
+
+      &--active
+        img
+          box-shadow 0 0 0 3px var(--color-2)
+
+        span
+          background var(--color-2)
+
+      &:hover:not(.sharing-window__source--active)
+        img
+          box-shadow 0 0 0 3px var(--color-4)
+
+        span
+          background var(--button-bg-7)
 
     &__content
 
