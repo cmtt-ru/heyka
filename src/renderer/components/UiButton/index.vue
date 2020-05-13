@@ -28,6 +28,7 @@
           :name="icon"
           :width="iconSizeComp"
           :height="iconSizeComp"
+          :stroke="stroke"
         />
       </div>
     </conditional-wrapper>
@@ -133,6 +134,13 @@ export default {
       default: null,
     },
 
+    /**
+     * Icon stroke color
+     */
+    stroke: {
+      type: String,
+      default: undefined,
+    },
   },
 
   computed: {
