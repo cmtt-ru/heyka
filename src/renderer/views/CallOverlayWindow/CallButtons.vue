@@ -1,8 +1,11 @@
 <template>
-  <div class="call-buttons" :size="size">
+  <div
+    class="call-buttons"
+    :size="size"
+  >
     <ui-button
-      class="call-buttons__button"
       v-if="buttons.includes('camera')"
+      class="call-buttons__button"
       :type="7"
       :size="size"
       icon="cast"
@@ -10,8 +13,8 @@
     />
 
     <ui-button
-      class="call-buttons__button"
       v-if="buttons.includes('screen')"
+      class="call-buttons__button"
       :type="7"
       :size="size"
       icon="screencast"
@@ -19,26 +22,25 @@
     />
 
     <ui-button
-      class="call-buttons__button"
       v-if="buttons.includes('speakers')"
+      class="call-buttons__button"
       :type="7"
       :size="size"
       :icon="buttonIcons.speakers"
       @click.native="switchProp('speakers')"
     />
 
-    <ui-button
-      class="call-buttons__button"
+    <microphone
       v-if="buttons.includes('microphone')"
-      :type="7"
+      class="call-buttons__button"
+      :active="mediaState.microphone"
       :size="size"
-      :icon="buttonIcons.microphone"
-      @click="switchProp('microphone')"
+      @click.native="switchProp('microphone')"
     />
 
     <ui-button
-      class="call-buttons__button"
       v-if="buttons.includes('grid')"
+      class="call-buttons__button"
       :type="7"
       :size="size"
       icon="grid"
@@ -46,8 +48,8 @@
     />
 
     <ui-button
-      class="call-buttons__button call-buttons__button--disconnect"
       v-if="buttons.includes('leave')"
+      class="call-buttons__button call-buttons__button--disconnect"
       :type="7"
       :size="size"
       icon="disconnect"
@@ -59,6 +61,7 @@
 <script>
 import UiButton from '@components/UiButton';
 import broadcastActions from '@classes/broadcastActions';
+import Microphone from '@components/Microphone';
 
 /**
  * Map media state points to corresponding icons
@@ -77,6 +80,7 @@ const ICON_MAP = {
 export default {
   components: {
     UiButton,
+    Microphone,
   },
 
   props: {

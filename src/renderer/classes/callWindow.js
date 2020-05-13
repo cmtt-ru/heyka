@@ -5,6 +5,7 @@ const OVERLAY_WINDOW_SIZES = {
   default: {
     width: 228,
     height: 96,
+    skipTaskbar: true,
   },
   mediaSharing: {
     width: 340,
@@ -154,6 +155,22 @@ class CallWindow {
     this.hideGrid();
     this.hideSharing();
     this.hideOverlay();
+  }
+
+  /**
+   * Close ALL call windows
+   * @returns {void}
+   */
+  closeAll() {
+    if (this.gridWindow) {
+      this.gridWindow.close();
+    }
+    if (this.sharingWindow) {
+      this.sharingWindow.close();
+    }
+    if (this.overlayWindow) {
+      this.overlayWindow.close();
+    }
   }
 
   /**

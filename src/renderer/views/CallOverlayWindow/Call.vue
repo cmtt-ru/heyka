@@ -1,11 +1,16 @@
 <template>
   <div class="call-window">
-
-    <div class="call-window__media" v-if="mediaState.screen">
-      <video></video>
+    <div
+      v-if="mediaState.screen"
+      class="call-window__media"
+    >
+      <video />
     </div>
 
-    <call-controls :row="mediaState.screen"></call-controls>
+    <call-controls
+      :row="mediaState.screen"
+      :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
+    />
   </div>
 </template>
 

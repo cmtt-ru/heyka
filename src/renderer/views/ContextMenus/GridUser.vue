@@ -1,12 +1,14 @@
 <template>
   <popover>
     <div class="buttons">
-      <ui-button
-        :type="11"
-        @click="fullscreenClickHandler"
-      >
-        {{ texts.fullscreen }}
-      </ui-button>
+      <router-link :to="'/call-window/fullscreen/'+userId">
+        <ui-button
+          :type="11"
+          @click="fullscreenClickHandler"
+        >
+          {{ texts.fullscreen }}
+        </ui-button>
+      </router-link>
       <ui-button
         :type="11"
         @click="muteClickHandler"
@@ -37,16 +39,18 @@ export default {
     },
   },
 
-  methods: {
+  computed: {
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
      */
     texts() {
-      console.log(this.$t);
-
-      return this.$t('popover.gridUser');
+      return this.$t('popover.griduser');
     },
+  },
+
+  methods: {
+
     /**
      * fullscreen click handler
      * @returns {void}

@@ -49,6 +49,7 @@ const PushWindowPoke = () => import(/* webpackChunkName: "push" */ '@views/PushW
 
 const CallWindow = () => import(/* webpackChunkName: "call" */ '@views/CallWindow');
 const CallWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallWindow/Grid');
+const CallWindowFullScreen = () => import(/* webpackChunkName: "call" */ '@views/CallWindow/FullScreen');
 
 const CallOverlayWindow = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow');
 const CallOverlayWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow/Call');
@@ -234,6 +235,10 @@ const routes = [
       {
         path: '',
         component: CallWindowMain,
+      },
+      {
+        path: 'fullscreen/:id',
+        component: CallWindowFullScreen,
       },
     ],
   },

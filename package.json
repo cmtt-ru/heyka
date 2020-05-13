@@ -22,6 +22,7 @@
     "chai-as-promised": "^7.1.1",
     "core-js": "^3.6.5",
     "dateformat": "^3.0.3",
+    "draggable-vue-directive": "^2.1.0",
     "electron-builder": "^22.6.0",
     "electron-store": "^5.1.1",
     "electron-updater": "^2.2.4",

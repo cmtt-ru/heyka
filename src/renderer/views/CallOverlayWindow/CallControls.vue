@@ -1,24 +1,33 @@
 <template>
-    <div class="call-controls" :class="{'call-controls--row': row}">
+  <div
+    class="call-controls"
+    :class="{'call-controls--row': row}"
+  >
+    <div class="call-controls__row">
+      <img
+        class="call-controls__avatar"
+        :src="speakingUserAvatar|formImageUrl(36)"
+      >
 
-      <div class="call-controls__row">
-        <img class="call-controls__avatar" :src="speakingUserAvatar|formImageUrl(36)">
+      <div class="call-controls__col">
+        <p class="call-controls__user-name">
+          {{ speakingUserName }}
+        </p>
 
-        <div class="call-controls__col">
-          <p class="call-controls__user-name">{{ speakingUserName }}</p>
-
-          <div class="call-controls__channel">
-            <svg-icon name="channel" size="small"/>
-            <span>{{ selectedChannelName }}</span>
-          </div>
+        <div class="call-controls__channel">
+          <svg-icon
+            name="channel"
+            size="small"
+          />
+          <span>{{ selectedChannelName }}</span>
         </div>
       </div>
-
-      <div class="call-controls__row call-controls__row--controls">
-        <call-buttons :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"></call-buttons>
-      </div>
-
     </div>
+
+    <div class="call-controls__row call-controls__row--controls">
+      <call-buttons :buttons="buttons" />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -39,6 +48,17 @@ export default {
     row: {
       type: Boolean,
       default: false,
+    },
+
+    /**
+     * Buttons list
+     * @example ['screen', 'camera', 'speakers', 'microphone', 'grid', 'leave']
+     */
+    buttons: {
+      type: Array,
+      default: function () {
+        return ['speakers', 'microphone', 'grid', 'leave'];
+      },
     },
   },
 
