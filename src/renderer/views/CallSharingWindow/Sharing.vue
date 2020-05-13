@@ -115,7 +115,7 @@ export default {
 
   computed: {
     isSharingEnabled() {
-      return this.mediaState.screen === true || this.mediaState.camera === true;
+      return this.mediaState.screen === true;
     },
 
     nothingSelected() {

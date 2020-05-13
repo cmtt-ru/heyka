@@ -4,12 +4,20 @@
     :size="size"
   >
     <ui-button
+      v-if="buttons.includes('microphone')"
+      class="call-buttons__button"
+      :type="7"
+      :size="size"
+      :icon="buttonIcons.microphone"
+      @click="switchProp('microphone')"
+    />
+
+    <ui-button
       v-if="buttons.includes('camera')"
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonProp.camera.icon"
-      :stroke="buttonProp.camera.color"
+      :icon="buttonIcons.camera"
       @click="switchProp('camera')"
     />
 
@@ -18,8 +26,7 @@
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonProp.screen.icon"
-      :stroke="buttonProp.screen.color"
+      :icon="buttonIcons.screen"
       @click="sharingHandler"
     />
 
@@ -28,17 +35,8 @@
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonProp.speakers"
+      :icon="buttonIcons.speakers"
       @click.native="switchProp('speakers')"
-    />
-
-    <ui-button
-      v-if="buttons.includes('microphone')"
-      class="call-buttons__button"
-      :type="7"
-      :size="size"
-      :icon="buttonProp.microphone"
-      @click="switchProp('microphone')"
     />
 
     <ui-button
@@ -78,24 +76,12 @@ const ICON_MAP = {
     false: 'headphones-off',
   },
   camera: {
-    true: {
-      icon: 'cast',
-      color: 'var(--color-1)',
-    },
-    false: {
-      icon: 'cast',
-      color: undefined,
-    },
+    true: 'video',
+    false: 'video-off',
   },
   screen: {
-    true: {
-      icon: 'screencast',
-      color: 'var(--color-1)',
-    },
-    false: {
-      icon: 'screencast',
-      color: undefined,
-    },
+    true: 'screencast',
+    false: 'screencast-off',
   },
 };
 
@@ -138,7 +124,7 @@ export default {
      * Determine which icons to show
      * @returns {object}
      */
-    buttonProp() {
+    buttonIcons() {
       return {
         microphone: ICON_MAP.microphone[this.mediaState.microphone],
         speakers: ICON_MAP.speakers[this.mediaState.speakers],
