@@ -3,13 +3,21 @@
     class="call-buttons"
     :size="size"
   >
+    <microphone
+      v-if="buttons.includes('microphone')"
+      class="call-buttons__button"
+      :active="mediaState.microphone"
+      :size="size"
+      @click.native="switchProp('microphone')"
+    />
+
     <ui-button
       v-if="buttons.includes('camera')"
       class="call-buttons__button"
       :type="7"
       :size="size"
-      icon="cast"
-      @click="sharingHandler"
+      :icon="buttonIcons.camera"
+      @click="switchProp('camera')"
     />
 
     <ui-button
@@ -17,7 +25,7 @@
       class="call-buttons__button"
       :type="7"
       :size="size"
-      icon="screencast"
+      :icon="buttonIcons.screen"
       @click="sharingHandler"
     />
 
@@ -28,14 +36,6 @@
       :size="size"
       :icon="buttonIcons.speakers"
       @click.native="switchProp('speakers')"
-    />
-
-    <microphone
-      v-if="buttons.includes('microphone')"
-      class="call-buttons__button"
-      :active="mediaState.microphone"
-      :size="size"
-      @click.native="switchProp('microphone')"
     />
 
     <ui-button
@@ -74,6 +74,14 @@ const ICON_MAP = {
   speakers: {
     true: 'headphones',
     false: 'headphones-off',
+  },
+  camera: {
+    true: 'video',
+    false: 'video-off',
+  },
+  screen: {
+    true: 'screencast',
+    false: 'screencast-off',
   },
 };
 
@@ -121,6 +129,8 @@ export default {
       return {
         microphone: ICON_MAP.microphone[this.mediaState.microphone],
         speakers: ICON_MAP.speakers[this.mediaState.speakers],
+        camera: ICON_MAP.camera[this.mediaState.camera],
+        screen: ICON_MAP.screen[this.mediaState.screen],
       };
     },
   },
@@ -161,6 +171,14 @@ export default {
      */
     sharingHandler() {
       broadcastActions.dispatch('openSharingWindow');
+    },
+
+    /**
+     * Camera button handler
+     * @returns {void}
+     */
+    cameraHandler() {
+      console.log('camera click');
     },
   },
 };

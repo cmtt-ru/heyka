@@ -1,87 +1,94 @@
 <template>
   <div class="sharing-window">
-
     <div class="sharing-window__header">
-      <span class="sharing-window__title">Sharing</span>
-      <ui-button
-        class="sharing-window__close"
-        :type="7"
-        size="small"
-        icon="close"
-        @click="close"
-      />
-    </div>
-
-    <div class="sharing-window__content">
+      <div class="sharing-window__header__title">
+        <span class="sharing-window__title">Sharing preview</span>
+        <ui-button
+          class="sharing-window__close"
+          :type="7"
+          size="small"
+          icon="close"
+          @click="closeHandler"
+        />
+      </div>
 
       <div class="sharing-window__options">
-
         <ui-button
           class="l-mr-8"
           :type="3"
           size="small"
           @click="updateSources('screen')"
-        >Screen</ui-button>
-
-        <ui-button
-          class="l-mr-8"
-          :type="3"
-          size="small"
-          @click="handleCamera"
-        >Camera</ui-button>
-
-        <ui-button
-          class="l-mr-8"
-          :type="3"
-          size="small"
-        >Screen and camera</ui-button>
+        >
+          Screen
+        </ui-button>
 
         <ui-button
           class="l-mr-8"
           :type="3"
           size="small"
           @click="updateSources('window')"
-        >Window</ui-button>
-
+        >
+          Window
+        </ui-button>
       </div>
+    </div>
 
-      <div class="sharing-window__sources">
-        <img
+    <div class="sharing-window__content scroll">
+      <div
+        class="sharing-window__sources"
+        :count="sources.length"
+      >
+        <div
           v-for="source in sources"
-          :src="source.thumbnail.toDataURL()"
           :key="source.id"
-          :class="{active: source.id === selectedSource.id}"
+          class="sharing-window__source"
+          :class="{'sharing-window__source--active': isActiveSource(source.id)}"
           @click="handleSource(source)"
         >
+          <div class="sharing-window__source__image">
+            <div class="sharing-window__source__image__wrapper">
+              <img
+                :src="source.thumbnail.toDataURL()"
+              >
+            </div>
+          </div>
+
+          <p class="sharing-window__source__name">
+            <span>
+              {{ source.name }}
+            </span>
+          </p>
+        </div>
       </div>
-
-      <video ref="video"/>
-
     </div>
 
     <div class="sharing-window__footer">
-
       <ui-button
         v-if="!isSharingEnabled"
         class="l-mr-8"
         :type="1"
         :disabled="nothingSelected"
-        @click="startSharing"
-      >Start sharing</ui-button>
+        @click="startSharingHandler"
+      >
+        Start sharing
+      </ui-button>
 
       <ui-button
         v-if="isSharingEnabled"
         class="l-mr-8"
         :type="12"
-        @click="stopSharing"
-      >Stop sharing</ui-button>
+        @click="stopSharingHandler"
+      >
+        Stop sharing
+      </ui-button>
 
       <ui-button
         :type="8"
-        @click="close"
-      >Cancel</ui-button>
+        @click="closeHandler"
+      >
+        Cancel
+      </ui-button>
     </div>
-
   </div>
 </template>
 
@@ -89,6 +96,12 @@
 import UiButton from '@components/UiButton';
 import mediaCapturer from '@classes/mediaCapturer';
 import broadcastActions from '@classes/broadcastActions';
+
+/**
+ * Size of the source thumbnails
+ * @type {number}
+ */
+const THUMBNAIL_SIZE = 460;
 
 export default {
   components: {
@@ -98,94 +111,136 @@ export default {
   data() {
     return {
       sources: [],
-      selectedSource: {},
-      sharingType: null,
-
-      localMediaState: {
-        screen: this.$store.getters['me/getMediaState'].screen,
-        camera: this.$store.getters['me/getMediaState'].camera,
-      },
+      selectedSource: null,
     };
   },
 
   computed: {
+    /**
+     * Is sharing enabled
+     * @returns {boolean}
+     */
     isSharingEnabled() {
-      return this.mediaState.screen === true || this.mediaState.camera === true;
+      return this.mediaState.screen === true;
     },
 
+    activeSourceId() {
+      return this.$store.state.janus.sharingSourceId;
+    },
+
+    /**
+     * Determines that nothing source is selected
+     * @returns {boolean}
+     */
     nothingSelected() {
-      return this.localMediaState.screen === false && this.localMediaState.camera === false;
+      return this.selectedSource === null;
     },
 
+    /**
+     * User media state
+     * @returns {MediaState}
+     */
     mediaState() {
       return this.$store.getters['me/getMediaState'];
     },
   },
 
+  async mounted() {
+    this.updateSources('screen');
+  },
+
   methods: {
+    /**
+     * Update list of available sources for stream
+     *
+     * @param {string} type – source type. Can be `screen` or `window`.
+     * @returns {Promise<void>}
+     */
     async updateSources(type) {
-      this.sources = await mediaCapturer.getSources(type);
+      this.sources = await mediaCapturer.getSources(type, THUMBNAIL_SIZE);
+      this.selectedSource = null;
     },
 
-    async handleSource(source) {
-      if (this.$refs.video.srcObject) {
-        mediaCapturer.destroyStream(this.$refs.video.srcObject);
+    /**
+     * Return's active source class by source id
+     *
+     * @param {string} id – source id
+     * @returns {boolean|object}}
+     */
+    isActiveSource(id) {
+      let state = false;
+
+      if (this.activeSourceId) {
+        state = this.activeSourceId === id;
       }
 
+      if (this.selectedSource) {
+        return this.selectedSource.id === id;
+      }
+
+      return state;
+    },
+
+    /**
+     * Handle source
+     *
+     * @param {object} source – source object
+     * @returns {void}
+     */
+    handleSource(source) {
       this.selectedSource = source;
-
-      this.$refs.video.srcObject = await mediaCapturer.getStream(source.id);
-      this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
-
-      this.localMediaState.screen = true;
-      this.localMediaState.camera = false;
+      // if (this.$refs.video.srcObject) {
+      //   mediaCapturer.destroyStream(this.$refs.video.srcObject);
+      // }
+      // this.$refs.video.srcObject = await mediaCapturer.getStream(source.id);
+      // this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
     },
 
-    async handleCamera() {
-      if (this.$refs.video.srcObject) {
-        mediaCapturer.destroyStream(this.$refs.video.srcObject);
-      }
-
-      this.$refs.video.srcObject = await mediaCapturer.getCameraStream();
-      this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
-
-      this.localMediaState.screen = false;
-      this.localMediaState.camera = true;
-    },
-
-    close() {
+    /**
+     * Close handler
+     *
+     * @returns {void}
+     */
+    closeHandler() {
       broadcastActions.dispatch('closeSharingWindow');
     },
 
-    startSharing() {
-      if (this.localMediaState.screen) {
-        broadcastActions.dispatch('me/setSharingSourceId', this.selectedSource.id);
-      }
-
-      this.setMediaState();
+    /**
+     * Start sharing
+     *
+     * @returns {void}
+     */
+    startSharingHandler() {
+      this.closeHandler();
+      broadcastActions.dispatch('janus/setSharingSourceId', this.selectedSource.id);
+      this.setScreenState(true);
     },
 
-    stopSharing() {
-      this.localMediaState.screen = false;
-      this.localMediaState.camera = false;
-
-      broadcastActions.dispatch('me/setSharingSourceId', null);
-
-      this.setMediaState();
+    /**
+     * Stop sharing
+     *
+     * @returns {void}
+     */
+    stopSharingHandler() {
+      this.closeHandler();
+      broadcastActions.dispatch('janus/setSharingSourceId', null);
+      this.setScreenState(false);
     },
 
-    setMediaState() {
+    /**
+     * Set's screen media state
+     *
+     * @param {boolean} state – screen state
+     * @returns {void}
+     */
+    setScreenState(state) {
       const newState = {
         ...this.mediaState,
-        ...this.localMediaState,
+        ...{ screen: state },
       };
 
       broadcastActions.dispatch('me/setMediaState', newState);
     },
-  },
-
-  async mounted() {
-    this.updateSources('screen');
   },
 };
 </script>
@@ -194,39 +249,94 @@ export default {
   .sharing-window
     display flex
     flex-direction column
-    padding 20px
     height 100vh
     box-sizing border-box
-
-    &__header
-      display flex
-      margin-bottom 16px
-      align-items center
 
     &__close
       margin-left auto
 
+    &__header
+      flex 0 0 auto
+      padding 20px
+
+      &__title
+        display flex
+        align-items center
+
     &__footer
-      margin-top auto
+      flex 0 0 auto
+      padding 20px
+
+    &__content
+      flex 1 1 auto
+      display flex
 
     &__sources
       display flex
       flex-wrap wrap
-      align-items: center
-      margin-top 12px
+      align-items center
+      justify-content space-between
+      padding 0 20px
+      flex-grow 1
 
-      img
-        border 2px solid var(--color-4)
-        margin 0 8px 8px 0
-        border-radius 4px
-        width 75px
+      &[count="1"]
+        & ^[-2]__source
+          width 100%
 
-        &.active
-          border-color var(--color-2)
+    &__source
+      width calc(50% - 6px)
+      margin 12px 0
+      cursor pointer
 
-    &__content
+      &__image
+        position relative
+        padding-bottom 62%
 
-      video
-        width 100%
+        &__wrapper
+          position absolute
+          left 0
+          right 0
+          width 100%
+          height 100%
+          display flex
+          flex-direction column
+          align-items center
+          justify-content center
+
+          img
+            border-radius 4px
+            max-width 100%
+            max-height 100%
+
+      &__name
+        font-size 12px
+        line-height 20px
+        text-align center
+        margin-top 12px
+        padding 0 24px
+
+        span
+          display inline-block
+          border-radius 20px
+          padding 0 12px
+          overflow hidden
+          text-overflow ellipsis
+          white-space nowrap
+          max-width 100%
+          box-sizing border-box
+
+      &--active
+        img
+          box-shadow 0 0 0 3px var(--color-1)
+
+        span
+          background var(--color-1)
+
+      &:hover:not(.sharing-window__source--active)
+        img
+          box-shadow 0 0 0 3px var(--color-4)
+
+        span
+          background var(--button-bg-7)
 
 </style>
