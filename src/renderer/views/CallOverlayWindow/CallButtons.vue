@@ -80,21 +80,21 @@ const ICON_MAP = {
   camera: {
     true: {
       icon: 'cast',
-      color: undefined,
+      color: 'var(--color-1)',
     },
     false: {
       icon: 'cast',
-      color: 'var(--color-1)',
+      color: undefined,
     },
   },
   screen: {
     true: {
       icon: 'screencast',
-      color: undefined,
+      color: 'var(--color-1)',
     },
     false: {
       icon: 'screencast',
-      color: 'var(--color-1)',
+      color: undefined,
     },
   },
 };
