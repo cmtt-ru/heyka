@@ -9,14 +9,6 @@ const THUMBNAIL_SIZE = 150;
  */
 class MediaCapturer extends EventEmitter {
   /**
-   * Device constructor
-   */
-  constructor() {
-    super();
-    this.a = 1;
-  }
-
-  /**
    * Get media sources
    *
    * @param {string} type – source type. Can be 'screen' or 'window'
