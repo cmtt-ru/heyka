@@ -1,8 +1,6 @@
 <template>
   <div class="sharing-window">
-
     <div class="sharing-window__header">
-
       <div class="sharing-window__header__title">
         <span class="sharing-window__title">Sharing preview</span>
         <ui-button
@@ -33,16 +31,13 @@
           Window
         </ui-button>
       </div>
-
     </div>
 
     <div class="sharing-window__content scroll">
-
       <div
         class="sharing-window__sources"
         :count="sources.length"
       >
-
         <div
           v-for="source in sources"
           :key="source.id"
@@ -50,7 +45,6 @@
           :class="activeSourceClass(source.id)"
           @click="handleSource(source)"
         >
-
           <div class="sharing-window__source__image">
             <div class="sharing-window__source__image__wrapper">
               <img
@@ -64,11 +58,8 @@
               {{ source.name }}
             </span>
           </p>
-
         </div>
-
       </div>
-
     </div>
 
     <div class="sharing-window__footer">
@@ -106,6 +97,10 @@ import UiButton from '@components/UiButton';
 import mediaCapturer from '@classes/mediaCapturer';
 import broadcastActions from '@classes/broadcastActions';
 
+/**
+ * Size of the source thumbnails
+ * @type {number}
+ */
 const THUMBNAIL_SIZE = 460;
 
 export default {
@@ -121,14 +116,26 @@ export default {
   },
 
   computed: {
+    /**
+     * Is sharing enabled
+     * @returns {boolean}
+     */
     isSharingEnabled() {
       return this.mediaState.screen === true;
     },
 
+    /**
+     * Determines that nothing source is selected
+     * @returns {boolean}
+     */
     nothingSelected() {
       return this.selectedSource === null;
     },
 
+    /**
+     * User media state
+     * @returns {MediaState}
+     */
     mediaState() {
       return this.$store.getters['me/getMediaState'];
     },
@@ -139,11 +146,23 @@ export default {
   },
 
   methods: {
+    /**
+     * Update list of available sources for stream
+     *
+     * @param {string} type – source type. Can be `screen` or `window`.
+     * @returns {Promise<void>}
+     */
     async updateSources(type) {
       this.sources = await mediaCapturer.getSources(type, THUMBNAIL_SIZE);
       this.selectedSource = null;
     },
 
+    /**
+     * Return's active source class by source id
+     *
+     * @param {string} id – source id
+     * @returns {boolean|object}}
+     */
     activeSourceClass(id) {
       if (this.selectedSource) {
         return {
@@ -154,6 +173,12 @@ export default {
       return false;
     },
 
+    /**
+     * Handle source
+     *
+     * @param {object} source – source object
+     * @returns {void}
+     */
     handleSource(source) {
       this.selectedSource = source;
       // if (this.$refs.video.srcObject) {
@@ -163,22 +188,43 @@ export default {
       // this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
     },
 
+    /**
+     * Close handler
+     *
+     * @returns {void}
+     */
     closeHandler() {
       broadcastActions.dispatch('closeSharingWindow');
     },
 
+    /**
+     * Start sharing
+     *
+     * @returns {void}
+     */
     startSharingHandler() {
       broadcastActions.dispatch('janus/setSharingSourceId', this.selectedSource.id);
       this.setScreenState(true);
       this.closeHandler();
     },
 
+    /**
+     * Stop sharing
+     *
+     * @returns {void}
+     */
     stopSharingHandler() {
       broadcastActions.dispatch('janus/setSharingSourceId', null);
       this.setScreenState(false);
       this.closeHandler();
     },
 
+    /**
+     * Set's screen media state
+     *
+     * @param {boolean} state – screen state
+     * @returns {void}
+     */
     setScreenState(state) {
       const newState = {
         ...this.mediaState,
