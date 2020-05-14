@@ -112,7 +112,7 @@ export default {
         return this.speakingUser.name;
       }
 
-      return this.user.name;
+      return this.user.name || '';
     },
 
     /**
@@ -124,7 +124,7 @@ export default {
         return this.speakingUser.avatar;
       }
 
-      return this.user.avatar;
+      return this.user.avatar || '';
     },
 
     /**

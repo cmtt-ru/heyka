@@ -5,7 +5,7 @@
   >
     <microphone
       v-if="buttons.includes('microphone')"
-      class="call-buttons__button"
+      class="call-buttons__button ui-button"
       :active="mediaState.microphone"
       :size="size"
       @click.native="switchProp('microphone')"
