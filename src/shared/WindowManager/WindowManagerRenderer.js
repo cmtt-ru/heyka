@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import { EventEmitter } from 'events';
 
 /**
  * A class that tells info to main window manager upon window creation
@@ -15,12 +16,22 @@ class WindowManager {
 
     return new Window(windowData.id, options.onClose);
   }
+
+  getCurrentWindowId() {
+    const substr = process.argv.find(argv => argv.indexOf('--window-id') === 0);
+
+    return substr.split('=')[1];
+  }
+
+  getCurrentWindow() {
+    return new Window(this.getCurrentWindowId());
+  }
 }
 
 /**
  * A class that handles created window instance
  */
-class Window {
+class Window extends EventEmitter {
   /**
    * Inits window
    * @param {string} windowId window ID
@@ -28,14 +39,21 @@ class Window {
    * @returns {void}
    */
   constructor(windowId, onClose) {
+    super();
     this.windowId = windowId;
     this.onClose = onClose;
 
     ipcRenderer.on(`window-close-${windowId}`, () => {
       this.onClose();
+      this.emit('close');
     });
-    // ipcRenderer.on(`window-blur-${windowId}`, () => {
-    // });
+
+    ipcRenderer.on(`window-blur-${windowId}`, () => {
+      this.emit('blur');
+    });
+    ipcRenderer.on(`window-focus-${windowId}`, () => {
+      this.emit('focus');
+    });
   }
 
   /**
@@ -95,6 +113,30 @@ class Window {
   blur() {
     ipcRenderer.sendSync('window-manager-blur', {
       id: this.windowId,
+    });
+  }
+
+  /**
+   * Toggle fullscreen mode - send signal to main process
+   * @returns {void}
+   */
+  toggleFullscreen() {
+    ipcRenderer.sendSync('window-manager-fullscreen', {
+      id: this.windowId,
+    });
+  }
+
+  /**
+   * Open url in window - send signal to main process
+   * @param {string} route route to move to
+   * @param {string} url url to move to (if not index.html)
+   * @returns {void}
+   */
+  openUrl(route, url) {
+    ipcRenderer.sendSync('window-manager-openurl', {
+      id: this.windowId,
+      url,
+      route,
     });
   }
 

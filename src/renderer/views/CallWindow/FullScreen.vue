@@ -22,16 +22,18 @@
       size="medium"
       icon="settings"
     />
-    <ui-button
-      class="badge fullscreen"
-      :type="7"
-      size="medium"
-      icon="fullscreen"
-      @click="fullscreen()"
-    />
+    <router-link to="/call-window">
+      <ui-button
+        class="badge fullscreen"
+        :type="7"
+        size="medium"
+        icon="grid"
+      />
+    </router-link>
     <div
       v-draggable="controlsOptions"
       class="badge bottom-control"
+      :class="{'bottom-control--hidden': !showControls}"
     >
       <call-controls />
     </div>
@@ -43,6 +45,10 @@
 import CallControls from '../CallOverlayWindow/CallControls';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
+// import broadcastActions from '@classes/broadcastActions';
+import electron from 'electron';
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import broadcastEvents from '@classes/broadcastEvents';
 
 export default {
   components: {
@@ -53,6 +59,7 @@ export default {
   data() {
     return {
       userId: this.$route.params.id,
+      showControls: true,
       controlsOptions: {
         boundingElement: document.documentElement,
       },
@@ -68,8 +75,6 @@ export default {
     },
 
     sharingUser() {
-      console.log(this.$store.getters['users/getUserById'](this.userId));
-
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
@@ -87,9 +92,36 @@ export default {
 
   },
 
+  mounted() {
+    const w = WindowManager.getCurrentWindow();
+
+    w.on('blur', () => {
+      this.showControls = false;
+    });
+    w.on('focus', () => {
+      this.showControls = true;
+    });
+
+    broadcastEvents.on('grid', () => {
+      this.$router.replace('/call-window');
+    });
+  },
+
+  destroyed() {
+    broadcastEvents.removeAllListeners('grid');
+  },
+
   methods: {
-    fullscreen() {
-      console.log('puk');
+
+    /**
+     * Fullscreen button handler
+     * @returns {void}
+     */
+    fullscreenHandler() {
+      // broadcastActions.dispatch('fullscreenGrid');
+      const window = electron.remote.getCurrentWindow();
+
+      window.setFullScreen(!window.isFullScreen());
     },
   },
 };
@@ -100,7 +132,11 @@ export default {
     display flex
     flex-direction column
     height 100vh
-    background-color #999999
+
+  .sharing
+    width 100%
+    height 100%
+    background-color #dbdbdb
 
   .badge
     position absolute
@@ -131,5 +167,11 @@ export default {
     top calc(100% - 126px)
     left calc(50% - 92px)
     height auto
+    opacity 1
+    transition opacity 0.2s ease
+
+    &--hidden
+      opacity 0
+      pointer-events none
 
 </style>
