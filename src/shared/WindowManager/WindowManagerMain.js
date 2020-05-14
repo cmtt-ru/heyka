@@ -86,6 +86,15 @@ class WindowManager {
       event.returnValue = true;
     });
 
+    ipcMain.on('window-manager-fullscreen', (event, options) => {
+      this.toggleFullscreenWindow(options.id);
+      event.returnValue = true;
+    });
+    ipcMain.on('window-manager-openurl', (event, options) => {
+      this.openUrl(options.id, options.route);
+      event.returnValue = true;
+    });
+
     ipcMain.on('window-manager-is-main-window', (event, options) => {
       event.returnValue = this.mainWindowId === options.id;
     });
@@ -142,28 +151,16 @@ class WindowManager {
 
     const newWindow = new BrowserWindow(windowOptions);
 
+    if (process.env.NODE_ENV === 'production') {
+      newWindow.removeMenu();
+    }
     this.windows[windowId] = newWindow;
 
     if (options.ignoreMouseEvents) {
       newWindow.setIgnoreMouseEvents(true);
     }
 
-    let devUrl = process.env.WEBPACK_DEV_SERVER_URL + '#' + options.route;
-    let prodUrl = 'heyka://./index.html/#' + options.route;
-
-    if (options.url) {
-      devUrl = process.env.WEBPACK_DEV_SERVER_URL + options.url + '#' + options.route;
-      prodUrl = 'heyka://./' + options.url + '#' + options.route;
-    }
-
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      newWindow.loadURL(devUrl);
-      // if (!process.env.IS_TEST) {
-      //   newWindow.webContents.openDevTools();
-      // }
-    } else {
-      newWindow.loadURL(prodUrl);
-    }
+    this.openUrl(windowId, options.route, options.url);
 
     newWindow.once('close', e => {
       this.send(`window-close-${windowId}`);
@@ -178,13 +175,34 @@ class WindowManager {
     });
 
     newWindow.on('blur', (event) => {
-      this.send(`window-blur-${windowId}`);
+      this.sendAll(`window-blur-${windowId}`);
     });
     newWindow.on('focus', (event) => {
-      this.send(`window-focus-${windowId}`);
+      this.sendAll(`window-focus-${windowId}`);
     });
 
     return windowId;
+  }
+
+  /**
+   * Open specific url in window
+   * @param {string} id window's id
+   * @param {string} route route to move to
+   * @param {string} url url to move to (if not index.html)
+   * @returns {void}
+   */
+  openUrl(id, route, url = 'index.html') {
+    const devUrl = process.env.WEBPACK_DEV_SERVER_URL + url + '#' + route;
+    const prodUrl = 'heyka://./' + url + '#' + route;
+
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      this.windows[id].loadURL(devUrl);
+      // if (!process.env.IS_TEST) {
+      //   newWindow.webContents.openDevTools();
+      // }
+    } else {
+      this.windows[id].loadURL(prodUrl);
+    }
   }
 
   /**
@@ -270,6 +288,15 @@ class WindowManager {
     if (this.windows[windowId]) {
       this.windows[windowId].blur();
     }
+  }
+
+  /**
+   * Toggle fullscreen mode
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
+  toggleFullscreenWindow(windowId) {
+    this.windows[windowId].setFullScreen(!this.windows[windowId].isFullScreen());
   }
 
   /**

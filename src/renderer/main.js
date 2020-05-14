@@ -15,7 +15,7 @@ Vue.component('SvgIcon', SvgIcon);
 
 Vue.config.productionTip = false;
 
-new Vue({
+window.vue = new Vue({
   router,
   store,
   i18n,

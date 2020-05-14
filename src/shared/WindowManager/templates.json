@@ -13,7 +13,6 @@
     "height": 90,
     "transparent": true,
     "movable": false,
-    "fullscreenable": false,
     "resizable": false,
     "frame": false
   },
@@ -24,6 +23,7 @@
   "call": {
     "width": 1500,
     "height": 1000,
-    "frame": true
+    "frame": true,
+    "fullscreenable": true
   }
 }

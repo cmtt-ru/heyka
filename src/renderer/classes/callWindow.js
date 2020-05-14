@@ -1,5 +1,4 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
-import { ipcRenderer } from 'electron';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
@@ -125,16 +124,22 @@ class CallWindow {
       });
 
       const gridBlurTime = 200;
-      let gridTimeout = null;
 
-      ipcRenderer.on(`window-blur-${this.gridWindow.windowId}`, () => {
-        gridTimeout = setTimeout(() => {
-          this.showOverlay();
+      this.gridTimeout = null;
+
+      this.gridWindow.on('blur', () => {
+        this.gridTimeout = setTimeout(() => {
+          if (this.overlayWindow) {
+            this.showOverlay();
+          }
         }, gridBlurTime);
       });
-      ipcRenderer.on(`window-focus-${this.gridWindow.windowId}`, () => {
-        clearTimeout(gridTimeout);
+      this.gridWindow.on('focus', () => {
+        clearTimeout(this.gridTimeout);
         this.hideOverlay();
+      });
+      this.gridWindow.on('close', () => {
+        clearTimeout(this.gridTimeout);
       });
     } else {
       this.gridWindow.show();
@@ -199,7 +204,9 @@ class CallWindow {
   hideAll() {
     this.hideGrid();
     this.hideSharing();
-    this.hideOverlay();
+    if (this.overlayWindow) {
+      this.overlayWindow.close();
+    }
   }
 
   /**
