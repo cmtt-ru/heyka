@@ -327,10 +327,10 @@ export default {
 
       &--active
         img
-          box-shadow 0 0 0 3px var(--color-1)
+          box-shadow 0 0 0 3px var(--color-2)
 
         span
-          background var(--color-1)
+          background var(--color-2)
 
       &:hover:not(.sharing-window__source--active)
         img
