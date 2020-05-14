@@ -14,8 +14,9 @@
 
       <div class="sharing-window__options">
         <ui-button
-          class="l-mr-8"
-          :type="3"
+          class="l-mr-4"
+          :type="13"
+          :active="sourceButton === 'screen'"
           size="small"
           @click="updateSources('screen')"
         >
@@ -23,8 +24,9 @@
         </ui-button>
 
         <ui-button
-          class="l-mr-8"
-          :type="3"
+          class="l-mr-4"
+          :type="13"
+          :active="sourceButton === 'window'"
           size="small"
           @click="updateSources('window')"
         >
@@ -112,6 +114,7 @@ export default {
     return {
       sources: [],
       selectedSource: null,
+      sourceButton: 'screen',
     };
   },
 
@@ -157,6 +160,7 @@ export default {
      * @returns {Promise<void>}
      */
     async updateSources(type) {
+      this.sourceButton = type;
       this.sources = await mediaCapturer.getSources(type, THUMBNAIL_SIZE);
       this.selectedSource = null;
     },
@@ -257,7 +261,7 @@ export default {
 
     &__header
       flex 0 0 auto
-      padding 20px
+      padding 20px 20px 13px 20px
 
       &__title
         display flex
@@ -270,6 +274,9 @@ export default {
     &__content
       flex 1 1 auto
       display flex
+
+    &__options
+      margin-top 13px
 
     &__sources
       display flex
@@ -327,10 +334,10 @@ export default {
 
       &--active
         img
-          box-shadow 0 0 0 3px var(--color-1)
+          box-shadow 0 0 0 3px var(--color-2)
 
         span
-          background var(--color-1)
+          background var(--color-2)
 
       &:hover:not(.sharing-window__source--active)
         img
