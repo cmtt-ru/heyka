@@ -61,6 +61,7 @@
 <script>
 import UiButton from '@components/UiButton';
 import broadcastActions from '@classes/broadcastActions';
+import broadcastEvents from '@classes/broadcastEvents';
 import Microphone from '@components/Microphone';
 
 /**
@@ -155,6 +156,7 @@ export default {
      */
     gridHandler() {
       broadcastActions.dispatch('openGrid');
+      broadcastEvents.dispatch('grid');
     },
 
     /**

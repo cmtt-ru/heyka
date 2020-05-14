@@ -35,13 +35,17 @@
       >
         <div
           class="cell__inner"
-          :class="{'cell__inner--talking': user.speaking && user.microphone}"
+          @dblclick="fullscreenClickHandler(user.id)"
         >
-          <div class="cell__feed" />
+          <video class="cell__feed" />
+          <div
+            v-show="user.speaking && user.microphone"
+            class="cell__talking"
+          />
 
           <ui-button
             v-popover.click="{name: 'GridUser', data: {userId: user.id}}"
-            class="cell__more"
+            class="badge badge--hidden cell__more"
             :type="7"
             size="medium"
             icon="more"
@@ -53,7 +57,7 @@
             :size="100"
             square
           />
-          <div class="cell__username">
+          <div class="badge cell__username">
             <div v-textfade>
               {{ user.name }}
             </div>
@@ -70,6 +74,14 @@
               size="small"
             />
           </div>
+
+          <ui-button
+            class="badge badge--hidden cell__expand"
+            :type="7"
+            size="medium"
+            icon="fullscreen"
+            @click="fullscreenClickHandler(user.id)"
+          />
         </div>
       </div>
     </div>
@@ -115,9 +127,14 @@ export default {
       return this.$t('call.grid');
     },
 
+    /**
+     * Get all grids suitable for current users' count
+     * @returns {array}
+     */
     grids() {
       return GRIDS[this.usersCount];
     },
+
     /**
      * Get our media state
      * @returns {object}
@@ -156,13 +173,17 @@ export default {
       return false;
     },
     /**
-     * Get users array
+     * Get users' array
      * @returns {array} array of users
      */
     users() {
       return this.$store.getters.getUsersByChannel(this.channelId);
     },
 
+    /**
+     * Get users' count
+     * @returns {array} array of users
+     */
     usersCount() {
       return this.users.length;
     },
@@ -181,6 +202,7 @@ export default {
 
   },
   watch: {
+    /* re-count grid because number of users has changed */
     usersCount: function () {
       this.resize();
     },
@@ -195,6 +217,11 @@ export default {
   },
   methods: {
 
+    /**
+     * Assign dimentions to the cell depending on its index
+     * @param {number} index cell's index
+     * @return {object}
+     */
     cellDimensions(index) {
       return {
         width: this.avatarWidth * this.currentGrid[index] + 'px',
@@ -202,6 +229,10 @@ export default {
       };
     },
 
+    /**
+     * Re-count padding of grid and re-count best grid depending on aspect ratio
+     * @return {void}
+     */
     resize() {
       const bounds = document.getElementById('cell-grid');
 
@@ -223,11 +254,27 @@ export default {
       }
     },
 
+    /**
+     * Find grid with closest aspect ratio to cell-grid's aspect ratio
+     * @param {number} val cell-grid's aspect ratio
+     * @param {array} arr all grids for current users' amount
+     * @return {object}
+     */
     findClosest(val, arr) {
       return arr.reduce((a, b) => {
         return Math.abs(b.ratio - val) < Math.abs(a.ratio - val) ? b : a;
       });
     },
+
+    /**
+     * fullscreen click handler
+     * @param {string} id user's id
+     * @returns {void}
+     */
+    fullscreenClickHandler(id) {
+      this.$router.push({ path: `/call-window/fullscreen/${id}` });
+    },
+
   },
 };
 </script>
@@ -274,9 +321,9 @@ export default {
     box-sizing border-box
 
     &__inner
-      border-radius 8px
+      border-radius 4px
       height 100%
-      padding 8px
+      padding 4px
       box-sizing border-box
       display flex
       flex-direction column
@@ -284,42 +331,64 @@ export default {
       align-items center
       position relative
 
-      &--talking
-        border 2px solid var(--color-1)
-        padding 6px
-
     &__feed
       position absolute
       top 0
       left 0
-      right 0
-      bottom 0
-      background-color #222c2d
-      border-radius 8px
+      width 100%
+      height 100%
+      border-radius 4px
+      background-color #dbdbdb
+
+    &__talking
+      position absolute
+      top 0
+      left 0
+      width 100%
+      height 100%
+      border 2px solid var(--color-1)
+      border-radius 4px
+      box-sizing border-box
+      pointer-events none
 
     &__more
-      margin-left auto
+      top 4px
+      right 4px
       flex-shrink 0
       opacity 0
       transition opacity 0.15s ease
       position relative
 
-    .cell__inner:hover .cell__more
+    &__expand
+      bottom 4px
+      right 4px
+
+    .badge
+      position absolute
+
+    .badge--hidden
+      opacity 0
+
+    .cell__inner:hover .badge--hidden
       opacity 1
 
-    .cell__more.context-menu--opened
+    .badge--hidden.context-menu--opened
       opacity 1
 
     &__avatar
       border-radius 4px
       overflow hidden
+      margin auto
 
     &__username
+      bottom 4px
+      margin 0 auto
       background-color var(--app-bg)
       padding 8px
       border-radius 4px
       flex-shrink 0
-      max-width calc(100% - 16px)
+      max-width calc(100% - 88px)
+      box-sizing border-box
       width auto
       overflow hidden
       display flex
