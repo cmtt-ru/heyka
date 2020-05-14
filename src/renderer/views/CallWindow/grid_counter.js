@@ -1,4 +1,8 @@
 /* eslint-disable no-magic-numbers */
+
+//! http://blog.kislenko.net/show.php?id=1865
+//! В будущем можно будет поменять алгоритм на тот, который выше, в нём О(N^3)
+
 import { appendFileSync } from 'fs';
 
 const ASPECT_RATIO = 124 / 168;

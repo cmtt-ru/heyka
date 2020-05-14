@@ -1,14 +1,6 @@
 <template>
   <popover>
     <div class="buttons">
-      <router-link :to="'/call-window/fullscreen/'+userId">
-        <ui-button
-          :type="11"
-          @click="fullscreenClickHandler"
-        >
-          {{ texts.fullscreen }}
-        </ui-button>
-      </router-link>
       <ui-button
         :type="11"
         @click="muteClickHandler"
@@ -50,14 +42,6 @@ export default {
   },
 
   methods: {
-
-    /**
-     * fullscreen click handler
-     * @returns {void}
-     */
-    fullscreenClickHandler() {
-      console.log('fullscreen user', this.userId);
-    },
 
     /**
      * Mute click handler
