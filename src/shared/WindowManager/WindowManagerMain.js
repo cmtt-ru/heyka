@@ -144,6 +144,10 @@ class WindowManager {
 
     this.windows[windowId] = newWindow;
 
+    if (options.ignoreMouseEvents) {
+      newWindow.setIgnoreMouseEvents(true);
+    }
+
     let devUrl = process.env.WEBPACK_DEV_SERVER_URL + '#' + options.route;
     let prodUrl = 'heyka://./index.html/#' + options.route;
 

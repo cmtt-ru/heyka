@@ -24,6 +24,7 @@ class CallWindow {
     this.overlayWindow = null;
     this.sharingWindow = null;
     this.gridWindow = null;
+    this.frameWindow = null;
   }
 
   /**
@@ -82,6 +83,8 @@ class CallWindow {
     } else {
       this.sharingWindow.showInactive();
     }
+
+    this.showFrame();
   }
 
   /**
@@ -101,6 +104,7 @@ class CallWindow {
   closeSharing() {
     if (this.sharingWindow) {
       this.sharingWindow.close();
+      this.hideFrame();
     }
   }
 
@@ -148,6 +152,47 @@ class CallWindow {
   }
 
   /**
+   * Show frame window
+   * @returns {void}
+   */
+  showFrame() {
+    if (this.frameWindow === null) {
+      this.frameWindow = WindowManager.create({
+        route: '/call-frame',
+        // ignoreMouseEvents: true,
+        window: {
+          position: 'topLeft',
+          width: 500,
+          height: 500,
+          alwaysOnTop: true,
+          frame: false,
+          resizable: false,
+          movable: false,
+          transparent: true,
+          skipTaskbar: true,
+          enableLargerThanScreen: true,
+          background: 'transparent',
+        },
+        onClose: () => {
+          this.frameWindow = null;
+        },
+      });
+    } else {
+      this.frameWindow.showInactive();
+    }
+  }
+
+  /**
+   * Hide frame window
+   * @returns {void}
+   */
+  hideFrame() {
+    if (this.frameWindow) {
+      this.frameWindow.hide();
+    }
+  }
+
+  /**
    * Hide ALL call windows
    * @returns {void}
    */
@@ -170,6 +215,9 @@ class CallWindow {
     }
     if (this.overlayWindow) {
       this.overlayWindow.close();
+    }
+    if (this.frameWindow) {
+      this.frameWindow.close();
     }
   }
 
