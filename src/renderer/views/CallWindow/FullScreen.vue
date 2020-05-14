@@ -31,7 +31,7 @@
     />
     <div
       v-draggable="controlsOptions"
-      class="bottom-control"
+      class="badge bottom-control"
     >
       <call-controls />
     </div>
@@ -126,7 +126,10 @@ export default {
     right 30px
 
   .bottom-control
-    margin 0 auto
     background-color var(--app-bg)
     border-radius 4px
+    top calc(100% - 126px)
+    left calc(50% - 92px)
+    height auto
+
 </style>
