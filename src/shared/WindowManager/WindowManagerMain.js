@@ -1,8 +1,9 @@
-import { ipcMain, BrowserWindow } from 'electron';
+import { ipcMain, BrowserWindow, screen } from 'electron';
 import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
+import cloneDeep from 'clone-deep';
 
 // const isMac = process.platform === 'darwin';
 // const isLinux = process.platform === 'linux';
@@ -18,10 +19,10 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   fullscreenable: false,
   show: false,
   skipTaskBar: true,
-  webPreferences: {
+  webPreferences: Object.freeze({
     nodeIntegration: true,
     webSecurity: true,
-  },
+  }),
 });
 
 /**
@@ -135,13 +136,10 @@ class WindowManager {
     const windowId = uuidV4();
 
     if (options.template && templates[options.template]) {
-      options.window = { ...templates[options.template] };
+      options.window = Object.assign(cloneDeep(templates[options.template]), cloneDeep(options.window));
     }
 
-    const windowOptions = {
-      ...DEFAULT_WINDOW_OPTIONS,
-      ...options.window || {},
-    };
+    const windowOptions = Object.assign(cloneDeep(DEFAULT_WINDOW_OPTIONS), cloneDeep(options.window));
 
     windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
 
@@ -167,6 +165,24 @@ class WindowManager {
       const position = getWindowPosition(newWindow, options.position);
 
       newWindow.setPosition(position.x, position.y);
+
+      if (options.displayId) {
+        const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+
+        if (display) {
+          newWindow.setPosition(display.bounds.x, display.bounds.y);
+
+          if (options.maximize) {
+            newWindow.setSize(display.bounds.width, display.bounds.height);
+            newWindow.setAlwaysOnTop(true, 'pop-up-menu');
+          }
+        }
+      }
+
+      if (options.visibleOnAllWorkspaces) {
+        newWindow.setVisibleOnAllWorkspaces(true);
+      }
+
       newWindow.show();
     });
 
