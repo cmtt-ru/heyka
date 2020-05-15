@@ -1,9 +1,39 @@
 <template>
   <div
-    class="fullscreen-window"
+    class="expanded-window"
     :style="$themes.getColors('popover')"
   >
+    <!-- <svg
+      class="svg-border"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient
+          id="gradient"
+          x1="0%"
+          y1="0%"
+          x2="0%"
+          y2="100%"
+        >
+          <stop
+            offset="0%"
+            stop-color="#00bc9b"
+          />
+          <stop
+            offset="100%"
+            stop-color="#5eaefd"
+          />
+        </linearGradient>
+      </defs>
+      <rect
+        class="rect-path"
+        stroke="url(#gradient)"
+        style="fill:none"
+      />
+    </svg> -->
+
     <video class="sharing" />
+
     <div class="badge user">
       <avatar
         class="user__avatar"
@@ -15,6 +45,7 @@
         {{ sharingUser.name }}
       </div>
     </div>
+
     <ui-button
       v-popover.click="{name: 'Devices'}"
       class="badge settings"
@@ -24,7 +55,7 @@
     />
     <router-link to="/call-window">
       <ui-button
-        class="badge fullscreen"
+        class="badge expanded"
         :type="7"
         size="medium"
         icon="grid"
@@ -32,8 +63,8 @@
     </router-link>
     <div
       v-draggable="controlsOptions"
-      class="badge bottom-control"
-      :class="{'bottom-control--hidden': !showControls}"
+      class="badge control"
+      :class="{'control--hidden': !showControls}"
     >
       <call-controls />
     </div>
@@ -45,8 +76,6 @@
 import CallControls from '../CallOverlayWindow/CallControls';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
-// import broadcastActions from '@classes/broadcastActions';
-import electron from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
 
@@ -74,24 +103,22 @@ export default {
       return this.$t('call.grid');
     },
 
+    /**
+     * Get user, who's sharing we are watching now
+     * @returns {object}
+     */
     sharingUser() {
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
-    /**
-     * Selected channel name
-     * @return {string}
-     */
-    selectedChannelName() {
-      if (this.selectedChannel) {
-        return this.selectedChannel.name;
-      }
-
-      return 'no channel selected';
-    },
-
   },
 
+  /**
+   * Subscribe for:
+   * 1. blur/focus window events for hiding/showing call controls
+   * 2. custom "grid" event for routing to grid
+   * @returns {void}
+   */
   mounted() {
     const w = WindowManager.getCurrentWindow();
 
@@ -109,26 +136,18 @@ export default {
 
   destroyed() {
     broadcastEvents.removeAllListeners('grid');
+
+    const w = WindowManager.getCurrentWindow();
+
+    w.removeAllListeners('blur');
+    w.removeAllListeners('focus');
   },
 
-  methods: {
-
-    /**
-     * Fullscreen button handler
-     * @returns {void}
-     */
-    fullscreenHandler() {
-      // broadcastActions.dispatch('fullscreenGrid');
-      const window = electron.remote.getCurrentWindow();
-
-      window.setFullScreen(!window.isFullScreen());
-    },
-  },
 };
 </script>
 
 <style lang="stylus" scoped>
-  .fullscreen-window
+  .expanded-window
     display flex
     flex-direction column
     height 100vh
@@ -138,6 +157,27 @@ export default {
     height 100%
     background-color #dbdbdb
 
+  .svg-border
+    width 100%
+    height 100%
+    position absolute
+    top 0
+    left 0
+    background-color transparent
+
+    .rect-path
+      stroke-width 3px
+      transform translate(2px, 2px)
+      stroke-dasharray 100% 100%
+      animation dash 20s linear infinite
+      width calc(100% - 4px)
+      height calc(100% - 4px)
+
+  @keyframes dash {
+      to {
+        stroke-dashoffset: 200%;
+      }
+  }
   .badge
     position absolute
 
@@ -157,11 +197,11 @@ export default {
     top 30px
     right 30px
 
-  .fullscreen
+  .expanded
     bottom 30px
     right 30px
 
-  .bottom-control
+  .control
     background-color var(--app-bg)
     border-radius 4px
     top calc(100% - 126px)

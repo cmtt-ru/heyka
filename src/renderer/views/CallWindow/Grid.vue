@@ -35,7 +35,7 @@
       >
         <div
           class="cell__inner"
-          @dblclick="fullscreenClickHandler(user.id)"
+          @dblclick="expandedClickHandler(user.id)"
         >
           <video class="cell__feed" />
           <div
@@ -80,7 +80,7 @@
             :type="7"
             size="medium"
             icon="fullscreen"
-            @click="fullscreenClickHandler(user.id)"
+            @click="expandedClickHandler(user.id)"
           />
         </div>
       </div>
@@ -271,8 +271,8 @@ export default {
      * @param {string} id user's id
      * @returns {void}
      */
-    fullscreenClickHandler(id) {
-      this.$router.push({ path: `/call-window/fullscreen/${id}` });
+    expandedClickHandler(id) {
+      this.$router.push({ path: `/call-window/expanded/${id}` });
     },
 
   },
@@ -338,7 +338,8 @@ export default {
       width 100%
       height 100%
       border-radius 4px
-      background-color #dbdbdb
+      background: #FFFFFF;
+      opacity: 0.05;
 
     &__talking
       position absolute
