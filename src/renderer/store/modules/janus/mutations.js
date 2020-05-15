@@ -15,11 +15,11 @@ export default {
    * Set's sharing source id
    *
    * @param {JanusState} state – module me state
-   * @param {string} id – source id
+   * @param {object} source – source id
    * @constructor
    */
-  SET_SHARING_SOURCE_ID(state, id) {
-    state.sharingSourceId = id;
+  SET_SHARING_SOURCE(state, source) {
+    state.sharingSource = source;
   },
 
 };

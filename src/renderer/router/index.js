@@ -57,8 +57,6 @@ const CallOverlayWindowMain = () => import(/* webpackChunkName: "call" */ '@view
 const CallSharingWindow = () => import(/* webpackChunkName: "call" */ '@views/CallSharingWindow');
 const CallSharingWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallSharingWindow/Sharing');
 
-const CallFrameWindow = () => import(/* webpackChunkName: "call" */ '@views/CallFrameWindow');
-
 Vue.use(VueRouter);
 
 const routes = [
@@ -243,11 +241,6 @@ const routes = [
         component: CallWindowExpanded,
       },
     ],
-  },
-
-  {
-    path: '/call-frame',
-    component: CallFrameWindow,
   },
 
   /**
