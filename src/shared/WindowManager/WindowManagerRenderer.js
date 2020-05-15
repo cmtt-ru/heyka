@@ -17,12 +17,20 @@ class WindowManager {
     return new Window(windowData.id, options.onClose);
   }
 
+  /**
+   * Get ID of window which invoked this method
+   * @returns {void}
+   */
   getCurrentWindowId() {
     const substr = process.argv.find(argv => argv.indexOf('--window-id') === 0);
 
     return substr.split('=')[1];
   }
 
+  /**
+   * Get Window instance of window which invoked this method
+   * @returns {void}
+   */
   getCurrentWindow() {
     return new Window(this.getCurrentWindowId());
   }

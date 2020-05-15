@@ -4,7 +4,6 @@ const OVERLAY_WINDOW_SIZES = {
   default: {
     width: 228,
     height: 96,
-    skipTaskbar: true,
   },
   mediaSharing: {
     width: 340,
@@ -38,7 +37,9 @@ class CallWindow {
         window: {
           ...OVERLAY_WINDOW_SIZES['default'],
           alwaysOnTop: true,
+          fullscreenable: false,
           backgroundColor: '#000',
+          skipTaskbar: true,
         },
         onClose: () => {
           console.log('closing: ', this.overlayWindow);

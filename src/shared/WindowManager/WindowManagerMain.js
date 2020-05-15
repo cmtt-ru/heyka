@@ -15,11 +15,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   y: 0,
   // backgroundColor: '#000000', //! need to set same color as main bg color of theme
   frame: false,
-  movable: true,
   fullscreenable: false,
-  resizable: true,
-  transparent: false,
-  alwaysOnTop: false,
   show: false,
   skipTaskBar: true,
   webPreferences: {
@@ -334,6 +330,12 @@ class WindowManager {
     }
   }
 
+  /**
+   * Send message to ALL windows
+   * @param {string} event – event name
+   * @param {*} [data] – event data
+   * @returns {void}
+   */
   sendAll(event, data = null) {
     const windows = BrowserWindow.getAllWindows();
 
@@ -342,6 +344,10 @@ class WindowManager {
     });
   }
 
+  /**
+   * Close ALL windows EXCEPT main window
+   * @returns {void}
+   */
   closeAll() {
     for (const w in this.windows) {
       if (w != this.mainWindowId) {
