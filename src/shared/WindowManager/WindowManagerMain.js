@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow } from 'electron';
+import { ipcMain, BrowserWindow, screen } from 'electron';
 import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
@@ -147,9 +147,6 @@ class WindowManager {
 
     windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
 
-    console.log('template', options.template);
-    console.log(windowOptions);
-
     const newWindow = new BrowserWindow(windowOptions);
 
     if (process.env.NODE_ENV === 'production') {
@@ -172,6 +169,20 @@ class WindowManager {
       const position = getWindowPosition(newWindow, options.position);
 
       newWindow.setPosition(position.x, position.y);
+
+      if (options.displayId) {
+        const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+
+        if (display) {
+          newWindow.setPosition(display.bounds.x, display.bounds.y);
+
+          if (options.maximize) {
+            newWindow.setSize(display.bounds.width, display.bounds.height);
+            newWindow.setAlwaysOnTop(true, 'pop-up-menu');
+          }
+        }
+      }
+
       newWindow.show();
     });
 

@@ -25,5 +25,15 @@
     "height": 1000,
     "frame": true,
     "fullscreenable": true
+  },
+  "frame": {
+    "transparent": true,
+    "movable": false,
+    "resizable": false,
+    "frame": false,
+    "alwaysOnTop": true,
+    "skipTaskbar": true,
+    "enableLargerThanScreen": true,
+    "hasShadow": false
   }
 }

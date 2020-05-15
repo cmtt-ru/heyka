@@ -72,7 +72,7 @@ class CallWindow {
         window: {
           width: 500,
           height: 500,
-          // alwaysOnTop: true,
+          alwaysOnTop: true,
           backgroundColor: '#000',
         },
         onClose: () => {
@@ -82,8 +82,6 @@ class CallWindow {
     } else {
       this.sharingWindow.showInactive();
     }
-
-    this.showFrame();
   }
 
   /**
@@ -103,7 +101,6 @@ class CallWindow {
   closeSharing() {
     if (this.sharingWindow) {
       this.sharingWindow.close();
-      this.hideFrame();
     }
   }
 
@@ -158,25 +155,20 @@ class CallWindow {
 
   /**
    * Show frame window
+   * @param {string} displayId – display id
    * @returns {void}
    */
-  showFrame() {
+  showFrame(displayId) {
     if (this.frameWindow === null) {
       this.frameWindow = WindowManager.create({
-        route: '/call-frame',
-        // ignoreMouseEvents: true,
+        template: 'frame',
+        url: 'frame.html',
+        ignoreMouseEvents: true,
+        displayId,
+        maximize: true,
         window: {
-          position: 'topLeft',
           width: 500,
           height: 500,
-          alwaysOnTop: true,
-          frame: false,
-          resizable: false,
-          movable: false,
-          transparent: true,
-          skipTaskbar: true,
-          enableLargerThanScreen: true,
-          background: 'transparent',
         },
         onClose: () => {
           this.frameWindow = null;
@@ -191,9 +183,9 @@ class CallWindow {
    * Hide frame window
    * @returns {void}
    */
-  hideFrame() {
+  closeFrame() {
     if (this.frameWindow) {
-      this.frameWindow.hide();
+      this.frameWindow.close();
     }
   }
 
