@@ -3,6 +3,7 @@ import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
+import cloneDeep from 'clone-deep';
 
 // const isMac = process.platform === 'darwin';
 // const isLinux = process.platform === 'linux';
@@ -22,10 +23,10 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   alwaysOnTop: false,
   show: false,
   skipTaskBar: true,
-  webPreferences: {
+  webPreferences: Object.freeze({
     nodeIntegration: true,
     webSecurity: true,
-  },
+  }),
 });
 
 /**
@@ -139,15 +140,15 @@ class WindowManager {
     const windowId = uuidV4();
 
     if (options.template && templates[options.template]) {
-      options.window = { ...templates[options.template] };
+      options.window = Object.assign(cloneDeep(templates[options.template]), cloneDeep(options.window));
     }
 
-    const windowOptions = {
-      ...DEFAULT_WINDOW_OPTIONS,
-      ...options.window || {},
-    };
+    const windowOptions = Object.assign(cloneDeep(DEFAULT_WINDOW_OPTIONS), cloneDeep(options.window));
 
     windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
+
+    console.log('template', options.template);
+    console.log(windowOptions);
 
     const newWindow = new BrowserWindow(windowOptions);
 
