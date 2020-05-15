@@ -217,6 +217,7 @@ export default {
      * @returns {void}
      */
     startSharingHandler() {
+      this.closeHandler();
       broadcastActions.dispatch('janus/setSharingSource', this.selectedSource);
       this.setScreenState(true);
     },
@@ -227,6 +228,7 @@ export default {
      * @returns {void}
      */
     stopSharingHandler() {
+      this.closeHandler();
       broadcastActions.dispatch('janus/setSharingSource', null);
       this.setScreenState(false);
     },
