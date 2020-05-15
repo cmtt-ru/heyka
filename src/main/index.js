@@ -95,7 +95,7 @@ function createWindow() {
 
 /**
  * Create Splash window
- * @returns {undefined} NOTHING
+ * @returns {void}
  */
 function createLoadingScreen() {
   loadingScreenID = WindowManager.createWindow({
