@@ -183,6 +183,10 @@ class WindowManager {
         }
       }
 
+      if (options.visibleOnAllWorkspaces) {
+        newWindow.setVisibleOnAllWorkspaces(true);
+      }
+
       newWindow.show();
     });
 

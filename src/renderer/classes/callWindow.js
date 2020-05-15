@@ -35,6 +35,7 @@ class CallWindow {
       this.overlayWindow = WindowManager.create({
         route: '/call-overlay',
         position: 'bottomRight',
+        visibleOnAllWorkspaces: true,
         window: {
           ...OVERLAY_WINDOW_SIZES['default'],
           alwaysOnTop: true,
@@ -166,6 +167,7 @@ class CallWindow {
         ignoreMouseEvents: true,
         displayId,
         maximize: true,
+        visibleOnAllWorkspaces: true,
         window: {
           width: 500,
           height: 500,
