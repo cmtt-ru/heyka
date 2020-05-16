@@ -16,13 +16,6 @@ export async function init() {
     console.error(e);
   }
 
-  /** Trying to authorize */
-  try {
-    await authorize();
-  } catch (e) {
-    console.error(e);
-  }
-
   /** Bind error events */
   bindErrorEvents();
 
@@ -31,6 +24,13 @@ export async function init() {
 
   /** User events */
   bindUserEvents();
+
+  /** Trying to authorize */
+  try {
+    await authorize();
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 /**
