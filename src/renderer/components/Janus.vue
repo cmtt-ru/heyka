@@ -18,6 +18,7 @@ export default {
     return {
       janusWrapper: null,
       socketDisconnectedDelay: null,
+      videoPublishers: {},
     };
   },
   computed: {
@@ -128,11 +129,17 @@ export default {
 
       this.janusWrapper = janusWrapper;
 
-      janusWrapper.on('connection-error', this.onConnectionError.bind(this));
-      janusWrapper.on('remote-audio-stream', this.onRemoteAudioStream.bind(this));
-      janusWrapper.on('audio-stream-active', this.onAudioStreamActive.bind(this));
-      janusWrapper.on('speaking', this.onSpeakingChange.bind(this));
-      janusWrapper.on('volume-change', this.onVolumeChange.bind(this));
+      // audio events
+      janusWrapper.on(JanusWrapper.events.connectionError, this.onConnectionError.bind(this));
+      janusWrapper.on(JanusWrapper.events.removeAudioStream, this.onRemoteAudioStream.bind(this));
+      janusWrapper.on(JanusWrapper.events.audioStreamActive, this.onAudioStreamActive.bind(this));
+      janusWrapper.on(JanusWrapper.events.speaking, this.onSpeakingChange.bind(this));
+      janusWrapper.on(JanusWrapper.events.volumeChange, this.onVolumeChange.bind(this));
+
+      // video events
+      janusWrapper.on(JanusWrapper.events.videoPublishersList, this.onVideoPublishersList.bind(this));
+      janusWrapper.on(JanusWrapper.events.videoPublisherJoined, this.onVideoPublisherJoined.bind(this));
+      janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
 
       await janusWrapper.join();
     },
@@ -221,6 +228,44 @@ export default {
      */
     onVolumeChange(db) {
       this.$store.dispatch('app/setMicrophoneVolume', db);
+    },
+
+    /**
+     * Handle new publisher list, set new object of publishers
+     * @param {array} publishers List of publishers
+     * @returns {void}
+     */
+    onVideoPublishersList(publishers) {
+      this.videoPublishers = {};
+      publishers.forEach(publisher => {
+        // publisher.display - heyka user id
+        // publisher.id - janus publisher id
+        this.videoPublishers[publisher.display] = {
+          userId: publisher.display,
+          janusId: publisher.id,
+        };
+      });
+    },
+
+    /**
+     * Handle new publisher, add new publisher to publisher list
+     * @param {object} publisher Publicher object
+     * @returns {void}
+     */
+    onVideoPublisherJoined(publisher) {
+      this.videoPublishers[publisher.display] = {
+        userId: publisher.display,
+        janusId: publisher.id,
+      };
+    },
+
+    /**
+     * Handle publisher left, remove publisher from publisher list
+     * @param {object} publisher Publicher object
+     * @returns {void}
+     */
+    onVideoPublisherLeft(publisher) {
+      delete this.videoPublishers[publisher.display];
     },
 
     /**

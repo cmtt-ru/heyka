@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import Janus from './janus';
 import AudiobridgePlugin from './AudiobridgePlugin';
+import VideoroomPlugin from './VideoroomPlugin';
 // eslint-disable-next-line no-unused-vars
 import adapter from 'webrtc-adapter';
 
@@ -8,6 +9,18 @@ const ERROR_CODES = {
   SERVER_DOWN: 'Server is down',
   AUTHENTICATION_ERROR: 'Authentication error',
   UNKNOW: 'Unknow error',
+};
+
+// Possible events for subscribing
+const JANUS_WRAPPER_EVENTS = {
+  connectionError: 'connection-error',
+  remoteAudioStream: 'remote-audio-stream',
+  audioStreamActive: 'audio-stream-active',
+  speaking: 'speaking',
+  volumeChange: 'volume-change',
+  videoPublishersList: 'video-publishers-list',
+  videoPublisherJoined: 'video-publisher-joined',
+  videoPublisherLeft: 'video-publisher-left',
 };
 
 /**
@@ -94,6 +107,8 @@ class JanusWrapper extends EventEmitter {
     /** Connect to Janus */
     await this._connect();
 
+    // connect audiobridge plugin
+
     const audiobridgePlugin = new AudiobridgePlugin({
       janus: this.__janus,
       room: this.__audioRoomId,
@@ -104,13 +119,30 @@ class JanusWrapper extends EventEmitter {
 
     audiobridgePlugin.attach();
 
-    audiobridgePlugin.on('remote-audio-stream', stream => this.emit('remote-audio-stream', stream));
-    audiobridgePlugin.on('media-state', isActive => this.emit('audio-stream-active', isActive));
-    audiobridgePlugin.on('start-speaking', () => this.emit('speaking', true));
-    audiobridgePlugin.on('stop-speaking', () => this.emit('speaking', false));
-    audiobridgePlugin.on('volume-change', (db) => this.emit('volume-change', db));
+    audiobridgePlugin.on('remote-audio-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.remoteAudioStream, stream));
+    audiobridgePlugin.on('media-state', isActive => this.emit(JANUS_WRAPPER_EVENTS.audioStreamActive, isActive));
+    audiobridgePlugin.on('start-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, true));
+    audiobridgePlugin.on('stop-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, false));
+    audiobridgePlugin.on('volume-change', (db) => this.emit(JANUS_WRAPPER_EVENTS.volumeChange, db));
 
     this.__audiobridgePlugin = audiobridgePlugin;
+
+    // connect videoroom plugin
+    const videoroomPlugin = new VideoroomPlugin({
+      janus: this.__janus,
+      room: this.__videoRoomId,
+      token: this.__channelToken,
+      userId: this.__userId,
+      debug: this.__debug,
+    });
+
+    videoroomPlugin.attach();
+
+    videoroomPlugin.on('active-publishers', publishers => this.emit(JANUS_WRAPPER_EVENTS.videoPublishersList, publishers));
+    videoroomPlugin.on('publisher-joined', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherJoined, publisher));
+    videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
+
+    this.__videoroomPlugin = videoroomPlugin;
   }
 
   /**
@@ -181,6 +213,10 @@ class JanusWrapper extends EventEmitter {
       this.__audiobridgePlugin.detach();
       this.__audiobridgePlugin = null;
     }
+    if (this.__videoroomPlugin) {
+      this.__videoroomPlugin.detach();
+      this.__videoroomPlugin = null;
+    }
     this.__janus.destroy();
     this.__janus = null;
   }
@@ -198,5 +234,6 @@ class JanusWrapper extends EventEmitter {
 };
 
 JanusWrapper.errors = ERROR_CODES;
+JanusWrapper.events = JANUS_WRAPPER_EVENTS;
 
 export default JanusWrapper;
