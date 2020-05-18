@@ -187,12 +187,17 @@ class VideoroomPlugin extends EventEmitter {
   publishVideo(stream) {
     this.__pluginHandle.createOffer({
       stream,
-      message: {
-        request: 'publish',
-        bitrate: DEFAULT_BITRATE,
-        audio: false,
-        video: true,
-        display: this.__userId,
+      success: jsep => {
+        this.videoroom.send({
+          message: {
+            request: 'publish',
+            bitrate: DEFAULT_BITRATE,
+            audio: false,
+            video: true,
+            display: this.__userId,
+          },
+          jsep,
+        });
       },
     });
   }
