@@ -89,7 +89,7 @@ export default {
      */
     camera(state) {
       if (state) {
-        this.startSharingVideo();
+        this.startSharingCamera();
       } else {
         this.stopSharingVideo();
       }
