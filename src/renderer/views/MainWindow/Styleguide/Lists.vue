@@ -56,6 +56,7 @@ export default {
       selectedArray: [],
       elements: [
         { name: 'Ivan Bushmin' },
+        { name: 'Артём Котлетов' },
         { name: 'Coco Chanel' },
         { name: 'Katherine Heigl' },
         { name: 'Bethenny Frankel' },
