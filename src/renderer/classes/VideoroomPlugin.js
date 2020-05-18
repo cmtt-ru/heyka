@@ -188,7 +188,7 @@ class VideoroomPlugin extends EventEmitter {
     this.__pluginHandle.createOffer({
       stream,
       success: jsep => {
-        this.videoroom.send({
+        this.__pluginHandle.send({
           message: {
             request: 'publish',
             bitrate: DEFAULT_BITRATE,
