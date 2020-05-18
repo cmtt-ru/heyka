@@ -5,6 +5,37 @@
       class="workspace"
     >
       <div
+        v-click-outside="deactivateInput"
+        class="workspace__search"
+      >
+        <ui-input
+          v-show="inputActive"
+          v-model="searchText"
+
+          class="workspace__search__input"
+          placeholder="Search"
+          icon="search"
+        />
+        <ui-button
+          v-show="inputActive"
+          :type="7"
+          class="workspace__search__icon workspace__search__icon--close"
+          size="small"
+          height="16"
+          icon="close"
+          @click.native="clearInput()"
+        />
+        <ui-button
+          v-show="!inputActive"
+          :type="7"
+          class="workspace__search__icon"
+          size="small"
+          icon="search"
+          @click.native="activateInput()"
+        />
+      </div>
+
+      <div
         v-popover.click="{name: 'Workspace'}"
         class="workspace__wrapper"
       >
@@ -21,22 +52,25 @@
           icon="arrow-down"
         />
       </div>
-
-      <ui-button
-        :type="7"
-        size="small"
-        icon="search"
-      />
     </div>
   </div>
 </template>
 
 <script>
 import UiButton from '@components/UiButton';
+import { UiInput } from '@components/Form';
 
 export default {
   components: {
     UiButton,
+    UiInput,
+  },
+
+  data() {
+    return {
+      searchText: '',
+      inputActive: false,
+    };
   },
 
   computed: {
@@ -51,14 +85,51 @@ export default {
     },
   },
 
+  watch: {
+    /**
+     * Update search string in vuex
+     * @param {string} newValue newValue
+     * @param {string} oldValue oldValue
+     * @returns {void}
+     */
+    searchText(newValue, oldValue) {
+      this.$store.commit('app/SET_SEARCH_TEXT', newValue);
+    },
+  },
+
   methods: {
     /**
-     * Dummy popover creation
+     * Popover creation
      * @returns {void}
      */
     dropdownHandler() {
-      console.log('popover with settings and all workspaces');
       this.$router.push('/main-window/settings/');
+    },
+
+    /**
+     * Show searchbar
+     * @returns {void}
+     */
+    activateInput() {
+      this.inputActive = true;
+    },
+
+    /**
+     * Hide searchbar if it is empty
+     * @returns {void}
+     */
+    deactivateInput() {
+      if (this.searchText === '') {
+        this.inputActive = false;
+      }
+    },
+
+    /**
+     * Clear searchbar
+     * @returns {void}
+     */
+    clearInput() {
+      this.searchText = '';
     },
   },
 
@@ -73,6 +144,8 @@ export default {
     justify-content space-between
     align-items center
     padding 0 4px
+    position relative
+    height 24px
 
     &__wrapper
         cursor pointer
@@ -91,4 +164,32 @@ export default {
         border-radius 2px
         margin-right 6px
 
+    &__search
+        position absolute
+        top -4px
+        bottom 0
+        width 100%
+        height 100%
+        right 0
+        pointer-events none
+
+        &__input
+          pointer-events auto
+          background-color var(--text-tech-3)
+
+        &__icon
+          pointer-events auto
+          position absolute
+          right 0
+          top 4px
+
+          &--close
+            top 8px
+            right 8px
+
+</style>
+
+<style lang="stylus">
+.workspace__search__input .input
+  padding-right 26px
 </style>
