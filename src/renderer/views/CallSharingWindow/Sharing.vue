@@ -48,18 +48,20 @@
           @click="handleSource(source)"
         >
           <div class="sharing-window__source__image">
+
             <div class="sharing-window__source__image__wrapper">
               <img
                 :src="source.thumbnail.toDataURL()"
               >
             </div>
-          </div>
 
-          <p class="sharing-window__source__name">
-            <span>
-              {{ source.name }}
-            </span>
-          </p>
+            <p class="sharing-window__source__name">
+              <span>
+                {{ source.name }}
+              </span>
+            </p>
+
+          </div>
         </div>
       </div>
     </div>
@@ -297,10 +299,12 @@ export default {
       margin 12px 0
       cursor pointer
       -webkit-app-region no-drag
+      background var(--button-bg-5)
+      border-radius 2px
 
       &__image
         position relative
-        padding-bottom 62%
+        padding-bottom 61.6%
 
         &__wrapper
           position absolute
@@ -312,6 +316,8 @@ export default {
           flex-direction column
           align-items center
           justify-content center
+          box-sizing border-box
+          padding 8px
 
           img
             border-radius 4px
@@ -319,34 +325,30 @@ export default {
             max-height 100%
 
       &__name
+        position absolute
         font-size 12px
         line-height 20px
         text-align center
-        margin-top 12px
         padding 0 24px
+        bottom 6px
+        width 100%
+        box-sizing border-box
 
         span
           display inline-block
-          border-radius 20px
+          border-radius 4px
           padding 0 12px
           overflow hidden
           text-overflow ellipsis
           white-space nowrap
           max-width 100%
           box-sizing border-box
+          background #000
 
       &--active
-        img
-          box-shadow 0 0 0 3px var(--color-2)
-
-        span
-          background var(--color-2)
+          box-shadow inset 0 0 0 2px var(--color-1)
 
       &:hover:not(.sharing-window__source--active)
-        img
-          box-shadow 0 0 0 3px var(--color-4)
-
-        span
-          background var(--button-bg-7)
+        opacity 0.7
 
 </style>
