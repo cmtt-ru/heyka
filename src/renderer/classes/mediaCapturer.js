@@ -56,12 +56,15 @@ class MediaCapturer extends EventEmitter {
   /**
    * Get camera stream
    *
+   * @param {?string} deviceId Specific device
    * @returns {Promise<MediaStream>}
    */
-  async getCameraStream() {
+  async getCameraStream(deviceId = null) {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
-      video: true,
+      video: !deviceId ? true : {
+        deviceId,
+      },
     });
 
     return stream;

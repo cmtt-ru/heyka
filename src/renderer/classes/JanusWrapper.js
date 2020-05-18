@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import Janus from './janus';
 import AudiobridgePlugin from './AudiobridgePlugin';
 import VideoroomPlugin from './VideoroomPlugin';
+import mediaCapturer from './mediaCapturer';
 // eslint-disable-next-line no-unused-vars
 import adapter from 'webrtc-adapter';
 
@@ -152,6 +153,34 @@ class JanusWrapper extends EventEmitter {
    */
   setMuting(muted) {
     this.__audiobridgePlugin.setMuting(muted);
+  }
+
+  /**
+   * Publish video stream
+   * @param {string} type "camera" or "screen"
+   * @param {string} source Source id (camera device id or screen source id)
+   * @returns {void}
+   */
+  async publishVideoStream(type = 'camera', source) {
+    let stream = null;
+
+    this._debug('Start sharing video', type, source);
+
+    if (type === 'camera') {
+      stream = await mediaCapturer.getCameraStream(source);
+    } else {
+      stream = await mediaCapturer.getStream(source);
+    }
+
+    this.__videoroomPlugin.publishVideo(stream);
+  }
+
+  /**
+   * Unpublish video stream
+   * @returns {void}
+   */
+  unpublishVideoStream() {
+    this.__videoroomPlugin.unpublishVideo();
   }
 
   /**

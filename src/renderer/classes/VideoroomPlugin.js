@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
+import mediaCapturer from './mediaCapturer';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
+const DEFAULT_BITRATE = 1400000;
 
 /**
  * Handle communication with videoroom plugin
@@ -133,7 +135,7 @@ class VideoroomPlugin extends EventEmitter {
           return;
         }
         this._debug('localstream', stream);
-        this._onLocalAudioStream(stream);
+        this._onLocalVideoStream(stream);
       },
 
       // Remote audio stream is available
@@ -178,6 +180,35 @@ class VideoroomPlugin extends EventEmitter {
   }
 
   /**
+   * Create offer and send video stream to another participants
+   * @param {object} stream Video stream
+   * @returns {void}
+   */
+  publishVideo(stream) {
+    this.__pluginHandle.createOffer({
+      stream,
+      message: {
+        request: 'publish',
+        bitrate: DEFAULT_BITRATE,
+        audio: false,
+        video: true,
+        display: this.__userId,
+      },
+    });
+  }
+
+  /**
+   * Unpublish current video stream
+   * @returns {void}
+   */
+  unpublishVideo() {
+    this._debug('Stop local video stream');
+    if (this.__localVideoStream) {
+      mediaCapturer.destroyStream(this.__localVideoStream);
+    }
+  }
+
+  /**
    * Detached videoroom plugin from Janus
    * @returns {undefined}
    */
@@ -185,6 +216,10 @@ class VideoroomPlugin extends EventEmitter {
     if (this.__pluginHandle) {
       this.__pluginHandle.detach();
       this.__pluginHandle = null;
+    }
+    if (this.__localVideoStream) {
+      mediaCapturer.destroyStream(this.__localVideoStream);
+      this.__localVideoStream = null;
     }
   }
 
@@ -258,6 +293,15 @@ class VideoroomPlugin extends EventEmitter {
   _onRemoteJsep(jsep) {
     this._debug('handle remote jsep', jsep);
     this.__pluginHandle.handleRemoteJsep({ jsep });
+  }
+
+  /**
+   * Handles local video stream
+   * @param {object} stream Local video stream
+   * @returns {void}
+   */
+  _onLocalVideoStream(stream) {
+    this.__localVideoStream = stream;
   }
 };
 

@@ -36,6 +36,9 @@ export default {
       camera: state => state.mediaState.camera,
     }),
     ...mapState([ 'isSocketConnected' ]),
+    ...mapState('app', {
+      selectedCameraDevice: state => state.selectedDevices.camera,
+    }),
   },
   watch: {
     /**
@@ -56,9 +59,6 @@ export default {
 
         return this.log('Channel is selected for the first time');
       }
-
-      this.unselectChannel();
-      this.selectChannel();
     },
 
     /**
@@ -80,6 +80,32 @@ export default {
      */
     speakers(state) {
       this.$refs.audio.muted = !state;
+    },
+
+    /**
+     * Handles change camera state
+     * @param {boolean} state Is camera sharing enabled
+     * @returns {void}
+     */
+    camera(state) {
+      if (state) {
+        this.startSharingVideo();
+      } else {
+        this.stopSharingVideo();
+      }
+    },
+
+    /**
+     * Handles change screen sharing state
+     * @param {boolean} state Is screen sharing enabled
+     * @returns {void}
+     */
+    screen(state) {
+      if (state) {
+        this.startSharingScreen();
+      } else {
+        this.stopSharingVideo();
+      }
     },
 
     isSocketConnected(value) {
@@ -114,6 +140,11 @@ export default {
     await JanusWrapper.init();
     this.log('JanusWrapper was initialized');
   },
+  beforeDestroy() {
+    if (this.janusWrapper) {
+      this.janusWrapper.disconnect();
+    }
+  },
   methods: {
     /**
      * Join to the Janus channel
@@ -142,6 +173,14 @@ export default {
       janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
 
       await janusWrapper.join();
+
+      // start sharing camera if camera is enabled
+      if (this.camera) {
+        this.startSharingCamera();
+      }
+      if (this.screen) {
+        this.startSharingScreen();
+      }
     },
 
     /**
@@ -156,6 +195,42 @@ export default {
         this.janusWrapper.disconnect();
         this.janusWrapper = null;
       }
+    },
+
+    /**
+     * Start sharing video from a camera device
+     * @returns {void}
+     */
+    startSharingCamera() {
+      if (!this.janusWrapper) {
+        this.log('Janus wrapper is not existed');
+
+        return;
+      }
+
+      this.janusWrapper.publishVideoStream('camera', this.selectedCameraDevice);
+    },
+
+    /**
+     * Start sharing video from the screen
+     * @returns {void}
+     */
+    startSharingScreen() {
+      if (!this.janusWrapper) {
+        this.log('Janus wrapper is not existed');
+
+        return;
+      }
+
+      this.janusWrapper.publishVideoStream('screen', this.janusOptions.sharingSource.id);
+    },
+
+    /**
+     * Stop sharing any video
+     * @returns {void}
+     */
+    stopSharingVideo() {
+      this.janusWrapper.unpublishVideoStream();
     },
 
     /**
