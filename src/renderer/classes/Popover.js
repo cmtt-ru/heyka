@@ -35,7 +35,7 @@ const DEFAULT_POPPER_OPTIONS = {
       name: 'offset',
       options: {
         // eslint-disable-next-line no-magic-numbers
-        offset: [8, 8],
+        offset: [0, 8],
       },
     },
     {
@@ -64,6 +64,18 @@ const UID_MAX = 1000000;
  * @type {number}
  */
 const TIMEOUT_BEFORE_DESTROY = 70;
+
+/**
+ * Hover delay
+ * @type {number}
+ */
+const HOVER_DELAY = 70;
+
+/**
+ * Disable hover delay for fast moving cursor
+ * @type {boolean}
+ */
+let disableHoverDelay = false;
 
 /**
  * Class for popovers
@@ -221,10 +233,22 @@ export default class Popover {
     /* Handle hover mode */
     if (this.modes.hover) {
       this.element.__mouseEnterHandler = event => {
-        this.show(true);
+        clearTimeout(this.element.__hoverInterval);
+
+        this.element.__hoverInterval = setTimeout(() => {
+          this.show(true);
+
+          disableHoverDelay = true;
+        }, !disableHoverDelay && HOVER_DELAY);
       };
 
       this.element.__mouseLeaveHandler = event => {
+        clearTimeout(this.element.__hoverInterval);
+
+        this.element.__hoverInterval = setTimeout(() => {
+          disableHoverDelay = false;
+        }, HOVER_DELAY);
+
         this.show(false);
       };
 
@@ -280,6 +304,7 @@ export default class Popover {
 
       refElement = null;
       setTimeout(() => {
+        this.popper.update();
         document.body.addEventListener('mouseup', this.element.__clickOutsideHandler);
       }, 0);
     } else {
@@ -291,6 +316,25 @@ export default class Popover {
         this.popper.destroy();
         this.popper = null;
       }
+    }
+  }
+
+  /**
+   * Update vue component properties
+   * @param {object} data – properties
+   * @returns {void}
+   */
+  updateData(data) {
+    this.vueProps = data;
+
+    if (this.instance) {
+      Object.keys(data).forEach(key => {
+        this.instance.$props[key] = data[key];
+      });
+    }
+
+    if (this.popper) {
+      this.popper.update();
     }
   }
 
