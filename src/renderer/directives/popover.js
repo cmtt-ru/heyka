@@ -1,4 +1,4 @@
-import Popover from "@classes/Popover";
+import Popover from '@classes/Popover';
 
 export default {
   bind: async (el, binding, vnode) => {
