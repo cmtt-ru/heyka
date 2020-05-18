@@ -320,6 +320,7 @@ export default {
           janusId: publisher.id,
         };
       });
+      this.log('Publishers collection is updated', this.videoPublishers);
     },
 
     /**
@@ -328,10 +329,13 @@ export default {
      * @returns {void}
      */
     onVideoPublisherJoined(publisher) {
-      this.videoPublishers[publisher.display] = {
+      const newPublisher = {
         userId: publisher.display,
         janusId: publisher.id,
       };
+
+      this.videoPublishers[publisher.display] = newPublisher;
+      this.log('New publisher is added', newPublisher);
     },
 
     /**
@@ -341,6 +345,7 @@ export default {
      */
     onVideoPublisherLeft(publisher) {
       delete this.videoPublishers[publisher.display];
+      this.log(`Publisher ${publisher.display} is deleted`);
     },
 
     /**

@@ -118,7 +118,7 @@ class VideoroomPlugin extends EventEmitter {
           case message.unpublished:
             this._onUnpublished(message);
             break;
-          case event === 'event' && message.id:
+          case event === 'event' && !!message.id:
             this._onPublished(message);
             break;
           case jsep !== undefined && jsep !== null:
@@ -210,6 +210,14 @@ class VideoroomPlugin extends EventEmitter {
     this._debug('Stop local video stream');
     if (this.__localVideoStream) {
       mediaCapturer.destroyStream(this.__localVideoStream);
+    }
+    this._debug('Unpublish');
+    if (this.__pluginHandle) {
+      this.__pluginHandle.send({
+        message: {
+          request: 'unpublish',
+        },
+      });
     }
   }
 
