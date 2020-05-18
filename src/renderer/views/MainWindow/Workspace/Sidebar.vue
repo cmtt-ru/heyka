@@ -30,7 +30,7 @@
 
     <list
       v-if="sortedChannels.length"
-      :filter-by="''"
+      :filter-by="searchText"
     >
       <list-item
         v-for="channel in sortedChannels"
@@ -68,7 +68,7 @@
 
     <list
       v-if="sortedUsers.length"
-      :filter-by="''"
+      :filter-by="searchText"
     >
       <list-item
         v-for="user in sortedUsers"
@@ -107,6 +107,14 @@ export default {
      */
     texts() {
       return this.$t('workspace.navbar');
+    },
+
+    /**
+     * Get search string from header
+     * @returns {string}
+     */
+    searchText() {
+      return this.$store.state.app.search;
     },
 
     /**

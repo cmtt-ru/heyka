@@ -90,8 +90,10 @@ export default {
     };
   },
 
-  computed: {
-
+  watch: {
+    value(newValue, oldValue) {
+      this.myValue = newValue;
+    },
   },
 
   methods: {
@@ -110,6 +112,7 @@ export default {
   display flex
   flex-direction row
   align-items center
+  background-color var(--input)
 
   &--disabled
     opacity 0.5
@@ -122,7 +125,7 @@ export default {
   box-sizing border-box
   border 1px solid var(--stroke-3)
   border-radius 4px
-  background-color var(--input)
+  background-color transparent
   font-family Inter, sans-serif
   font-size 14px
   line-height 18px
