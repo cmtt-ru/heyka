@@ -296,6 +296,7 @@ export default {
       width calc(50% - 6px)
       margin 12px 0
       cursor pointer
+      -webkit-app-region no-drag
 
       &__image
         position relative
