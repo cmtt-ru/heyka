@@ -367,7 +367,6 @@ class WindowManager {
   closeAll() {
     for (const w in this.windows) {
       if (w != this.mainWindowId) {
-        console.log('closing:', w);
         this.closeWindow(w);
       }
     }
