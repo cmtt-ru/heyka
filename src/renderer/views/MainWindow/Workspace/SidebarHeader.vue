@@ -10,11 +10,12 @@
       >
         <ui-input
           v-show="inputActive"
+          ref="globalSearch"
           v-model="searchText"
-
           class="workspace__search__input"
           placeholder="Search"
           icon="search"
+          @keydown.native.esc="clearInput();deactivateInput()"
         />
         <ui-button
           v-show="inputActive"
@@ -112,6 +113,9 @@ export default {
      */
     activateInput() {
       this.inputActive = true;
+      this.$nextTick(() => {
+        this.$refs.globalSearch.focusInput();
+      });
     },
 
     /**

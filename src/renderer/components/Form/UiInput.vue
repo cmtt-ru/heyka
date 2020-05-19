@@ -11,6 +11,7 @@
     />
 
     <input
+      ref="input"
       v-model="myValue"
       class="input"
       :class="{'input--with-icon': icon}"
@@ -99,6 +100,9 @@ export default {
   methods: {
     updateText() {
       this.$emit('input', this.myValue);
+    },
+    focusInput() {
+      this.$refs.input.focus();
     },
   },
 
