@@ -34,7 +34,7 @@
     "no-undef": 2,
     "no-magic-numbers": [2, {
       "ignoreArrayIndexes": true,
-      "ignore": [0, 1, -1]
+      "ignore": [0, 1, -1, 2]
     }],
 
     "array-bracket-spacing": [2, "never", {
