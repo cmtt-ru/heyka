@@ -95,6 +95,28 @@ export default {
   },
 
   /**
+   * Add new push
+   *
+   * @param {AppState} state – module app state
+   * @param {object} notif – new push
+   * @constructor
+   */
+  ADD_PUSH(state, notif) {
+    state.pushes.push(notif);
+  },
+
+  /**
+   * Remove push by id
+   *
+   * @param {AppState} state – module app state
+   * @param {string} id id
+   * @constructor
+   */
+  REMOVE_PUSH(state, id) {
+    state.pushes = state.pushes.filter(el => el.id != id);
+  },
+
+  /**
    * Set device list
    *
    * @param {AppState} state – module app state
