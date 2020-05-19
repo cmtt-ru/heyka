@@ -1,5 +1,5 @@
 <template>
-  <div class="popover">
+  <div class="popover" :style="$themes.getColors('content')">
     <slot />
   </div>
 </template>

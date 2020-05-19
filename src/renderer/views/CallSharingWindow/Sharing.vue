@@ -48,7 +48,6 @@
           @click="handleSource(source)"
         >
           <div class="sharing-window__source__image">
-
             <div class="sharing-window__source__image__wrapper">
               <img
                 :src="source.thumbnail.toDataURL()"
@@ -60,7 +59,6 @@
                 {{ source.name }}
               </span>
             </p>
-
           </div>
         </div>
       </div>
@@ -129,6 +127,10 @@ export default {
       return this.mediaState.screen === true;
     },
 
+    /**
+     * Active source id
+     * @returns {string}
+     */
     activeSourceId() {
       const source = this.$store.state.janus.sharingSource;
 
@@ -152,7 +154,7 @@ export default {
     },
   },
 
-  async mounted() {
+  mounted() {
     this.updateSources('screen');
   },
 
@@ -197,11 +199,6 @@ export default {
      */
     handleSource(source) {
       this.selectedSource = source;
-      // if (this.$refs.video.srcObject) {
-      //   mediaCapturer.destroyStream(this.$refs.video.srcObject);
-      // }
-      // this.$refs.video.srcObject = await mediaCapturer.getStream(source.id);
-      // this.$refs.video.onloadedmetadata = (e) => this.$refs.video.play();
     },
 
     /**
@@ -289,6 +286,7 @@ export default {
       justify-content space-between
       padding 0 20px
       flex-grow 1
+      -webkit-app-region no-drag
 
       &[count="1"]
         & ^[-2]__source
@@ -298,7 +296,6 @@ export default {
       width calc(50% - 6px)
       margin 12px 0
       cursor pointer
-      -webkit-app-region no-drag
       background var(--button-bg-5)
       border-radius 2px
 

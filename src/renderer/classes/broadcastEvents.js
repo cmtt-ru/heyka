@@ -15,7 +15,7 @@ class BroadcastEvents extends EventEmitter {
   }
 
   /**
-   * Dispatch action
+   * Dispatch event
    *
    * @param {string} event – rendere-to-tenderer event name
    * @param {*} data – event data
