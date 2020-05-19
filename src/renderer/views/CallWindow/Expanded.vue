@@ -72,7 +72,6 @@
 </template>
 
 <script>
-/* eslint-disable no-magic-numbers */
 import CallControls from '../CallOverlayWindow/CallControls';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
