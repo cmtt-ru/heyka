@@ -22,7 +22,7 @@ const state = () => {
     channelAuthToken: '',
     audioRoomId: 0,
     videoRoomId: 0,
-    sharingSourceId: null,
+    sharingSource: null,
   };
 };
 

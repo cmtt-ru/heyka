@@ -38,7 +38,6 @@ const state = () => {
     selectedChannelId: '',
     mediaState: initialMediaState,
     pokes: [],
-    sharingSourceId: null,
   };
 };
 

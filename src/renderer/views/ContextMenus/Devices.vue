@@ -1,9 +1,6 @@
 <template>
   <popover class="device-popover-wrapper">
-    <devices
-      :style="$themes.getColors('content')"
-      class="device-popover"
-    />
+    <devices class="device-popover" />
   </popover>
 </template>
 

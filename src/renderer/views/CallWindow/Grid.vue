@@ -95,13 +95,17 @@
 </template>
 
 <script>
-/* eslint-disable no-magic-numbers */
 import CallButtons from '../CallOverlayWindow/CallButtons';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
 
-const ASPECT_RATIO = 124 / 168;
+/**
+ * Aspect ratio 124 / 168;
+ * @type {number}
+ */
+const ASPECT_RATIO = 0.7380952381;
+
 const PADDING = 20;
 
 export default {

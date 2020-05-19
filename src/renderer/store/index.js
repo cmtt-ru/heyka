@@ -89,7 +89,7 @@ if (isMainWindow()) {
   broadcastState.requestState();
 
   /** Listen to state event and replace state */
-  broadcastState.on('state', (state) => {
+  broadcastState.once('state', (state) => {
     store.replaceState(state);
   });
 }
