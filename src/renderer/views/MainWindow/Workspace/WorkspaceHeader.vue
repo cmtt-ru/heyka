@@ -10,6 +10,7 @@
         size="small"
         :icon="icons.screen"
         @click.native="switchProp('screen')"
+        v-tooltip="mediaState.speakers ? 'Start screen sharing' : 'Stop screen sharing'"
       />
       <ui-button
         :type="7"
@@ -17,12 +18,13 @@
         size="small"
         :icon="icons.speakers"
         @click.native="switchProp('speakers')"
+        v-tooltip="mediaState.speakers ? 'Deafen' : 'Undeafen'"
       />
-      <!--             <ui-button :type="7" class="user__status" @click.native="switchProp('microphone')" size="small" :icon="icons.microphone> -->
       <microphone
         class="user__status"
         :active="user.microphone"
         @click.native="switchProp('microphone')"
+        v-tooltip="mediaState.microphone ? 'Mute' : 'Unmute'"
       />
 
       <avatar

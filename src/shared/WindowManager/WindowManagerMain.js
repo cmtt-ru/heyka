@@ -1,41 +1,39 @@
-import { ipcMain, BrowserWindow } from 'electron';
+import { ipcMain, BrowserWindow, screen } from 'electron';
 import Positioner from './Positioner';
+import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
+import cloneDeep from 'clone-deep';
 
 // const isMac = process.platform === 'darwin';
 // const isLinux = process.platform === 'linux';
 // const isWin = !isMac && !isLinux;
 
-const DEFAULT_WINDOW_OPTIONS = {
+const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   width: 780,
   height: 560,
   x: 0,
   y: 0,
   // backgroundColor: '#000000', //! need to set same color as main bg color of theme
   frame: false,
-  movable: true,
   fullscreenable: false,
-  resizable: true,
-  transparent: false,
-  alwaysOnTop: false,
   show: false,
   skipTaskBar: true,
-  webPreferences: {
+  webPreferences: Object.freeze({
     nodeIntegration: true,
     webSecurity: true,
-  },
-};
+  }),
+});
 
 /**
  * A class that handles all windows
  */
 class WindowManager {
   /**
- * Inits windowmanager class, assigns mainwindow
- * @param {object} mainWindow mainWindow instance
- * @returns {void}
- */
+   * Inits windowmanager class, assigns mainwindow
+   * @param {object} mainWindow mainWindow instance
+   * @returns {void}
+   */
   constructor() {
     this.windows = [];
 
@@ -65,6 +63,39 @@ class WindowManager {
       event.returnValue = true;
     });
 
+    ipcMain.on('window-manager-show-inactive', (event, options) => {
+      this.showInactiveWindow(options.id);
+      event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-focus', (event, options) => {
+      this.focusWindow(options.id);
+      event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-blur', (event, options) => {
+      this.blurWindow(options.id);
+      event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-size', (event, options) => {
+      this.sizeWindow(options);
+      event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-fullscreen', (event, options) => {
+      this.toggleFullscreenWindow(options.id);
+      event.returnValue = true;
+    });
+    ipcMain.on('window-manager-openurl', (event, options) => {
+      this.openUrl(options.id, options.route);
+      event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-is-main-window', (event, options) => {
+      event.returnValue = this.mainWindowId === options.id;
+    });
+
     ipcMain.on('window-manager-move-me', (event, options) => {
       // console.log('window-manager-show', options);
       const { x, y } = screen.getCursorScreenPoint();
@@ -79,7 +110,8 @@ class WindowManager {
       Object.keys(this.windows).forEach(windowId => {
         try {
           this.windows[windowId].close();
-        } catch (e) {}
+        } catch (e) {
+        }
         this.windows[windowId] = null;
         delete this.windows[windowId];
       });
@@ -87,48 +119,45 @@ class WindowManager {
   }
 
   /**
- * Get BrowserWindow instance by ID
- * @param {string} windowId window ID
- * @returns {object} BrowserWindow instance
- */
+   * Get BrowserWindow instance by ID
+   * @param {string} windowId window ID
+   * @returns {object} BrowserWindow instance
+   */
   getWindow(windowId) {
     return this.windows[windowId];
   }
 
   /**
- * Create secondary Window
- * @param {object} options mainWindow instance
- * @returns {string} ID of created window
- */
+   * Create secondary Window
+   * @param {object} options mainWindow instance
+   * @returns {string} ID of created window
+   */
   createWindow(options) {
-    if (options.template && templates[options.template]) {
-      options.window = { ...templates[options.template] };
-    }
-    const newWindow = new BrowserWindow(Object.assign({}, DEFAULT_WINDOW_OPTIONS, options.window || {}));
-
     const windowId = uuidV4();
 
+    if (options.template && templates[options.template]) {
+      options.window = Object.assign(cloneDeep(templates[options.template]), cloneDeep(options.window));
+    }
+
+    const windowOptions = Object.assign(cloneDeep(DEFAULT_WINDOW_OPTIONS), cloneDeep(options.window));
+
+    windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
+
+    const newWindow = new BrowserWindow(windowOptions);
+
+    if (process.env.NODE_ENV === 'production') {
+      newWindow.removeMenu();
+    }
     this.windows[windowId] = newWindow;
 
-    let devUrl = process.env.WEBPACK_DEV_SERVER_URL + '#' + options.route;
-    let prodUrl = 'heyka://./index.html/#' + options.route;
-
-    if (options.url) {
-      devUrl = process.env.WEBPACK_DEV_SERVER_URL + options.url + '#' + options.route;
-      prodUrl = 'heyka://./' + options.url + '#' + options.route;
+    if (options.ignoreMouseEvents) {
+      newWindow.setIgnoreMouseEvents(true);
     }
 
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      newWindow.loadURL(devUrl);
-      // if (!process.env.IS_TEST) {
-      //   newWindow.webContents.openDevTools();
-      // }
-    } else {
-      newWindow.loadURL(prodUrl);
-    }
+    this.openUrl(windowId, options.route, options.url);
 
     newWindow.once('close', e => {
-      ipcMain.emit(`window-close-${windowId}`);
+      this.send(`window-close-${windowId}`);
     });
 
     newWindow.on('ready-to-show', (event) => {
@@ -136,18 +165,64 @@ class WindowManager {
       const position = getWindowPosition(newWindow, options.position);
 
       newWindow.setPosition(position.x, position.y);
+
+      if (options.displayId) {
+        const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+
+        if (display) {
+          newWindow.setPosition(display.bounds.x, display.bounds.y);
+
+          if (options.maximize) {
+            newWindow.setSize(display.bounds.width, display.bounds.height);
+            newWindow.setAlwaysOnTop(true, 'pop-up-menu');
+          }
+        }
+      }
+
+      if (options.visibleOnAllWorkspaces) {
+        newWindow.setVisibleOnAllWorkspaces(true);
+      }
+
       newWindow.show();
+    });
+
+    newWindow.on('blur', (event) => {
+      this.sendAll(`window-blur-${windowId}`);
+    });
+    newWindow.on('focus', (event) => {
+      this.sendAll(`window-focus-${windowId}`);
     });
 
     return windowId;
   }
 
   /**
- * Set window position
- * @param {object} wnd window instance
- * @param {string} pos position of window
- * @returns {string} ID of created window
- */
+   * Open specific url in window
+   * @param {string} id window's id
+   * @param {string} route route to move to
+   * @param {string} url url to move to (if not index.html)
+   * @returns {void}
+   */
+  openUrl(id, route, url = 'index.html') {
+    const devUrl = process.env.WEBPACK_DEV_SERVER_URL + url + '#' + route;
+    const prodUrl = 'heyka://./' + url + '#' + route;
+
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      this.windows[id].loadURL(devUrl);
+      // if (!process.env.IS_TEST) {
+      //   newWindow.webContents.openDevTools();
+      // }
+    } else {
+      this.windows[id].loadURL(prodUrl);
+    }
+  }
+
+  /**
+   * Set window position
+   * @param {object} wnd window instance
+   * @param {string} pos position of window
+   * @returns {string} ID of created window
+   */
   setPosition(wnd, pos = 'center') {
     const position = getWindowPosition(wnd, pos);
 
@@ -155,10 +230,10 @@ class WindowManager {
   }
 
   /**
- * Destroy window
- * @param {string} windowId ID of window in question
- * @returns {void}
- */
+   * Destroy window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
   closeWindow(windowId) {
     if (this.windows[windowId]) {
       try {
@@ -173,10 +248,10 @@ class WindowManager {
   }
 
   /**
- * Hide window
- * @param {string} windowId ID of window in question
- * @returns {void}
- */
+   * Hide window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
   hideWindow(windowId) {
     if (this.windows[windowId]) {
       this.windows[windowId].hide();
@@ -184,13 +259,116 @@ class WindowManager {
   }
 
   /**
- * Show window
- * @param {string} windowId ID of window in question
- * @returns {void}
- */
+   * Show window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
   showWindow(windowId) {
     if (this.windows[windowId]) {
       this.windows[windowId].show();
+    }
+  }
+
+  /**
+   * Show window inactive
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
+  showInactiveWindow(windowId) {
+    if (this.windows[windowId]) {
+      this.windows[windowId].showInactive();
+    }
+  }
+
+  /**
+   * Focus window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
+  focusWindow(windowId) {
+    if (this.windows[windowId]) {
+      this.windows[windowId].focus();
+    }
+  }
+
+  /**
+   * Blur window
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
+  blurWindow(windowId) {
+    if (this.windows[windowId]) {
+      this.windows[windowId].blur();
+    }
+  }
+
+  /**
+   * Toggle fullscreen mode
+   * @param {string} windowId ID of window in question
+   * @returns {void}
+   */
+  toggleFullscreenWindow(windowId) {
+    this.windows[windowId].setFullScreen(!this.windows[windowId].isFullScreen());
+  }
+
+  /**
+   * Set's size of the window
+   * @param {string} id – window id
+   * @param {number} width – window width
+   * @param {number} height – window height
+   * @returns {void}
+   */
+  sizeWindow({ id, width, height }) {
+    if (this.windows[id]) {
+      this.windows[id].setSize(width, height);
+      adjustBounds(this.windows[id]);
+    }
+  }
+
+  /**
+   * Set's main window id
+   * @param {string} windowId – main window id
+   * @returns {void}
+   */
+  setMainWindowId(windowId) {
+    this.mainWindowId = windowId;
+  }
+
+  /**
+   * Send message to main window
+   * @param {string} event – event name
+   * @param {*} [data] – event data
+   * @returns {void}
+   */
+  send(event, data) {
+    if (this.windows[this.mainWindowId]) {
+      this.windows[this.mainWindowId].webContents.send(event, data);
+    }
+  }
+
+  /**
+   * Send message to ALL windows
+   * @param {string} event – event name
+   * @param {*} [data] – event data
+   * @returns {void}
+   */
+  sendAll(event, data = null) {
+    const windows = BrowserWindow.getAllWindows();
+
+    windows.forEach((w) => {
+      w.webContents.send(event, data);
+    });
+  }
+
+  /**
+   * Close ALL windows EXCEPT main window
+   * @returns {void}
+   */
+  closeAll() {
+    for (const w in this.windows) {
+      if (w != this.mainWindowId) {
+        this.closeWindow(w);
+      }
     }
   }
 }

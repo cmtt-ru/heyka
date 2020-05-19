@@ -219,7 +219,7 @@
         </div>
 
         <h3>Transparent button</h3>
-        <div class="l-mt-12">
+        <div class="l-mt-12 l-mb-24">
           <ui-button
             :type="8"
             size="small"
@@ -231,6 +231,24 @@
             size="small"
           >
             Type --8
+          </ui-button>
+        </div>
+
+        <h3>Toggle buttons</h3>
+        <div class="l-mt-12">
+          <ui-button
+            :type="13"
+            size="small"
+          >
+            Type --13
+          </ui-button>
+
+          <ui-button
+            :type="13"
+            :active="true"
+            size="small"
+          >
+            Type --13
           </ui-button>
         </div>
       </div>
