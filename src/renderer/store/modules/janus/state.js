@@ -5,6 +5,7 @@
  * @param {string} channelAuthToken – channel auth token
  * @param {number} audioRoomId – janus audio room id
  * @param {number} videoRoomId – janus video room id
+ * @param {object} sharingSource – sharing source
  */
 
 /**
@@ -21,6 +22,7 @@ const state = () => {
     channelAuthToken: '',
     audioRoomId: 0,
     videoRoomId: 0,
+    sharingSource: null,
   };
 };
 

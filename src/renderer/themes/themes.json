@@ -12,6 +12,7 @@
                 "--color-2": "#1575F1",
                 "--color-3": "#FDCB4B",
                 "--color-4": "#B1B3B5",
+                "--color-5": "#000000",
                 "--stroke-0": "#F6D4CF",
                 "--stroke-1": "#C9EAD7",
                 "--stroke-2": "#C4DCFB",
@@ -57,6 +58,7 @@
             "popover": {
                 "--app-bg": "#000000",
                 "--text-0": "#E5E5E5",
+                "--text-1": "#7D7F81",
                 "--icon-0": "#FFFFFF",
                 "--button-bg-5": "#191919",
                 "--button-bg-6": "#262626",
