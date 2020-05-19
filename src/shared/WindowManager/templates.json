@@ -21,7 +21,6 @@
     "height": 120,
     "transparent": true,
     "movable": false,
-    "resizable": false,
     "frame": false
   },
   "call": {

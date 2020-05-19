@@ -19,8 +19,12 @@
     </button>
     <br><br>
 
-    <button @click="openCallWindow">Открыть окно звонка</button>
-    <button @click="closeCallWindow">Закрыть</button>
+    <button @click="openCallWindow">
+      Открыть окно звонка
+    </button>
+    <button @click="closeCallWindow">
+      Закрыть
+    </button>
 
     <br><br>
     <button @click="loadInitialState()">
@@ -122,16 +126,17 @@ export default {
     },
 
     async openPushWindow() {
-      if (!pushWindow) {
-        pushWindow = WindowManager.create({
-          route: '/push-window',
-          position: 'topRight',
-          template: 'push',
-          onClose: () => {
-            pushWindow = null;
-          },
-        });
-      }
+      // if (!pushWindow) {
+      //   pushWindow = WindowManager.create({
+      //     route: '/push-window',
+      //     position: 'topRight',
+      //     template: 'push',
+      //     onClose: () => {
+      //       pushWindow = null;
+      //     },
+      //   });
+      // }
+      this.$store.dispatch('app/addPush', { name: 'test' });
     },
 
     closePushWindow() {

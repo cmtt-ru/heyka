@@ -1,4 +1,5 @@
 import themes from '@/themes';
+import pushWindow from '@classes/pushWindow';
 import i18n from '@/i18n';
 import { ipcRenderer } from 'electron';
 import Store from 'electron-store';
@@ -107,6 +108,20 @@ export default {
     };
 
     commit('ADD_NOTIFICATION', notification);
+
+    return id;
+  },
+
+  addPush({ commit, state }, notif) {
+    const id = uuidV4();
+    const push = {
+      id,
+      ...notif,
+    };
+
+    commit('ADD_PUSH', push);
+    pushWindow.show();
+    pushWindow.updateCount(state.pushes.length);
 
     return id;
   },

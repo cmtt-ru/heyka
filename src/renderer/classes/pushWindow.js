@@ -45,11 +45,12 @@ class PushWindow {
    * @returns {void}
    */
   updateCount(amount) {
+    console.log(amount, this.window);
     if (amount === 0) {
       this.hide();
     } else if (this.window !== null) {
       this.show();
-    } else {
+      console.log(ONE_PUSH_SIZE.width, ONE_PUSH_SIZE.height * amount);
       this.window.setSize(ONE_PUSH_SIZE.width, ONE_PUSH_SIZE.height * amount);
     }
   }
