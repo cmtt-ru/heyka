@@ -47,7 +47,7 @@ class DeepLinkMain {
     const deepLinkSetParams = this.setParams.bind(this);
 
     if (process.platform === 'darwin') {
-      deepLinkSetParams('heyka://call/test 123');
+      // deepLinkSetParams('heyka://call/test/123');
       app.on('open-url', (event, url) => {
         console.log('url mac:', url);
         event.preventDefault();
@@ -68,7 +68,7 @@ class DeepLinkMain {
           if (this.mainWindow) {
             if (this.mainWindow.isMinimized()) {
               this.mainWindow.restore();
-            };
+            }
             this.mainWindow.focus();
           }
           this.sendDeepLink();
