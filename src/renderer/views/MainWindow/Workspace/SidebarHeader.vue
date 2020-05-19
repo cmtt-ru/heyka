@@ -24,7 +24,7 @@
           size="small"
           height="16"
           icon="close"
-          @click.native="clearInput()"
+          @click.native="clearInput(); activateInput()"
         />
         <ui-button
           v-show="!inputActive"
@@ -191,9 +191,7 @@ export default {
             top 8px
             right 8px
 
-</style>
-
-<style lang="stylus">
-.workspace__search__input .input
+/deep/ .input
   padding-right 26px
+
 </style>
