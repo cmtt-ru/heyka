@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain, protocol } from 'electron';
+import { app, ipcMain, protocol, nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
@@ -47,9 +47,15 @@ function createWindow() {
 
   const mainWindowid = WindowManager.createWindow(params);
 
+  WindowManager.setMainWindowId(mainWindowid);
+
   mainWindow = WindowManager.getWindow(mainWindowid);
   DeepLink.bindMainWindow(mainWindow);
   TrayManager.bindMainWindow(mainWindow);
+
+  nativeTheme.on('updated', () => {
+    WindowManager.sendAll('nativetheme-updated');
+  });
 
   ipcMain.on('start-is-ready', () => {
     if (DeepLink.getParams()) {
@@ -70,6 +76,9 @@ function createWindow() {
 
   if (!isDevelopment) {
     Autoupdater.init(mainWindow);
+    mainWindow.webContents.on('did-finish-load', () => {
+      WindowManager.closeAll();
+    });
   }
 
   mainWindow.on('close', (event) => {
@@ -86,7 +95,7 @@ function createWindow() {
 
 /**
  * Create Splash window
- * @returns {undefined} NOTHING
+ * @returns {void}
  */
 function createLoadingScreen() {
   loadingScreenID = WindowManager.createWindow({

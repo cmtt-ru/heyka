@@ -1,6 +1,7 @@
 import API from '@api';
 import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
+import callWindow from '@classes/callWindow';
 
 export default {
 
@@ -72,6 +73,9 @@ export default {
     });
 
     commit('me/SET_CHANNEL_ID', id);
+
+    callWindow.showOverlay();
+    // callWindow.setMediaSharingMode(getters['me/getMediaState'].screen);
   },
 
   /**
@@ -88,6 +92,17 @@ export default {
       channelId: id,
     });
     commit('me/SET_CHANNEL_ID', null);
+
+    callWindow.hideAll();
+  },
+
+  /**
+   * Open Grid (main call window)
+   * @returns {void}
+   */
+  async openGrid() {
+    callWindow.hideOverlay();
+    callWindow.showGrid();
   },
 
   /**
@@ -98,6 +113,22 @@ export default {
    */
   async setSocketConnected({ commit }, value) {
     commit('SET_SOCKET_CONNECTED', value);
+  },
+
+  /**
+   * Open sharing window
+   * @returns {void}
+   */
+  async openSharingWindow() {
+    callWindow.showSharing();
+  },
+
+  /**
+   * Close sharing window
+   * @returns {void}
+   */
+  async closeSharingWindow() {
+    callWindow.closeSharing();
   },
 
 };
