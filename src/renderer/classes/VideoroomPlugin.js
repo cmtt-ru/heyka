@@ -115,7 +115,7 @@ class VideoroomPlugin extends EventEmitter {
           case event === 'joined':
             this._onJoinedChannel(message);
             break;
-          case message.unpublished:
+          case !!message.unpublished:
             this._onUnpublished(message);
             break;
           case event === 'event' && !!message.id:
