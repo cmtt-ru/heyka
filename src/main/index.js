@@ -60,8 +60,6 @@ function createWindow() {
   ipcMain.on('start-is-ready', () => {
     if (DeepLink.getParams()) {
       mainWindow.webContents.send('deep-link', DeepLink.getParams());
-    } else {
-      mainWindow.webContents.send('default-behaviour');
     }
   });
 

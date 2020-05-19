@@ -248,7 +248,7 @@ const routes = [
    */
   {
     path: '*',
-    redirect: '/main-window',
+    redirect: '/main-window/workspace',
   },
 ];
 

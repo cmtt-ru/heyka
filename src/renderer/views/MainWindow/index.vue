@@ -1,4 +1,3 @@
-import {ipcRenderer} from "electron";
 <template>
   <div>
     <janus />
@@ -28,10 +27,6 @@ export default {
   async created() {
     try {
       await this.$API.auth.check();
-
-      ipcRenderer.on('default-behaviour', (event, arg) => {
-        this.$router.replace('/main-window/workspace');
-      });
 
       ipcRenderer.send('start-is-ready');
 
