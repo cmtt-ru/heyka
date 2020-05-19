@@ -169,10 +169,6 @@ class CallWindow {
         displayId,
         maximize: true,
         visibleOnAllWorkspaces: true,
-        window: {
-          width: 500,
-          height: 500,
-        },
         onClose: () => {
           this.frameWindow = null;
         },
@@ -201,6 +197,9 @@ class CallWindow {
     this.hideSharing();
     if (this.overlayWindow) {
       this.overlayWindow.close();
+    }
+    if (this.frameWindow) {
+      this.frameWindow.close();
     }
   }
 
