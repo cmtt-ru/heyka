@@ -43,5 +43,4 @@ export default {
   SET_MEDIA_STATE(state, mediaState) {
     state.mediaState = mediaState;
   },
-
 };

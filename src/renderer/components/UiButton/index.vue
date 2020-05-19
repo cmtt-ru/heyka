@@ -16,14 +16,19 @@
     class="ui-button"
     :class="classList"
     :style="buttonSize"
+    @click="$emit('click')"
   >
     <conditional-wrapper :wrap="needToWrapIcon">
-      <div class="ui-button__icon-bg">
+      <div
+        class="ui-button__icon-bg"
+        @click="$emit('click')"
+      >
         <svg-icon
           class="ui-button__icon"
           :name="icon"
           :width="iconSizeComp"
           :height="iconSizeComp"
+          :stroke="stroke"
         />
       </div>
     </conditional-wrapper>
@@ -57,7 +62,7 @@ export default {
   props: {
     /**
      * Style type of the button
-     * @param [1 — 10]
+     * @param [1 — 13]
      */
     type: {
       type: Number,
@@ -129,6 +134,13 @@ export default {
       default: null,
     },
 
+    /**
+     * Icon stroke color
+     */
+    stroke: {
+      type: String,
+      default: undefined,
+    },
   },
 
   computed: {

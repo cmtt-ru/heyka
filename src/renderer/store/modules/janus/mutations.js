@@ -11,4 +11,15 @@ export default {
     Object.assign(state, options);
   },
 
+  /**
+   * Set's sharing source id
+   *
+   * @param {JanusState} state – module me state
+   * @param {object} source – source
+   * @constructor
+   */
+  SET_SHARING_SOURCE(state, source) {
+    state.sharingSource = source;
+  },
+
 };

@@ -1,28 +1,43 @@
 {
-    "main": {
-        "width": 1200,
-        "height": 1000,
-        "frame": true
-    },
-    "maintray": {
-        "width": 500,
-        "height": 700
-    },
-    "splash": {
-        "width": 90,
-        "height": 90,
-        "transparent": true,
-        "movable": false,
-        "fullscreenable": false,
-        "resizable": false,
-        "frame": false
-    },
-    "push": {
-        "width": 400,
-        "height": 120,
-        "transparent": true,
-        "movable": false,
-        "resizable": false,
-        "frame": false
-    }
+  "main": {
+    "width": 1200,
+    "height": 1000,
+    "frame": true
+  },
+  "maintray": {
+    "width": 500,
+    "height": 700
+  },
+  "splash": {
+    "width": 90,
+    "height": 90,
+    "transparent": true,
+    "movable": false,
+    "resizable": false,
+    "frame": false
+  },
+  "push": {
+    "width": 400,
+    "height": 120,
+    "transparent": true,
+    "movable": false,
+    "resizable": false,
+    "frame": false
+  },
+  "call": {
+    "width": 1500,
+    "height": 1000,
+    "frame": true,
+    "fullscreenable": true
+  },
+  "frame": {
+    "transparent": true,
+    "movable": false,
+    "resizable": false,
+    "frame": false,
+    "alwaysOnTop": true,
+    "skipTaskbar": true,
+    "enableLargerThanScreen": true,
+    "hasShadow": false
+  }
 }
