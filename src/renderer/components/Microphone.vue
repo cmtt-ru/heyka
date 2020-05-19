@@ -1,17 +1,24 @@
 <template>
-  <div class="mic">
+  <div
+    class="mic"
+    :style="buttonSizeComp"
+  >
     <div
-      v-if="active"
-      class="mic__volume"
-      :style="volume"
-    />
-
-    <svg-icon
-      class="mic__icon"
-      :name="icon"
-      width="16"
-      height="16"
-    />
+      class="volume-wrapper"
+      :style="iconWrapperSizeComp"
+    >
+      <div
+        v-if="active"
+        class="mic__volume"
+        :style="volume"
+      />
+      <svg-icon
+        class="mic__icon"
+        :name="icon"
+        :width="iconSizeComp"
+        :height="iconSizeComp"
+      />
+    </div>
   </div>
 </template>
 
@@ -25,6 +32,38 @@ const STATES = {
   false: 'mic-off',
 };
 
+/**
+ * Size of icons
+ * @type {{small: number, large: number, medium: number}}
+ */
+const ICON_SIZES = {
+  small: 16,
+  medium: 20,
+  large: 24,
+};
+
+/**
+ * Size of icons
+ * @type {{small: number, large: number, medium: number}}
+ */
+const BUTTON_SIZES = {
+  small: {
+    width: '24px',
+    height: '24px',
+    'border-radius': '4px',
+  },
+  medium: {
+    width: '36px',
+    height: '36px',
+    'border-radius': '4px',
+  },
+  large: {
+    width: '64px',
+    height: '64px',
+    'border-radius': '8px',
+  },
+};
+
 export default {
   props: {
     /**
@@ -33,6 +72,15 @@ export default {
     active: {
       type: Boolean,
       default: false,
+    },
+
+    /**
+     * Size of the button
+     * @param small | medium | large
+     */
+    size: {
+      type: String,
+      default: 'small',
     },
   },
 
@@ -52,8 +100,37 @@ export default {
     volume() {
       return {
         // eslint-disable-next-line no-magic-numbers
-        height: Math.floor(this.$store.state.app.microphoneVolume + 100) * 0.37 + '%',
+        height: Math.floor(this.$store.getters['app/getMicrophoneVolume'] + 100) * 0.46 + '%',
       };
+    },
+    /**
+     * Compute right icon size
+     *
+     * @returns {number|*}
+     */
+    iconSizeComp() {
+      return ICON_SIZES[this.size];
+    },
+
+    /**
+     * Compute right icon size
+     *
+     * @returns {number|*}
+     */
+    iconWrapperSizeComp() {
+      return {
+        width: ICON_SIZES[this.size] + 'px',
+        height: ICON_SIZES[this.size] + 'px',
+      };
+    },
+
+    /**
+     * Compute right button size
+     *
+     * @returns {number|*}
+     */
+    buttonSizeComp() {
+      return BUTTON_SIZES[this.size];
     },
   },
 };
@@ -81,12 +158,15 @@ export default {
 
     &__volume
         background-color var(--color-1)
-        width 15%
+        width 24%
         position absolute
-        bottom 44%
-        left 43%
+        bottom 42%
+        left 38%
 
     &__icon
         position relative
+
+.volume-wrapper
+  position absolute
 
 </style>

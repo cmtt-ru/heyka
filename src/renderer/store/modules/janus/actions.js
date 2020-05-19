@@ -1,10 +1,24 @@
+import callWindow from '@classes/callWindow';
+
 export default {
+  /**
+   * Set sharing source id
+   *
+   * @param {function} commit – store commit
+   * @param {object} source – source
+   * @returns {void}
+   */
+  setSharingSource({ commit }, source) {
+    commit('SET_SHARING_SOURCE', source);
 
-  action({ commit }) {
-    return new Promise((resolve, reject) => {
-      commit('SET_SOME', 1);
-      resolve();
-    });
+    /**
+     * If source has `display_id`, than show call frame window
+     * else – hide frame
+     */
+    if (source && source.display_id) {
+      callWindow.showFrame(source.display_id);
+    } else {
+      callWindow.closeFrame();
+    }
   },
-
 };

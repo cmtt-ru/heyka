@@ -18,7 +18,6 @@
         :icon="icons.speakers"
         @click.native="switchProp('speakers')"
       />
-      <!--             <ui-button :type="7" class="user__status" @click.native="switchProp('microphone')" size="small" :icon="icons.microphone> -->
       <microphone
         class="user__status"
         :active="user.microphone"

@@ -89,7 +89,7 @@ class MediaDevices extends EventEmitter {
        * becomes:
        * FaceTime HD Camera
        */
-      newDevice.label = newDevice.label.replace(/\s*\(.+/gi, '');
+      // newDevice.label = newDevice.label.replace(/\s*\(.+/gi, '');
 
       /** Rename default device to Default */
       if (device.deviceId === 'default') {

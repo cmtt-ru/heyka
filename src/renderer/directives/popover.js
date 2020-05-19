@@ -38,6 +38,12 @@ const DEFAULT_POPPER_OPTIONS = {
         offset: [8, 8],
       },
     },
+    {
+      name: 'preventOverflow',
+      options: {
+        padding: 8,
+      },
+    },
   ],
 };
 
@@ -202,7 +208,7 @@ class Popover {
       };
 
       this.element.__clickOutsideHandler = event => {
-        if (!(this.element === event.target || this.element.contains(event.target))) {
+        if (!(this.instance.$el === event.target || this.instance.$el.contains(event.target))) {
           setTimeout(() => {
             this.show(false);
           }, TIMEOUT_BEFORE_DESTROY);
@@ -210,7 +216,6 @@ class Popover {
       };
 
       this.element.addEventListener('mouseup', this.element.__clickHandler);
-      document.body.addEventListener('mouseup', this.element.__clickOutsideHandler);
     }
 
     /* Handle hover mode */
@@ -274,9 +279,14 @@ class Popover {
       this.popper = createPopper(refElement, this.instance.$el, this.options);
 
       refElement = null;
+      setTimeout(() => {
+        document.body.addEventListener('mouseup', this.element.__clickOutsideHandler);
+      }, 0);
     } else {
       await this.unmount();
-
+      if (this.element.__clickOutsideHandler) {
+        document.body.removeEventListener('mouseup', this.element.__clickOutsideHandler);
+      }
       if (this.popper) {
         this.popper.destroy();
         this.popper = null;

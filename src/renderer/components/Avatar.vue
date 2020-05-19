@@ -1,14 +1,14 @@
 <template>
-  <div
-    class="avatar"
-    :style="containerSize"
-  >
+<div
+  class="avatar"
+  :style="containerSize"
+>
     <img
       loading="lazy"
       class="avatar__image"
+      :class="{'avatar__image--square': square}"
       alt=""
-      :src="avatarImage"
-    >
+      :src="avatarImage">
 
     <div
       v-if="statusStyle"
@@ -65,6 +65,14 @@ export default {
     image: {
       type: [ String ],
       default: null,
+    },
+
+    /**
+     * if true, image is not rounded
+     */
+    square: {
+      type: [ Boolean ],
+      default: false,
     },
 
     /**
@@ -143,6 +151,9 @@ export default {
             background-position center
             border-radius 50%
 
+            &--square
+              border-radius 0
+
         &__status
             position absolute
             bottom -2px
@@ -160,8 +171,8 @@ export default {
             &__dot
                 position absolute
                 box-sizing border-box
-                bottom 0px
-                right 0px
+                bottom 0
+                right 0
                 width 100%
                 height 100%
                 border-radius 50%

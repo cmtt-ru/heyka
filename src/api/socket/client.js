@@ -9,7 +9,7 @@ if (isDevelopment) {
   socketUrl = process.env.VUE_APP_DEV_URL;
 }
 
-const client = io.connect(socketUrl);
+const client = io(socketUrl, { autoConnect: false });
 
 /**
  * Connect to socket
