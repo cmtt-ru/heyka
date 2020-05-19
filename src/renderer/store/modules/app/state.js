@@ -65,6 +65,7 @@ const state = () => {
     privacyLogs: [],
     microphoneVolume: -100,
     notifications: [],
+    search: '',
   };
 };
 
