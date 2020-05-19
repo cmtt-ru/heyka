@@ -5,6 +5,7 @@
   white-space nowrap
   justify-content center
   box-sizing border-box
+  -webkit-app-region no-drag
 
   /**
    * Small size button
@@ -167,11 +168,6 @@
   /**
    * Button type classes
    */
-
-  &--12
-    buttonSolid(var(--color-0), var(--text-tech-3))
-    buttonDefaultHoverState()
-
   &--1
     buttonSolid(var(--color-2), var(--text-tech-3))
     buttonDefaultHoverState()
@@ -246,6 +242,40 @@
 
     &:hover
       background-color var(--item-bg-hover)
+
+
+  &--12
+    buttonSolid(var(--color-0), var(--text-tech-3))
+    buttonDefaultHoverState()
+
+  &--13
+    border-radius 100px
+    font-size 12px
+    padding-left 22px
+    padding-right 8px
+    color var(--text-1)
+
+    &:before
+      content ''
+      display block
+      width 8px
+      height 8px
+      border 1px solid
+      margin-left - 14px
+      margin-right 6px
+      border-radius 100%
+      box-sizing border-box
+
+    &^[0]--active
+      background var(--button-bg-6)
+      color var(--text-0)
+
+      &:before
+        background var(--color-2)
+        border none
+
+    &:hover:not(.ui-button--active)
+      background var(--button-bg-5)
 
   &--icon&--caption&--wide
     buttonWithIconAndCaption()
