@@ -185,7 +185,7 @@ export default {
       width 36px
       height 36px
       border-radius 4px
-      flex-shrink: 0;
+      flex-shrink 0
 
     &__user-name
       margin-top 3px
@@ -201,7 +201,15 @@ export default {
       line-height 14px
       margin-left -2px
       margin-top 1px
-      flex-shrink: 0;
+
+      svg
+        flex-shrink 0
+
+      span
+        min-width 0
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
 
     &__button
       margin-right 8px
