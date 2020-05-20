@@ -256,12 +256,18 @@ class VideoroomPlugin extends EventEmitter {
             media: { audioSend: false, videoSend: false },
             success: ourjsep => {
               Janus.debug(ourjsep);
+              console.log('Created answer: ', ourjsep);
+              try {
+
               this.__videoPluginHandles[janusId].send({
                 message: {
                   request: 'start',
                 },
                 jsep: ourjsep,
               });
+            } catch(e) {
+              console.log('=================', e);
+            }
             },
             error: err => {
               this._debug(`Create answer for subscription ${janusId} error: `, err);
