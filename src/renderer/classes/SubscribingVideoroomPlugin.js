@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
-/* eslint-disable */
 
 /**
  * Handle communication with videoroom plugin for subscribing
@@ -181,13 +180,17 @@ class VideoroomPlugin extends EventEmitter {
 
   /**
    * Start receiving remote stream
+   * @param {object} jsep Remote jsep object
    * @returns {void}
    */
-  _startStreamReceiving() {
+  _startStreamReceiving(jsep) {
     // create local sdp (jsep)
     this.__pluginHandle.createAnswer({
       jsep,
-      media: { audioSend: false, videoSend: false },
+      media: {
+        audioSend: false,
+        videoSend: false,
+      },
       success: ourjsep => {
         // send local sdp with 'start' event to the janus
         this.__pluginHandle.send({
