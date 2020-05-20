@@ -36,7 +36,7 @@ export default {
       console.log(usersInChannel);
 
       return usersInChannel
-        .filter(u => (u.userMediaState ? u.userMediaState.screen || u.userMediaState.camera : false) && u.id !== this.$store.state.me.id);
+        .filter(u => (u.screen || u.camera) && u.id !== this.$store.state.me.id);
     },
   },
   computed: {
