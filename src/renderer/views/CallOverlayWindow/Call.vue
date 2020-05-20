@@ -17,7 +17,6 @@
 <script>
 import CallControls from './CallControls';
 import StreamReceiver from '@classes/StreamSharing/Receiver';
-import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -26,37 +25,12 @@ export default {
   data() {
     return {
       streamReceiver: null,
-      currentUserVideo: null,
     };
   },
-  methods: {
-    userInChannelWithVideo() {
-      const usersInChannel = this.getUsersByChannel(this.$store.state.me.selectedChannelId);
-
-      console.log(usersInChannel);
-
-      return usersInChannel
-        .filter(u => (u.screen || u.camera) && u.id !== this.$store.state.me.id);
-    },
-  },
   computed: {
-    ...mapGetters([ 'getUsersByChannel' ]),
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
-    },
-
     isMediaSharing() {
       return false;
       // return this.mediaState.screen || this.mediaState.camera;
-    },
-  },
-  watch: {
-    currentUserVideo(userId) {
-      console.log('new current user video: ', userId);
-      this.streamReceiver.requestStream(userId);
-    },
-    usersInChannelWithVideo(newUsers) {
-      console.log('users in channels is updated', newUsers);
     },
   },
   created() {
@@ -64,17 +38,6 @@ export default {
     this.streamReceiver.on('new-stream', data => {
       this.$refs.video.srcObject = data.video;
     });
-    const magicNumber = 500;
-
-    setInterval(() => {
-      const users = this.userInChannelWithVideo();
-
-      console.log('users with video: ', users);
-
-      if (users.length > 0) {
-        this.currentUserVideo = users[0];
-      }
-    }, magicNumber);
   },
 };
 </script>
