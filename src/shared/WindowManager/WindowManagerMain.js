@@ -183,6 +183,10 @@ class WindowManager {
         newWindow.setVisibleOnAllWorkspaces(true);
       }
 
+      if (windowOptions.alwaysOnTop) {
+        newWindow.setAlwaysOnTop(true, 'floating', 3);
+      }
+
       newWindow.show();
     });
 

@@ -36,6 +36,7 @@ class VideoroomPlugin extends EventEmitter {
 
     this.__detached = false;
     this.__pluginHandle = null;
+    this.__videoPluginHandles = {};
   }
 
   /**
@@ -219,6 +220,56 @@ class VideoroomPlugin extends EventEmitter {
         },
       });
     }
+  }
+
+  requestVideoStream(janusId) {
+    this.__janus.attach({
+      plugin: JANUS_PLUGIN,
+      success: pluginHandle => {
+        this._debug(`Subscription plugin attached`);
+        this.__videoPluginHandles[janusId] = pluginHandle;
+        pluginHandle.send({
+          message: {
+            request: 'join',
+            ptype: 'subscriber',
+            room: this.__room,
+            feed: parseInt(janusId, 10),
+            audio: false,
+            video: true,
+          },
+        });
+      },
+      onmessage: (message, jsep) => {
+        this._debug(`Subscription ${janusId} message: `, message, jsep);
+        if (!jsep !== undefined && jsep !== null) {
+          this.__videoPluginHandles[janusId].createAnswer({
+            jsep,
+            media: {
+              audioSend: false,
+              videoSend: false,
+            },
+            success: jsep2 => {
+              this.__videoPluginHandles[janusId].send({
+                message: {
+                  request: 'start',
+                  room: this.__room,
+                },
+                jsep: jsep2,
+              });
+            },
+            error: err => {
+              this._debug(`Create answer for subscription ${janusId} error: `, err);
+            },
+          });
+        }
+      },
+      onremotestream: stream => {
+        this.emit('remote-video-stream', {
+          janusId,
+          stream,
+        });
+      },
+    });
   }
 
   /**

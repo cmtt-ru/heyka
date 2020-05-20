@@ -10,12 +10,14 @@
 
 <script>
 import JanusWrapper from '@classes/JanusWrapper.js';
+import StreamHost from '@classes/StreamSharing/Host';
 import { mapState } from 'vuex';
 
 export default {
   name: 'Janus',
   data() {
     return {
+      streamHost: null,
       janusWrapper: null,
       socketDisconnectedDelay: null,
       videoPublishers: {},
@@ -138,6 +140,8 @@ export default {
   },
   async created() {
     await JanusWrapper.init();
+    this.streamHost = new StreamHost();
+    this.streamHost.on('request-stream', this.onRequestStream.bind(this));
     this.log('JanusWrapper was initialized');
   },
   beforeDestroy() {
@@ -171,6 +175,7 @@ export default {
       janusWrapper.on(JanusWrapper.events.videoPublishersList, this.onVideoPublishersList.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherJoined, this.onVideoPublisherJoined.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
+      janusWrapper.on(JanusWrapper.events.remoteVideoStream, this.onRemoteVideoStream.bind(this));
 
       await janusWrapper.join();
 
@@ -346,6 +351,35 @@ export default {
     onVideoPublisherLeft(publisher) {
       delete this.videoPublishers[publisher.display];
       this.log(`Publisher ${publisher.display} is deleted`);
+    },
+
+    onRequestStream(data) {
+      if (!this.videoPublishers[data.userId]) {
+        this.log(`Cant get stream for ${data.userId}`);
+
+        return;
+      }
+
+      this.videoPublishers[data.userId].requestId = data.requestId;
+      this.janusWrapper.requestVideoStream(this.videoPublishers[data.userId].janusId);
+    },
+
+    onRemoteVideoStream({ janusId, stream }) {
+      const videoPublisher = Object.values(this.videoPublishers).find(pub => pub.janusId === janusId);
+
+      if (!videoPublisher.requestId) {
+        this.log(`No one requested that stream ${janusId}, ${videoPublisher.userId}`);
+
+        return;
+      }
+      const streamMetadata = {
+        requestId: videoPublisher.requestId,
+        janusId,
+        userId: videoPublisher.userId,
+      };
+
+      this.log(`Send stream of user ${streamMetadata.userId}`);
+      this.streamHost.sendStream(streamMetadata, stream);
     },
 
     /**

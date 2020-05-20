@@ -4,7 +4,7 @@
       v-if="isMediaSharing"
       class="call-window__media"
     >
-      <video />
+      <video ref="video" />
     </div>
 
     <call-controls
@@ -16,12 +16,25 @@
 
 <script>
 import CallControls from './CallControls';
+import StreamReceiver from '@classes/StreamSharing/Receiver';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
     CallControls,
   },
+  data() {
+    return {
+      streamReceiver: null,
+      currentUserVideo: null,
+    };
+  },
   computed: {
+    ...mapGetters([ 'getUsersByChannel' ]),
+    userInChannelWithVideo() {
+      return this.getUsersByChannel(this.$store.state.me.selectedChannelId)
+        .filter(u => (u.userMediaState ? u.userMediaState.camera || u.userMediaState.screen : false) && u.id !== this.$store.state.me.id);
+    },
     mediaState() {
       return this.$store.getters['me/getMediaState'];
     },
@@ -30,6 +43,26 @@ export default {
       return false;
       // return this.mediaState.screen || this.mediaState.camera;
     },
+  },
+  watch: {
+    currentUserVideo(userId) {
+      console.log('new current user video: ', userId);
+      this.streamReceiver.requestStream(userId);
+    },
+    usersInChannelWithVideo(newUsers) {
+      if (newUsers.length === 0) {
+        return;
+      }
+      if (this.currentUserVideo !== newUsers[0]) {
+        this.currentUserVideo = newUsers[0];
+      }
+    },
+  },
+  created() {
+    this.streamReceiver = new StreamReceiver();
+    this.streamReceiver.on('new-stream', data => {
+      this.$refs.video.srcObject = data.video;
+    });
   },
 };
 </script>

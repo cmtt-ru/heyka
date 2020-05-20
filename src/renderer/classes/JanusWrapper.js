@@ -22,6 +22,7 @@ const JANUS_WRAPPER_EVENTS = {
   videoPublishersList: 'video-publishers-list',
   videoPublisherJoined: 'video-publisher-joined',
   videoPublisherLeft: 'video-publisher-left',
+  remoteVideoStream: 'remote-video-stream',
 };
 
 /**
@@ -142,6 +143,7 @@ class JanusWrapper extends EventEmitter {
     videoroomPlugin.on('active-publishers', publishers => this.emit(JANUS_WRAPPER_EVENTS.videoPublishersList, publishers));
     videoroomPlugin.on('publisher-joined', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherJoined, publisher));
     videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
+    videoroomPlugin.on('remote-video-stream', data => this.emit(JANUS_WRAPPER_EVENTS.remoteVideoStream, data));
 
     this.__videoroomPlugin = videoroomPlugin;
   }
@@ -181,6 +183,10 @@ class JanusWrapper extends EventEmitter {
    */
   unpublishVideoStream() {
     this.__videoroomPlugin.unpublishVideo();
+  }
+
+  requestVideoStream(janusId) {
+    this.__videoroomPlugin.requestVideoStream(janusId);
   }
 
   /**
