@@ -31,7 +31,11 @@ export default {
   },
   methods: {
     userInChannelWithVideo() {
-      return this.getUsersByChannel(this.$store.state.me.selectedChannelId)
+      const usersInChannel = this.getUsersByChannel(this.$store.state.me.selectedChannelId);
+
+      console.log(usersInChannel);
+
+      return usersInChannel
         .filter(u => (u.userMediaState ? u.userMediaState.screen || u.userMediaState.camera : false) && u.id !== this.$store.state.me.id);
     },
   },
@@ -64,6 +68,8 @@ export default {
 
     setInterval(() => {
       const users = this.userInChannelWithVideo();
+
+      console.log('users with video: ', users);
 
       if (users.length > 0) {
         this.currentUserVideo = users[0];
