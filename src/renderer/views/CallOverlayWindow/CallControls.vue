@@ -172,7 +172,7 @@ export default {
       margin-bottom 8px
 
       &--controls
-        flex-shrink: 0;
+        flex-shrink 0
 
       &:last-child
         margin-bottom 0
@@ -185,7 +185,7 @@ export default {
       width 36px
       height 36px
       border-radius 4px
-      flex-shrink: 0;
+      flex-shrink 0
 
     &__user-name
       margin-top 3px
@@ -201,7 +201,7 @@ export default {
       line-height 14px
       margin-left -2px
       margin-top 1px
-      flex-shrink: 0;
+      flex-shrink 0
 
     &__button
       margin-right 8px

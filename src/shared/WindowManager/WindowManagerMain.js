@@ -156,33 +156,33 @@ class WindowManager {
 
     this.openUrl(windowId, options.route, options.url);
 
+    const position = getWindowPosition(newWindow, options.position, options.margin);
+
+    // newWindow.setAlwaysOnTop(true, 'floating', 3);
+    newWindow.setPosition(position.x, position.y);
+
+    if (options.displayId) {
+      const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+
+      if (display) {
+        newWindow.setPosition(display.bounds.x, display.bounds.y);
+
+        if (options.maximize) {
+          newWindow.setSize(display.bounds.width, display.bounds.height);
+          newWindow.setAlwaysOnTop(true, 'pop-up-menu');
+        }
+      }
+    }
+
+    if (options.visibleOnAllWorkspaces) {
+      newWindow.setVisibleOnAllWorkspaces(true);
+    }
+
     newWindow.once('close', e => {
       this.send(`window-close-${windowId}`);
     });
 
     newWindow.on('ready-to-show', (event) => {
-      // newWindow.setAlwaysOnTop(true, 'floating', 3);
-      const position = getWindowPosition(newWindow, options.position);
-
-      newWindow.setPosition(position.x, position.y);
-
-      if (options.displayId) {
-        const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
-
-        if (display) {
-          newWindow.setPosition(display.bounds.x, display.bounds.y);
-
-          if (options.maximize) {
-            newWindow.setSize(display.bounds.width, display.bounds.height);
-            newWindow.setAlwaysOnTop(true, 'pop-up-menu');
-          }
-        }
-      }
-
-      if (options.visibleOnAllWorkspaces) {
-        newWindow.setVisibleOnAllWorkspaces(true);
-      }
-
       newWindow.show();
     });
 
@@ -321,7 +321,7 @@ class WindowManager {
   sizeWindow({ id, width, height }) {
     if (this.windows[id]) {
       this.windows[id].setSize(width, height);
-      adjustBounds(this.windows[id]);
+      adjustBounds(this.windows[id], 0);
     }
   }
 
@@ -379,12 +379,11 @@ export default new WindowManager();
  * Adjust window position in regard to tray
  * @param {object} wnd window instance
  * @param {string} pos window position
- * @param {boolean} trayAdjust if position is near tray
+ * @param {number} margin margin from window borders
  * @returns {object} adjusted window coordinates
  */
-function getWindowPosition(wnd, pos = 'center') {
-  const testMargin = 20;
-  const positioner = new Positioner(wnd, testMargin);
+function getWindowPosition(wnd, pos = 'center', margin) {
+  const positioner = new Positioner(wnd, margin);
 
   return positioner.calculate(pos);
 }

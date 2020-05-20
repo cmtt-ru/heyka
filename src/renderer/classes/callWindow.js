@@ -43,7 +43,6 @@ class CallWindow {
           skipTaskbar: true,
         },
         onClose: () => {
-          console.log('closing: ', this.overlayWindow);
           this.overlayWindow = null;
         },
       });

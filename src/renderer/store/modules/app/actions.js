@@ -120,10 +120,14 @@ export default {
     };
 
     commit('ADD_PUSH', push);
-    pushWindow.show();
     pushWindow.updateCount(state.pushes.length);
 
     return id;
+  },
+
+  removePush({ commit, state }, id) {
+    commit('REMOVE_PUSH', id);
+    pushWindow.updateCount(state.pushes.length);
   },
   /**
    * Set selected devices
