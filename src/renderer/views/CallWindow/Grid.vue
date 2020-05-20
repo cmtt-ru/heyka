@@ -37,7 +37,10 @@
           class="cell__inner"
           @dblclick="expandedClickHandler(user.id)"
         >
-          <video class="cell__feed" />
+          <video
+            :ref="`video${user.id}`"
+            class="cell__feed"
+          />
           <div
             v-show="user.speaking && user.microphone"
             class="cell__talking"
@@ -100,6 +103,7 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
+import StreamReceiver from '@classes/StreamSharing/Receiver';
 
 /**
  * Aspect ratio 124 / 168;
@@ -122,6 +126,7 @@ export default {
       avatarWidth: null,
       padding: {},
       videoStreams: {},
+      streamReceiver: null,
     };
   },
   computed: {
@@ -217,9 +222,22 @@ export default {
     getUsersWhoSharesMedia: {
       deep: true,
       handler: users => {
-        console.log('users with shared media', users);
+        users.filter(u => !this.videoStreams[u.id]).forEach(u => {
+          console.log(`Request stream of ${u.name}`);
+          this.streamReceiver.requestStream(u.id);
+        });
       },
     },
+  },
+  created() {
+    this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
+    this.streamReceiver.on('new-stream', data => {
+      console.log(`Received stream of ${data.userId}`, data);
+      this.$refs[`video${data.userId}`].srcObject = data.stream;
+      this.$refs[`video${data.userId}`].onloadedmetadata = () => {
+        this.$refs[`video${data.userId}`].play();
+      };
+    });
   },
   mounted() {
     this.mounted = true;
