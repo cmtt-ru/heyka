@@ -16,7 +16,8 @@
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonIcons.camera"
+      :icon="buttonIcons.camera.icon"
+      :stroke="buttonIcons.camera.stroke"
       @click="switchProp('camera')"
     />
 
@@ -25,7 +26,8 @@
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonIcons.screen"
+      :icon="buttonIcons.screen.icon"
+      :stroke="buttonIcons.screen.stroke"
       @click="sharingHandler"
     />
 
@@ -34,7 +36,8 @@
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonIcons.speakers"
+      :icon="buttonIcons.speakers.icon"
+      :stroke="buttonIcons.speakers.stroke"
       @click.native="switchProp('speakers')"
     />
 
@@ -68,21 +71,35 @@ import Microphone from '@components/Microphone';
  * Map media state points to corresponding icons
  */
 const ICON_MAP = {
-  microphone: {
-    true: 'mic',
-    false: 'mic-off',
-  },
   speakers: {
-    true: 'headphones',
-    false: 'headphones-off',
+    true: {
+      icon: 'headphones',
+      stroke: 'var(--text-0)',
+    },
+    false: {
+      icon: 'headphones-off',
+      stroke: 'var(--text-1)',
+    },
   },
   camera: {
-    true: 'video',
-    false: 'video-off',
+    true: {
+      icon: 'video',
+      stroke: 'var(--text-0)',
+    },
+    false: {
+      icon: 'video-off',
+      stroke: 'var(--text-1)',
+    },
   },
   screen: {
-    true: 'screencast',
-    false: 'screencast-off',
+    true: {
+      icon: 'screencast',
+      stroke: 'var(--text-0)',
+    },
+    false: {
+      icon: 'screencast-off',
+      stroke: 'var(--text-1)',
+    },
   },
 };
 
@@ -128,7 +145,6 @@ export default {
      */
     buttonIcons() {
       return {
-        microphone: ICON_MAP.microphone[this.mediaState.microphone],
         speakers: ICON_MAP.speakers[this.mediaState.speakers],
         camera: ICON_MAP.camera[this.mediaState.camera],
         screen: ICON_MAP.screen[this.mediaState.screen],
