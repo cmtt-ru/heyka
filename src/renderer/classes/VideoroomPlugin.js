@@ -250,7 +250,7 @@ class VideoroomPlugin extends EventEmitter {
       },
       onmessage: (message, jsep) => {
         this._debug(`Subscription ${janusId} message: `, message, jsep);
-        if (!jsep !== undefined && jsep !== null) {
+        if (jsep !== undefined && jsep !== null) {
           this.__videoPluginHandles[janusId].createAnswer({
             jsep,
             media: { audioSend: false, videoSend: false },
