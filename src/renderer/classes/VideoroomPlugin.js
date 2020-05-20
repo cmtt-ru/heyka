@@ -255,7 +255,7 @@ class VideoroomPlugin extends EventEmitter {
             jsep,
             media: { audioSend: false, videoSend: false },
             success: ourjsep => {
-              Janus.debug(jsep2);
+              Janus.debug(ourjsep);
               this.__videoPluginHandles[janusId].send({
                 message: {
                   request: 'start',
