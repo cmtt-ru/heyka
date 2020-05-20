@@ -43,7 +43,7 @@ export default class StreamSharingHost extends EventEmitter {
     })
     broadcastEvents.once(`stream-offer-host-${data.requestId}`, async (data) => {
       this._debug('offer', data)
-      await pc.setRemoteDescription(message.sdpOffer)
+      await pc.setRemoteDescription(data.sdpOffer)
       const answer = await pc.createAnswer()
       await pc.setLocalDescription(answer)
       broadcastEvents.dispatch(`sdp-answer-receiver-${data.requestId}`, {
