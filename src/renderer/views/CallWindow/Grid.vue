@@ -99,6 +99,7 @@ import CallButtons from '../CallOverlayWindow/CallButtons';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
+import { mapGetters } from 'vuex';
 
 /**
  * Aspect ratio 124 / 168;
@@ -120,9 +121,11 @@ export default {
       currentGrid: [],
       avatarWidth: null,
       padding: {},
+      videoStreams: {},
     };
   },
   computed: {
+    ...mapGetters([ 'usersWhoSharesMedia' ]),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -209,6 +212,13 @@ export default {
     /* re-count grid because number of users has changed */
     usersCount: function () {
       this.resize();
+    },
+
+    usersWhoSharesMedia: {
+      deep: true,
+      handler: users => {
+        console.log('users with shared media', users);
+      },
     },
   },
   mounted() {
