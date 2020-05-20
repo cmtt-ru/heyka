@@ -48,6 +48,7 @@ class VideoroomPlugin extends EventEmitter {
   attach() {
     this.__janus.attach({
       plugin: JANUS_PLUGIN,
+      opaqueId: this.__userId,
       // Called when plugin attached
       success: pluginHandle => {
         if (this.__detached) {
@@ -228,6 +229,7 @@ class VideoroomPlugin extends EventEmitter {
   requestVideoStream(janusId) {
     this.__janus.attach({
       plugin: JANUS_PLUGIN,
+      opaqueId: janusId,
       success: pluginHandle => {
         this._debug(`Subscription plugin attached`);
         pluginHandle.createOffer = function () {
