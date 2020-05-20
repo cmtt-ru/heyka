@@ -32,8 +32,7 @@ export default {
   computed: {
     ...mapGetters([ 'getUsersByChannel' ]),
     userInChannelWithVideo() {
-      return this.getUsersByChannel(this.$store.state.me.selectedChannelId)
-        .filter(u => (u.userMediaState ? u.userMediaState.camera || u.userMediaState.screen : false) && u.id !== this.$store.state.me.id);
+      return this.getUsersByChannel(this.$store.state.me.selectedChannelId);
     },
     mediaState() {
       return this.$store.getters['me/getMediaState'];
@@ -50,12 +49,7 @@ export default {
       this.streamReceiver.requestStream(userId);
     },
     usersInChannelWithVideo(newUsers) {
-      if (newUsers.length === 0) {
-        return;
-      }
-      if (this.currentUserVideo !== newUsers[0]) {
-        this.currentUserVideo = newUsers[0];
-      }
+      console.log('users in channels is updated', newUsers);
     },
   },
   created() {

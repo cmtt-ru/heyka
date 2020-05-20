@@ -2,8 +2,8 @@ import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
-    width: 228,
-    height: 96,
+    width: 800,
+    height: 500,
   },
   mediaSharing: {
     width: 340,
@@ -41,6 +41,7 @@ class CallWindow {
           fullscreenable: false,
           backgroundColor: '#000',
           skipTaskbar: true,
+          openDevTools: true,
         },
         onClose: () => {
           console.log('closing: ', this.overlayWindow);
