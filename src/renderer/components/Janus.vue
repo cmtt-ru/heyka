@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div><span>JANUS VIDEO</span><video ref="video" /></div>
     <audio
       ref="audio"
       autoplay
@@ -393,7 +394,11 @@ export default {
       };
 
       this.log(`Send stream of user ${streamMetadata.userId}`);
-      this.streamHost.sendStream(streamMetadata, stream);
+      this.$refs.video.srcObject = stream;
+      this.$refs.video.onloadedmetadata = () => {
+        this.$refs.video.play();
+      };
+      // this.streamHost.sendStream(streamMetadata, stream);
     },
 
     /**

@@ -187,6 +187,7 @@ class VideoroomPlugin extends EventEmitter {
    * @returns {void}
    */
   publishVideo(stream) {
+    console.log(`====================== Create OFFER`);
     this.__pluginHandle.createOffer({
       stream,
       success: jsep => {
