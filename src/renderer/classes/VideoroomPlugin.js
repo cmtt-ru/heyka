@@ -228,7 +228,7 @@ class VideoroomPlugin extends EventEmitter {
       plugin: JANUS_PLUGIN,
       success: pluginHandle => {
         this._debug(`Subscription plugin attached`);
-        plugin.createOffer = function () {
+        pluginHandle.createOffer = function () {
           console.log('===================Offer is called');
           console.trace();
         }
