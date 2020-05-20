@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
-import Janus from './janus';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 const DEFAULT_BITRATE = 1400000;
 /* eslint-disable */
@@ -250,27 +249,13 @@ class VideoroomPlugin extends EventEmitter {
       },
       onmessage: (message, jsep) => {
         this._debug(`Subscription ${janusId} message: `, message, jsep);
-        if (!jsep !== undefined && jsep !== null) {
-          this.__videoPluginHandles[janusId].createAnswer({
-            jsep,
-            media: {
-              audioSend: false,
-              videoSend: false,
-            },
-            success: jsep2 => {
-              Janus.debug(jsep2);
-              this.__videoPluginHandles[janusId].send({
-                message: {
-                  request: 'start',
-                  room: this.__room,
-                },
-                jsep: jsep2,
-              });
-            },
-            error: err => {
-              this._debug(`Create answer for subscription ${janusId} error: `, err);
-            },
-          });
+        if(message.videoroom === 'attached') {
+          this.__videoPluginHandles[janusId].send({
+            message: { request: 'start', room: this.__room },
+            jsep
+          })
+        } else if (!jsep !== undefined && jsep !== null) {
+          this.__videoPluginHandles[janusId].handleRemoteJsep(jsep);
         }
       },
       onremotestream: stream => {
