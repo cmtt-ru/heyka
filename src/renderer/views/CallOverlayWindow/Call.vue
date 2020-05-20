@@ -50,14 +50,10 @@ export default {
     isMediaSharing() {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     },
-    getUserWhoSharesMedia: {
-      deep: true,
-      handler: list => {
-        if (list.length === 0) {
-          return;
-        }
-        this.watchForUserId = list[0].id;
-      },
+    getUserWhoSharesMedia(user) {
+      if (user) {
+        this.streamReceiver.requestStream(user.id);
+      }
     },
   },
   created() {
