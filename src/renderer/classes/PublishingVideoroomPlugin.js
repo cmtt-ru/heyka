@@ -1,12 +1,11 @@
 import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
-import Janus from './janus';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 const DEFAULT_BITRATE = 1400000;
 /* eslint-disable */
 
 /**
- * Handle communication with videoroom plugin
+ * Handle communication with videoroom plugin for publishing
  * @class
  */
 class VideoroomPlugin extends EventEmitter {
@@ -189,7 +188,6 @@ class VideoroomPlugin extends EventEmitter {
    * @returns {void}
    */
   publishVideo(stream) {
-    console.log(`====================== Create OFFER`);
     this.__pluginHandle.createOffer({
       stream,
       success: jsep => {
@@ -224,64 +222,6 @@ class VideoroomPlugin extends EventEmitter {
         },
       });
     }
-  }
-
-  requestVideoStream(janusId) {
-    this.__janus.attach({
-      plugin: JANUS_PLUGIN,
-      opaqueId: this.__userId+'s',
-      success: pluginHandle => {
-        this._debug(`Subscription plugin attached`);
-        pluginHandle.createOffer = function () {
-          console.log('===================Offer is called');
-          console.trace();
-        }
-        this.__videoPluginHandles[janusId] = pluginHandle;
-        pluginHandle.send({
-          message: {
-            request: 'join',
-            ptype: 'subscriber',
-            room: this.__room,
-            feed: parseInt(janusId, 10),
-            audio: false,
-            video: true,
-          },
-        });
-      },
-      onmessage: (message, jsep) => {
-        this._debug(`Subscription ${janusId} message: `, message, jsep);
-        if (jsep !== undefined && jsep !== null) {
-          this.__videoPluginHandles[janusId].createAnswer({
-            jsep,
-            media: { audioSend: false, videoSend: false },
-            success: ourjsep => {
-              Janus.debug(ourjsep);
-              console.log('Created answer: ', ourjsep);
-              try {
-
-              this.__videoPluginHandles[janusId].send({
-                message: {
-                  request: 'start',
-                },
-                jsep: ourjsep,
-              });
-            } catch(e) {
-              console.log('=================', e);
-            }
-            },
-            error: err => {
-              this._debug(`Create answer for subscription ${janusId} error: `, err);
-            },
-          });
-        }
-      },
-      onremotestream: stream => {
-        this.emit('remote-video-stream', {
-          janusId,
-          stream,
-        });
-      },
-    });
   }
 
   /**

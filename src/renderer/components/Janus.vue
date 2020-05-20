@@ -13,6 +13,8 @@
 import JanusWrapper from '@classes/JanusWrapper.js';
 import StreamHost from '@classes/StreamSharing/Host';
 import { mapState } from 'vuex';
+const WAIT_PUBLISHER_INVERVAL = 100;
+const WAIT_PUBLISHER_ATTEMPTS = 20;
 
 export default {
   name: 'Janus',
@@ -141,7 +143,7 @@ export default {
   },
   async created() {
     await JanusWrapper.init();
-    this.streamHost = new StreamHost();
+    this.streamHost = new StreamHost({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
     this.streamHost.on('request-stream', this.onRequestStream.bind(this));
     this.log('JanusWrapper was initialized');
   },
@@ -354,51 +356,54 @@ export default {
       this.log(`Publisher ${publisher.display} is deleted`);
     },
 
+    /**
+     * Handles requests for publishers stream
+     * @param {object} data Request data
+     * @param {string} data.userId Which userId are you interested in?
+     * @param {string} data.requestId Unique request identifier
+     * @returns {void}
+     */
     async onRequestStream(data) {
+      let publisher = this.videoPublishers[data.userId];
       let tries = 0;
-      let publisher = null;
 
+      /**
+       * Если паблишер не определён, то скорее всего Янус
+       * еще не успел сообщить о начале стрима конкретного пользователя.
+       *
+       * Пытаемся сделать несколько попыток с небольшим интервалом
+       * в надежде, что паблишер появится
+       */
       while (!publisher) {
-        if (tries > parseInt('20')) {
-          alert('Bad error, cant get stream');
+        if (tries > WAIT_PUBLISHER_ATTEMPTS) {
+          // попытки кончились, сообщаем о неудаче
+          this.streamHost.failedRequest(data.requestId);
 
           return;
         }
-        await new Promise(resolve => setTimeout(resolve, parseInt('100')));
+        await new Promise(resolve => setTimeout(resolve, WAIT_PUBLISHER_INVERVAL));
         tries += 1;
         publisher = this.videoPublishers[data.userId];
       }
-      if (!this.videoPublishers[data.userId]) {
-        this.log(`Cant get stream for ${data.userId}`);
+      this.log(`Stream of ${data.userId} is requested`, data);
 
-        return;
+      // может стрим уже есть у этого паблишера?
+      let stream = publisher.stream;
+
+      // значит запрашиваем стрим у JanusWrapper
+      if (!stream) {
+        this.log(`Stream for ${data.userId} is not prepared, prepare now`);
+        stream = await this.janusWrapper.requestVideoStream(publisher.janusId);
+        publisher.stream = stream;
       }
-      console.log(`Stream of ${data.userId} is requested`, data);
 
-      this.videoPublishers[data.userId].requestId = data.requestId;
-      this.janusWrapper.requestVideoStream(this.videoPublishers[data.userId].janusId);
-    },
+      publisher.requestId = data.requestId;
 
-    onRemoteVideoStream({ janusId, stream }) {
-      const videoPublisher = Object.values(this.videoPublishers).find(pub => pub.janusId === janusId);
-
-      if (!videoPublisher.requestId) {
-        this.log(`No one requested that stream ${janusId}, ${videoPublisher.userId}`);
-
-        return;
-      }
-      const streamMetadata = {
-        requestId: videoPublisher.requestId,
-        janusId,
-        userId: videoPublisher.userId,
-      };
-
-      this.log(`Send stream of user ${streamMetadata.userId}`);
-      this.$refs.video.srcObject = stream;
-      this.$refs.video.onloadedmetadata = () => {
-        this.$refs.video.play();
-      };
-      this.streamHost.sendStream(streamMetadata, stream);
+      this.streamHost.sendStream({
+        requestId: publisher.requestId,
+        janusId: publisher.jsanusId,
+        userId: data.userId,
+      }, stream);
     },
 
     /**

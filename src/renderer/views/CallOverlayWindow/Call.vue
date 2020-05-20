@@ -27,7 +27,6 @@ export default {
   data() {
     return {
       streamReceiver: null,
-      watchForUserId: null,
     };
   },
   computed: {
@@ -58,10 +57,10 @@ export default {
     },
   },
   created() {
-    this.streamReceiver = new StreamReceiver();
+    this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
     this.streamReceiver.on('new-stream', data => {
       console.log(`Received stream of ${data.userId}`, data);
-      this.$refs.video.srcObject = data.video;
+      this.$refs.video.srcObject = data.stream;
       this.$refs.video.onloadedmetadata = () => {
         this.$refs.video.play();
       };

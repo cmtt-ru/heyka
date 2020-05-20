@@ -1,7 +1,8 @@
 import { EventEmitter } from 'events';
 import Janus from './janus';
 import AudiobridgePlugin from './AudiobridgePlugin';
-import VideoroomPlugin from './VideoroomPlugin';
+import PublishingVideoroomPlugin from './PublishingVideoroomPlugin';
+import SubscribingVideoroomPlugin from './SubscribingVideoroomPlugin';
 import mediaCapturer from './mediaCapturer';
 // eslint-disable-next-line no-unused-vars
 import adapter from 'webrtc-adapter';
@@ -66,6 +67,9 @@ class JanusWrapper extends EventEmitter {
     // plugins
     this.__audiobridgePlugin = null;
     this.__videoroomPlugin = null;
+
+    // plugins for specific video publishers
+    this.__videoroomPlugins = {};
   }
 
   /**
@@ -130,7 +134,7 @@ class JanusWrapper extends EventEmitter {
     this.__audiobridgePlugin = audiobridgePlugin;
 
     // connect videoroom plugin
-    const videoroomPlugin = new VideoroomPlugin({
+    const videoroomPlugin = new PublishingVideoroomPlugin({
       janus: this.__janus,
       room: this.__videoRoomId,
       token: this.__channelToken,
@@ -185,8 +189,42 @@ class JanusWrapper extends EventEmitter {
     this.__videoroomPlugin.unpublishVideo();
   }
 
-  requestVideoStream(janusId) {
-    this.__videoroomPlugin.requestVideoStream(janusId);
+  /**
+   * Request video stream for given publisher
+   * @param {string} janusId Janus user id subscribe for
+   * @returns {Promise<MediaStream>} Return media stream
+   */
+  async requestVideoStream(janusId) {
+    const plugin = new SubscribingVideoroomPlugin({
+      janus: this.__janus,
+      userId: this.__userId,
+      room: this.__videoRoomId,
+      janusId,
+      debug: this.__debug,
+      token: this.__channelToken,
+    });
+
+    this.__videoroomPlugins[janusId] = plugin;
+
+    return new Promise((resolve) => {
+      plugin.on('remote-video-stream', stream => {
+        resolve(stream);
+      });
+    });
+  }
+
+  /**
+   * Stops receiving video stream from giben publisher
+   * @param {string} janusId Janus user id
+   * @returns {void}
+   */
+  async stopReceivingVideoStream(janusId) {
+    if (!this.__videoroomPlugins[janusId]) {
+      return;
+    }
+
+    this.__videoroomPlugins[janusId].detach();
+    delete this.__videoroomPlugins[janusId];
   }
 
   /**

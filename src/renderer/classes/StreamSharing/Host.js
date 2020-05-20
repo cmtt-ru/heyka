@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
-/* eslint-disable */
 
 /**
  * StreamSharingHost
@@ -10,19 +9,32 @@ import broadcastEvents from '../broadcastEvents';
 export default class StreamSharingHost extends EventEmitter {
   /**
    * Init stream sharing manager
+   * @param {object} options Stream host manager options
+   * @param {boolean} [options.debug=false] Is debug enable
    */
-  constructor() {
+  constructor(options) {
     super();
 
     broadcastEvents.on('request-stream', this._onRequestStream.bind(this));
 
-    this.__debugEnabled = true;
+    this.__debugEnabled = !!options.debug;
   }
 
-  async sendStream(streamMetadata, stream) {
+  /**
+   * Send stream by RTCPeerConnection
+   * @param {object} requestData Request stream data
+   * @param {string} requestData.requestId Unique request identifier
+   * @param {string} requestData.userId Id of stream owner
+   * @param {MediaStream} stream Media stream
+   * @returns {void}
+   */
+  async sendStream(requestData, stream) {
     let pc = new RTCPeerConnection();
 
+    // add stream to RTCPeerConnection
     stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+    // subscribe for changing iceConnectionState
     pc.addEventListener('iceconnectionstatechange', () => {
       this._debug('iceconnectionstate', pc.iceConnectionState);
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
@@ -34,17 +46,32 @@ export default class StreamSharingHost extends EventEmitter {
         }
       }
     });
+
+    // handle ICE candidates
     pc.addEventListener('icecandidate', async e => {
-      if (!e.candidate) return;
-      broadcastEvents.dispatch(`icecandidate-host-${streamMetadata.requestId}`, {
+      if (!e.candidate) {
+        return;
+      }
+      // send ICE candidates to another window
+      broadcastEvents.dispatch(`icecandidate-host-${requestData.requestId}`, {
         type: 'icecandidate',
         candidate: e.candidate,
       });
     });
-    broadcastEvents.on(`icecandidate-receiver-${streamMetadata.requestId}`, async data => {
-      this._debug(`Add candidate for request ${streamMetadata.requestId}`, data);
+
+    // subscribe on ICE candidates from another window
+    broadcastEvents.on(`icecandidate-receiver-${requestData.requestId}`, async data => {
+      this._debug(`Add candidate for request ${requestData.requestId}`, data);
       await pc.addIceCandidate(data.candidate);
     });
+
+    // subscribe for sdp answer from another window
+    broadcastEvents.once(`sdp-answer-receiver-${requestData.requestId}`, async (data) => {
+      this._debug(`remote sdp answer: `, data.sdpAnswer);
+      await pc.setRemoteDescription(data.sdpAnswer);
+    });
+
+    // Create SDP offer
     const sdpOffer = await pc.createOffer({
       offerToReceiveVideo: true,
       offerToReceiveAudio: false,
@@ -52,23 +79,38 @@ export default class StreamSharingHost extends EventEmitter {
 
     await pc.setLocalDescription(sdpOffer);
 
-    broadcastEvents.dispatch(`stream-offer-host-${streamMetadata.requestId}`, {
+    // Send SDP offer to another window
+    broadcastEvents.dispatch(`stream-offer-host-${requestData.requestId}`, {
       sdpOffer: {
         type: 'offer',
-        sdp: sdpOffer.sdp
+        sdp: sdpOffer.sdp,
       },
-      userId: streamMetadata.userId
-    })
-    broadcastEvents.once(`sdp-answer-receiver-${streamMetadata.requestId}`, async (data) => {
-      this._debug(`remote sdp answer: `, data.sdpAnswer)
-      await pc.setRemoteDescription(data.sdpAnswer);
+      userId: requestData.userId,
     });
   }
 
+  /**
+   * Notify another window about failed request
+   * @param {string} requestId Unique request id
+   * @returns {void}
+   */
+  failedRequest(requestId) {
+    broadcastEvents.dispatch(`failed-request-${requestId}`);
+  }
+
+  /**
+   * Notify about requested stream
+   * @param {object} data Request data
+   * @returns {void}
+   */
   _onRequestStream(data) {
     this.emit('request-stream', data);
   }
 
+  /**
+   * Inner debug tool
+   * @returns {void}
+   */
   _debug() {
     if (this.__debugEnabled) {
       console.log(`Stream sharing manager host: `, ...arguments);
