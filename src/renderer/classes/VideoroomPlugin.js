@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
+import Janus from './janus';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 const DEFAULT_BITRATE = 1400000;
 /* eslint-disable */
@@ -255,6 +256,7 @@ class VideoroomPlugin extends EventEmitter {
               videoSend: false,
             },
             success: jsep2 => {
+              Janus.debug(jsep2);
               this.__videoPluginHandles[janusId].send({
                 message: {
                   request: 'start',
