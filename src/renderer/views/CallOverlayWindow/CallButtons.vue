@@ -173,7 +173,7 @@ export default {
      */
     sharingHandler() {
       if (this.mediaState.screen === true) {
-        broadcastActions.dispatch('janus/setSharingSourceId', null);
+        broadcastActions.dispatch('janus/setSharingSource', null);
         this.switchProp('screen');
       } else {
         broadcastActions.dispatch('openSharingWindow');

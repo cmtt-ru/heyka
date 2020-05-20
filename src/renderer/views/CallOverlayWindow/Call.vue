@@ -17,6 +17,8 @@
 <script>
 import CallControls from './CallControls';
 import StreamReceiver from '@classes/StreamSharing/Receiver';
+import { mapGetters } from 'vuex';
+import broadcastActions from '@classes/broadcastActions';
 
 export default {
   components: {
@@ -25,12 +27,37 @@ export default {
   data() {
     return {
       streamReceiver: null,
+      watchForUserId: null,
     };
   },
   computed: {
+    ...mapGetters([
+      'getUserWhoSharesMedia',
+      'amISharingMedia',
+      'isAnybodySharingMedia',
+    ]),
+
+    mediaState() {
+      return this.$store.getters['me/getMediaState'];
+    },
+
     isMediaSharing() {
-      return false;
-      // return this.mediaState.screen || this.mediaState.camera;
+      return this.isAnybodySharingMedia && !this.amISharingMedia;
+    },
+  },
+
+  watch: {
+    isMediaSharing() {
+      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+    },
+    getUserWhoSharesMedia: {
+      deep: true,
+      handler: list => {
+        if (list.length === 0) {
+          return;
+        }
+        this.watchForUserId = list[0].id;
+      },
     },
   },
   created() {

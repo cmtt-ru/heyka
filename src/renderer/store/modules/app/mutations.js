@@ -131,4 +131,15 @@ export default {
     state.microphoneVolume = volume;
   },
 
+  /**
+   * Set search text
+   *
+   * @param {AppState} state – module app state
+   * @param {string} text – new search text
+   * @constructor
+   */
+  SET_SEARCH_TEXT(state, text) {
+    state.search = text;
+  },
+
 };
