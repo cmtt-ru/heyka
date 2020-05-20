@@ -41,7 +41,6 @@ class CallWindow {
           fullscreenable: false,
           backgroundColor: '#000',
           skipTaskbar: true,
-          openDevTools: true,
         },
         onClose: () => {
           console.log('closing: ', this.overlayWindow);
