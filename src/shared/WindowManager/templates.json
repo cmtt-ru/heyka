@@ -14,13 +14,14 @@
     "transparent": true,
     "movable": false,
     "resizable": false,
-    "frame": false
+    "frame": false,
+    "skipTaskbar": true
   },
   "push": {
-    "width": 400,
-    "height": 120,
     "transparent": true,
     "movable": false,
+    "resizable": true,
+    "alwaysOnTop": true,
     "frame": false
   },
   "call": {

@@ -2,9 +2,11 @@ import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
 const ONE_PUSH_SIZE = {
 
-  width: 400,
-  height: 222,
+  width: 368,
+  height: 80,
 };
+
+const PUSH_MOVEOUT_TIMER = 500;
 
 /**
  * Class for controlling push window
@@ -28,8 +30,10 @@ class PushWindow {
       this.window = WindowManager.create({
         route: '/push-window',
         position: 'topRight',
+        margin: 0,
         template: 'push',
-        alwaysOnTop: true,
+        visibleOnAllWorkspaces: true,
+        window: ONE_PUSH_SIZE,
         onClose: () => {
           this.window = null;
         },
@@ -45,14 +49,22 @@ class PushWindow {
    * @returns {void}
    */
   updateCount(amount) {
-    console.log(amount, this.window);
     if (amount === 0) {
-      this.hide();
-    } else if (this.window !== null) {
+      setTimeout(() => {
+        this.window.close();
+      }, PUSH_MOVEOUT_TIMER);
+    } else if (this.window === null) {
       this.show();
-      console.log(ONE_PUSH_SIZE.width, ONE_PUSH_SIZE.height * amount);
-      this.window.setSize(ONE_PUSH_SIZE.width, ONE_PUSH_SIZE.height * amount);
+    } else {
+      if (this.notifications < amount) {
+        this.window.setSize(ONE_PUSH_SIZE.width, ONE_PUSH_SIZE.height * amount);
+      } else {
+        setTimeout(() => {
+          this.window.setSize(ONE_PUSH_SIZE.width, ONE_PUSH_SIZE.height * amount);
+        }, PUSH_MOVEOUT_TIMER);
+      }
     }
+    this.notifications = amount;
   }
 
   /**

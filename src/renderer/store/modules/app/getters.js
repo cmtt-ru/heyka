@@ -64,4 +64,13 @@ export default {
    * @returns {object}
    */
   getMicrophoneVolume: (state) => state.microphoneVolume,
+
+  /**
+   * Get pushes
+   *
+   * @param {AppState} state – module app state
+   * @returns {object}
+   */
+  getPushes: (state) => state.pushes,
+
 };
