@@ -353,7 +353,20 @@ export default {
       this.log(`Publisher ${publisher.display} is deleted`);
     },
 
-    onRequestStream(data) {
+    async onRequestStream(data) {
+      let tries = 0;
+      let publisher = null;
+
+      while (!publisher) {
+        if (tries > parseInt('20')) {
+          alert('Bad error, cant get stream');
+
+          return;
+        }
+        await new Promise(resolve => setTimeout(resolve, parseInt('100')));
+        tries += 1;
+        publisher = this.videoPublishers[data.userId];
+      }
       if (!this.videoPublishers[data.userId]) {
         this.log(`Cant get stream for ${data.userId}`);
 
