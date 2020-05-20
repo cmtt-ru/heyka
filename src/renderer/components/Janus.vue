@@ -178,7 +178,6 @@ export default {
       janusWrapper.on(JanusWrapper.events.videoPublishersList, this.onVideoPublishersList.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherJoined, this.onVideoPublisherJoined.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
-      janusWrapper.on(JanusWrapper.events.remoteVideoStream, this.onRemoteVideoStream.bind(this));
 
       await janusWrapper.join();
 
