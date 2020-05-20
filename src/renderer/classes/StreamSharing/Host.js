@@ -24,6 +24,7 @@ export default class StreamSharingHost extends EventEmitter {
 
     stream.getTracks().forEach(track => pc.addTrack(track, stream));
     pc.addEventListener('iceconnectionstatechange', () => {
+      this._debug('iceconnectionstate', pc.iceConnectionState);
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
         pc.close();
         pc = null;
@@ -40,7 +41,7 @@ export default class StreamSharingHost extends EventEmitter {
       });
     });
     broadcastEvents.on(`icecandidate-receiver-${streamMetadata.requestId}`, async data => {
-      this._debug(`Add candidate for request ${streamMetadata.requestId}`);
+      this._debug(`Add candidate for request ${streamMetadata.requestId}`, data);
       await pc.addIceCandidate(data.candidate);
     });
     const sdpOffer = await pc.createOffer({
@@ -57,7 +58,7 @@ export default class StreamSharingHost extends EventEmitter {
       },
       userId: streamMetadata.userId
     })
-    broadcastEvents.once(`sdp-answer-reseiver-${streamMetadata.requestId}`, async (data) => {
+    broadcastEvents.once(`sdp-answer-receiver-${streamMetadata.requestId}`, async (data) => {
       this._debug(`remote sdp answer: `, data.sdpAnswer)
       await pc.setRemoteDescription(data.sdpAnswer);
     });
