@@ -52,7 +52,7 @@ export default {
     },
     getUserWhoSharesMedia(user) {
       if (user) {
-        console.log(`Request stream of ${user.id}`);
+        console.log(`Request stream of ${user.id}`, user);
         this.streamReceiver.requestStream(user.id);
       }
     },
