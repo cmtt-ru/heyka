@@ -398,7 +398,7 @@ export default {
       this.$refs.video.onloadedmetadata = () => {
         this.$refs.video.play();
       };
-      // this.streamHost.sendStream(streamMetadata, stream);
+      this.streamHost.sendStream(streamMetadata, stream);
     },
 
     /**
