@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 const DEFAULT_BITRATE = 1400000;
+/* eslint-disable */
 
 /**
  * Handle communication with videoroom plugin
@@ -227,6 +228,10 @@ class VideoroomPlugin extends EventEmitter {
       plugin: JANUS_PLUGIN,
       success: pluginHandle => {
         this._debug(`Subscription plugin attached`);
+        plugin.createOffer = function () {
+          console.log('===================Offer is called');
+          console.trace();
+        }
         this.__videoPluginHandles[janusId] = pluginHandle;
         pluginHandle.send({
           message: {
