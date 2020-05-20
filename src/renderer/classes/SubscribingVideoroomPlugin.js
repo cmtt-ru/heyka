@@ -117,7 +117,7 @@ class VideoroomPlugin extends EventEmitter {
         this._debug('message', message, jsep);
 
         if (jsep !== undefined && jsep !== null) {
-          this._startStreaming(jsep);
+          this._startStreamReceiving(jsep);
         }
       },
 
@@ -171,7 +171,7 @@ class VideoroomPlugin extends EventEmitter {
       message: {
         request: 'join',
         ptype: 'subscriber',
-        feed: this.__janusId,
+        feed: parseInt(this.__janusId, 10),
         room: this.__room,
         display: this.__userId,
         token: this.__token,
@@ -210,7 +210,7 @@ class VideoroomPlugin extends EventEmitter {
    */
   _debug() {
     if (this.__debugEnabled) {
-      console.log('Videoroom plugin: ', ...arguments);
+      console.log(`Subcription ${this.__userId} plugin`, ...arguments);
     }
   }
 };
