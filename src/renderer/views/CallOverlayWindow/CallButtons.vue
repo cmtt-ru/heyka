@@ -179,14 +179,6 @@ export default {
         broadcastActions.dispatch('openSharingWindow');
       }
     },
-
-    /**
-     * Camera button handler
-     * @returns {void}
-     */
-    cameraHandler() {
-      console.log('camera click');
-    },
   },
 };
 </script>
