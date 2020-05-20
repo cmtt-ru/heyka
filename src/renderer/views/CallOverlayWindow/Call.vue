@@ -16,19 +16,32 @@
 
 <script>
 import CallControls from './CallControls';
+import { mapGetters } from 'vuex';
+import broadcastActions from '@classes/broadcastActions';
 
 export default {
   components: {
     CallControls,
   },
   computed: {
+    ...mapGetters([
+      'getUserWhoSharesMedia',
+      'amISharingMedia',
+      'isAnybodySharingMedia',
+    ]),
+
     mediaState() {
       return this.$store.getters['me/getMediaState'];
     },
 
     isMediaSharing() {
-      return false;
-      // return this.mediaState.screen || this.mediaState.camera;
+      return this.isAnybodySharingMedia && !this.amISharingMedia;
+    },
+  },
+
+  watch: {
+    isMediaSharing() {
+      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     },
   },
 };

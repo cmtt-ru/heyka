@@ -1,6 +1,6 @@
 import API from '@api';
 import Store from 'electron-store';
-// import callWindow from '@classes/callWindow';
+import callWindow from '@classes/callWindow';
 
 const meStore = new Store({
   name: 'store-module-me',
@@ -38,10 +38,19 @@ export default {
       console.log(err);
     }
 
-    // callWindow.setMediaSharingMode(mediaState.screen);
-
     if (selectedChannelId) {
       await API.user.setMediaState(mediaState);
     }
+  },
+
+  /**
+   * Set media sharing mode
+   *
+   * @param {function} commit – store commit
+   * @param {boolean} state – state
+   * @returns {void}
+   */
+  async setMediaSharingMode({ commit }, state) {
+    callWindow.setMediaSharingMode(state);
   },
 };
