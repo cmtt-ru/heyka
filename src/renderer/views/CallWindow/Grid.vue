@@ -125,7 +125,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([ 'usersWhoSharesMedia' ]),
+    ...mapGetters([ 'getUsersWhoSharesMedia' ]),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -214,7 +214,7 @@ export default {
       this.resize();
     },
 
-    usersWhoSharesMedia: {
+    getUsersWhoSharesMedia: {
       deep: true,
       handler: users => {
         console.log('users with shared media', users);

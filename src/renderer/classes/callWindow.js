@@ -117,6 +117,7 @@ class CallWindow {
         position: 'center',
         template: 'call',
         alwaysOnTop: true,
+        openDevTools: true,
         onClose: () => {
           this.gridWindow = null;
         },

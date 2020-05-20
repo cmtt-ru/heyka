@@ -184,7 +184,7 @@ class WindowManager {
       }
 
       if (windowOptions.alwaysOnTop) {
-        newWindow.setAlwaysOnTop(true, 'floating', 3);
+        newWindow.setAlwaysOnTop(true, 'floating', 2 + 1);
       }
 
       if (windowOptions.openDevTools) {
