@@ -52,6 +52,7 @@ export default {
     },
     getUserWhoSharesMedia(user) {
       if (user) {
+        console.log(`Request stream of ${user.id}`);
         this.streamReceiver.requestStream(user.id);
       }
     },
@@ -59,6 +60,7 @@ export default {
   created() {
     this.streamReceiver = new StreamReceiver();
     this.streamReceiver.on('new-stream', data => {
+      console.log(`Received stream of ${data.userId}`, data);
       this.$refs.video.srcObject = data.video;
     });
   },

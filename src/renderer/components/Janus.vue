@@ -359,6 +359,7 @@ export default {
 
         return;
       }
+      console.log(`Stream of ${data.userId} is requested`, data);
 
       this.videoPublishers[data.userId].requestId = data.requestId;
       this.janusWrapper.requestVideoStream(this.videoPublishers[data.userId].janusId);
