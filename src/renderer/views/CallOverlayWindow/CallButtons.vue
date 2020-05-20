@@ -8,6 +8,7 @@
       class="call-buttons__button ui-button"
       :active="mediaState.microphone"
       :size="size"
+      :icon-color="true"
       @click.native="switchProp('microphone')"
     />
 
