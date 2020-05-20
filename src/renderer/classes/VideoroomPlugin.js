@@ -254,7 +254,9 @@ class VideoroomPlugin extends EventEmitter {
             message: { request: 'start', room: this.__room },
             jsep
           })
-        } else if (!jsep !== undefined && jsep !== null) {
+        }
+        
+        if (!jsep !== undefined && jsep !== null) {
           this.__videoPluginHandles[janusId].handleRemoteJsep(jsep);
         }
       },
