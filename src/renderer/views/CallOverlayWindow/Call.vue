@@ -62,6 +62,9 @@ export default {
     this.streamReceiver.on('new-stream', data => {
       console.log(`Received stream of ${data.userId}`, data);
       this.$refs.video.srcObject = data.video;
+      this.$refs.video.onloadedmetadata = () => {
+        this.$refs.video.play();
+      };
     });
   },
 };
