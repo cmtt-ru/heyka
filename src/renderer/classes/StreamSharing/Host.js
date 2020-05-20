@@ -35,6 +35,7 @@ export default class StreamSharingHost extends EventEmitter {
       }
     });
     pc.addEventListener('icecandidate', async e => {
+      if (!e.candidate) return;
       broadcastEvents.dispatch(`icecandidate-host-${streamMetadata.requestId}`, {
         type: 'icecandidate',
         candidate: e.candidate,
