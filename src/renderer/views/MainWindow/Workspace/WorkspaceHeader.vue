@@ -4,27 +4,20 @@
       v-if="user"
       class="user"
     >
-      <ui-button
-        :type="7"
+      <microphone
+        v-tooltip="mediaState.microphone ? 'Mute' : 'Unmute'"
         class="user__status"
-        size="small"
-        :icon="icons.screen"
-        @click.native="switchProp('screen')"
-        v-tooltip="mediaState.speakers ? 'Start screen sharing' : 'Stop screen sharing'"
+        :active="user.microphone"
+        @click.native="switchProp('microphone')"
       />
+
       <ui-button
+        v-tooltip="mediaState.speakers ? 'Deafen' : 'Undeafen'"
         :type="7"
         class="user__status"
         size="small"
         :icon="icons.speakers"
         @click.native="switchProp('speakers')"
-        v-tooltip="mediaState.speakers ? 'Deafen' : 'Undeafen'"
-      />
-      <microphone
-        class="user__status"
-        :active="user.microphone"
-        @click.native="switchProp('microphone')"
-        v-tooltip="mediaState.microphone ? 'Mute' : 'Unmute'"
       />
 
       <avatar
