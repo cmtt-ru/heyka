@@ -29,7 +29,7 @@ export default class StreamSharingHost extends EventEmitter {
       this._debug('ice-candidate', e.candidate.toJSON())
       broadcastEvents.dispatch(`icecandidate-receiver-${data.requestId}`, {
         type: 'candidate',
-        candidate: e.candidate
+        candidate: e.candidate.toJSON()
       })
     })
     pc.addEventListener('iceconnectionstatechange', e => {
