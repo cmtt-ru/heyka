@@ -350,8 +350,10 @@ export default {
      * @returns {void}
      */
     onVideoPublisherLeft(publisher) {
-      delete this.videoPublishers[publisher.display];
-      this.log(`Publisher ${publisher.display} is deleted`);
+      const key = Object.keys(this.videoPublishers).find(k => this.videoPublishers[k].janusId === publisher.unpublished);
+
+      delete this.videoPublishers[key];
+      this.log(`Publisher ${key} is deleted`);
     },
 
     /**
