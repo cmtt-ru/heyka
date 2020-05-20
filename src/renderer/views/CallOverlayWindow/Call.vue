@@ -29,11 +29,14 @@ export default {
       currentUserVideo: null,
     };
   },
+  methods: {
+    userInChannelWithVideo() {
+      return this.getUsersByChannel(this.$store.state.me.selectedChannelId)
+        .filter(u => (u.userMediaState ? u.userMediaState.screen || u.userMediaState.camera : false) && u.id !== this.$store.state.me.id);
+    },
+  },
   computed: {
     ...mapGetters([ 'getUsersByChannel' ]),
-    userInChannelWithVideo() {
-      return this.getUsersByChannel(this.$store.state.me.selectedChannelId);
-    },
     mediaState() {
       return this.$store.getters['me/getMediaState'];
     },
@@ -57,6 +60,15 @@ export default {
     this.streamReceiver.on('new-stream', data => {
       this.$refs.video.srcObject = data.video;
     });
+    const magicNumber = 500;
+
+    setInterval(() => {
+      const users = this.userInChannelWithVideo();
+
+      if (users.length > 0) {
+        this.currentUserVideo = users[0];
+      }
+    }, magicNumber);
   },
 };
 </script>
