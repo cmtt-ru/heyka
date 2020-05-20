@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div><span>JANUS VIDEO</span><video ref="video" /></div>
     <audio
       ref="audio"
       autoplay

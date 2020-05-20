@@ -206,6 +206,8 @@ class JanusWrapper extends EventEmitter {
 
     this.__videoroomPlugins[janusId] = plugin;
 
+    plugin.attach();
+
     return new Promise((resolve) => {
       plugin.on('remote-video-stream', stream => {
         resolve(stream);
