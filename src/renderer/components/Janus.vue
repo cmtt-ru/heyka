@@ -83,6 +83,7 @@ export default {
      * @returns {undefined}
      */
     speakers(state) {
+      console.log(`Set muting of speakers ${!state}`);
       this.$refs.audio.muted = !state;
     },
 
@@ -168,7 +169,7 @@ export default {
 
       // audio events
       janusWrapper.on(JanusWrapper.events.connectionError, this.onConnectionError.bind(this));
-      janusWrapper.on(JanusWrapper.events.removeAudioStream, this.onRemoteAudioStream.bind(this));
+      janusWrapper.on(JanusWrapper.events.remoteAudioStream, this.onRemoteAudioStream.bind(this));
       janusWrapper.on(JanusWrapper.events.audioStreamActive, this.onAudioStreamActive.bind(this));
       janusWrapper.on(JanusWrapper.events.speaking, this.onSpeakingChange.bind(this));
       janusWrapper.on(JanusWrapper.events.volumeChange, this.onVolumeChange.bind(this));
