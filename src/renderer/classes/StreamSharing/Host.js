@@ -103,6 +103,7 @@ export default class StreamSharingHost extends EventEmitter {
     }
     this.pcs[userId].close();
     delete this.pcs[userId];
+    broadcastEvents.dispatch(`stream-sharing-closed`, userId);
   }
 
   /**

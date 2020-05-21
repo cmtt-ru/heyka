@@ -17,6 +17,9 @@ export default class StreamSharingReceiver extends EventEmitter {
     super();
 
     this.__debugEnabled = !!options.debug;
+    broadcastEvents.on('stream-sharing-closed', userId => {
+      this.emit('connection-closed', userId);
+    });
   }
 
   /**
