@@ -11,7 +11,6 @@ class CommonStreams {
   constructor() {
     this.streams = {};
     this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
-    this.streamReceiver.on('new-stream', this.onNewStream.bind(this));
   }
 
   /**
