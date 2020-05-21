@@ -67,8 +67,8 @@ export default {
     const selectedChannel = getters['channels/getChannelById'](selectedChannelId);
 
     if (selectedChannel) {
-      const usersWhoSharesScreen = selectedChannel.users.filter(user => user.screen);
-      const usersWhoSharesCamera = selectedChannel.users.filter(user => user.camera);
+      const usersWhoSharesScreen = selectedChannel.users.filter(user => user.screen).map(user => user.userId);
+      const usersWhoSharesCamera = selectedChannel.users.filter(user => user.camera).map(user => user.userId);
 
       return [
         ...usersWhoSharesCamera,

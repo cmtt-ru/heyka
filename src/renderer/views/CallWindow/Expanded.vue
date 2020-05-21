@@ -32,7 +32,10 @@
       />
     </svg> -->
 
-    <video class="sharing" />
+    <video
+      ref="video"
+      class="sharing"
+    />
 
     <div class="badge user">
       <avatar
@@ -77,6 +80,7 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
+import commonStreams from './commonStreams';
 
 export default {
   components: {
@@ -91,6 +95,8 @@ export default {
       controlsOptions: {
         boundingElement: document.documentElement,
       },
+
+      streamReceiver: null,
     };
   },
   computed: {
@@ -110,6 +116,16 @@ export default {
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
+  },
+  watch: {
+    async userId(id) {
+      const stream = await commonStreams.getStream(id);
+
+      this.$refs.video.srcObject = stream;
+      this.$refs.video.onloadedmetadata = () => {
+        this.$refs.video.play();
+      };
+    },
   },
 
   /**

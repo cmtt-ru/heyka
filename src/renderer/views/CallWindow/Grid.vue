@@ -55,6 +55,7 @@
           />
 
           <avatar
+            v-show="!user.camera && !user.screen"
             class="cell__avatar"
             :image="user.avatar"
             :size="100"
@@ -103,7 +104,7 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
-import StreamReceiver from '@classes/StreamSharing/Receiver';
+import commonStreams from './commonStreams';
 
 /**
  * Aspect ratio 124 / 168;
@@ -221,23 +222,24 @@ export default {
 
     getUsersWhoSharesMedia: {
       deep: true,
-      handler: users => {
-        users.filter(u => !this.videoStreams[u.id]).forEach(u => {
-          console.log(`Request stream of ${u.name}`);
-          this.streamReceiver.requestStream(u.id);
+      handler(users) {
+        users.filter(u => !this.videoStreams[u.id]).map(async u => {
+          this.videoStreams[u.id] = { wait: true };
+          const stream = await commonStreams.getStream(u.id);
+
+          this.videoStreams[u.id].stream = stream;
+          const htmlVideo = this.$refs[`video${u.id}`][0];
+
+          if (!htmlVideo) {
+            return;
+          }
+          htmlVideo.srcObject = stream;
+          htmlVideo.onloadedmetadata = () => {
+            htmlVideo.play();
+          };
         });
       },
     },
-  },
-  created() {
-    this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
-    this.streamReceiver.on('new-stream', data => {
-      console.log(`Received stream of ${data.userId}`, data);
-      this.$refs[`video${data.userId}`].srcObject = data.stream;
-      this.$refs[`video${data.userId}`].onloadedmetadata = () => {
-        this.$refs[`video${data.userId}`].play();
-      };
-    });
   },
   mounted() {
     this.mounted = true;
@@ -371,7 +373,6 @@ export default {
       height 100%
       border-radius 4px
       background: #FFFFFF;
-      opacity: 0.05;
 
     &__talking
       position absolute
