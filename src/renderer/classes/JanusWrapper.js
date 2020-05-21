@@ -24,6 +24,7 @@ const JANUS_WRAPPER_EVENTS = {
   videoPublisherJoined: 'video-publisher-joined',
   videoPublisherLeft: 'video-publisher-left',
   remoteVideoStream: 'remote-video-stream',
+  localVideoStream: 'local-video-stream',
 };
 
 /**
@@ -148,6 +149,7 @@ class JanusWrapper extends EventEmitter {
     videoroomPlugin.on('publisher-joined', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherJoined, publisher));
     videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
     videoroomPlugin.on('remote-video-stream', data => this.emit(JANUS_WRAPPER_EVENTS.remoteVideoStream, data));
+    videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
 
     this.__videoroomPlugin = videoroomPlugin;
   }

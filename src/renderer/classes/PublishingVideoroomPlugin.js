@@ -318,6 +318,7 @@ class VideoroomPlugin extends EventEmitter {
    */
   _onLocalVideoStream(stream) {
     this.__localVideoStream = stream;
+    this.emit('local-video-stream', stream);
   }
 };
 

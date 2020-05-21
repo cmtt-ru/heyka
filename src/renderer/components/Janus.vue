@@ -178,6 +178,7 @@ export default {
       janusWrapper.on(JanusWrapper.events.videoPublishersList, this.onVideoPublishersList.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherJoined, this.onVideoPublisherJoined.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
+      janusWrapper.on(JanusWrapper.events.localVideoStream, this.onLocalVideoStream.bind(this));
 
       await janusWrapper.join();
 
@@ -238,6 +239,7 @@ export default {
      */
     stopSharingVideo() {
       this.janusWrapper.unpublishVideoStream();
+      delete this.videoPublishers[this.userId];
     },
 
     /**
@@ -420,6 +422,18 @@ export default {
      */
     onSocketDisconnected() {
       this.unselectChannel();
+    },
+
+    /**
+     * Handle local video stream
+     * @param {MediaStream} stream Media stream
+     * @returns {void}
+     */
+    onLocalVideoStream(stream) {
+      this.videoPublishers[this.userId] = {
+        userId: this.userId,
+        stream,
+      };
     },
 
     /**
