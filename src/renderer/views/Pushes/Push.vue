@@ -1,5 +1,5 @@
 <template>
-  <transition name="push-fade">
+  <transition name="push">
     <div
       v-if="mounted"
       v-hammer:pan.horizontal="pan"
@@ -24,7 +24,7 @@
             v-if="data.channel"
             class="push__channel"
           >
-            <span>Invites to</span>
+            <span>{{ texts.invitesto }}</span>
             <svg-icon
               name="channelOnAir"
               size="medium"
@@ -36,7 +36,7 @@
             v-if="!data.channel"
             class="push__channel"
           >
-            Is busy
+            {{ texts.isbusy }}
           </div>
         </div>
       </div>
@@ -134,6 +134,14 @@ export default {
   },
 
   computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('push');
+    },
+
     /**
      * Get user's info
      * @returns {object}
@@ -357,21 +365,22 @@ $ANIM_DELAY = 200ms
   &__button
     margin 0 4px
 
-.push-fade-enter
+.push-enter
   height 0
   padding 0px 12px
   margin 0px 12px
   opacity 0
+  transform translateX(200px)
 
-.push-fade-enter-active
+.push-enter-active
   pointer-events none
-  transition opacity $ANIM ease $ANIM_DELAY, height $ANIM ease, padding $ANIM ease, margin $ANIM ease
+  transition opacity $ANIM ease $ANIM_DELAY, height $ANIM ease, padding $ANIM ease, margin $ANIM ease, transform $ANIM ease $ANIM_DELAY
 
-.push-fade-leave
+.push-leave
   height 0
   opacity 0
 
-.push-fade-leave-active
+.push-leave-active
   padding 0px 12px
   margin 0px 12px
   opacity 0

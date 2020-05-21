@@ -100,6 +100,13 @@ export default {
     heykaStore.set('collectAnalytics', collectAnalytics);
   },
 
+  /**
+   * Add new in-app notification
+   *
+   * @param {function} commit – store commit
+   * @param {object} notif – notification
+   * @returns {string} id
+   */
   addNotification({ commit }, notif) {
     const id = uuidV4();
     const notification = {
@@ -112,6 +119,13 @@ export default {
     return id;
   },
 
+  /**
+   * Add new push
+   *
+   * @param {function} commit – store commit
+   * @param {object} notif – push
+   * @returns {string} id
+   */
   addPush({ commit, state }, notif) {
     const id = uuidV4();
     const push = {
@@ -125,10 +139,18 @@ export default {
     return id;
   },
 
+  /**
+   * Add new push
+   *
+   * @param {function} commit – store commit
+   * @param {string} id – push's id
+   * @returns {void}
+   */
   removePush({ commit, state }, id) {
     commit('REMOVE_PUSH', id);
     pushWindow.updateCount(state.pushes.length);
   },
+
   /**
    * Set selected devices
    *

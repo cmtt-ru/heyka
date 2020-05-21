@@ -20,9 +20,10 @@
   "push": {
     "transparent": true,
     "movable": false,
-    "resizable": true,
+    "resizable": false,
     "alwaysOnTop": true,
-    "frame": false
+    "frame": false,
+    "skipTaskbar": true
   },
   "call": {
     "width": 1500,
