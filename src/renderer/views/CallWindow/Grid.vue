@@ -276,8 +276,8 @@ export default {
      */
     cellDimensions(index) {
       return {
-        width: this.avatarWidth * this.currentGrid[index] + 'px',
-        height: this.avatarWidth * ASPECT_RATIO * this.currentGrid[index] + 'px',
+        width: Math.floor(this.avatarWidth * this.currentGrid[index]) + 'px',
+        height: Math.floor(this.avatarWidth * ASPECT_RATIO * this.currentGrid[index]) + 'px',
       };
     },
 
@@ -382,6 +382,7 @@ export default {
       justify-content space-between
       align-items center
       position relative
+      overflow hidden
 
       video
         width 100%

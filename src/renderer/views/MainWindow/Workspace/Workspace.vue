@@ -19,8 +19,12 @@
     </button>
     <br><br>
 
-    <button @click="openCallWindow">Открыть окно звонка</button>
-    <button @click="closeCallWindow">Закрыть</button>
+    <button @click="openCallWindow">
+      Открыть окно звонка
+    </button>
+    <button @click="closeCallWindow">
+      Закрыть
+    </button>
 
     <br><br>
     <button @click="loadInitialState()">
