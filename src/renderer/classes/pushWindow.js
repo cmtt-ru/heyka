@@ -7,6 +7,7 @@ const ONE_PUSH_SIZE = {
 };
 const TOP_MARGIN = 12;
 const PUSH_MOVEOUT_TIMER = 500;
+const MAX_AMOUNT = 7;
 
 /**
  * Class for controlling push window
@@ -57,10 +58,10 @@ class PushWindow {
       this.show();
     } else {
       if (this.notifications < amount) {
-        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * amount);
+        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount, MAX_AMOUNT), 0);
       } else {
         setTimeout(() => {
-          this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * amount);
+          this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount, MAX_AMOUNT), 0);
         }, PUSH_MOVEOUT_TIMER);
       }
     }

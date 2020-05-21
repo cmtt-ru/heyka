@@ -152,13 +152,15 @@ class Window extends EventEmitter {
    * Set window size
    * @param {number} width - window width
    * @param {number} height - window height
+   * @param {number} margin - window margin to screen bounds
    * @returns {void}
    */
-  setSize(width, height) {
+  setSize(width, height, margin) {
     ipcRenderer.sendSync('window-manager-size', {
       id: this.windowId,
       width,
       height,
+      margin,
     });
   }
 }
