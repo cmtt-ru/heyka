@@ -90,7 +90,8 @@ export default {
       video
         display block
         width 100%
-        height 100%
+        height 213px
         background #333
+        object-fit cover
 
 </style>

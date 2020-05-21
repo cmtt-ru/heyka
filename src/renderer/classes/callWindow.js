@@ -7,7 +7,7 @@ const OVERLAY_WINDOW_SIZES = {
   },
   mediaSharing: {
     width: 340,
-    height: 222,
+    height: 265,
   },
 };
 
