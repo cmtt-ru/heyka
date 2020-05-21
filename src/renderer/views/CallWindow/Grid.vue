@@ -29,7 +29,7 @@
     >
       <div
         v-for="(user, index) in users"
-        :key="index"
+        :key="user.id"
         class="cell"
         :style="cellDimensions(index)"
       >

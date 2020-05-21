@@ -240,6 +240,7 @@ export default {
     stopSharingVideo() {
       this.janusWrapper.unpublishVideoStream();
       delete this.videoPublishers[this.userId];
+      this.streamHost.closeStreamSharing(this.userId);
     },
 
     /**
