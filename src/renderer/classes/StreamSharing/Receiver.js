@@ -48,6 +48,10 @@ export default class StreamSharingReceiver extends EventEmitter {
     // Handle ICE connection state change
     pc.addEventListener('iceconnectionstatechange', e => {
       this._debug('ice-state', pc.iceConnectionState);
+      if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
+        pc.close();
+        this.emit('connection-closed', userId);
+      }
     });
 
     // Handle new track of the connection

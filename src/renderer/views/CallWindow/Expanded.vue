@@ -118,13 +118,8 @@ export default {
 
   },
   watch: {
-    async userId(id) {
-      const stream = await commonStreams.getStream(id);
-
-      this.$refs.video.srcObject = stream;
-      this.$refs.video.onloadedmetadata = () => {
-        this.$refs.video.play();
-      };
+    userId() {
+      this.requestStream();
     },
   },
 
@@ -147,6 +142,8 @@ export default {
     broadcastEvents.on('grid', () => {
       this.$router.replace('/call-window');
     });
+
+    this.requestStream();
   },
 
   destroyed() {
@@ -156,6 +153,21 @@ export default {
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
+  },
+  methods: {
+    /**
+     * Request stream and insert it
+     * @returns {void}
+     */
+    async requestStream() {
+      const id = this.userId;
+      const stream = await commonStreams.getStream(id);
+
+      this.$refs.video.srcObject = stream;
+      this.$refs.video.onloadedmetadata = () => {
+        this.$refs.video.play();
+      };
+    },
   },
 
 };

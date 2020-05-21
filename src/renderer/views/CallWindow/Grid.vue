@@ -223,21 +223,7 @@ export default {
     getUsersWhoSharesMedia: {
       deep: true,
       handler(users) {
-        users.filter(u => !this.videoStreams[u.id]).map(async u => {
-          this.videoStreams[u.id] = { wait: true };
-          const stream = await commonStreams.getStream(u.id);
-
-          this.videoStreams[u.id].stream = stream;
-          const htmlVideo = this.$refs[`video${u.id}`][0];
-
-          if (!htmlVideo) {
-            return;
-          }
-          htmlVideo.srcObject = stream;
-          htmlVideo.onloadedmetadata = () => {
-            htmlVideo.play();
-          };
-        });
+        this.requestStreams();
       },
     },
   },
@@ -245,11 +231,36 @@ export default {
     this.mounted = true;
     window.addEventListener('resize', this.resize, false); // TODO: add small debounce for performance
     this.resize();
+    this.requestStreams();
   },
   destroyed() {
     window.removeEventListener('resize', this.resize, false);
   },
   methods: {
+    /**
+     * Request not loaded streams and insert loaded
+     * @returns {void}
+     */
+    requestStreams() {
+      const users = this.getUsersWhoSharesMedia;
+
+      users.filter(id => !this.videoStreams[id]).map(async id => {
+        this.videoStreams[id] = { wait: true };
+        console.log(`wait stream for ${id}`);
+        const stream = await commonStreams.getStream(id);
+
+        this.videoStreams[id].stream = stream;
+        const htmlVideo = this.$refs[`video${id}`][0];
+
+        if (!htmlVideo) {
+          return;
+        }
+        htmlVideo.srcObject = stream;
+        htmlVideo.onloadedmetadata = () => {
+          htmlVideo.play();
+        };
+      });
+    },
 
     /**
      * Assign dimentions to the cell depending on its index

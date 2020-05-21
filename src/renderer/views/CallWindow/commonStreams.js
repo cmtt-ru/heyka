@@ -11,6 +11,7 @@ class CommonStreams {
   constructor() {
     this.streams = {};
     this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
+    this.streamReceiver.on('connection-closed', this.onConnectionClosed.bind(this));
   }
 
   /**
@@ -30,6 +31,9 @@ class CommonStreams {
       this.streams[userId] = {
         waitStream: true,
       };
+      console.log('wait stream here');
+
+      this.streamReceiver.requestStream(userId);
 
       return this.getWaitStreamPromise(userId);
     }
@@ -53,6 +57,15 @@ class CommonStreams {
         }
       });
     });
+  }
+
+  /**
+   * Handle connection closed
+   * @param {string} userId User id
+   * @returns {void}
+   */
+  onConnectionClosed(userId) {
+    delete this.streams[userId];
   }
 }
 
