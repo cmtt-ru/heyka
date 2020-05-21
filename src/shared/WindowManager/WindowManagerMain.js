@@ -318,10 +318,10 @@ class WindowManager {
    * @param {number} height – window height
    * @returns {void}
    */
-  sizeWindow({ id, width, height }) {
+  sizeWindow({ id, width, height, margin }) {
     if (this.windows[id]) {
       this.windows[id].setSize(width, height);
-      adjustBounds(this.windows[id], 0);
+      adjustBounds(this.windows[id], margin);
     }
   }
 
