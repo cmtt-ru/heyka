@@ -16,9 +16,9 @@
 
 <script>
 import CallControls from './CallControls';
-import StreamReceiver from '@classes/StreamSharing/Receiver';
 import { mapGetters } from 'vuex';
 import broadcastActions from '@classes/broadcastActions';
+import commonStreams from '@classes/commonStreams';
 
 export default {
   components: {
@@ -51,20 +51,22 @@ export default {
     },
     getUserWhoSharesMedia(user) {
       if (user) {
-        console.log(`Request stream of ${user.id}`, user);
-        this.streamReceiver.requestStream(user);
+        this.requestStream(user);
       }
     },
   },
-  created() {
-    this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
-    this.streamReceiver.on('new-stream', data => {
-      console.log(`Received stream of ${data.userId}`, data);
-      this.$refs.video.srcObject = data.stream;
-      this.$refs.video.onloadedmetadata = () => {
-        this.$refs.video.play();
-      };
-    });
+  methods: {
+    async requestStream(user) {
+      const stream = await commonStreams.requestStream(user);
+      const htmlElement = this.$refs.video;
+
+      if (htmlElement) {
+        htmlElement.srcObject = stream;
+        htmlElement.onloadedmetadata = function () {
+          htmlElement.play();
+        };
+      }
+    },
   },
 };
 </script>

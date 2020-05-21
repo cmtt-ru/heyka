@@ -80,7 +80,7 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
-import commonStreams from './commonStreams';
+import commonStreams from '@classes/commonStreams';
 
 export default {
   components: {

@@ -104,7 +104,7 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
-import commonStreams from './commonStreams';
+import commonStreams from '@classes/commonStreams';
 
 /**
  * Aspect ratio 124 / 168;
