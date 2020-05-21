@@ -382,6 +382,11 @@ export default {
       align-items center
       position relative
 
+      video
+        width 100%
+        height 100%
+        object-fit cover
+
     &__feed
       position absolute
       top 0
