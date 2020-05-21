@@ -1,4 +1,5 @@
 import StreamReceiver from '@classes/StreamSharing/Receiver';
+import mediaCapturer from './mediaCapturer';
 
 /**
  * Manage video streams for CallWindow (Grid and Expanded view)
@@ -66,6 +67,9 @@ class CommonStreams {
    */
   onConnectionClosed(userId) {
     console.log(`Connection closed for ${userId}`);
+    if (this.streams[userId].stream) {
+      mediaCapturer.destroyStream(this.streams[userId].stream);
+    }
     delete this.streams[userId];
   }
 }

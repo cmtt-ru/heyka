@@ -38,6 +38,7 @@
           @dblclick="expandedClickHandler(user.id)"
         >
           <video
+            v-show="videoStreams[user.id]"
             :ref="`video${user.id}`"
             class="cell__feed"
           />

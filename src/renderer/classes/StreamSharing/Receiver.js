@@ -17,7 +17,15 @@ export default class StreamSharingReceiver extends EventEmitter {
     super();
 
     this.__debugEnabled = !!options.debug;
+    this.__pcs = {};
     broadcastEvents.on('stream-sharing-closed', userId => {
+      const pc = this.__pcs[userId];
+
+      if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
+        delete this.__pcs[userId];
+        pc.close();
+        this.emit('connection-closed', userId);
+      }
       this.emit('connection-closed', userId);
     });
   }
@@ -33,6 +41,8 @@ export default class StreamSharingReceiver extends EventEmitter {
       userId,
     };
     const pc = new RTCPeerConnection();
+
+    this.__pcs[userId] = pc;
 
     // subscribe for ICE candidate
     pc.addEventListener('icecandidate', async e => {
@@ -52,6 +62,7 @@ export default class StreamSharingReceiver extends EventEmitter {
     pc.addEventListener('iceconnectionstatechange', e => {
       this._debug('ice-state', pc.iceConnectionState);
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
+        delete this.__pcs[userId];
         pc.close();
         this.emit('connection-closed', userId);
       }
