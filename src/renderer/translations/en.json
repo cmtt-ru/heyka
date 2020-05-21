@@ -81,5 +81,9 @@
       "fullscreen": "Fullscreen",
       "mute": "Mute for all"
     }
+  },
+  "push": {
+    "invitesto": "Invites to",
+    "isbusy": "Is busy"
   }
 }

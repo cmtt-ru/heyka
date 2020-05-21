@@ -57,8 +57,3 @@ export default {
     align-items center
     background-color transparent
 </style>
-
-<style lang="stylus">
-  html
-    overflow hidden
-</style>

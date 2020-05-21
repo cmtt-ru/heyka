@@ -3,9 +3,9 @@ import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 const ONE_PUSH_SIZE = {
 
   width: 368,
-  height: 80,
+  height: 76,
 };
-
+const TOP_MARGIN = 12;
 const PUSH_MOVEOUT_TIMER = 500;
 
 /**
@@ -57,10 +57,10 @@ class PushWindow {
       this.show();
     } else {
       if (this.notifications < amount) {
-        this.window.setSize(ONE_PUSH_SIZE.width, ONE_PUSH_SIZE.height * amount);
+        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * amount);
       } else {
         setTimeout(() => {
-          this.window.setSize(ONE_PUSH_SIZE.width, ONE_PUSH_SIZE.height * amount);
+          this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * amount);
         }, PUSH_MOVEOUT_TIMER);
       }
     }
