@@ -55,6 +55,14 @@ export default {
       }
     },
   },
+  created() {
+    if (this.isMediaSharing) {
+      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+    }
+    if (this.getUserWhoSharesMedia) {
+      this.requestStream(this.getUserWhoSharesMedia);
+    }
+  },
   methods: {
     async requestStream(user) {
       const stream = await commonStreams.getStream(user);
