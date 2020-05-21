@@ -18,6 +18,7 @@ export default class StreamSharingHost extends EventEmitter {
     broadcastEvents.on('request-stream', this._onRequestStream.bind(this));
 
     this.__debugEnabled = !!options.debug;
+    this.pcs = {};
   }
 
   /**
@@ -30,6 +31,8 @@ export default class StreamSharingHost extends EventEmitter {
    */
   async sendStream(requestData, stream) {
     let pc = new RTCPeerConnection();
+
+    this.pcs[requestData.userId] = pc;
 
     // add stream to RTCPeerConnection
     stream.getTracks().forEach(track => pc.addTrack(track, stream));
@@ -87,6 +90,19 @@ export default class StreamSharingHost extends EventEmitter {
       },
       userId: requestData.userId,
     });
+  }
+
+  /**
+   * Close stream sharing for user
+   * @param {string} userId User id
+   * @returns {void}
+   */
+  async closeStreamSharing(userId) {
+    if (!this.pcs[userId]) {
+      return;
+    }
+    this.pcs[userId].close();
+    delete this.pcs[userId];
   }
 
   /**

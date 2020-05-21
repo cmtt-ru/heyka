@@ -65,6 +65,7 @@ class CommonStreams {
    * @returns {void}
    */
   onConnectionClosed(userId) {
+    console.log(`Connection closed for ${userId}`);
     delete this.streams[userId];
   }
 }

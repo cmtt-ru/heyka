@@ -352,7 +352,14 @@ export default {
     onVideoPublisherLeft(publisher) {
       const key = Object.keys(this.videoPublishers).find(k => this.videoPublishers[k].janusId === publisher.unpublished);
 
+      if (!key) {
+        return;
+      }
+      // Notify StreamSharingHost manager about publisher is left
+      this.streamHost.closeStreamSharing(this.videoPublishers[key].userId);
+
       delete this.videoPublishers[key];
+
       this.log(`Publisher ${key} is deleted`);
     },
 

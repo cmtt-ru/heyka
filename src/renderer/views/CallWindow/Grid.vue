@@ -244,12 +244,18 @@ export default {
     requestStreams() {
       const users = this.getUsersWhoSharesMedia;
 
+      // delete streams that were inserted but users have already stopped sharing
+      this.users.filter(u => !u.camera && !u.screen && !!this.videoStreams[u.id]).forEach(u => {
+        console.log(`clear stream for ${u.id}`);
+        delete this.videoStreams[u.id];
+      });
+
+      // add streams that were not inserted
       users.filter(id => !this.videoStreams[id]).map(async id => {
-        this.videoStreams[id] = { wait: true };
+        this.videoStreams[id] = true;
         console.log(`wait stream for ${id}`);
         const stream = await commonStreams.getStream(id);
 
-        this.videoStreams[id].stream = stream;
         const htmlVideo = this.$refs[`video${id}`][0];
 
         if (!htmlVideo) {
