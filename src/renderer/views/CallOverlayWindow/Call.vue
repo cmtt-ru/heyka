@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     async requestStream(user) {
-      const stream = await commonStreams.requestStream(user);
+      const stream = await commonStreams.getStream(user);
       const htmlElement = this.$refs.video;
 
       if (htmlElement) {
