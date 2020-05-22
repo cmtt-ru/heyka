@@ -21,6 +21,7 @@
       />
 
       <avatar
+        v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
         :image="user.avatar"
         :status="user.onlineStatus"
