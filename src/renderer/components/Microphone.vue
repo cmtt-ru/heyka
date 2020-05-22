@@ -14,7 +14,8 @@
       />
       <svg-icon
         class="mic__icon"
-        :name="icon"
+        :name="iconProp.icon"
+        :stroke="iconColor && iconProp.stroke"
         :width="iconSizeComp"
         :height="iconSizeComp"
       />
@@ -28,8 +29,14 @@
  * Mic icons
  */
 const STATES = {
-  true: 'mic',
-  false: 'mic-off',
+  true: {
+    icon: 'mic',
+    stroke: 'var(--text-0)',
+  },
+  false: {
+    icon: 'mic-off',
+    stroke: 'var(--text-1)',
+  },
 };
 
 /**
@@ -82,6 +89,14 @@ export default {
       type: String,
       default: 'small',
     },
+
+    /**
+     * Enable's icon color depends on state
+     */
+    iconColor: {
+      type: Boolean,
+      default: undefined,
+    },
   },
 
   computed: {
@@ -89,7 +104,7 @@ export default {
      * Display either active or inactive icon
      * @returns {object}
      */
-    icon() {
+    iconProp() {
       return STATES[this.active];
     },
 
