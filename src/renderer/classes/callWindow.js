@@ -43,7 +43,6 @@ class CallWindow {
           skipTaskbar: true,
         },
         onClose: () => {
-          console.log('closing: ', this.overlayWindow);
           this.overlayWindow = null;
         },
       });
@@ -129,7 +128,6 @@ class CallWindow {
       this.gridWindow.on('blur', () => {
         this.gridTimeout = setTimeout(() => {
           if (this.overlayWindow) {
-            console.log('showing overlay');
             this.showOverlay();
           }
         }, gridBlurTime);
