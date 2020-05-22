@@ -222,7 +222,7 @@ export default class Popover {
       this.element.__clickOutsideHandler = event => {
         const conditionToHide =
           !(this.instance.$el === event.target || this.instance.$el.contains(event.target)) ||
-          event.target.hasAttribute('data-popover-close');
+          (event.target.hasAttribute('data-popover-close') || event.target.closest('[data-popover-close]'));
 
         if (conditionToHide) {
           setTimeout(() => {
