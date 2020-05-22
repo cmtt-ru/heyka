@@ -69,7 +69,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   close() {
-    ipcRenderer.sendSync('window-manager-close', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'close',
       id: this.windowId,
     });
   }
@@ -79,7 +80,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   hide() {
-    ipcRenderer.sendSync('window-manager-hide', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'hide',
       id: this.windowId,
     });
   }
@@ -89,7 +91,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   show() {
-    ipcRenderer.sendSync('window-manager-show', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'show',
       id: this.windowId,
     });
   }
@@ -99,7 +102,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   showInactive() {
-    ipcRenderer.sendSync('window-manager-show-inactive', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'showInactive',
       id: this.windowId,
     });
   }
@@ -109,7 +113,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   focus() {
-    ipcRenderer.sendSync('window-manager-focus', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'focus',
       id: this.windowId,
     });
   }
@@ -119,7 +124,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   blur() {
-    ipcRenderer.sendSync('window-manager-blur', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'blur',
       id: this.windowId,
     });
   }
@@ -129,7 +135,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   toggleFullscreen() {
-    ipcRenderer.sendSync('window-manager-fullscreen', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'fullscreen',
       id: this.windowId,
     });
   }
@@ -141,7 +148,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   openUrl(route, url) {
-    ipcRenderer.sendSync('window-manager-openurl', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'openurl',
       id: this.windowId,
       url,
       route,
@@ -155,7 +163,8 @@ class Window extends EventEmitter {
    * @returns {void}
    */
   setSize(width, height) {
-    ipcRenderer.sendSync('window-manager-size', {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'size',
       id: this.windowId,
       width,
       height,
