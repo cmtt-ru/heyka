@@ -88,6 +88,17 @@
     "griduser": {
       "fullscreen": "Fullscreen",
       "mute": "Mute for all"
+    },
+    "userProfile": {
+      "profile": "Profile",
+      "online": "Online",
+      "idle": "Idle",
+      "offline": "Offline"
+    },
+    "userInChannel": {
+      "profile": "Open profile",
+      "poke": "Poke",
+      "mute": "Mute for all"
     }
   }
 }
