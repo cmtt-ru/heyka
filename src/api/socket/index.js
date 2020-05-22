@@ -60,7 +60,6 @@ async function authorize() {
       transaction: 'auth',
       workspaceId: store.getters['me/getSelectedWorkspaceId'],
       token: accessToken,
-      // todo: online status
       onlineStatus: onlineStatus,
     });
 

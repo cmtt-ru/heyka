@@ -7,7 +7,7 @@
           :type="11"
           icon="user"
         >
-          Profile
+          {{ texts.profile }}
         </ui-button>
       </router-link>
 
@@ -19,7 +19,7 @@
         icon="user-online"
         @click="changeStatus('online')"
       >
-        Online
+        {{ texts.online }}
       </ui-button>
 
       <ui-button
@@ -28,7 +28,7 @@
         icon="user-idle"
         @click="changeStatus('idle')"
       >
-        Idle
+        {{ texts.idle }}
       </ui-button>
 
       <ui-button
@@ -37,7 +37,7 @@
         icon="user-offline"
         @click="changeStatus('offline')"
       >
-        Offline
+        {{ texts.offline }}
       </ui-button>
     </div>
   </popover>
@@ -54,12 +54,29 @@ export default {
   },
 
   computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('popover.userProfile');
+    },
+
+    /**
+     * User id
+     * @returns {string}
+     */
     myId() {
       return this.$store.getters['me/getMyId'];
     },
   },
 
   methods: {
+    /**
+     * Change user online status
+     * @param {string} status – online status
+     * @returns {void}
+     */
     changeStatus(status) {
       this.$store.dispatch('me/setOnlineStatus', status);
     },
