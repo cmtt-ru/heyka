@@ -46,8 +46,8 @@ class CommonStreams {
    * @returns {promise<MediaStream>}
    */
   getWaitStreamPromise(userId) {
-    return new Promise(resolve => {
-      this.streamReceiver.once('new-stream', data => {
+    return new Promise((resolve) => {
+      this.streamReceiver.on('new-stream', data => {
         if (data.userId === userId) {
           resolve(data.stream);
           if (!this.streams[userId]) {

@@ -257,6 +257,8 @@ export default {
         console.log(`wait stream for ${id}`);
         const stream = await commonStreams.getStream(id);
 
+        console.log(`stream received for ${id}`);
+
         const htmlVideo = this.$refs[`video${id}`][0];
 
         if (!htmlVideo) {

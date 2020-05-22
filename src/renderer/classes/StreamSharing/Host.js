@@ -43,6 +43,7 @@ export default class StreamSharingHost extends EventEmitter {
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
         pc.close();
         pc = null;
+        delete this.pcs[requestData.userId];
         if (stream) {
           stream.getTracks().forEach(track => track.stop());
           stream = null;
@@ -101,6 +102,7 @@ export default class StreamSharingHost extends EventEmitter {
     if (!this.pcs[userId]) {
       return;
     }
+    this._debug(`Close peer connection for ${userId}`);
     this.pcs[userId].close();
     delete this.pcs[userId];
     broadcastEvents.dispatch(`stream-sharing-closed`, userId);
