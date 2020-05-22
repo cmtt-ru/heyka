@@ -227,6 +227,17 @@ export default {
         this.requestStreams();
       },
     },
+
+    selectedChannel(channelId) {
+      if (!channelId) {
+        Object.keys(this.videoStreams).forEach(key => {
+          delete this.videoStreams[key];
+        });
+      }
+      if (channelId) {
+        this.requestStreams();
+      }
+    },
   },
   async mounted() {
     this.mounted = true;

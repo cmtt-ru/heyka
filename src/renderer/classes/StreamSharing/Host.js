@@ -109,6 +109,18 @@ export default class StreamSharingHost extends EventEmitter {
   }
 
   /**
+   * Clean up all connections
+   * @returns {void}
+   */
+  clearAll() {
+    Object.keys(this.pcs).forEach(key => {
+      this.pcs[key].close();
+      delete this.pcs[key];
+    });
+    broadcastEvents.dispatch(`clear-all`);
+  }
+
+  /**
    * Notify another window about failed request
    * @param {string} requestId Unique request id
    * @returns {void}

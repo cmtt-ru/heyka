@@ -13,6 +13,7 @@ class CommonStreams {
     this.streams = {};
     this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
     this.streamReceiver.on('connection-closed', this.onConnectionClosed.bind(this));
+    this.streamReceiver.on('clear-all', this.onClearAll.bind(this));
   }
 
   /**
@@ -23,16 +24,20 @@ class CommonStreams {
   async getStream(userId) {
     if (this.streams[userId]) {
       if (this.streams[userId].stream) {
+        this._debug(`Return prepared stream for ${userId}`);
+
         return this.streams[userId].stream;
       }
       if (this.streams[userId].waitStream) {
+        this._debug(`Return promise which resolves with stream ${userId}`);
+
         return this.getWaitStreamPromise(userId);
       }
     } else {
       this.streams[userId] = {
         waitStream: true,
       };
-      console.log('wait stream here');
+      this._debug(`Prepare promise and return it ${userId}`);
 
       this.streamReceiver.requestStream(userId);
 
@@ -49,6 +54,7 @@ class CommonStreams {
     return new Promise((resolve) => {
       this.streamReceiver.on('new-stream', data => {
         if (data.userId === userId) {
+          this._debug(`New stream for ${userId}`);
           resolve(data.stream);
           if (!this.streams[userId]) {
             this.streams[userId] = {};
@@ -71,6 +77,28 @@ class CommonStreams {
       mediaCapturer.destroyStream(this.streams[userId].stream);
     }
     delete this.streams[userId];
+  }
+
+  /**
+   * Handles event clear all streams
+   * @returns {void}
+   */
+  onClearAll() {
+    this._debug('clean up all streams');
+    Object.keys(this.streams).forEach(key => {
+      if (this.streams[key].stream) {
+        mediaCapturer.destroyStream(this.streams[key].stream);
+      }
+      delete this.streams[key];
+    });
+  }
+
+  /**
+   * Inner debug tool
+   * @returns {void}
+   */
+  _debug() {
+    console.log(`commonStreams: `, ...arguments);
   }
 }
 

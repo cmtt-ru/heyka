@@ -18,16 +18,8 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     this.__debugEnabled = !!options.debug;
     this.__pcs = {};
-    broadcastEvents.on('stream-sharing-closed', userId => {
-      const pc = this.__pcs[userId];
-
-      if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
-        delete this.__pcs[userId];
-        pc.close();
-        this.emit('connection-closed', userId);
-      }
-      this.emit('connection-closed', userId);
-    });
+    broadcastEvents.on('stream-sharing-closed', this._streamSharingClosed.bind(this));
+    broadcastEvents.on('clear-all', () => this.emit('clear-all'));
   }
 
   /**
@@ -43,10 +35,7 @@ export default class StreamSharingReceiver extends EventEmitter {
     };
     const pc = new RTCPeerConnection();
 
-    this.__pcs[userId] = pc;
-
-    // subscribe for ICE candidate
-    pc.addEventListener('icecandidate', async e => {
+    const onIceCandidate = e => {
       if (!e.candidate) {
         return;
       };
@@ -57,27 +46,38 @@ export default class StreamSharingReceiver extends EventEmitter {
         type: 'candidate',
         candidate: e.candidate.toJSON(),
       });
-    });
+    };
 
-    // Handle ICE connection state change
-    pc.addEventListener('iceconnectionstatechange', e => {
+    const onIceConnectionStateChange = e => {
       this._debug(`ice-state ${data.requestId}`, pc.iceConnectionState);
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
-        delete this.__pcs[userId];
-        pc.close();
-        this.emit('connection-closed', userId);
+        this._streamSharingClosed(userId, data.requestId);
       }
-    });
+    };
 
-    // Handle new track of the connection
-    pc.addEventListener('track', async track => {
+    const onTrack = track => {
       this._debug(`Cought track from RTCPeerConnection ${data.requestId}: `, track);
       // notify about new received stream
       this.emit('new-stream', {
         userId,
         stream: track.streams[0],
       });
-    });
+    };
+
+    this.__pcs[userId] = {
+      requestId: data.requestId,
+      pc,
+      onTrack,
+      onIceConnectionStateChange,
+      onIceCandidate,
+    };
+
+    // subscribe for ICE candidate
+    pc.addEventListener('icecandidate', onIceCandidate);
+    // Handle ICE connection state change
+    pc.addEventListener('iceconnectionstatechange', onIceConnectionStateChange);
+    // Handle new track of the connection
+    pc.addEventListener('track', onTrack);
 
     // handle offer from main window
     broadcastEvents.once(`stream-offer-host-${data.requestId}`, async (d) => {
@@ -103,6 +103,33 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // Request stream
     broadcastEvents.dispatch('request-stream', data);
+  }
+
+  /**
+   * Closes connection for userId
+   * @param {string} userId Close connection for userId
+   * @param {?string} requestId Request id
+   * @returns {void}
+   */
+  _streamSharingClosed(userId, requestId) {
+    const pc = this.__pcs[userId];
+
+    console.log(requestId, pc, requestId !== pc.requestId);
+    if (requestId && pc && requestId !== pc.requestId) {
+      return;
+    }
+
+    this._debug(`close connection for ${pc.requestId}, ${userId}`, pc);
+
+    if (pc && (pc.pc.iceConnectionState === 'failed' || pc.pc.iceConnectionState === 'disconnected')) {
+      pc.pc.close();
+      pc.pc.removeEventListener('icecandidate', pc.onIceCandidate);
+      pc.pc.removeEventListener('iceconnectionstatechange', pc.onIceConnectionStateChange);
+      pc.pc.removeEventListener('track', pc.onTrack);
+      this.emit('connection-closed', userId);
+      delete this.__pcs[userId];
+    }
+    this.emit('connection-closed', userId);
   }
 
   /**
