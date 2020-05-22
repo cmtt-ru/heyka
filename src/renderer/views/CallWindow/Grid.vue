@@ -228,10 +228,11 @@ export default {
       },
     },
   },
-  mounted() {
+  async mounted() {
     this.mounted = true;
     window.addEventListener('resize', this.resize, false); // TODO: add small debounce for performance
     this.resize();
+    await new Promise(resolve => this.$nextTick(resolve));
     this.requestStreams();
   },
   destroyed() {

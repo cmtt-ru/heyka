@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
-import uuid from 'uuid/v4';
+// import uuid from 'uuid/v4';
 
 /**
  * StreamSharingReceiver`
@@ -37,7 +37,8 @@ export default class StreamSharingReceiver extends EventEmitter {
    */
   requestStream(userId) {
     const data = {
-      requestId: uuid(),
+      // eslint-disable-next-line
+      requestId: `${Math.floor(Math.random() * 9999 + 10000)}`,
       userId,
     };
     const pc = new RTCPeerConnection();
@@ -49,7 +50,7 @@ export default class StreamSharingReceiver extends EventEmitter {
       if (!e.candidate) {
         return;
       };
-      this._debug('ice-candidate', e.candidate.toJSON());
+      this._debug(`ice-candidate ${data.requestId}`, e.candidate.toJSON());
 
       // send ICE candidate to another window
       broadcastEvents.dispatch(`icecandidate-receiver-${data.requestId}`, {
@@ -60,7 +61,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // Handle ICE connection state change
     pc.addEventListener('iceconnectionstatechange', e => {
-      this._debug('ice-state', pc.iceConnectionState);
+      this._debug(`ice-state ${data.requestId}`, pc.iceConnectionState);
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
         delete this.__pcs[userId];
         pc.close();
@@ -70,7 +71,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // Handle new track of the connection
     pc.addEventListener('track', async track => {
-      this._debug('Cought track from RTCPeerConnection: ', track);
+      this._debug(`Cought track from RTCPeerConnection ${data.requestId}: `, track);
       // notify about new received stream
       this.emit('new-stream', {
         userId,
@@ -80,7 +81,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // handle offer from main window
     broadcastEvents.once(`stream-offer-host-${data.requestId}`, async (d) => {
-      this._debug('offer', d);
+      this._debug(`offer ${data.requestId}`, d);
       await pc.setRemoteDescription(d.sdpOffer);
       const answer = await pc.createAnswer();
 
@@ -96,7 +97,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // handle ICE candidates from stream host
     broadcastEvents.on(`icecandidate-host-${data.requestId}`, async (evt) => {
-      this._debug('add ice candidate', evt);
+      this._debug(`add ice candidate ${data.requestId}`, evt);
       await pc.addIceCandidate(evt.candidate);
     });
 
