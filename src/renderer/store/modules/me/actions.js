@@ -53,4 +53,16 @@ export default {
   async setMediaSharingMode({ commit }, state) {
     callWindow.setMediaSharingMode(state);
   },
+
+  /**
+   * Set user online status
+   *
+   * @param {function} commit – vuex commit
+   * @param {string} status — online status
+   * @returns {Promise<void>}
+   */
+  async setOnlineStatus({ commit }, status) {
+    await API.user.setOnlineStatus(status);
+    meStore.set('onlineStatus', status);
+  },
 };
