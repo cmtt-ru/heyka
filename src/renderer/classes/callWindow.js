@@ -116,7 +116,7 @@ class CallWindow {
         route: '/call-window',
         position: 'center',
         template: 'call',
-        alwaysOnTop: true,
+        preventClose: true,
         onClose: () => {
           this.gridWindow = null;
         },
@@ -129,6 +129,7 @@ class CallWindow {
       this.gridWindow.on('blur', () => {
         this.gridTimeout = setTimeout(() => {
           if (this.overlayWindow) {
+            console.log('showing overlay');
             this.showOverlay();
           }
         }, gridBlurTime);
@@ -139,6 +140,7 @@ class CallWindow {
       });
       this.gridWindow.on('close', () => {
         clearTimeout(this.gridTimeout);
+        this.showOverlay();
       });
     } else {
       this.gridWindow.show();
