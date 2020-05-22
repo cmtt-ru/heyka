@@ -15,7 +15,7 @@
           class="workspace__search__input"
           placeholder="Search"
           icon="search"
-          @keydown.native.esc="clearInput();deactivateInput()"
+          @keydown.native.esc="closeInput()"
         />
         <ui-button
           v-show="inputActive"
@@ -24,7 +24,7 @@
           size="small"
           height="16"
           icon="close"
-          @click.native="clearInput(); activateInput()"
+          @click.native="closeInput()"
         />
         <ui-button
           v-show="!inputActive"
@@ -69,7 +69,6 @@ export default {
 
   data() {
     return {
-      searchText: '',
       inputActive: false,
     };
   },
@@ -84,17 +83,19 @@ export default {
 
       return this.$store.getters['workspaces/getWorkspaceById'](channelId);
     },
-  },
 
-  watch: {
     /**
-     * Update search string in vuex
-     * @param {string} newValue newValue
-     * @param {string} oldValue oldValue
-     * @returns {void}
+     * Search string in vuex
+     *
+     * @returns {string}
      */
-    searchText(newValue, oldValue) {
-      this.$store.commit('app/SET_SEARCH_TEXT', newValue);
+    searchText: {
+      get() {
+        return this.$store.state.app.search;
+      },
+      set(value) {
+        this.$store.commit('app/SET_SEARCH_TEXT', value);
+      },
     },
   },
 
@@ -112,6 +113,7 @@ export default {
      * @returns {void}
      */
     activateInput() {
+      this.searchText = '';
       this.inputActive = true;
       this.$nextTick(() => {
         this.$refs.globalSearch.focusInput();
@@ -119,7 +121,7 @@ export default {
     },
 
     /**
-     * Hide searchbar if it is empty
+     * Close searchbar if it is empty
      * @returns {void}
      */
     deactivateInput() {
@@ -129,11 +131,11 @@ export default {
     },
 
     /**
-     * Clear searchbar
+     * Close searchbar
      * @returns {void}
      */
-    clearInput() {
-      this.searchText = '';
+    closeInput() {
+      this.inputActive = false;
     },
   },
 
