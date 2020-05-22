@@ -61,7 +61,7 @@ export default {
 
   methods: {
     changeStatus(status) {
-      console.log('change status', status);
+      this.$store.dispatch('me/setOnlineStatus', status);
     },
   },
 };
