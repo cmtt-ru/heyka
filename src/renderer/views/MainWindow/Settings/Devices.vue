@@ -5,7 +5,7 @@
     </div>
     <div class="setting-with-icon">
       <ui-select
-        v-model="selectedDevices.speaker"
+        v-model="selectedSpeaker"
         :data="devices.speakers"
       />
       <ui-button
@@ -21,7 +21,7 @@
       {{ texts.micLabel }}
     </div>
     <ui-select
-      v-model="selectedDevices.microphone"
+      v-model="selectedMicrophone"
       :data="devices.microphones"
     />
     <progress-bar
@@ -33,7 +33,7 @@
       {{ texts.cameraLabel }}
     </div>
     <ui-select
-      v-model="selectedDevices.camera"
+      v-model="selectedCamera"
       :data="devices.cameras"
     />
   </div>
@@ -70,7 +70,6 @@ export default {
 
   data() {
     return {
-      selectedDevices: { ...this.$store.getters['app/getSelectedDevices'] },
       microphoneVolume: 0,
     };
   },
@@ -91,15 +90,49 @@ export default {
     devices() {
       return this.$store.getters['app/getDevices'];
     },
-  },
 
-  watch: {
-    selectedDevices: {
-      handler() {
-        this.$store.dispatch('app/setSelectedDevices', { ...this.selectedDevices });
-        this.changeDevice();
+    /**
+     * List of selected devices
+     * @returns {object}
+     */
+    selectedDevices() {
+      return this.$store.getters['app/getSelectedDevices'];
+    },
+
+    /**
+     * Selected speaker model
+     */
+    selectedSpeaker: {
+      get() {
+        return this.selectedDevices.speaker;
       },
-      deep: true,
+      set(value) {
+        this.selectDevice('speaker', value);
+      },
+    },
+
+    /**
+     * Selected microphone model
+     */
+    selectedMicrophone: {
+      get() {
+        return this.selectedDevices.microphone;
+      },
+      set(value) {
+        this.selectDevice('microphone', value);
+      },
+    },
+
+    /**
+     * Selected camera model
+     */
+    selectedCamera: {
+      get() {
+        return this.selectedDevices.camera;
+      },
+      set(value) {
+        this.selectDevice('camera', value);
+      },
     },
   },
 
@@ -154,6 +187,20 @@ export default {
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
       }
+    },
+
+    /**
+     * Save selected devices
+     * @param {string} device – device type
+     * @param {string} deviceId – device id
+     * @returns {void}
+     */
+    selectDevice(device, deviceId) {
+      const data = { ...this.selectedDevices };
+
+      data[device] = deviceId;
+
+      this.$store.dispatch('app/setSelectedDevices', data);
     },
   },
 };
