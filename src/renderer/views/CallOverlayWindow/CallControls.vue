@@ -85,7 +85,7 @@ export default {
      */
     speakingUser() {
       if (this.selectedChannel) {
-        const speakingUsers = this.selectedChannel.users.filter(u => u.speaking);
+        const speakingUsers = this.selectedChannel.users.filter(u => u.speaking && u.microphone);
 
         if (speakingUsers.length) {
           const speakingUserId = speakingUsers[0].userId;
