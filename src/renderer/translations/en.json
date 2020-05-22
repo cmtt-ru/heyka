@@ -67,6 +67,14 @@
     "grid": {
       "users": "1 user | {n} users",
       "you": "(you)"
+    },
+    "sharing": {
+      "title": "Sharing preview",
+      "screen": "Screen",
+      "window": "Window",
+      "start": "Start sharing",
+      "stop": "Stop sharing",
+      "cancel": "Cancel"
     }
   },
   "popover": {
