@@ -115,9 +115,6 @@ class WindowManager {
       if (this.windows[windowId].options.preventClose) {
         e.preventDefault();
         browserWindow.hide();
-        console.log('close prevented,', this.windows[windowId]);
-      } else {
-        console.log('close NOT prevented,', this.windows[windowId]);
       }
     });
 
@@ -214,7 +211,6 @@ class WindowManager {
    * @returns {void}
    */
   closeWindow({ id }) {
-    console.log('close this:', this);
     if (this.windows[id]) {
       try {
         this.windows[id].browserWindow.destroy();
