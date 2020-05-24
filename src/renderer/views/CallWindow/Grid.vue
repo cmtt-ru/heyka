@@ -76,6 +76,7 @@
           </div>
 
           <ui-button
+            v-if="isStreaming(user.id)"
             class="badge badge--hidden cell__expand"
             :type="7"
             size="medium"
@@ -271,11 +272,27 @@ export default {
     },
 
     /**
+     * If this person has camera/screensharing on. Should we show "fullscreen" button for this person?
+     * @param {string} id user's id
+     * @returns {boolean}
+     */
+    isStreaming(id) {
+      if (this.getUsersWhoSharesMedia.includes(id)) {
+        return true;
+      }
+
+      return false;
+    },
+
+    /**
      * fullscreen click handler
      * @param {string} id user's id
      * @returns {void}
      */
     expandedClickHandler(id) {
+      if (!this.isStreaming(id)) {
+        return;
+      }
       this.$router.push({ path: `/call-window/expanded/${id}` });
     },
 
@@ -392,7 +409,7 @@ export default {
       padding 8px
       border-radius 4px
       flex-shrink 0
-      max-width calc(100% - 88px)
+      max-width calc(100% - 8px)
       box-sizing border-box
       width auto
       overflow hidden

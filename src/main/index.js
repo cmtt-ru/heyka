@@ -66,7 +66,7 @@ function createWindow() {
   ipcMain.on('page-rendered', (event, args) => {
     if (loadingScreenID) {
       console.timeEnd('init');
-      WindowManager.closeWindow(loadingScreenID);
+      WindowManager.closeWindow({ id: loadingScreenID });
       loadingScreenID = null;
     }
     mainWindow.webContents.openDevTools();
