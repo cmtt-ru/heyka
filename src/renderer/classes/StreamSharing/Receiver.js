@@ -58,7 +58,7 @@ export default class StreamSharingReceiver extends EventEmitter {
     const onTrack = track => {
       this._debug(`Cought track from RTCPeerConnection ${data.requestId}: `, track);
       // notify about new received stream
-      this.emit('new-stream', {
+      this.emit(`new-stream-${userId}`, {
         userId,
         stream: track.streams[0],
       });

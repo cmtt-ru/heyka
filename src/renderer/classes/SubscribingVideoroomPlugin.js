@@ -199,6 +199,7 @@ class VideoroomPlugin extends EventEmitter {
           },
           jsep: ourjsep,
         });
+        this._debug('Start receiving video');
       },
       error: err => {
         this._debug(`Create answer for subscription ${this.__janusId} error: `, err);

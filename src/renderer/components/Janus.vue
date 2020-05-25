@@ -5,12 +5,19 @@
       autoplay
       muted
     />
+    <video
+      v-for="publisher in videoPublishers"
+      :key="publisher.janusId"
+      :ref="`video${publisher.janusId}`"
+      style="width: 100px; height: 80px"
+    />
   </div>
 </template>
 
 <script>
 import JanusWrapper from '@classes/JanusWrapper.js';
 import StreamHost from '@classes/StreamSharing/Host';
+import mediaCapturer from '@classes/mediaCapturer';
 import { mapState } from 'vuex';
 const WAIT_PUBLISHER_INVERVAL = 100;
 const WAIT_PUBLISHER_ATTEMPTS = 20;
@@ -144,7 +151,7 @@ export default {
   async created() {
     await JanusWrapper.init();
     this.streamHost = new StreamHost({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
-    this.streamHost.on('request-stream', this.onRequestStream.bind(this));
+    // this.streamHost.on('request-stream', this.onRequestStream.bind(this));
     this.log('JanusWrapper was initialized');
   },
   beforeDestroy() {
@@ -326,16 +333,18 @@ export default {
      * @returns {void}
      */
     onVideoPublishersList(publishers) {
-      this.videoPublishers = {};
-      publishers.forEach(publisher => {
-        // publisher.display - heyka user id
-        // publisher.id - janus publisher id
-        this.videoPublishers[publisher.display] = {
-          userId: publisher.display,
-          janusId: publisher.id,
-        };
-      });
-      this.log('Publishers collection is updated', this.videoPublishers);
+      publishers.forEach(publ => this.onVideoPublisherJoined(publ));
+
+      // this.videoPublishers = {};
+      // publishers.forEach(publisher => {
+      //   // publisher.display - heyka user id
+      //   // publisher.id - janus publisher id
+      //   this.videoPublishers[publisher.display] = {
+      //     userId: publisher.display,
+      //     janusId: publisher.id,
+      //   };
+      // });
+      // this.log('Publishers collection is updated', this.videoPublishers);
     },
 
     /**
@@ -343,14 +352,29 @@ export default {
      * @param {object} publisher Publicher object
      * @returns {void}
      */
-    onVideoPublisherJoined(publisher) {
+    async onVideoPublisherJoined(publisher) {
       const newPublisher = {
         userId: publisher.display,
         janusId: publisher.id,
       };
 
-      this.videoPublishers[publisher.display] = newPublisher;
+      // this.videoPublishers[publisher.display] = newPublisher;
       this.log('New publisher is added', newPublisher);
+      const stream = await this.janusWrapper.requestVideoStream(publisher.id);
+
+      this.$set(this.videoPublishers, publisher.id, {
+        ...newPublisher,
+        stream,
+      });
+      console.log('=================================', this.videoPublishers);
+      // this.videoPublishers[publisher.display].stream = stream;
+      await new Promise(resolve => this.$nextTick(resolve));
+      const el = this.$refs[`video${newPublisher.janusId}`][0];
+
+      el.srcObject = stream;
+      el.onloadedmetadata = function () {
+        el.play();
+      };
     },
 
     /**
@@ -364,10 +388,14 @@ export default {
       if (!key) {
         return;
       }
+      if (this.videoPublishers[key].stream) {
+        mediaCapturer.destroyStream(this.videoPublishers[key].stream);
+      }
       // Notify StreamSharingHost manager about publisher is left
-      this.streamHost.closeStreamSharing(this.videoPublishers[key].userId);
+      // this.streamHost.closeStreamSharing(this.videoPublishers[key].userId);
 
-      delete this.videoPublishers[key];
+      this.$delete(this.videoPublishers, key);
+      // delete this.videoPublishers[key];
 
       this.log(`Publisher ${key} is deleted`);
     },
@@ -410,6 +438,10 @@ export default {
       if (!stream) {
         this.log(`Stream for ${data.userId} is not prepared, prepare now`);
         stream = await this.janusWrapper.requestVideoStream(publisher.janusId);
+        this.$refs.video.srcObject = stream;
+        this.$refs.video.onloadedmetadata = () => {
+          this.$refs.video.play();
+        };
         publisher.stream = stream;
       }
 
