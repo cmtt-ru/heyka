@@ -24,6 +24,9 @@ export default {
     ...mapState('janus', {
       janusOptions: state => state,
     }),
+    ...mapState('app', {
+      microphoneVolume: state => state.microphoneVolume,
+    }),
     ...mapState('me', {
       selectedChannelId: 'selectedChannelId',
       userId: 'id',
@@ -70,6 +73,12 @@ export default {
         return;
       }
       this.janusWrapper.setMuting(!state);
+      if (state) {
+        console.log('button');
+        const checkDelay = 1000; // milliseconds
+
+        setTimeout(this.checkAudio(), checkDelay);
+      }
     },
 
     /**
@@ -189,10 +198,38 @@ export default {
       if (isActive) {
         if (this.microphone) {
           this.janusWrapper.setMuting(false);
+          console.log('audiostr');
+          const checkDelay = 1000; // milliseconds
+
+          setTimeout(this.checkAudio(), checkDelay);
         }
         if (this.speakers) {
           this.$refs.audio.muted = false;
         }
+      }
+    },
+
+    async checkAudio() {
+      const HALF_VOL = -80;
+
+      if (this.microphoneVolume < HALF_VOL) {
+        const notification = {
+          data: {
+            text: `Speak up!`,
+            buttons: [
+              {
+                text: 'Connect',
+                type: 1,
+              },
+              {
+                text: 'Cancel',
+                close: true,
+              },
+            ],
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
       }
     },
 
