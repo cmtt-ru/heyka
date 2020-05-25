@@ -151,7 +151,7 @@ export default {
   async created() {
     await JanusWrapper.init();
     this.streamHost = new StreamHost({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
-    // this.streamHost.on('request-stream', this.onRequestStream.bind(this));
+    this.streamHost.on('request-stream', this.onRequestStream.bind(this));
     this.log('JanusWrapper was initialized');
   },
   beforeDestroy() {
@@ -392,7 +392,7 @@ export default {
         mediaCapturer.destroyStream(this.videoPublishers[key].stream);
       }
       // Notify StreamSharingHost manager about publisher is left
-      // this.streamHost.closeStreamSharing(this.videoPublishers[key].userId);
+      this.streamHost.closeStreamSharing(this.videoPublishers[key].userId);
 
       this.$delete(this.videoPublishers, key);
       // delete this.videoPublishers[key];
@@ -438,10 +438,6 @@ export default {
       if (!stream) {
         this.log(`Stream for ${data.userId} is not prepared, prepare now`);
         stream = await this.janusWrapper.requestVideoStream(publisher.janusId);
-        this.$refs.video.srcObject = stream;
-        this.$refs.video.onloadedmetadata = () => {
-          this.$refs.video.play();
-        };
         publisher.stream = stream;
       }
 
