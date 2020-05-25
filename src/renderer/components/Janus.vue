@@ -362,7 +362,7 @@ export default {
       this.log('New publisher is added', newPublisher);
       const stream = await this.janusWrapper.requestVideoStream(publisher.id);
 
-      this.$set(this.videoPublishers, publisher.id, {
+      this.$set(this.videoPublishers, publisher.display, {
         ...newPublisher,
         stream,
       });
