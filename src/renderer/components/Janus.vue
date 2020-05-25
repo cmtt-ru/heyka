@@ -211,7 +211,7 @@ export default {
         this.janusWrapper = null;
       }
       Object.keys(this.videoPublishers).forEach(key => {
-        delete this.videoPublishers[key];
+        this.$delete(this.videoPublishers, key);
       });
       this.streamHost.clearAll();
     },

@@ -171,15 +171,19 @@ class VideoroomPlugin extends EventEmitter {
    * @returns {undefined}
    */
   _joinAsSubscriber() {
+    const msg = {
+      request: 'join',
+      ptype: 'subscriber',
+      feed: parseInt(this.__janusId, 10),
+      room: this.__room,
+      display: this.__userId,
+      token: this.__token,
+    };
+
+    console.log(`%c Join to videoroom for subscribing! `, 'background: yellow;');
+    console.log(msg);
     this.__pluginHandle.send({
-      message: {
-        request: 'join',
-        ptype: 'subscriber',
-        feed: parseInt(this.__janusId, 10),
-        room: this.__room,
-        display: this.__userId,
-        token: this.__token,
-      },
+      message: msg,
     });
   }
 

@@ -56,6 +56,7 @@ export default class StreamSharingReceiver extends EventEmitter {
     };
 
     const onTrack = track => {
+      console.log(`%c Got track for ${userId}! `, 'background: yellow;');
       this._debug(`Cought track from RTCPeerConnection ${data.requestId}: `, track);
       // notify about new received stream
       this.emit(`new-stream-${userId}`, {
@@ -118,6 +119,7 @@ export default class StreamSharingReceiver extends EventEmitter {
     if (requestId && pc && requestId !== pc.requestId) {
       return;
     }
+    console.log(`%c Close connection for ${userId} (${requestId})! `, 'background: yellow;');
 
     this._debug(`close connection for ${pc.requestId}, ${userId}`, pc);
 

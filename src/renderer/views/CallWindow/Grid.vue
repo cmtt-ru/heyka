@@ -231,7 +231,7 @@ export default {
     selectedChannel(channelId) {
       if (!channelId) {
         Object.keys(this.videoStreams).forEach(key => {
-          delete this.videoStreams[key];
+          this.$delete(this.videoStreams, key);
         });
       }
       if (channelId) {
@@ -257,23 +257,37 @@ export default {
     requestStreams() {
       const users = this.getUsersWhoSharesMedia;
 
+      console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
       // delete streams that were inserted but users have already stopped sharing
       this.users.filter(u => !u.camera && !u.screen && !!this.videoStreams[u.id]).forEach(u => {
         console.log(`clear stream for ${u.id}`);
-        delete this.videoStreams[u.id];
+        this.$delete(this.videoStreams, u.id);
       });
+      Object.keys(this.videoStreams).forEach(uId => {
+        if (!this.users.map(u => u.id).includes(uId)) {
+          console.log(`clear stream 2 for ${uId}`);
+          this.$delete(this.videoStreams, uId);
+        }
+      });
+
+      console.log('filter who should be added');
 
       // add streams that were not inserted
       users.filter(id => !this.videoStreams[id]).map(async id => {
-        this.videoStreams[id] = true;
+        this.$set(this.videoStreams, id, true);
         console.log(`wait stream for ${id}`);
+        console.time(`request-${id}`);
         const stream = await commonStreams.getStream(id);
+
+        console.timeEnd(`request-${id}`);
 
         console.log(`stream received for ${id}`);
 
         const htmlVideo = this.$refs[`video${id}`][0];
 
         if (!htmlVideo) {
+          console.log('!!!!!!!!!!!!!!!!!!!!!!!!! NOT FOUND');
+
           return;
         }
         htmlVideo.srcObject = stream;

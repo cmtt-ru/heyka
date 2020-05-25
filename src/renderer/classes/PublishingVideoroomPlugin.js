@@ -116,14 +116,17 @@ class VideoroomPlugin extends EventEmitter {
 
         switch (true) {
           case event === 'joined':
-            console.log(`%c Already are publishing: ${message.publishers}! `, 'background: yellow;');
+            console.log(`%c Already are publishing: `, 'background: yellow;');
+            console.log(message.publishers)
             this._onJoinedChannel(message);
             break;
           case !!message.unpublished:
+            console.log(`%c Unpublished: ${message.unpublished}`, 'background: yellow;');
             this._onUnpublished(message);
             break;
           case event === 'event' && !!message.id:
-            console.log(`%c new publisher: ${message}! `, 'background: yellow;');
+            console.log(`%c new publisher: `, 'background: yellow;');
+            console.log(message)
             this._onPublished(message);
             break;
           case jsep !== undefined && jsep !== null:

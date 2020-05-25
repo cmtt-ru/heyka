@@ -73,7 +73,7 @@ class CommonStreams {
    */
   onConnectionClosed(userId) {
     console.log(`Connection closed for ${userId}`);
-    if (this.streams[userId].stream) {
+    if (this.streams[userId] && this.streams[userId].stream) {
       mediaCapturer.destroyStream(this.streams[userId].stream);
     }
     delete this.streams[userId];
