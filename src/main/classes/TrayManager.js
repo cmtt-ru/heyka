@@ -2,6 +2,7 @@
 import path from 'path';
 import { app, Menu, Tray, nativeImage, nativeTheme } from 'electron';
 import Store from 'electron-store';
+
 const heykaStore = new Store({
   name: 'app',
 });
@@ -57,81 +58,9 @@ class TrayManager {
 
     app.on('ready', () => {
       this.set(iconPath);
-      const contextMenu = Menu.buildFromTemplate([
-        // { role: 'appMenu' }
-        ...(isMac ? [ {
-          label: app.name,
-          submenu: [
-            { role: 'about' },
-            { type: 'separator' },
-            { role: 'services' },
-            { type: 'separator' },
-            { role: 'hide' },
-            { role: 'hideothers' },
-            { role: 'unhide' },
-            { type: 'separator' },
-            { role: 'quit' },
-          ],
-        } ] : []),
 
-        // { role: 'viewMenu' }
-        {
-          label: 'View',
-          submenu: [
-            { role: 'reload' },
-            { role: 'forcereload' },
-            { role: 'toggledevtools' },
-            { type: 'separator' },
-            { role: 'resetzoom' },
-            { role: 'zoomin' },
-            { role: 'zoomout' },
-            { type: 'separator' },
-            { role: 'togglefullscreen' },
-          ],
-        },
-        // { role: 'windowMenu' }
-        {
-          label: 'Window',
-          submenu: [
-            { role: 'minimize' },
-            { role: 'zoom' },
-            ...(isMac ? [
-              { type: 'separator' },
-              { role: 'front' },
-              { type: 'separator' },
-              { role: 'window' },
-            ] : [
-              { role: 'close' },
-            ]),
-          ],
-        },
-        { type: 'separator' },
-        {
-          role: 'help',
-          submenu: [
-            {
-              label: 'Learn More',
-              click: async () => {
-                const { shell } = require('electron');
+      // this.attachContextMenu();
 
-                await shell.openExternal('https://electronjs.org');
-              },
-            },
-          ],
-        },
-        ...(isMac ? [ {
-          role: 'close',
-          accelerator: 'CommandOrControl+Q',
-          registerAccelerator: true,
-        } ] : [ {
-          role: 'quit',
-          accelerator: 'CommandOrControl+Q',
-          registerAccelerator: true,
-        } ]),
-      ]);
-
-      // this.tray.setToolTip('You have 0 notifications');
-      this.tray.setContextMenu(contextMenu);
       this.tray.on('click', (event) => {
         this.clickTray();
       });
@@ -255,6 +184,88 @@ class TrayManager {
       theme = 'light';
     }
     this.set('default');
+  }
+
+  /**
+   * Attach context menu to tray
+   * @returns {void}
+   */
+  attachContextMenu() {
+    const contextMenu = Menu.buildFromTemplate([
+      // { role: 'appMenu' }
+      ...(isMac ? [ {
+        label: app.name,
+        submenu: [
+          { role: 'about' },
+          { type: 'separator' },
+          { role: 'services' },
+          { type: 'separator' },
+          { role: 'hide' },
+          { role: 'hideothers' },
+          { role: 'unhide' },
+          { type: 'separator' },
+          { role: 'quit' },
+        ],
+      } ] : []),
+
+      // { role: 'viewMenu' }
+      {
+        label: 'View',
+        submenu: [
+          { role: 'reload' },
+          { role: 'forcereload' },
+          { role: 'toggledevtools' },
+          { type: 'separator' },
+          { role: 'resetzoom' },
+          { role: 'zoomin' },
+          { role: 'zoomout' },
+          { type: 'separator' },
+          { role: 'togglefullscreen' },
+        ],
+      },
+      // { role: 'windowMenu' }
+      {
+        label: 'Window',
+        submenu: [
+          { role: 'minimize' },
+          { role: 'zoom' },
+          ...(isMac ? [
+            { type: 'separator' },
+            { role: 'front' },
+            { type: 'separator' },
+            { role: 'window' },
+          ] : [
+            { role: 'close' },
+          ]),
+        ],
+      },
+      { type: 'separator' },
+      {
+        role: 'help',
+        submenu: [
+          {
+            label: 'Learn More',
+            click: async () => {
+              const { shell } = require('electron');
+
+              await shell.openExternal('https://electronjs.org');
+            },
+          },
+        ],
+      },
+      ...(isMac ? [ {
+        role: 'close',
+        accelerator: 'CommandOrControl+Q',
+        registerAccelerator: true,
+      } ] : [ {
+        role: 'quit',
+        accelerator: 'CommandOrControl+Q',
+        registerAccelerator: true,
+      } ]),
+    ]);
+
+    // this.tray.setToolTip('You have 0 notifications');
+    this.tray.setContextMenu(contextMenu);
   }
 }
 export default new TrayManager('default');
