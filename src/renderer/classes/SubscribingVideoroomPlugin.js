@@ -111,11 +111,14 @@ class VideoroomPlugin extends EventEmitter {
       // Handle a message from plugin
       onmessage: (message, jsep) => {
         if (this.__detached) {
+          this._debug('Plugin detached and can\'t reveive any messages');
+
           return;
         }
         this._debug('message', message, jsep);
 
         if (jsep !== undefined && jsep !== null) {
+          console.log(`%c New message with jsep for ${this.__janusId}, ${this.__userId}! `, 'background: yellow;');
           this._startStreamReceiving(jsep);
         }
       },
@@ -125,6 +128,8 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
+        console.log(`%c Remote stream for ${this.__janusId}, ${this.__userId}! `, 'background: yellow;');
+
         this._debug('remotestream', stream);
         this.__remoteVideoStream = stream;
         this.emit('remote-video-stream', stream);

@@ -143,7 +143,7 @@ export default class StreamSharingHost extends EventEmitter {
    * @returns {void}
    */
   _debug() {
-    if (this.__debugEnabled) {
+    if (!this.__debugEnabled) {
       console.log(`Stream sharing manager host: `, ...arguments);
     }
   }

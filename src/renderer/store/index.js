@@ -27,7 +27,7 @@ const plugins = [
   }),
 ];
 
-if (debug) {
+if (!debug) {
   plugins.push(createLogger({
     /**
      * Filter mutations to be logged
