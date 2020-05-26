@@ -41,6 +41,7 @@ export default class StreamSharingHost extends EventEmitter {
     pc.addEventListener('iceconnectionstatechange', () => {
       this._debug('iceconnectionstate', pc.iceConnectionState);
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
+        console.log('connection-closed for ', requestData);
         pc.close();
         pc = null;
         delete this.__pcs[requestData.userId];
@@ -99,12 +100,11 @@ export default class StreamSharingHost extends EventEmitter {
    * @returns {void}
    */
   async closeStreamSharing(userId) {
-    if (!this.__pcs[userId]) {
-      return;
+    if (this.__pcs[userId]) {
+      this.__pcs[userId].close();
+      delete this.__pcs[userId];
     }
     this._debug(`Close peer connection for ${userId}`);
-    this.__pcs[userId].close();
-    delete this.__pcs[userId];
     broadcastEvents.dispatch(`stream-sharing-closed`, userId);
   }
 
