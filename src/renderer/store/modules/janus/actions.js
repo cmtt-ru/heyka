@@ -21,14 +21,4 @@ export default {
       callWindow.closeFrame();
     }
   },
-
-  /**
-   * Set inProgress flag
-   * @param {functtion} commit – store commit
-   * @param {boolean} state – progress state
-   * @returns {void}
-   */
-  setInProgress({ commit }, state) {
-    commit('SET_IN_PROGRESS', state);
-  },
 };

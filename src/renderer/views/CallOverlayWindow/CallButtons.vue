@@ -6,7 +6,6 @@
     <microphone
       v-if="buttons.includes('microphone')"
       class="call-buttons__button ui-button"
-      :disabled="janusInProgress"
       :active="mediaState.microphone"
       :size="size"
       :icon-color="true"
@@ -15,7 +14,6 @@
 
     <ui-button
       v-if="buttons.includes('camera')"
-      :disabled="janusInProgress"
       class="call-buttons__button"
       :type="7"
       :size="size"
@@ -26,7 +24,6 @@
 
     <ui-button
       v-if="buttons.includes('screen')"
-      :disabled="janusInProgress"
       class="call-buttons__button"
       :type="7"
       :size="size"
@@ -56,7 +53,6 @@
 
     <ui-button
       v-if="buttons.includes('leave')"
-      :disabled="janusInProgress"
       class="call-buttons__button call-buttons__button--disconnect"
       :type="7"
       :size="size"
@@ -154,10 +150,6 @@ export default {
         camera: ICON_MAP.camera[this.mediaState.camera],
         screen: ICON_MAP.screen[this.mediaState.screen],
       };
-    },
-
-    janusInProgress() {
-      return this.$store.getters['janus/inProgress'];
     },
   },
 

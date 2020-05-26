@@ -22,14 +22,4 @@ export default {
     state.sharingSource = source;
   },
 
-  /**
-   * Set inProgress status for janus
-   * @param {JanusState} state – vuex state
-   * @param {boolean} flag – inProgress state
-   * @returns {void}
-   */
-  SET_IN_PROGRESS(state, flag) {
-    state.inProgress = !!flag;
-  },
-
 };

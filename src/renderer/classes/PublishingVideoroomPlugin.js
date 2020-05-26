@@ -129,7 +129,6 @@ class VideoroomPlugin extends EventEmitter {
             this._onPublished(message);
             break;
           case jsep !== undefined && jsep !== null:
-            this.emit('success-publishing');
             this._onRemoteJsep(jsep);
             break;
           default:
@@ -270,7 +269,9 @@ class VideoroomPlugin extends EventEmitter {
   _onJoinedChannel(message) {
     this._debug('room joined', message);
 
-    this.emit('active-publishers', message.publishers);
+    if (message.publishers.length > 0) {
+      this.emit('active-publishers', message.publishers);
+    }
   }
 
   /**

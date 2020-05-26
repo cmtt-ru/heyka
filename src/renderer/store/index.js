@@ -17,7 +17,6 @@ const debug = process.env.NODE_ENV !== 'production';
 const plugins = [
   createMutationsSharer({
     predicate: [
-      'janus/SET_IN_PROGRESS',
       'me/SET_MEDIA_STATE',
       'me/SET_CHANNEL_ID',
       'channels/ADD_USER',

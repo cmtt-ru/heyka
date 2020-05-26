@@ -6,7 +6,6 @@
  * @param {number} audioRoomId – janus audio room id
  * @param {number} videoRoomId – janus video room id
  * @param {object} sharingSource – sharing source
- * @param {boolean} inProgress – is janus in an operation progress
  */
 
 /**
@@ -24,7 +23,6 @@ const state = () => {
     audioRoomId: 0,
     videoRoomId: 0,
     sharingSource: null,
-    inProgress: false,
   };
 };
 
