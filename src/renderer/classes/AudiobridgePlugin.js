@@ -228,7 +228,7 @@ class AudiobridgePlugin extends EventEmitter {
    * @returns {undefined}
    */
   _debug() {
-    if (!this.__debugEnabled) {
+    if (this.__debugEnabled) {
       console.log('Audiobridge plugin: ', ...arguments);
     }
   }

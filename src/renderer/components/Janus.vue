@@ -30,6 +30,7 @@ export default {
       janusWrapper: null,
       socketDisconnectedDelay: null,
       videoPublishers: {},
+      currentOperation: '',
     };
   },
   computed: {
@@ -160,12 +161,27 @@ export default {
     }
   },
   methods: {
+    setOperationStart(operation) {
+      this.$store.dispatch('janus/setInProgress', true);
+      this.currentOperation = operation;
+    },
+    setOperationFinish(operation) {
+      this.log('set operation finish', operation, this.currentOperation);
+      if (operation === this.currentOperation) {
+        this.$store.dispatch('janus/setInProgress', false);
+        console.log(this.$store.state.janus);
+        this.currentOperation = '';
+      }
+    },
     /**
      * Join to the Janus channel
      * Subscribe for event from JanusWrapper
      * @returns {undefined}
      */
     async selectChannel() {
+      // Set janus "inProgress" status
+      this.setOperationStart('join');
+
       const janusWrapper = new JanusWrapper({
         ...this.janusOptions,
         userId: this.userId,
@@ -173,6 +189,11 @@ export default {
       });
 
       this.janusWrapper = janusWrapper;
+
+      // common events
+      janusWrapper.on(JanusWrapper.events.channelJoined, () => {
+        this.setOperationFinish('join');
+      });
 
       // audio events
       janusWrapper.on(JanusWrapper.events.connectionError, this.onConnectionError.bind(this));
@@ -186,6 +207,9 @@ export default {
       janusWrapper.on(JanusWrapper.events.videoPublisherJoined, this.onVideoPublisherJoined.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
       janusWrapper.on(JanusWrapper.events.localVideoStream, this.onLocalVideoStream.bind(this));
+      janusWrapper.on(JanusWrapper.events.successVideoPublishing, () => {
+        this.setOperationFinish('publish');
+      });
 
       await janusWrapper.join();
     },
@@ -213,6 +237,8 @@ export default {
      * @returns {void}
      */
     startSharingCamera() {
+      this.setOperationStart('publish');
+
       if (!this.janusWrapper) {
         this.log('Janus wrapper is not existed');
 
@@ -227,6 +253,8 @@ export default {
      * @returns {void}
      */
     startSharingScreen() {
+      this.setOperationStart('publish');
+
       if (!this.janusWrapper) {
         this.log('Janus wrapper is not existed');
 
@@ -241,6 +269,8 @@ export default {
      * @returns {void}
      */
     stopSharingVideo() {
+      this.setOperationStart('unpublish');
+
       if (!this.janusWrapper) {
         return;
       }
@@ -379,6 +409,13 @@ export default {
      * @returns {void}
      */
     onVideoPublisherLeft(publisher) {
+      // if current user unpublished video
+      if (publisher.unpublished === 'ok') {
+        this.setOperationFinish('unpublish');
+
+        return;
+      }
+
       const key = Object.keys(this.videoPublishers).find(k => this.videoPublishers[k].janusId === publisher.unpublished);
 
       if (!key) {
