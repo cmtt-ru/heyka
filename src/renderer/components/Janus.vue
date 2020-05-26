@@ -148,6 +148,10 @@ export default {
         }
       }
     },
+
+    videoPublishers(val) {
+      console.log('%c videoPublishers:', 'background: green;', Object.keys(val).length, val);
+    },
   },
   async created() {
     await JanusWrapper.init();
@@ -422,6 +426,7 @@ export default {
       if (!key) {
         return;
       }
+      this.janusWrapper.stopReceivingVideoStream(publisher.unpublished);
       if (this.videoPublishers[key].stream) {
         mediaCapturer.destroyStream(this.videoPublishers[key].stream);
       }
@@ -479,7 +484,7 @@ export default {
 
       this.streamHost.sendStream({
         requestId: publisher.requestId,
-        janusId: publisher.jsanusId,
+        janusId: publisher.janusId,
         userId: data.userId,
       }, stream);
     },

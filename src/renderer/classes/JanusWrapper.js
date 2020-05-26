@@ -229,16 +229,22 @@ class JanusWrapper extends EventEmitter {
 
     this.__videoroomPlugins[janusId] = plugin;
 
-    plugin.attach();
-
-    return new Promise((resolve, reject) => {
+    console.log(`%c videoroomPlugins ADDED ${Object.keys(this.__videoroomPlugins).length}`, 'background: red; color: white;', this.__videoroomPlugins);
+    let requestTimeout;
+    const prom = new Promise((resolve, reject) => {
+      requestTimeout = setTimeout(() => {
+        console.error('REQUEST_VIDEOSTREAM_TIMEOUT');
+        // reject(new Error('REQUEST_VIDEOSTREAM_TIMEOUT'));
+      }, REQUEST_VIDEOSTREAM_TIMEOUT);
       plugin.once('remote-video-stream', stream => {
+        clearTimeout(requestTimeout);
         resolve(stream);
       });
-      setTimeout(() => {
-        reject(new Error('REQUEST_VIDEOSTREAM_TIMEOUT'));
-      }, REQUEST_VIDEOSTREAM_TIMEOUT);
     });
+
+    plugin.attach();
+
+    return prom;
   }
 
   /**
@@ -252,7 +258,10 @@ class JanusWrapper extends EventEmitter {
     }
 
     this.__videoroomPlugins[janusId].detach();
+
     delete this.__videoroomPlugins[janusId];
+
+    console.log(`%c videoroomPlugins REMOVED ${Object.keys(this.__videoroomPlugins).length}`, 'background: red; color: white;', this.__videoroomPlugins);
   }
 
   /**
