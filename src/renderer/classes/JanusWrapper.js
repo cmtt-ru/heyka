@@ -26,6 +26,8 @@ const JANUS_WRAPPER_EVENTS = {
   videoPublisherLeft: 'video-publisher-left',
   remoteVideoStream: 'remote-video-stream',
   localVideoStream: 'local-video-stream',
+  successVideoPublishing: 'success-video-publishing',
+  channelJoined: 'channel-joined',
 };
 
 /**
@@ -68,7 +70,9 @@ class JanusWrapper extends EventEmitter {
 
     // plugins
     this.__audiobridgePlugin = null;
+    this.__audiobridgeReady = false;
     this.__videoroomPlugin = null;
+    this.__videoroomReady = false;
 
     // plugins for specific video publishers
     this.__videoroomPlugins = {};
@@ -128,7 +132,16 @@ class JanusWrapper extends EventEmitter {
     audiobridgePlugin.attach();
 
     audiobridgePlugin.on('remote-audio-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.remoteAudioStream, stream));
-    audiobridgePlugin.on('media-state', isActive => this.emit(JANUS_WRAPPER_EVENTS.audioStreamActive, isActive));
+    audiobridgePlugin.on('media-state', isActive => {
+      this.emit(JANUS_WRAPPER_EVENTS.audioStreamActive, isActive);
+      if (isActive) {
+        this.__audiobridgeReady = true;
+        console.log('tratatatat', this.__videoroomReady, this.__audiobridgeReady);
+        if (this.__videoroomReady) {
+          this.emit(JANUS_WRAPPER_EVENTS.channelJoined);
+        }
+      }
+    });
     audiobridgePlugin.on('start-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, true));
     audiobridgePlugin.on('stop-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, false));
     audiobridgePlugin.on('volume-change', (db) => this.emit(JANUS_WRAPPER_EVENTS.volumeChange, db));
@@ -146,10 +159,18 @@ class JanusWrapper extends EventEmitter {
 
     videoroomPlugin.attach();
 
-    videoroomPlugin.on('active-publishers', publishers => this.emit(JANUS_WRAPPER_EVENTS.videoPublishersList, publishers));
+    videoroomPlugin.on('active-publishers', publishers => {
+      this.emit(JANUS_WRAPPER_EVENTS.videoPublishersList, publishers);
+      this.__videoroomReady = true;
+      console.log('tratatatat', this.__videoroomReady, this.__audiobridgeReady);
+      if (this.__audiobridgeReady) {
+        this.emit(JANUS_WRAPPER_EVENTS.channelJoined);
+      }
+    });
     videoroomPlugin.on('publisher-joined', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherJoined, publisher));
     videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
     videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
+    videoroomPlugin.on('success-publishing', () => this.emit(JANUS_WRAPPER_EVENTS.successVideoPublishing));
 
     this.__videoroomPlugin = videoroomPlugin;
   }
