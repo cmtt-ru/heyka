@@ -18,7 +18,7 @@ export default class StreamSharingHost extends EventEmitter {
     broadcastEvents.on('request-stream', this._onRequestStream.bind(this));
 
     this.__debugEnabled = !!options.debug;
-    this.pcs = {};
+    this.__pcs = {};
   }
 
   /**
@@ -32,7 +32,7 @@ export default class StreamSharingHost extends EventEmitter {
   async sendStream(requestData, stream) {
     let pc = new RTCPeerConnection();
 
-    this.pcs[requestData.userId] = pc;
+    this.__pcs[requestData.userId] = pc;
 
     // add stream to RTCPeerConnection
     stream.getTracks().forEach(track => pc.addTrack(track, stream));
@@ -43,7 +43,7 @@ export default class StreamSharingHost extends EventEmitter {
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
         pc.close();
         pc = null;
-        delete this.pcs[requestData.userId];
+        delete this.__pcs[requestData.userId];
         if (stream) {
           stream.getTracks().forEach(track => track.stop());
           stream = null;
@@ -99,12 +99,12 @@ export default class StreamSharingHost extends EventEmitter {
    * @returns {void}
    */
   async closeStreamSharing(userId) {
-    if (!this.pcs[userId]) {
+    if (!this.__pcs[userId]) {
       return;
     }
     this._debug(`Close peer connection for ${userId}`);
-    this.pcs[userId].close();
-    delete this.pcs[userId];
+    this.__pcs[userId].close();
+    delete this.__pcs[userId];
     broadcastEvents.dispatch(`stream-sharing-closed`, userId);
   }
 
@@ -113,9 +113,9 @@ export default class StreamSharingHost extends EventEmitter {
    * @returns {void}
    */
   clearAll() {
-    Object.keys(this.pcs).forEach(key => {
-      this.pcs[key].close();
-      delete this.pcs[key];
+    Object.keys(this.__pcs).forEach(key => {
+      this.__pcs[key].close();
+      delete this.__pcs[key];
     });
     broadcastEvents.dispatch(`clear-all`);
   }

@@ -95,8 +95,6 @@ export default {
       controlsOptions: {
         boundingElement: document.documentElement,
       },
-
-      streamReceiver: null,
     };
   },
   computed: {

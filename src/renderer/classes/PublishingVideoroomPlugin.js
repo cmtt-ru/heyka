@@ -37,7 +37,6 @@ class VideoroomPlugin extends EventEmitter {
 
     this.__detached = false;
     this.__pluginHandle = null;
-    this.__videoPluginHandles = {};
   }
 
   /**
@@ -144,15 +143,6 @@ class VideoroomPlugin extends EventEmitter {
         }
         this._debug('localstream', stream);
         this._onLocalVideoStream(stream);
-      },
-
-      // Remote audio stream is available
-      onremotestream: stream => {
-        if (this.__detached) {
-          return;
-        }
-        this._debug('remotestream', stream);
-        this.emit('remote-audio-stream', stream);
       },
 
       // Data Channel is available

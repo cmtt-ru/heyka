@@ -128,11 +128,10 @@ export default {
       avatarWidth: null,
       padding: {},
       videoStreams: {},
-      streamReceiver: null,
     };
   },
   computed: {
-    ...mapGetters([ 'getUsersWhoSharesMedia' ]),
+    ...mapGetters([ 'getUsersWhoShareMedia' ]),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -221,7 +220,7 @@ export default {
       this.resize();
     },
 
-    getUsersWhoSharesMedia: {
+    getUsersWhoShareMedia: {
       deep: true,
       handler(users) {
         this.requestStreams();
@@ -255,7 +254,7 @@ export default {
      * @returns {void}
      */
     requestStreams() {
-      const users = this.getUsersWhoSharesMedia;
+      const users = this.getUsersWhoShareMedia;
 
       console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
       // delete streams that were inserted but users have already stopped sharing

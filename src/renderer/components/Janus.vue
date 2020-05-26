@@ -188,14 +188,6 @@ export default {
       janusWrapper.on(JanusWrapper.events.localVideoStream, this.onLocalVideoStream.bind(this));
 
       await janusWrapper.join();
-
-      // start sharing camera if camera is enabled
-      if (this.camera) {
-        this.startSharingCamera();
-      }
-      if (this.screen) {
-        this.startSharingScreen();
-      }
     },
 
     /**
@@ -250,7 +242,7 @@ export default {
      */
     stopSharingVideo() {
       this.janusWrapper.unpublishVideoStream();
-      delete this.videoPublishers[this.userId];
+      this.$delete(this.videoPublishers, this.userId);
       this.log('Notify about closing connection for current user', this.userId);
       this.streamHost.closeStreamSharing(this.userId);
     },
@@ -464,10 +456,10 @@ export default {
      * @returns {void}
      */
     onLocalVideoStream(stream) {
-      this.videoPublishers[this.userId] = {
+      this.$set(this.videoPublishers, this.userId, {
         userId: this.userId,
         stream,
-      };
+      });
     },
 
     /**

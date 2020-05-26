@@ -12,6 +12,7 @@ const ERROR_CODES = {
   AUTHENTICATION_ERROR: 'Authentication error',
   UNKNOW: 'Unknow error',
 };
+const REQUEST_VIDEOSTREAM_TIMEOUT = 5000;
 
 // Possible events for subscribing
 const JANUS_WRAPPER_EVENTS = {
@@ -148,7 +149,6 @@ class JanusWrapper extends EventEmitter {
     videoroomPlugin.on('active-publishers', publishers => this.emit(JANUS_WRAPPER_EVENTS.videoPublishersList, publishers));
     videoroomPlugin.on('publisher-joined', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherJoined, publisher));
     videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
-    videoroomPlugin.on('remote-video-stream', data => this.emit(JANUS_WRAPPER_EVENTS.remoteVideoStream, data));
     videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
 
     this.__videoroomPlugin = videoroomPlugin;
@@ -210,15 +210,16 @@ class JanusWrapper extends EventEmitter {
 
     plugin.attach();
 
-    return new Promise((resolve) => {
-      plugin.on('remote-video-stream', stream => {
+    return new Promise((resolve, reject) => {
+      plugin.once('remote-video-stream', stream => {
         resolve(stream);
       });
+      setTimeout(reject, REQUEST_VIDEOSTREAM_TIMEOUT);
     });
   }
 
   /**
-   * Stops receiving video stream from giben publisher
+   * Stops receiving video stream from given publisher
    * @param {string} janusId Janus user id
    * @returns {void}
    */

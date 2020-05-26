@@ -24,11 +24,6 @@ export default {
   components: {
     CallControls,
   },
-  data() {
-    return {
-      streamReceiver: null,
-    };
-  },
   computed: {
     ...mapGetters([
       'getUserWhoSharesMedia',

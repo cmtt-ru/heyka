@@ -19,7 +19,7 @@ export default class StreamSharingReceiver extends EventEmitter {
     this.__debugEnabled = !!options.debug;
     this.__pcs = {};
     broadcastEvents.on('stream-sharing-closed', this._streamSharingClosed.bind(this));
-    broadcastEvents.on('clear-all', () => this.emit('clear-all'));
+    broadcastEvents.on('clear-all', this._onClearAll.bind(this));
   }
 
   /**
@@ -123,15 +123,21 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     this._debug(`close connection for ${pc.requestId}, ${userId}`, pc);
 
-    if (pc && (pc.pc.iceConnectionState === 'failed' || pc.pc.iceConnectionState === 'disconnected')) {
-      pc.pc.close();
-      pc.pc.removeEventListener('icecandidate', pc.onIceCandidate);
-      pc.pc.removeEventListener('iceconnectionstatechange', pc.onIceConnectionStateChange);
-      pc.pc.removeEventListener('track', pc.onTrack);
-      this.emit('connection-closed', userId);
-      delete this.__pcs[userId];
-    }
+    pc.pc.close();
+    pc.pc.removeEventListener('icecandidate', pc.onIceCandidate);
+    pc.pc.removeEventListener('iceconnectionstatechange', pc.onIceConnectionStateChange);
+    pc.pc.removeEventListener('track', pc.onTrack);
+    delete this.__pcs[userId];
+
     this.emit('connection-closed', userId);
+  }
+
+  /**
+   * On clear all peer connections
+   * @returns {void}
+   */
+  _onClearAll() {
+    Object.keys(this.__pcs).forEach(userId => this._streamSharingClosed(userId));
   }
 
   /**

@@ -52,16 +52,14 @@ class CommonStreams {
    */
   getWaitStreamPromise(userId) {
     return new Promise((resolve) => {
-      this.streamReceiver.on(`new-stream-${userId}`, data => {
-        if (data.userId === userId) {
-          this._debug(`New stream for ${userId}`);
-          resolve(data.stream);
-          if (!this.streams[userId]) {
-            this.streams[userId] = {};
-          }
-          this.streams[userId].stream = data.stream;
-          delete this.streams[userId].waitStream;
+      this.streamReceiver.once(`new-stream-${userId}`, data => {
+        this._debug(`New stream for ${userId}`);
+        resolve(data.stream);
+        if (!this.streams[userId]) {
+          this.streams[userId] = {};
         }
+        this.streams[userId].stream = data.stream;
+        delete this.streams[userId].waitStream;
       });
     });
   }
