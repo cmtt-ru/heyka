@@ -241,6 +241,10 @@ export default {
      * @returns {void}
      */
     stopSharingVideo() {
+      if (!this.janusWrapper) {
+        return;
+      }
+
       this.janusWrapper.unpublishVideoStream();
       this.$delete(this.videoPublishers, this.userId);
       this.log('Notify about closing connection for current user', this.userId);
