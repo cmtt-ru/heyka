@@ -386,6 +386,7 @@ export default {
 
       // this.videoPublishers[publisher.display] = newPublisher;
       this.log('New publisher is added', newPublisher);
+      await new Promise(resolve => setTimeout(resolve, parseInt('500')));
       const stream = await this.janusWrapper.requestVideoStream(publisher.id);
 
       this.$set(this.videoPublishers, publisher.display, {
