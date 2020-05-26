@@ -273,8 +273,16 @@ class JanusWrapper extends EventEmitter {
     return new Promise((resolve, reject) => {
       let isFullfilled = false;
 
+      console.log('janus url', this.__url);
+      let wsurl = this.__url.replace('http', 'ws');
+
+      wsurl = wsurl.replace('8088', '8188');
+      wsurl = wsurl.replace('/janus', '');
+
+      console.log('janus url', wsurl, this.__url);
+
       this.__janus = new Janus({
-        server: this.__url,
+        server: [wsurl, this.__url],
         token: this.__workspaceToken,
         success: () => {
           resolve();
