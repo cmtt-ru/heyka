@@ -7,8 +7,8 @@
     />
     <video
       v-for="publisher in videoPublishers"
-      :key="publisher.janusId"
-      :ref="`video${publisher.janusId}`"
+      :key="publisher.userId"
+      :ref="`video${publisher.userId}`"
       style="width: 100px; height: 80px"
     />
   </div>
@@ -400,7 +400,7 @@ export default {
       console.log('=================================', this.videoPublishers);
       // this.videoPublishers[publisher.display].stream = stream;
       await new Promise(resolve => this.$nextTick(resolve));
-      const el = this.$refs[`video${newPublisher.janusId}`][0];
+      const el = this.$refs[`video${newPublisher.userId}`][0];
 
       el.srcObject = stream;
       el.onloadedmetadata = function () {
@@ -502,11 +502,19 @@ export default {
      * @param {MediaStream} stream Media stream
      * @returns {void}
      */
-    onLocalVideoStream(stream) {
+    async onLocalVideoStream(stream) {
       this.$set(this.videoPublishers, this.userId, {
         userId: this.userId,
         stream,
       });
+
+      await new Promise(resolve => this.$nextTick(resolve));
+      const el = this.$refs[`video${this.userId}`][0];
+
+      el.srcObject = stream;
+      el.onloadedmetadata = function () {
+        el.play();
+      };
     },
 
     /**
