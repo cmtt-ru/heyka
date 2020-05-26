@@ -64,6 +64,10 @@ class MediaCapturer extends EventEmitter {
       audio: false,
       video: !deviceId ? true : {
         deviceId,
+        frameRate: {
+          ideal: 5,
+          max: 7,
+        },
       },
     });
 
