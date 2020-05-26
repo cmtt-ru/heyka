@@ -55,6 +55,11 @@ export default {
    * @returns {object} selected channel
    */
   async selectChannel({ commit, getters, state }, id) {
+    commit('me/setMediaState', {
+      ...getters['me/getMediaState'],
+      camera: false,
+      screen: false,
+    });
     const response = await API.channel.select(id, getters['me/getMediaState']);
 
     if (state.me.selectedChannelId !== null && state.me.selectedChannelId !== '') {
