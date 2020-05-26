@@ -235,7 +235,9 @@ class JanusWrapper extends EventEmitter {
       plugin.once('remote-video-stream', stream => {
         resolve(stream);
       });
-      setTimeout(reject, REQUEST_VIDEOSTREAM_TIMEOUT);
+      setTimeout(() => {
+        reject(new Error('REQUEST_VIDEOSTREAM_TIMEOUT'));
+      }, REQUEST_VIDEOSTREAM_TIMEOUT);
     });
   }
 
