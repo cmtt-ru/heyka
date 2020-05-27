@@ -42,6 +42,27 @@ export default {
     } catch (e) {
       console.log('redirecting to login');
     }
+
+    ipcRenderer.on('update-error', (data) => {
+      console.log('update-error', data);
+    });
+
+    ipcRenderer.on('update-not-available', (data) => {
+      console.log('update-not-available', data);
+    });
+
+    ipcRenderer.on('update-downloaded', (data) => {
+      console.log('update-downloaded', data);
+    });
+
+    ipcRenderer.on('update-checking', (data) => {
+      console.log('update-checking', data);
+    });
+
+    setTimeout(() => {
+      ipcRenderer.send('update-check', 1);
+      console.log('send');
+    }, parseInt('1000'));
   },
 
   methods: {

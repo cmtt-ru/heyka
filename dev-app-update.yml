@@ -1,0 +1,4 @@
+provider: s3,
+bucket: heyka-beta-bin,
+endpoint: https://storage.yandexcloud.net,
+path: download/

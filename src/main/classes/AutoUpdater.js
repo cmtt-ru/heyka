@@ -1,34 +1,41 @@
-// import { dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
+import { ipcMain } from 'electron';
+import path from 'path';
+
+/**
+ * Check for update timeout
+ * @type {number}
+ */
+const CHECK_FOR_UPDATE_TIMEOUT = 60000;
 
 let updateTimer;
 
-autoUpdater.autoDownload = false;
+autoUpdater.autoDownload = true;
+autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml');
 
 export default {
-
+  /**
+   * Init auto update
+   * @param {BrowserWindow} mainWindow – main window
+   * @returns {void}
+   */
   init(mainWindow) {
-    // autoUpdater.on('error', (error) => {
-    //   // console.log(error.toString());
-    //   dialog.showErrorBox('Error: ', error == null ? 'unknown' : (error.stack || error).toString());
-    // });
+    console.log('----auto updater');
+    ipcMain.on('update-check', () => {
+      console.log('checking for update');
+    });
+
+    autoUpdater.on('error', (error) => {
+      mainWindow.webContents.send('update-error', JSON.stringify(error));
+    });
 
     autoUpdater.on('update-available', () => {
       this.stopTimer();
       mainWindow.webContents.send('update-available');
+    });
 
-      //     dialog.showMessageBox({
-      //      type: 'info',
-      //      title: 'Heyka',
-      //      noLink: true,
-      //      message: 'Found updates, do you want update now?',
-      //      defaultId: 0,
-      //      buttons: ['Yes', 'No'],
-      //    }, (buttonIndex) => {
-      //      if (buttonIndex === 0) {
-      //        autoUpdater.downloadUpdate();
-      //      }
-      //    });
+    autoUpdater.on('update-not-available', () => {
+      mainWindow.webContents.send('update-not-available');
     });
 
     autoUpdater.on('download-progress', (progressObj) => {
@@ -42,39 +49,39 @@ export default {
 
     autoUpdater.on('update-downloaded', () => {
       mainWindow.webContents.send('update-download-complete');
+    });
 
-      //     dialog.showMessageBox({
-      //      title: 'Heyka',
-      //      type: 'question',
-      //      noLink: true,
-      //      defaultId: 0,
-      //      buttons: ['Yes', 'Later'],
-      //      message: 'Updates downloaded, do you wanna restart Heyka now?',
-      //    }, (buttonIndex) => {
-      //      if (buttonIndex === 0) {
-      //        setImmediate(() => autoUpdater.quitAndInstall());
-      //      }
-      //    });
+    autoUpdater.on('checking-for-update', () => {
+      mainWindow.webContents.send('update-checking');
     });
 
     this.checkForUpdates();
     this.startTimer();
   },
 
+  /**
+   * Start update interval
+   * @returns {void}
+   */
   startTimer() {
-    const tenMinutes = 600000;
-
     updateTimer = setInterval(() => {
       this.checkForUpdates();
-    }, tenMinutes);
+    }, CHECK_FOR_UPDATE_TIMEOUT);
   },
 
+  /**
+   * Stop update interval
+   * @returns {void}
+   */
   stopTimer() {
     clearInterval(updateTimer);
   },
 
+  /**
+   * Check for update
+   * @returns {void}
+   */
   checkForUpdates() {
     autoUpdater.checkForUpdates();
   },
-
 };
