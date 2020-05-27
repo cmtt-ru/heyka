@@ -214,7 +214,6 @@ class WindowManager {
    * @returns {void}
    */
   closeWindow({ id }) {
-    console.log('close this:', this);
     if (this.windows[id]) {
       try {
         this.windows[id].browserWindow.destroy();
