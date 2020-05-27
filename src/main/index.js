@@ -80,7 +80,7 @@ function createWindow() {
   }
 
   mainWindow.on('close', (event) => {
-    if (process.platform === 'darwin' && mainWindow.isVisible()) {
+    if (mainWindow.isVisible()) {
       event.preventDefault();
       mainWindow.hide();
     }
@@ -136,14 +136,10 @@ app.on('ready', async () => {
   }
 });
 
-app.on('before-quit', function () {
+app.on('before-quit', function (e) {
   console.log('before-quit');
-  mainWindow.hide();
-});
-
-app.on('will-quit', function () {
-  console.log('will-quit');
-  mainWindow = null;
+  e.preventDefault();
+  app.exit();
 });
 
 // Open external links (with target="_blank") in browser
