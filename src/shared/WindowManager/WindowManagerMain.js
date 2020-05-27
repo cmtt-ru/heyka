@@ -119,6 +119,7 @@ class WindowManager {
     });
 
     browserWindow.on('closed', e => {
+      delete this.windows[windowId];
       this.send(`window-close-${windowId}`);
     });
 
@@ -211,15 +212,14 @@ class WindowManager {
    * @returns {void}
    */
   closeWindow({ id }) {
-    if (this.windows[id]) {
+    if (this.windows[id] !== undefined) {
       try {
+        console.log('DESTROYING: ', id);
         this.windows[id].browserWindow.destroy();
+        delete this.windows[id];
       } catch (e) {
         console.error('window already closed');
       }
-
-      this.windows[id].browserWindow = null;
-      delete this.windows[id];
     }
   }
 
@@ -317,7 +317,7 @@ class WindowManager {
    * @returns {void}
    */
   send(event, data) {
-    if (this.windows[this.mainWindowId]) {
+    if (this.windows[this.mainWindowId] && this.windows[this.mainWindowId].browserWindow) {
       this.windows[this.mainWindowId].browserWindow.webContents.send(event, data);
     }
   }
@@ -329,11 +329,9 @@ class WindowManager {
    * @returns {void}
    */
   sendAll(event, data = null) {
-    const windows = BrowserWindow.getAllWindows();
-
-    windows.forEach((w) => {
-      w.webContents.send(event, data);
-    });
+    for (const w in this.windows) {
+      this.windows[w].browserWindow.webContents.send(event, data);
+    }
   }
 
   /**
@@ -342,8 +340,8 @@ class WindowManager {
    */
   closeAll() {
     for (const w in this.windows) {
-      if (w != this.mainWindowId) {
-        this.closeWindow(w);
+      if (w !== this.mainWindowId) {
+        this.closeWindow({ id: w });
       }
     }
   }
