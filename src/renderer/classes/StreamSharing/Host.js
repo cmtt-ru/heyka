@@ -15,7 +15,7 @@ export default class StreamSharingHost extends EventEmitter {
   constructor(options) {
     super();
 
-    broadcastEvents.on('request-stream', this._onRequestStream.bind(this));
+    // broadcastEvents.on('request-stream', this._onRequestStream.bind(this));
 
     this.__debugEnabled = !!options.debug;
     this.__pcs = {};
