@@ -1,6 +1,5 @@
 import { autoUpdater } from 'electron-updater';
 import { ipcMain } from 'electron';
-import path from 'path';
 
 /**
  * Check for update timeout
