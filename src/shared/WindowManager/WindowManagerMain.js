@@ -21,7 +21,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   skipTaskBar: true,
   webPreferences: Object.freeze({
     nodeIntegration: true,
-    webSecurity: true,
+    webSecurity: false,
   }),
 });
 
