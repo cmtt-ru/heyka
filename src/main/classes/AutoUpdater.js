@@ -11,7 +11,6 @@ const CHECK_FOR_UPDATE_TIMEOUT = 60000;
 let updateTimer;
 
 autoUpdater.autoDownload = true;
-autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml');
 
 export default {
   /**
