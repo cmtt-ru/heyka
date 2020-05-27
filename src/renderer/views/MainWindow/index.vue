@@ -43,30 +43,52 @@ export default {
       console.log('redirecting to login');
     }
 
-    ipcRenderer.on('update-error', (data) => {
-      console.log('update-error', data);
+    /**
+     * Auto update stuff
+     */
+    ipcRenderer.on('update-error', (event, error) => {
+      console.log('update-error', error);
     });
 
-    ipcRenderer.on('update-not-available', (data) => {
-      console.log('update-not-available', data);
+    ipcRenderer.on('update-downloaded', () => {
+      console.log('update-downloaded');
+      this.showUpdateNotification();
     });
 
-    ipcRenderer.on('update-downloaded', (data) => {
-      console.log('update-downloaded', data);
-    });
-
-    ipcRenderer.on('update-checking', (data) => {
-      console.log('update-checking', data);
-    });
-
-    setTimeout(() => {
-      ipcRenderer.send('update-check', 1);
-      console.log('send');
-    }, parseInt('1000'));
+    ipcRenderer.send('update-check');
   },
 
   methods: {
+    /**
+     * Show update install notification
+     * @returns {void}
+     */
+    async showUpdateNotification() {
+      const texts = this.$t('autoUpdate');
 
+      const notification = {
+        infinite: true,
+        data: {
+          text: texts.message,
+          buttons: [
+            {
+              text: texts.install,
+              type: 1,
+              close: true,
+              action: () => {
+                ipcRenderer.send('update-install');
+              },
+            },
+            {
+              text: texts.later,
+              close: true,
+            },
+          ],
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
+    },
   },
 };
 </script>

@@ -89,5 +89,10 @@
       "fullscreen": "Fullscreen",
       "mute": "Mute for all"
     }
+  },
+  "autoUpdate": {
+    "message": "Update is ready to install",
+    "install": "Quit & Install",
+    "later": "Later"
   }
 }

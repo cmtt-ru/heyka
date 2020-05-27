@@ -19,9 +19,13 @@ export default {
    * @returns {void}
    */
   init(mainWindow) {
-    console.log('----auto updater');
     ipcMain.on('update-check', () => {
-      console.log('checking for update');
+      this.checkForUpdates();
+      this.startTimer();
+    });
+
+    ipcMain.on('update-install', () => {
+      setImmediate(() => autoUpdater.quitAndInstall());
     });
 
     autoUpdater.on('error', (error) => {
@@ -53,9 +57,6 @@ export default {
     autoUpdater.on('checking-for-update', () => {
       mainWindow.webContents.send('update-checking');
     });
-
-    this.checkForUpdates();
-    this.startTimer();
   },
 
   /**

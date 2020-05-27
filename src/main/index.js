@@ -72,9 +72,8 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   });
 
-  Autoupdater.init(mainWindow);
-
   if (!isDevelopment) {
+    Autoupdater.init(mainWindow);
     mainWindow.webContents.on('did-finish-load', () => {
       WindowManager.closeAll();
     });
