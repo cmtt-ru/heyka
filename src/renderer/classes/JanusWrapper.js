@@ -274,15 +274,18 @@ class JanusWrapper extends EventEmitter {
       let isFullfilled = false;
 
       console.log('janus url', this.__url);
-      let wsurl = this.__url.replace('http', 'ws');
+      // let wsurl = this.__url.replace('https', 'wss');
 
-      wsurl = wsurl.replace('8088', '8188');
-      wsurl = wsurl.replace('/janus', '');
+      // wsurl = wsurl.replace('8088', '8189');
+      // wsurl = wsurl.replace('/janus', '');
 
-      console.log('janus url', wsurl, this.__url);
+      // console.log('janus url', wsurl, this.__url);
+
+      this.__url = this.__url.replace(':8088', '').replace('/janus/', '/janus');
+      console.log(this.__url);
 
       this.__janus = new Janus({
-        server: [wsurl, this.__url],
+        server: [ this.__url ],
         token: this.__workspaceToken,
         success: () => {
           resolve();
