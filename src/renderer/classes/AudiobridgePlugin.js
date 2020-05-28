@@ -47,7 +47,7 @@ class AudiobridgePlugin extends EventEmitter {
    * @returns {undefined}
    */
   attach() {
-    this.__janus.setMaxAudioBitrate(this.__maxBitrate);
+    // this.__janus.setMaxAudioBitrate(this.__maxBitrate);
     this.__janus.attach({
       plugin: JANUS_PLUGIN,
       // Called when plugin attached
