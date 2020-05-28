@@ -37,11 +37,13 @@ function createWindow() {
     params = {
       position: 'tray',
       template: 'maintray',
+      preventClose: true,
     };
   } else {
     params = {
       position: 'center',
       template: 'main',
+      preventClose: true,
     };
   }
 
@@ -82,7 +84,11 @@ function createWindow() {
   mainWindow.on('close', (event) => {
     if (mainWindow.isVisible()) {
       event.preventDefault();
-      mainWindow.hide();
+      if (process.platform === 'darwin') {
+        mainWindow.hide();
+      } else {
+        mainWindow.hide();
+      }
     }
   });
   mainWindow.on('closed', () => {
@@ -118,7 +124,16 @@ app.on('activate', () => {
   }
 });
 
+app.on('second-instance', () => {
+  if (mainWindow === null) {
+    createWindow();
+  } else {
+    mainWindow.show();
+  }
+});
+
 app.on('ready', async () => {
+  console.log('ready');
   createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
   createLoadingScreen();

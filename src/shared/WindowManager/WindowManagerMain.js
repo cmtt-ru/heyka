@@ -36,6 +36,7 @@ class WindowManager {
    */
   constructor() {
     this.windows = [];
+    this.quitting = false;
     this.events = {
       show: this.showWindow,
       hide: this.hideWindow,
@@ -64,6 +65,14 @@ class WindowManager {
     ipcMain.on('window-manager-is-main-window', (event, options) => {
       event.returnValue = this.mainWindowId === options.id;
     });
+  }
+
+  /**
+   * Tell WindowManager that app is closing and we should force-close the windows
+   * @returns {void}
+   */
+  willQuit() {
+    this.quitting = true;
   }
 
   /**
@@ -112,7 +121,7 @@ class WindowManager {
     });
 
     browserWindow.on('close', e => {
-      if (this.windows[windowId].options.preventClose) {
+      if (this.windows[windowId].options.preventClose && !this.quitting) {
         e.preventDefault();
         browserWindow.hide();
       }
