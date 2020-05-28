@@ -3355,4 +3355,4 @@ function setMediaBitrate(sdp, media, bitrate) {
 	return newLines.join("\n")
   }
 
-export default Janus_old;
+export default Janus;
