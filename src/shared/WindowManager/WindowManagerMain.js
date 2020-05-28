@@ -223,7 +223,6 @@ class WindowManager {
   closeWindow({ id }) {
     if (this.windows[id] !== undefined) {
       try {
-        console.log('DESTROYING: ', id);
         this.windows[id].browserWindow.destroy();
         delete this.windows[id];
       } catch (e) {

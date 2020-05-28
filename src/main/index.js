@@ -80,21 +80,6 @@ function createWindow() {
       WindowManager.closeAll();
     });
   }
-
-  mainWindow.on('close', (event) => {
-    if (mainWindow.isVisible()) {
-      event.preventDefault();
-      if (process.platform === 'darwin') {
-        mainWindow.hide();
-      } else {
-        mainWindow.hide();
-      }
-    }
-  });
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-    app.quit();
-  });
 }
 
 /**
@@ -133,7 +118,6 @@ app.on('second-instance', () => {
 });
 
 app.on('ready', async () => {
-  console.log('ready');
   createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
   createLoadingScreen();
@@ -152,9 +136,8 @@ app.on('ready', async () => {
 });
 
 app.on('before-quit', function (e) {
-  console.log('before-quit');
-  e.preventDefault();
-  app.exit();
+  // trigger flag in WindpwManager so that windows won't prevent closing
+  WindowManager.willQuit();
 });
 
 // Open external links (with target="_blank") in browser
