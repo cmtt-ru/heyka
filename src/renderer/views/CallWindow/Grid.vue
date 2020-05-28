@@ -76,7 +76,6 @@
           </div>
 
           <ui-button
-            v-if="isStreaming(user.id)"
             class="badge badge--hidden cell__expand"
             :type="7"
             size="medium"
@@ -100,15 +99,12 @@ import CallButtons from '../CallOverlayWindow/CallButtons';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
-
 /**
  * Aspect ratio 124 / 168;
  * @type {number}
  */
 const ASPECT_RATIO = 0.7380952381;
-
 const PADDING = 20;
-
 export default {
   components: {
     CallButtons,
@@ -131,7 +127,6 @@ export default {
     texts() {
       return this.$t('call.grid');
     },
-
     /**
      * Get all grids suitable for current users' count
      * @returns {array}
@@ -139,7 +134,6 @@ export default {
     grids() {
       return GRIDS[this.usersCount];
     },
-
     /**
      * Get our media state
      * @returns {object}
@@ -147,7 +141,6 @@ export default {
     mediaState() {
       return this.$store.getters['me/getMediaState'];
     },
-
     /**
      * Get our ID
      * @returns {object}
@@ -155,7 +148,6 @@ export default {
     myId() {
       return this.$store.getters['me/getMyId'];
     },
-
     /**
      * Get channel ID from route param
      * @returns {string} – channel ID
@@ -163,18 +155,15 @@ export default {
     channelId() {
       return this.$store.getters['me/getSelectedChannelId'];
     },
-
     /**
      * Selected channel
      * @return {object}
      */
     selectedChannel() {
       const selectedChannel = this.$store.getters['channels/getChannelById'](this.channelId);
-
       if (selectedChannel) {
         return selectedChannel;
       }
-
       return false;
     },
     /**
@@ -184,7 +173,6 @@ export default {
     users() {
       return this.$store.getters.getUsersByChannel(this.channelId);
     },
-
     /**
      * Get users' count
      * @returns {array} array of users
@@ -192,7 +180,6 @@ export default {
     usersCount() {
       return this.users.length;
     },
-
     /**
      * Selected channel name
      * @return {string}
@@ -201,10 +188,8 @@ export default {
       if (this.selectedChannel) {
         return this.selectedChannel.name;
       }
-
       return 'no channel selected';
     },
-
   },
   watch: {
     /* re-count grid because number of users has changed */
@@ -221,7 +206,6 @@ export default {
     window.removeEventListener('resize', this.resize, false);
   },
   methods: {
-
     /**
      * Assign dimentions to the cell depending on its index
      * @param {number} index cell's index
@@ -233,32 +217,26 @@ export default {
         height: this.avatarWidth * ASPECT_RATIO * this.currentGrid[index] + 'px',
       };
     },
-
     /**
      * Re-count padding of grid and re-count best grid depending on aspect ratio
      * @return {void}
      */
     resize() {
       const bounds = document.getElementById('cell-grid');
-
       if (!bounds || !this.grids) {
         return;
       }
       const boundHeight = bounds.offsetHeight - PADDING * 2;
       const boundWidth = bounds.offsetWidth - PADDING * 2;
       const closest = this.findClosest(boundHeight / boundWidth, this.grids);
-
       this.currentGrid = closest.sizes;
-
       this.avatarWidth = Math.min(boundWidth, boundHeight / closest.ratio);
-
       if (boundHeight / boundWidth < closest.ratio) {
         this.padding = { padding: '0 ' + (boundWidth - boundHeight / closest.ratio) / 2 + 'px' };
       } else {
         this.padding = { padding: '0' };
       }
     },
-
     /**
      * Find grid with closest aspect ratio to cell-grid's aspect ratio
      * @param {number} val cell-grid's aspect ratio
@@ -270,32 +248,14 @@ export default {
         return Math.abs(b.ratio - val) < Math.abs(a.ratio - val) ? b : a;
       });
     },
-
-    /**
-     * If this person has camera/screensharing on. Should we show "fullscreen" button for this person?
-     * @param {string} id user's id
-     * @returns {boolean}
-     */
-    isStreaming(id) {
-      if (this.getUsersWhoSharesMedia.includes(id)) {
-        return true;
-      }
-
-      return false;
-    },
-
     /**
      * fullscreen click handler
      * @param {string} id user's id
      * @returns {void}
      */
     expandedClickHandler(id) {
-      if (!this.isStreaming(id)) {
-        return;
-      }
       this.$router.push({ path: `/call-window/expanded/${id}` });
     },
-
   },
 };
 </script>
@@ -305,7 +265,6 @@ export default {
     display flex
     flex-direction column
     height 100vh
-
   .top-content
     height 116px
     box-sizing border-box
@@ -317,15 +276,12 @@ export default {
     flex-direction row
     justify-content space-between
     align-items flex-start
-
   .left-info
     display grid
-
   .channel-name
     font-size 14px
     line-height 18px
     color var(--text-1)
-
   .cell-grid
     height calc(100vh - 232px)
     //border 2px solid white
@@ -336,11 +292,9 @@ export default {
     justify-content center
     align-content center
     box-sizing border-box
-
   .cell
     padding 4px
     box-sizing border-box
-
     &__inner
       border-radius 4px
       height 100%
@@ -351,7 +305,6 @@ export default {
       justify-content space-between
       align-items center
       position relative
-
     &__feed
       position absolute
       top 0
@@ -361,7 +314,6 @@ export default {
       border-radius 4px
       background: #FFFFFF;
       opacity: 0.05;
-
     &__talking
       position absolute
       top 0
@@ -372,7 +324,6 @@ export default {
       border-radius 4px
       box-sizing border-box
       pointer-events none
-
     &__more
       top 4px
       right 4px
@@ -380,28 +331,21 @@ export default {
       opacity 0
       transition opacity 0.15s ease
       position relative
-
     &__expand
       bottom 4px
       right 4px
-
     .badge
       position absolute
-
     .badge--hidden
       opacity 0
-
     .cell__inner:hover .badge--hidden
       opacity 1
-
     .badge--hidden.context-menu--opened
       opacity 1
-
     &__avatar
       border-radius 4px
       overflow hidden
       margin auto
-
     &__username
       bottom 4px
       margin 0 auto
@@ -409,7 +353,7 @@ export default {
       padding 8px
       border-radius 4px
       flex-shrink 0
-      max-width calc(100% - 8px)
+      max-width calc(100% - 88px)
       box-sizing border-box
       width auto
       overflow hidden
@@ -418,14 +362,11 @@ export default {
       align-items center
       text-align center
       position relative
-
       &__you
         color var(--text-1)
         margin-left 8px
-
       &__mic-off
         margin-left 8px
-
   .bottom-control
     margin 28px auto 0
 </style>
