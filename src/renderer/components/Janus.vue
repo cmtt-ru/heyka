@@ -75,9 +75,7 @@ export default {
       this.janusWrapper.setMuting(!state);
       if (state) {
         console.log('button');
-        const checkDelay = 1000; // milliseconds
-
-        setTimeout(this.checkAudio(), checkDelay);
+        this.checkAudio();
       }
     },
 
@@ -199,9 +197,7 @@ export default {
         if (this.microphone) {
           this.janusWrapper.setMuting(false);
           console.log('audiostr');
-          const checkDelay = 1000; // milliseconds
-
-          setTimeout(this.checkAudio(), checkDelay);
+          this.checkAudio();
         }
         if (this.speakers) {
           this.$refs.audio.muted = false;
@@ -210,9 +206,33 @@ export default {
     },
 
     async checkAudio() {
-      const HALF_VOL = -80;
+      const HALF_VOL = -99;
+      const MUTE_VOL = -100;
 
-      if (this.microphoneVolume < HALF_VOL) {
+      console.log(this.microphoneVolume);
+
+      const checkDelay = 1000; // milliseconds
+
+      await new Promise(resolve => setTimeout(resolve, checkDelay));
+
+      console.log(this.microphoneVolume);
+
+      if (this.microphoneVolume === MUTE_VOL) {
+        const notification = {
+          data: {
+            text: `No audio detected. Maybe restart system?`,
+            buttons: [
+              {
+                text: 'OK',
+                type: 1,
+                close: true,
+              },
+            ],
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
+      } else if (this.microphoneVolume < HALF_VOL) {
         const notification = {
           data: {
             text: `Speak up!`,
