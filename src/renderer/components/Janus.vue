@@ -320,9 +320,11 @@ export default {
      * @returns {undefined}
      */
     onAudioStreamActive(isActive) {
+      console.log('------ onAudioStreamActive');
       if (isActive) {
         if (this.microphone) {
           this.janusWrapper.setMuting(false);
+          console.log('------ setMuting false');
         }
         if (this.speakers) {
           this.$refs.audio.muted = false;
