@@ -274,7 +274,9 @@ class JanusWrapper extends EventEmitter {
       let isFullfilled = false;
 
       console.log('janus url', this.__url);
-      // let wsurl = this.__url.replace('https', 'wss');
+      // https://ssl-test.heyka.io:8088/janus/
+      const wsurl = this.__url.replace('https', 'wss').replace(':8088', '')
+        .replace('/janus', '/jws/');
 
       // wsurl = wsurl.replace('8088', '8189');
       // wsurl = wsurl.replace('/janus', '');
@@ -282,10 +284,10 @@ class JanusWrapper extends EventEmitter {
       // console.log('janus url', wsurl, this.__url);
 
       this.__url = this.__url.replace(':8088', '').replace('/janus/', '/janus');
-      console.log(this.__url);
+      console.log(this.__url, wsurl);
 
       this.__janus = new Janus({
-        server: [ this.__url ],
+        server: [wsurl, this.__url],
         token: this.__workspaceToken,
         success: () => {
           resolve();
