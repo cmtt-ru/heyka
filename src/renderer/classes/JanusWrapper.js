@@ -343,6 +343,10 @@ class JanusWrapper extends EventEmitter {
       this.__videoroomPlugin.detach();
       this.__videoroomPlugin = null;
     }
+    Object.keys(this.__videoroomPlugins).forEach(key => {
+      this.__videoroomPlugins[key].detach();
+      delete this.__videoroomPlugins[key];
+    });
     this.__janus.destroy();
     this.__janus = null;
   }
