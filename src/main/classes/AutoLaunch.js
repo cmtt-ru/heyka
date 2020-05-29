@@ -2,7 +2,7 @@ import { ipcMain, app } from 'electron';
 import AutoLaunch from 'auto-launch'; // ! Not Mac App Store friendly
 import Store from 'electron-store';
 const autoLauncher = new AutoLaunch({
-  name: app.getName(),
+  name: app.name,
 });
 const heykaStore = new Store({
   name: 'app',
