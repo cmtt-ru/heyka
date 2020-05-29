@@ -26,6 +26,7 @@
     "dateformat": "^3.0.3",
     "draggable-vue-directive": "^2.1.0",
     "electron-builder": "^22.6.0",
+    "electron-notarize": "^0.3.0",
     "electron-store": "^5.1.1",
     "electron-updater": "^2.2.4",
     "fast-levenshtein": "^2.0.6",
