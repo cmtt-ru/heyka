@@ -29,7 +29,7 @@
     >
       <div
         v-for="(user, index) in users"
-        :key="index"
+        :key="user.id"
         class="cell"
         :style="cellDimensions(index)"
       >
@@ -37,7 +37,11 @@
           class="cell__inner"
           @dblclick="expandedClickHandler(user.id)"
         >
-          <video class="cell__feed" />
+          <video
+            v-show="videoStreams[user.id]"
+            :ref="`video${user.id}`"
+            class="cell__feed"
+          />
           <div
             v-show="user.speaking && user.microphone"
             class="cell__talking"
@@ -52,6 +56,7 @@
           />
 
           <avatar
+            v-show="!user.camera && !user.screen"
             class="cell__avatar"
             :image="user.avatar"
             :size="100"
@@ -99,6 +104,8 @@ import CallButtons from '../CallOverlayWindow/CallButtons';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
+import { mapGetters } from 'vuex';
+import commonStreams from '@classes/commonStreams';
 
 /**
  * Aspect ratio 124 / 168;
@@ -120,9 +127,11 @@ export default {
       currentGrid: [],
       avatarWidth: null,
       padding: {},
+      videoStreams: {},
     };
   },
   computed: {
+    ...mapGetters([ 'getUsersWhoShareMedia' ]),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -210,16 +219,82 @@ export default {
     usersCount: function () {
       this.resize();
     },
+
+    getUsersWhoShareMedia: {
+      deep: true,
+      handler(users) {
+        this.requestStreams();
+      },
+    },
+
+    selectedChannel(channelId) {
+      if (!channelId) {
+        Object.keys(this.videoStreams).forEach(key => {
+          this.$delete(this.videoStreams, key);
+        });
+      }
+      if (channelId) {
+        this.requestStreams();
+      }
+    },
   },
-  mounted() {
+  async mounted() {
     this.mounted = true;
     window.addEventListener('resize', this.resize, false); // TODO: add small debounce for performance
     this.resize();
+    await new Promise(resolve => this.$nextTick(resolve));
+    this.requestStreams();
   },
   destroyed() {
     window.removeEventListener('resize', this.resize, false);
   },
   methods: {
+    /**
+     * Request not loaded streams and insert loaded
+     * @returns {void}
+     */
+    requestStreams() {
+      const users = this.getUsersWhoShareMedia;
+
+      console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
+      // delete streams that were inserted but users have already stopped sharing
+      this.users.filter(u => !u.camera && !u.screen && !!this.videoStreams[u.id]).forEach(u => {
+        console.log(`clear stream for ${u.id}`);
+        this.$delete(this.videoStreams, u.id);
+      });
+      Object.keys(this.videoStreams).forEach(uId => {
+        if (!this.users.map(u => u.id).includes(uId)) {
+          console.log(`clear stream 2 for ${uId}`);
+          this.$delete(this.videoStreams, uId);
+        }
+      });
+
+      console.log('filter who should be added');
+
+      // add streams that were not inserted
+      users.filter(id => !this.videoStreams[id]).map(async id => {
+        this.$set(this.videoStreams, id, true);
+        console.log(`wait stream for ${id}`);
+        console.time(`request-${id}`);
+        const stream = await commonStreams.getStream(id);
+
+        console.timeEnd(`request-${id}`);
+
+        console.log(`stream received for ${id}`);
+
+        const htmlVideo = this.$refs[`video${id}`][0];
+
+        if (!htmlVideo) {
+          console.log('!!!!!!!!!!!!!!!!!!!!!!!!! NOT FOUND');
+
+          return;
+        }
+        htmlVideo.srcObject = stream;
+        htmlVideo.onloadedmetadata = () => {
+          htmlVideo.play();
+        };
+      });
+    },
 
     /**
      * Assign dimentions to the cell depending on its index
@@ -228,8 +303,8 @@ export default {
      */
     cellDimensions(index) {
       return {
-        width: this.avatarWidth * this.currentGrid[index] + 'px',
-        height: this.avatarWidth * ASPECT_RATIO * this.currentGrid[index] + 'px',
+        width: Math.floor(this.avatarWidth * this.currentGrid[index]) + 'px',
+        height: Math.floor(this.avatarWidth * ASPECT_RATIO * this.currentGrid[index]) + 'px',
       };
     },
 
@@ -334,6 +409,12 @@ export default {
       justify-content space-between
       align-items center
       position relative
+      overflow hidden
+
+      video
+        width 100%
+        height 100%
+        object-fit cover
 
     &__feed
       position absolute
@@ -343,7 +424,6 @@ export default {
       height 100%
       border-radius 4px
       background: #FFFFFF;
-      opacity: 0.05;
 
     &__talking
       position absolute

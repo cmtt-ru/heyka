@@ -4,7 +4,7 @@
       v-if="isMediaSharing"
       class="call-window__media"
     >
-      <video />
+      <video ref="video" />
     </div>
 
     <call-controls
@@ -18,6 +18,7 @@
 import CallControls from './CallControls';
 import { mapGetters } from 'vuex';
 import broadcastActions from '@classes/broadcastActions';
+import commonStreams from '@classes/commonStreams';
 
 export default {
   components: {
@@ -43,6 +44,32 @@ export default {
     isMediaSharing() {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     },
+    getUserWhoSharesMedia(user) {
+      if (user) {
+        this.requestStream(user);
+      }
+    },
+  },
+  created() {
+    if (this.isMediaSharing) {
+      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+    }
+    if (this.getUserWhoSharesMedia) {
+      this.requestStream(this.getUserWhoSharesMedia);
+    }
+  },
+  methods: {
+    async requestStream(user) {
+      const stream = await commonStreams.getStream(user);
+      const htmlElement = this.$refs.video;
+
+      if (htmlElement) {
+        htmlElement.srcObject = stream;
+        htmlElement.onloadedmetadata = function () {
+          htmlElement.play();
+        };
+      }
+    },
   },
 };
 </script>
@@ -58,7 +85,8 @@ export default {
       video
         display block
         width 100%
-        height 100%
+        height 213px
         background #333
+        object-fit cover
 
 </style>
