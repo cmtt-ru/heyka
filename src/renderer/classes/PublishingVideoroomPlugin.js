@@ -186,6 +186,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
   publishVideo(stream) {
     this.__pluginHandle.createOffer({
       stream,
+      media: { data: true },
       success: jsep => {
         this.__pluginHandle.send({
           message: {
