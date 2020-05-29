@@ -136,7 +136,8 @@ class JanusWrapper extends EventEmitter {
       this.emit(JANUS_WRAPPER_EVENTS.audioStreamActive, isActive);
       if (isActive) {
         this.__audiobridgeReady = true;
-        console.log('tratatatat', this.__videoroomReady, this.__audiobridgeReady);
+        // Сообщаем о том, что join к каналу успешно завершен
+        // Если перед этим videoroom заджойнился к каналу
         if (this.__videoroomReady) {
           this.emit(JANUS_WRAPPER_EVENTS.channelJoined);
         }
@@ -162,7 +163,8 @@ class JanusWrapper extends EventEmitter {
     videoroomPlugin.on('active-publishers', publishers => {
       this.emit(JANUS_WRAPPER_EVENTS.videoPublishersList, publishers);
       this.__videoroomReady = true;
-      console.log('tratatatat', this.__videoroomReady, this.__audiobridgeReady);
+      // videoroom готов, сообщаем что присоединение к каналу завершено
+      // если при этом audiobridge уже заджойнился
       if (this.__audiobridgeReady) {
         this.emit(JANUS_WRAPPER_EVENTS.channelJoined);
       }
@@ -234,7 +236,6 @@ class JanusWrapper extends EventEmitter {
     const prom = new Promise((resolve, reject) => {
       requestTimeout = setTimeout(() => {
         console.error('REQUEST_VIDEOSTREAM_TIMEOUT');
-        // reject(new Error('REQUEST_VIDEOSTREAM_TIMEOUT'));
       }, REQUEST_VIDEOSTREAM_TIMEOUT);
       plugin.once('remote-video-stream', stream => {
         clearTimeout(requestTimeout);
@@ -273,21 +274,23 @@ class JanusWrapper extends EventEmitter {
     return new Promise((resolve, reject) => {
       let isFullfilled = false;
 
-      console.log('janus url', this.__url);
-      // https://ssl-test.heyka.io:8088/janus/
-      // const wsurl = this.__url.replace('https', 'wss').replace(':8088', '')
-      // .replace('/janus', '/jws/');
+      // convert url to websocket connect
+      // url is like "http://janus-host.domen.zone:8088/janus";
+      let wsurl = '';
 
-      // wsurl = wsurl.replace('8088', '8189');
-      // wsurl = wsurl.replace('/janus', '');
-
-      // console.log('janus url', wsurl, this.__url);
-
-      // this.__url = this.__url.replace(':8088', '').replace('/janus/', '/janus');
-      console.log(this.__url);
+      if (this.__url.indexOf('http') + 1) {
+        wsurl = this.__url.replace('http', 'ws')
+          .replace('8088', '8188')
+          .replace('/janus', '');
+      } else {
+        wsurl = this.__url.replace('https', 'wss')
+          .replace('8089', '8189')
+          .replace('/janus', '');
+      }
+      this._debug(`Connect to janus. rest-api: ${this.__url}, ws-api: ${wsurl}`);
 
       this.__janus = new Janus({
-        server: [ this.__url ],
+        server: [this.__url, wsurl],
         token: this.__workspaceToken,
         success: () => {
           resolve();

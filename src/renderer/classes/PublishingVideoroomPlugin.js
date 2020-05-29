@@ -8,7 +8,7 @@ const DEFAULT_BITRATE = 1400000;
  * Handle communication with videoroom plugin for publishing
  * @class
  */
-class VideoroomPlugin extends EventEmitter {
+class PublishingVideoroomPlugin extends EventEmitter {
   /**
    * Creates an instance of videoroom plugin class
    * @param {object} options videoroom plugin config
@@ -316,4 +316,4 @@ class VideoroomPlugin extends EventEmitter {
   }
 };
 
-export default VideoroomPlugin;
+export default PublishingVideoroomPlugin;

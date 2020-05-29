@@ -5,12 +5,12 @@
       autoplay
       muted
     />
-    <video
+    <!-- <video
       v-for="publisher in videoPublishers"
       :key="publisher.userId"
       :ref="`video${publisher.userId}`"
       style="width: 100px; height: 80px"
-    />
+    /> -->
   </div>
 </template>
 
@@ -390,7 +390,6 @@ export default {
         janusId: publisher.id,
       };
 
-      // this.videoPublishers[publisher.display] = newPublisher;
       this.log('New publisher is added', newPublisher);
       await new Promise(resolve => setTimeout(resolve, parseInt('500')));
       const stream = await this.janusWrapper.requestVideoStream(publisher.id);
@@ -400,14 +399,15 @@ export default {
         stream,
       });
       console.log('=================================', this.videoPublishers);
-      // this.videoPublishers[publisher.display].stream = stream;
       await new Promise(resolve => this.$nextTick(resolve));
-      const el = this.$refs[`video${newPublisher.userId}`][0];
 
-      el.srcObject = stream;
-      el.onloadedmetadata = function () {
-        el.play();
-      };
+      // Insert stream
+      // const el = this.$refs[`video${newPublisher.userId}`][0];
+
+      // el.srcObject = stream;
+      // el.onloadedmetadata = function () {
+      //   el.play();
+      // };
     },
 
     /**
@@ -511,12 +511,14 @@ export default {
       });
 
       await new Promise(resolve => this.$nextTick(resolve));
-      const el = this.$refs[`video${this.userId}`][0];
 
-      el.srcObject = stream;
-      el.onloadedmetadata = function () {
-        el.play();
-      };
+      // Insert stream
+      // const el = this.$refs[`video${this.userId}`][0];
+
+      // el.srcObject = stream;
+      // el.onloadedmetadata = function () {
+      //   el.play();
+      // };
     },
 
     /**

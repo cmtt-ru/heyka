@@ -15,7 +15,7 @@ export default class StreamSharingHost extends EventEmitter {
   constructor(options) {
     super();
 
-    // broadcastEvents.on('request-stream', this._onRequestStream.bind(this));
+    broadcastEvents.on('request-stream', this._onRequestStream.bind(this));
 
     this.__debugEnabled = !!options.debug;
     this.__pcs = {};
@@ -30,7 +30,7 @@ export default class StreamSharingHost extends EventEmitter {
    * @returns {void}
    */
   async sendStream(requestData, stream) {
-    let pc = new RTCPeerConnection();
+    const pc = new RTCPeerConnection();
 
     this.__pcs[requestData.userId] = pc;
 
@@ -39,11 +39,16 @@ export default class StreamSharingHost extends EventEmitter {
 
     // subscribe for changing iceConnectionState
     pc.addEventListener('iceconnectionstatechange', () => {
-      this._debug('iceconnectionstate', pc.iceConnectionState);
-      if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
-        console.log('connection-closed for ', requestData);
-        pc.close();
-        pc = null;
+      const pcnow = this.__pcs[requestData.userId];
+
+      if (!pcnow) {
+        return;
+      }
+
+      this._debug('iceconnectionstate', pcnow.iceConnectionState);
+      if (pcnow && (pcnow.iceConnectionState === 'failed' || pcnow.iceConnectionState === 'disconnected')) {
+        this._debug('connection-closed for ', requestData);
+        pcnow.close();
         delete this.__pcs[requestData.userId];
         if (stream) {
           stream.getTracks().forEach(track => track.stop());
@@ -143,7 +148,7 @@ export default class StreamSharingHost extends EventEmitter {
    * @returns {void}
    */
   _debug() {
-    if (!this.__debugEnabled) {
+    if (this.__debugEnabled) {
       console.log(`Stream sharing manager host: `, ...arguments);
     }
   }
