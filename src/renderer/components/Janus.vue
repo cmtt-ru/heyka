@@ -5,12 +5,12 @@
       autoplay
       muted
     />
-    <!-- <video
+    <video
       v-for="publisher in videoPublishers"
       :key="publisher.userId"
       :ref="`video${publisher.userId}`"
       style="width: 100px; height: 80px"
-    /> -->
+    />
   </div>
 </template>
 
@@ -402,12 +402,12 @@ export default {
       await new Promise(resolve => this.$nextTick(resolve));
 
       // Insert stream
-      // const el = this.$refs[`video${newPublisher.userId}`][0];
+      const el = this.$refs[`video${newPublisher.userId}`][0];
 
-      // el.srcObject = stream;
-      // el.onloadedmetadata = function () {
-      //   el.play();
-      // };
+      el.srcObject = stream;
+      el.onloadedmetadata = function () {
+        el.play();
+      };
     },
 
     /**
@@ -513,12 +513,12 @@ export default {
       await new Promise(resolve => this.$nextTick(resolve));
 
       // Insert stream
-      // const el = this.$refs[`video${this.userId}`][0];
+      const el = this.$refs[`video${this.userId}`][0];
 
-      // el.srcObject = stream;
-      // el.onloadedmetadata = function () {
-      //   el.play();
-      // };
+      el.srcObject = stream;
+      el.onloadedmetadata = function () {
+        el.play();
+      };
     },
 
     /**
