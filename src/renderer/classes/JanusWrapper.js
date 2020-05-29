@@ -266,6 +266,30 @@ class JanusWrapper extends EventEmitter {
   }
 
   /**
+   * Send data to janus wrapper
+   * @param {string} username username
+   * @returns {void}
+   */
+  sendData(username) {
+    if (!this.__videoroomPlugin) {
+      return;
+    }
+
+    this.__videoroomPlugin.data({
+      text: JSON.stringify({
+        username,
+        now: Date.now(),
+      }),
+      success: () => {
+        console.log('Message sent!');
+      },
+      error: err => {
+        console.error(err);
+      },
+    });
+  }
+
+  /**
    * Connects to the Janus server
    * @private
    * @returns {Promise<null>}

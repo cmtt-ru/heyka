@@ -10,6 +10,7 @@
       :key="publisher.userId"
       :ref="`video${publisher.userId}`"
       style="width: 100px; height: 80px"
+      @click="sendData"
     />
   </div>
 </template>
@@ -516,6 +517,10 @@ export default {
       el.onloadedmetadata = function () {
         el.play();
       };
+    },
+
+    sendData() {
+      this.janusWrapper.sendData(this.$store.getters['users/getUserById'](this.userId).name);
     },
 
     /**
