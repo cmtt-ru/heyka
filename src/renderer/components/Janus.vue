@@ -218,6 +218,7 @@ export default {
       console.log(this.microphoneVolume);
 
       if (this.microphoneVolume === MUTE_VOL) {
+        //! can be a problem with Janus! Mb tell user we have server problems?
         const notification = {
           data: {
             text: `No audio detected. Maybe restart system?`,
