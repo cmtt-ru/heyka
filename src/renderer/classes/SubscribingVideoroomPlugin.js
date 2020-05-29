@@ -135,6 +135,22 @@ class VideoroomPlugin extends EventEmitter {
         this.emit('remote-video-stream', stream);
       },
 
+      // Data Channel is available
+      ondataopen: () => {
+        if (this.__detached) {
+          return;
+        }
+        this._debug('dataopen');
+      },
+
+      // Some data is received through the Data Channel
+      ondata: data => {
+        if (this.__detached) {
+          return;
+        }
+        this._debug('data', data);
+      },
+
       // WebRTC connection with the plugin was closed
       oncleanup: () => {
         if (this.__detached) {
