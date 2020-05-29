@@ -220,7 +220,11 @@ export default class Popover {
       };
 
       this.element.__clickOutsideHandler = event => {
-        if (!(this.instance.$el === event.target || this.instance.$el.contains(event.target))) {
+        const conditionToHide =
+          !(this.instance.$el === event.target || this.instance.$el.contains(event.target)) ||
+          event.target.hasAttribute('data-popover-close');
+
+        if (conditionToHide) {
           setTimeout(() => {
             this.show(false);
           }, TIMEOUT_BEFORE_DESTROY);

@@ -43,7 +43,6 @@ class CallWindow {
           skipTaskbar: true,
         },
         onClose: () => {
-          console.log('closing: ', this.overlayWindow);
           this.overlayWindow = null;
         },
       });
@@ -116,8 +115,8 @@ class CallWindow {
         route: '/call-window',
         position: 'center',
         template: 'call',
-        alwaysOnTop: true,
         openDevTools: true,
+        preventClose: true,
         onClose: () => {
           this.gridWindow = null;
         },
@@ -140,6 +139,7 @@ class CallWindow {
       });
       this.gridWindow.on('close', () => {
         clearTimeout(this.gridTimeout);
+        this.showOverlay();
       });
     } else {
       this.gridWindow.show();
