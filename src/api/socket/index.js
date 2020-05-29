@@ -53,14 +53,14 @@ export async function destroy() {
  */
 async function authorize() {
   const accessToken = await getAccessToken();
+  const onlineStatus = store.getters['me/getOnlineStatus'];
 
   return new Promise((resolve, reject) => {
     client.emit(eventNames.auth, {
       transaction: 'auth',
       workspaceId: store.getters['me/getSelectedWorkspaceId'],
       token: accessToken,
-      // todo: online status
-      onlineStatus: 'online',
+      onlineStatus: onlineStatus,
     });
 
     store.dispatch('app/addPrivacyLog', {
