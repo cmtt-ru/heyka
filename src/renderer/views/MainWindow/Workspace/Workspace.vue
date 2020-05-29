@@ -2,12 +2,6 @@
   <div class="l-p-8">
     <br><br>
 
-    <avatar
-      :status="'online'"
-      :onair="false"
-    />
-    <div>Main window. {{ $tc("message", seconds) }}</div>
-    <br>
     <div>{{ message }}</div>
     <br><br>
 
@@ -19,8 +13,12 @@
     </button>
     <br><br>
 
-    <button @click="openCallWindow">Открыть окно звонка</button>
-    <button @click="closeCallWindow">Закрыть</button>
+    <button @click="openCallWindow">
+      Открыть окно звонка
+    </button>
+    <button @click="closeCallWindow">
+      Закрыть
+    </button>
 
     <br><br>
     <button @click="loadInitialState()">
@@ -77,7 +75,6 @@
 <script>
 import { ipcRenderer } from 'electron';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
-import Avatar from '@components/Avatar';
 import logout from '@api/auth/logout';
 import UiButton from '@components/UiButton';
 
@@ -86,7 +83,6 @@ let callWindow;
 
 export default {
   components: {
-    Avatar,
     UiButton,
   },
   data() {
