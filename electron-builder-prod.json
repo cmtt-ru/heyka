@@ -1,12 +1,19 @@
 {
   "appId": "app.live.hejka",
   "productName": "Heyka",
+  "afterSign": "./notarize.js",
   "mac": {
-      "category": "public.app-category.productivity",
-      "darkModeSupport": true,
-      "extendInfo": {
-          "LSUIElement": 1
-      }
+    "category": "public.app-category.productivity",
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist",
+    "darkModeSupport": true,
+    "extendInfo": {
+        "LSUIElement": 1,
+        "NSCameraUsageDescription": "This app requires camera access to record video.",
+        "NSMicrophoneUsageDescription": "This app requires microphone access to record audio."
+    },
+    "gatekeeperAssess": false,
+    "hardenedRuntime": true
   },
   "win": {
       "target": "nsis",
