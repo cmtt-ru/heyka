@@ -1,3 +1,9 @@
+import Store from 'electron-store';
+
+const meStore = new Store({
+  name: 'store-module-me',
+});
+
 export default {
   /**
    * Get user id
@@ -37,5 +43,9 @@ export default {
    */
   getSelectedChannelId: state => {
     return state.selectedChannelId;
+  },
+
+  getOnlineStatus: state => {
+    return meStore.get('onlineStatus', 'online');
   },
 };

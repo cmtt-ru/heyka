@@ -42,10 +42,53 @@ export default {
     } catch (e) {
       console.log('redirecting to login');
     }
+
+    /**
+     * Auto update stuff
+     */
+    ipcRenderer.on('update-error', (event, error) => {
+      console.log('update-error', error);
+    });
+
+    ipcRenderer.on('update-downloaded', () => {
+      console.log('update-downloaded');
+      this.showUpdateNotification();
+    });
+
+    ipcRenderer.send('update-check');
   },
 
   methods: {
+    /**
+     * Show update install notification
+     * @returns {void}
+     */
+    async showUpdateNotification() {
+      const texts = this.$t('autoUpdate');
 
+      const notification = {
+        infinite: true,
+        data: {
+          text: texts.message,
+          buttons: [
+            {
+              text: texts.install,
+              type: 1,
+              close: true,
+              action: () => {
+                ipcRenderer.send('update-install');
+              },
+            },
+            {
+              text: texts.later,
+              close: true,
+            },
+          ],
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
+    },
   },
 };
 </script>

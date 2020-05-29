@@ -3,21 +3,21 @@
     <div class="buttons">
       <router-link :to="{ name: 'user', params: { id: userId }}">
         <ui-button :type="11">
-          Open profile
+          {{ texts.profile }}
         </ui-button>
       </router-link>
       <ui-button
         :type="11"
-        @click="pokeClickHandler"
         data-popover-close
+        @click="pokeClickHandler"
       >
-        Poke
+        {{ texts.poke }}
       </ui-button>
       <ui-button
         :type="11"
         @click="muteClickHandler"
       >
-        Mute for all
+        {{ texts.mute }}
       </ui-button>
     </div>
   </popover>
@@ -40,6 +40,16 @@ export default {
     userId: {
       type: String,
       default: '',
+    },
+  },
+
+  computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('popover.userInChannel');
     },
   },
 

@@ -1,18 +1,19 @@
 import { EventEmitter } from 'events';
-import hark from 'hark';
-const JANUS_PLUGIN = 'janus.plugin.audiobridge';
-const HARK_UPDATE_INTERVAL_MS = 75;
+import mediaCapturer from './mediaCapturer';
+const JANUS_PLUGIN = 'janus.plugin.videoroom';
+const DEFAULT_BITRATE = 1400000;
+/* eslint-disable */
 
 /**
- * Handle communication with audiobridge plugin
+ * Handle communication with videoroom plugin for publishing
  * @class
  */
-class AudiobridgePlugin extends EventEmitter {
+class PublishingVideoroomPlugin extends EventEmitter {
   /**
-   * Creates an instance of audiobridge plugin class
-   * @param {object} options Audiobridge plugin config
+   * Creates an instance of videoroom plugin class
+   * @param {object} options videoroom plugin config
    * @param {object} options.janus An active Janus connection
-   * @param {number} options.room Room in audiobridge plugin
+   * @param {number} options.room Room in videoroom plugin
    * @param {string} options.token Authentication token for room
    * @param {string} options.userId Connected user id
    * @param {boolean} [options.debug=false] Is debug output enabled
@@ -32,23 +33,20 @@ class AudiobridgePlugin extends EventEmitter {
     this.__room = room;
     this.__token = token;
     this.__userId = userId;
-    this.__maxBitrate = 48;
     this.__debugEnabled = debug;
-
-    // hark stream
-    this.__harkStream = null;
 
     this.__detached = false;
     this.__pluginHandle = null;
   }
 
   /**
-   * Attaches audiobridge plugin and join room
-   * @returns {undefined}
+   * Attaches videoroom plugin and join room
+   * @returns {void}
    */
   attach() {
     this.__janus.attach({
       plugin: JANUS_PLUGIN,
+      opaqueId: this.__userId,
       // Called when plugin attached
       success: pluginHandle => {
         if (this.__detached) {
@@ -57,7 +55,7 @@ class AudiobridgePlugin extends EventEmitter {
         this._debug('plugin attached');
 
         this.__pluginHandle = pluginHandle;
-        this._joinChannel();
+        this._joinAsSubscriber();
       },
 
       // Triggered after `getUserMedia` is called (isAllowed=true means that request for user media is accepted)
@@ -113,13 +111,25 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        const event = message.audiobridge;
+        const event = message.videoroom;
 
         switch (true) {
           case event === 'joined':
+            console.log(`%c Already are publishing: `, 'background: yellow;');
+            console.log(message.publishers)
             this._onJoinedChannel(message);
             break;
+          case !!message.unpublished:
+            console.log(`%c Unpublished: ${message.unpublished}`, 'background: yellow;');
+            this._onUnpublished(message);
+            break;
+          case event === 'event' && !!message.id:
+            console.log(`%c new publisher: `, 'background: yellow;');
+            console.log(message)
+            this._onPublished(message);
+            break;
           case jsep !== undefined && jsep !== null:
+            this.emit('success-publishing');
             this._onRemoteJsep(jsep);
             break;
           default:
@@ -133,16 +143,7 @@ class AudiobridgePlugin extends EventEmitter {
           return;
         }
         this._debug('localstream', stream);
-        this._onLocalAudioStream(stream);
-      },
-
-      // Remote audio stream is available
-      onremotestream: stream => {
-        if (this.__detached) {
-          return;
-        }
-        this._debug('remotestream', stream);
-        this.emit('remote-audio-stream', stream);
+        this._onLocalVideoStream(stream);
       },
 
       // Data Channel is available
@@ -178,7 +179,49 @@ class AudiobridgePlugin extends EventEmitter {
   }
 
   /**
-   * Detached audiobridge plugin from Janus
+   * Create offer and send video stream to another participants
+   * @param {object} stream Video stream
+   * @returns {void}
+   */
+  publishVideo(stream) {
+    this.__pluginHandle.createOffer({
+      stream,
+      success: jsep => {
+        this.__pluginHandle.send({
+          message: {
+            request: 'publish',
+            bitrate: DEFAULT_BITRATE,
+            audio: false,
+            video: true,
+            display: this.__userId,
+          },
+          jsep,
+        });
+      },
+    });
+  }
+
+  /**
+   * Unpublish current video stream
+   * @returns {void}
+   */
+  unpublishVideo() {
+    this._debug('Stop local video stream');
+    if (this.__localVideoStream) {
+      mediaCapturer.destroyStream(this.__localVideoStream);
+    }
+    this._debug('Unpublish');
+    if (this.__pluginHandle) {
+      this.__pluginHandle.send({
+        message: {
+          request: 'unpublish',
+        },
+      });
+    }
+  }
+
+  /**
+   * Detached videoroom plugin from Janus
    * @returns {undefined}
    */
   detach() {
@@ -186,34 +229,21 @@ class AudiobridgePlugin extends EventEmitter {
       this.__pluginHandle.detach();
       this.__pluginHandle = null;
     }
-    if (this.__harkStream) {
-      this.__harkStream.stop();
-      this.__harkStream = null;
+    if (this.__localVideoStream) {
+      mediaCapturer.destroyStream(this.__localVideoStream);
+      this.__localVideoStream = null;
     }
-  }
-
-  /**
-   * Mute/unmute current participant
-   * @param {boolean} muted Should the participant be muted
-   * @returns {undefined}
-   */
-  setMuting(muted) {
-    this.__pluginHandle.send({
-      message: {
-        request: 'configure',
-        muted: muted,
-      },
-    });
   }
 
   /**
    * Send message about join to the channel
    * @returns {undefined}
    */
-  _joinChannel() {
+  _joinAsSubscriber() {
     this.__pluginHandle.send({
       message: {
         request: 'join',
+        ptype: 'publisher',
         room: this.__room,
         display: this.__userId,
         token: this.__token,
@@ -228,7 +258,7 @@ class AudiobridgePlugin extends EventEmitter {
    */
   _debug() {
     if (this.__debugEnabled) {
-      console.log('Audiobridge plugin: ', ...arguments);
+      console.log('Videoroom plugin: ', ...arguments);
     }
   }
 
@@ -240,24 +270,29 @@ class AudiobridgePlugin extends EventEmitter {
   _onJoinedChannel(message) {
     this._debug('room joined', message);
 
-    this.__pluginHandle.createOffer({
-      media: {
-        video: false,
-        audio: true,
-      },
-      success: jsep => {
-        this.__pluginHandle.send({
-          message: {
-            request: 'configure',
-            muted: true,
-          },
-          jsep,
-        });
-      },
-      error: error => {
-        this._debug('create offer error', error);
-      },
-    });
+    this.emit('active-publishers', message.publishers);
+  }
+
+  /**
+   * Handle new active publisher in the room
+   * @param {object} message Janus event message object
+   * @returns {void}
+   */
+  _onPublished(message) {
+    this._debug('new publisher', message);
+
+    this.emit('publisher-joined', message);
+  }
+
+  /**
+   * Handle a publisher left the room
+   * @param {object} message Janus event message object
+   * @returns {void}
+   */
+  _onUnpublished(message) {
+    this._debug('remove publisher', message);
+
+    this.emit('publisher-left', message);
   }
 
   /**
@@ -271,24 +306,14 @@ class AudiobridgePlugin extends EventEmitter {
   }
 
   /**
-   * Handles local audio stream
-   * @param {object} stream Audio stream object
-   * @returns {undefined}
+   * Handles local video stream
+   * @param {object} stream Local video stream
+   * @returns {void}
    */
-  _onLocalAudioStream(stream) {
-    this.__harkStream = hark(stream, {
-      interval: HARK_UPDATE_INTERVAL_MS,
-    });
-    this.__harkStream.on('speaking', () => {
-      this.emit('start-speaking');
-    });
-    this.__harkStream.on('stopped_speaking', () => {
-      this.emit('stop-speaking');
-    });
-    this.__harkStream.on('volume_change', (db, threshold) => {
-      this.emit('volume-change', db);
-    });
+  _onLocalVideoStream(stream) {
+    this.__localVideoStream = stream;
+    this.emit('local-video-stream', stream);
   }
 };
 
-export default AudiobridgePlugin;
+export default PublishingVideoroomPlugin;

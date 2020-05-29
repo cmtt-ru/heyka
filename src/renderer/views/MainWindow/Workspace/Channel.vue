@@ -27,6 +27,7 @@
 
       <ui-button
         v-if="!isConnected"
+        :disabled="janusInProgress"
         :type="1"
         class="channel-info__connect"
         size="small"
@@ -36,6 +37,7 @@
       </ui-button>
       <ui-button
         v-if="isConnected"
+        :disabled="janusInProgress"
         :type="4"
         class="channel-info__connect"
         size="small"
@@ -133,6 +135,10 @@ export default {
           return ICON_MAP['public'];
         }
       }
+    },
+
+    janusInProgress() {
+      return this.$store.getters['janus/inProgress'];
     },
 
   },
