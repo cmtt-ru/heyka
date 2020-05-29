@@ -21,7 +21,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   skipTaskBar: true,
   webPreferences: Object.freeze({
     nodeIntegration: true,
-    webSecurity: false,
+    webSecurity: true,
   }),
 });
 
@@ -183,12 +183,11 @@ class WindowManager {
         newWindow.setVisibleOnAllWorkspaces(true);
       }
 
+      // Set floating level for linux
       if (windowOptions.alwaysOnTop) {
-        newWindow.setAlwaysOnTop(true, 'floating', 2 + 1);
-      }
+        const FLOATING_LEVEL = 3;
 
-      if (windowOptions.openDevTools) {
-        newWindow.webContents.openDevTools();
+        newWindow.setAlwaysOnTop(true, 'floating', FLOATING_LEVEL);
       }
 
       newWindow.show();
