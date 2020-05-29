@@ -215,6 +215,7 @@ class VideoroomPlugin extends EventEmitter {
       media: {
         audioSend: false,
         videoSend: false,
+        data: true,
       },
       success: ourjsep => {
         // send local sdp with 'start' event to the janus
