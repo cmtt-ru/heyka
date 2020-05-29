@@ -162,7 +162,7 @@ export default {
 
       mediaStream = await navigator.mediaDevices.getUserMedia({
         audio: {
-          deviceId: this.selectedDevices.microphone,
+          deviceId: this.selectedMicrophone,
         },
       });
 
@@ -171,6 +171,7 @@ export default {
       harkInstance = hark(mediaStream, {});
 
       harkInstance.on('volume_change', (db) => {
+        // console.log(db);
         this.microphoneVolume = db + DB_COMPENSATOR;
       });
     },
