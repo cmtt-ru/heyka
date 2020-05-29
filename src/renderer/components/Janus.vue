@@ -60,16 +60,13 @@ export default {
      * @returns {nothing}
      */
     selectedChannelId(id, oldId) {
-      if (id === null || id === '') {
+      if (oldId !== null) {
+        this.log('Channel unselect');
         this.unselectChannel();
-
-        return this.log('Channel is deselected');
       }
-
-      if (oldId === null || oldId === '') {
+      if (id !== null) {
+        this.log('Channel select');
         this.selectChannel();
-
-        return this.log('Channel is selected for the first time');
       }
     },
 
