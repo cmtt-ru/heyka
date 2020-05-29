@@ -155,6 +155,13 @@ class WindowManager {
         browserWindow.setVisibleOnAllWorkspaces(true);
       }
 
+      // Set floating level for linux
+      if (windowOptions.alwaysOnTop) {
+        const FLOATING_LEVEL = 3;
+
+        browserWindow.setAlwaysOnTop(true, 'floating', FLOATING_LEVEL);
+      }
+
       browserWindow.show();
     });
 
