@@ -290,7 +290,7 @@ class JanusWrapper extends EventEmitter {
       this._debug(`Connect to janus. rest-api: ${this.__url}, ws-api: ${wsurl}`);
 
       this.__janus = new Janus({
-        server: [this.__url, wsurl],
+        server: [wsurl, this.__url],
         token: this.__workspaceToken,
         success: () => {
           resolve();
