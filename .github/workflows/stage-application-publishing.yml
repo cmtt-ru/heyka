@@ -44,7 +44,7 @@ jobs:
     - name: install dependencies
       run: npm install
     - name: set configuration
-      run: cp ./electron-builder-prod.json ./electron-builder.json
+      run: cp ./electron-builder-stage.json ./electron-builder.json
     - name: build for win and linux (without certificates)
       run: npm run electron:build -- --win --linux --publish always
       env:
