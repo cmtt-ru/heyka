@@ -1,13 +1,9 @@
 <template>
   <layout>
     <template #sidebar-header>
-      <div class="l-p-8 l-fw-m">
+      <div class="settings-title l-pl-12 l-fw-m">
         Styleguide
       </div>
-    </template>
-
-    <template #content-header>
-      <div class="l-p-8 l-fw-m" />
     </template>
 
     <template #sidebar-body>
@@ -36,20 +32,25 @@
         >
           Notifications
         </router-link>
-        <br>
-        <br>
-        <router-link
-          class="link"
-          :to="{name: 'settings'}"
-        >
-          Exit
-        </router-link>
       </div>
     </template>
 
     <template #content-body>
-      <div class="l-p-8">
-        <router-view />
+      <div>
+        <router-link
+          class="close-strip"
+          :to="{name: 'settings'}"
+        >
+          <ui-button
+            :type="7"
+            size="small"
+            icon="close"
+          />
+        </router-link>
+
+        <div class="l-p-8">
+          <router-view />
+        </div>
       </div>
     </template>
   </layout>
@@ -57,10 +58,12 @@
 
 <script>
 import Layout from './../Layout';
+import UiButton from '@components/UiButton';
 
 export default {
   components: {
     Layout,
+    UiButton,
   },
   data() {
     return {
@@ -76,7 +79,7 @@ export default {
 <style lang="stylus" scoped>
   .link
     display block
-    padding 4px 8px
+    padding 4px
     border-radius 4px
     font-size 14px
     text-decoration none
