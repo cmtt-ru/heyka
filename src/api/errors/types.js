@@ -4,6 +4,7 @@ export const errorMessages = {
   accessTokenExpired: 'Access token is expired',
   missingAuthentication: 'Missing authentication',
   badRequest: 'Invalid request params input',
+  serverIsDown: 'Server is down',
 
   // Universal error messages
   accessDenied: 'Access denied',

@@ -22,7 +22,11 @@ async function callErrorHandler(errorMessage, error) {
  * @returns {void}
  */
 export async function handleError(error) {
-  const errorMessage = error.response.data.message.toLowerCase();
+  if (error.response) {
+    const errorMessage = error.response.data.message.toLowerCase();
 
-  await callErrorHandler(errorMessage, error);
+    await callErrorHandler(errorMessage, error);
+  } else {
+    await callErrorHandler('server is down', error);
+  }
 }
