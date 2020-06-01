@@ -2,6 +2,7 @@ import store from '@/store';
 import eventNames from './eventNames';
 import { client, connect } from './client';
 import { getAccessToken } from '../tokens';
+import connectionCheck from '@classes/connectionCheck';
 
 /**
  * Connect to socket, authorize and bind events
@@ -93,8 +94,13 @@ function bindErrorEvents() {
     store.dispatch('setSocketConnected', false);
   });
 
+  client.on(eventNames.reconnecting, data => {
+    connectionCheck.handleSocketReconnecting(true);
+  });
+
   client.on(eventNames.reconnect, data => {
     console.log('reconnect', data);
+    connectionCheck.handleSocketReconnecting(false);
     authorize();
   });
 

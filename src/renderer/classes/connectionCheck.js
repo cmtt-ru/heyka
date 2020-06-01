@@ -14,6 +14,7 @@ class ConnectionCheck {
     this.notificationsIds = {
       onlineStatus: null,
       slowInternet: null,
+      socketReconnecting: null,
     };
   }
 
@@ -59,6 +60,28 @@ class ConnectionCheck {
       this.showNotification('slowInternet', true, notification);
     } else {
       this.showNotification('slowInternet', false);
+    }
+  }
+
+  /**
+   * Handle reconnecting socket
+   *
+   * @param {boolean} state – slow or not
+   * @returns {void}
+   */
+  async handleSocketReconnecting(state) {
+    if (state) {
+      const notification = {
+        preventSwipe: true,
+        infinite: true,
+        data: {
+          text: 'Trying to reconnect to socket server',
+        },
+      };
+
+      this.showNotification('socketReconnecting', true, notification);
+    } else {
+      this.showNotification('socketReconnecting', false);
     }
   }
 
