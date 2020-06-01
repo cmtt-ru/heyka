@@ -72,7 +72,7 @@ function createWindow() {
       loadingScreenID = null;
     }
     mainWindow.webContents.openDevTools();
-    console.log(systemPreferences.getMediaAccessStatus('microphone'));
+    // console.log(systemPreferences.getMediaAccessStatus('microphone'));
   });
 
   if (!isDevelopment) {
