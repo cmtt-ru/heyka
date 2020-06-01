@@ -1,5 +1,6 @@
 import store from '@/store';
 import hark from 'hark';
+const { systemPreferences } = require('electron').remote;
 
 /**
  * Audio element for audio test
@@ -51,17 +52,21 @@ class AudioCheck {
 
     audioTest.setSinkId(this._selectedDevices().speaker);
 
-    this.harkInstance = hark(this.mediaStream, {});
+    this.harkInstance = hark(this.mediaStream, {
+      interval: 1000,
+      threshold: -100,
+    });
 
     this.harkInstance.on('volume_change', (db) => {
       this.microphoneVolume = db;
+      // console.log(db);
     });
   }
 
   /**
-     * Destroy's hark instance and media stream
-     * @returns {void}
-     */
+   * Destroy's hark instance and media stream
+   * @returns {void}
+   */
   destroyMediaStream() {
     if (this.harkInstance) {
       this.harkInstance.stop();
@@ -77,29 +82,67 @@ class AudioCheck {
  * @returns {void}
  */
   async checkAudio() {
-    const MUTE_VOL = -100;
-
-    let vol = await store.state.app.microphoneVolume;
-
-    console.log(vol);
-
-    const checkDelay = 1000; // milliseconds
+    const checkDelay = 1100; // milliseconds
+    const vol1 = this.microphoneVolume;
 
     await new Promise(resolve => setTimeout(resolve, checkDelay));
+    const vol2 = this.microphoneVolume;
 
-    vol = await store.state.app.microphoneVolume;
+    if (vol1 === vol2) {
+      await this.__checkNoPermission();
+      await this.__checkNoSound();
+    }
+  }
 
-    console.log(vol);
+  /**
+   * Check if user doesn't have any mic available
+   * @returns {void}
+   */
+  __checkNoMic() {
 
-    if (vol === MUTE_VOL) {
-      //! can be a problem with audio Permission!
+  }
+
+  /**
+   * Check if user has somehow no sound detected (but has connected mic)
+   * @returns {void}
+   */
+  async __checkNoSound() {
+    const notification = {
+      data: {
+        text: `No audio detected. Maybe restart system?`,
+        buttons: [
+          {
+            text: 'Restart',
+            type: 12,
+            //! add restart functionality?
+          },
+          {
+            text: 'Discard',
+            type: 1,
+            close: true,
+          },
+        ],
+      },
+    };
+
+    await store.dispatch('app/addNotification', notification);
+  }
+
+  /**
+   * Check if user didn't give any permission to use his mic
+   * @returns {void}
+   */
+  async __checkNoPermission() {
+    if (process.platform !== 'darwin') {
+      return false;
+    }
+    if (systemPreferences.getMediaAccessStatus('microphone') !== 'granted') {
       const notification = {
         data: {
-          text: `No audio detected. Maybe restart system?`,
+          text: `You didn't give us access to mic. Go to Apple menu > System Preferences > Security & Privacy > Privacy > Microphone`,
           buttons: [
             {
               text: 'OK',
-              type: 1,
               close: true,
             },
           ],
