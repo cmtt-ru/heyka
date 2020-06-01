@@ -13,11 +13,13 @@ class ConnectionCheck {
 
     this.notificationsIds = {
       onlineStatus: null,
+      slowInternet: null,
     };
   }
 
   /**
    * Online/offline handler
+   *
    * @param {object} event – event
    * @returns {void}
    */
@@ -25,10 +27,7 @@ class ConnectionCheck {
     const state = event.type === 'online';
 
     if (state) {
-      if (this.notificationsIds.onlineStatus) {
-        await store.dispatch('app/removeNotification', this.notificationsIds.onlineStatus);
-        this.notificationsIds.onlineStatus = null;
-      }
+      this.showNotification('onlineStatus', false);
     } else {
       const notification = {
         infinite: true,
@@ -38,7 +37,53 @@ class ConnectionCheck {
         },
       };
 
-      this.notificationsIds.onlineStatus = await store.dispatch('app/addNotification', notification);
+      this.showNotification('onlineStatus', true, notification);
+    }
+  }
+
+  /**
+   * Handle slow internet connection
+   *
+   * @param {boolean} state – slow or not
+   * @returns {void}
+   */
+  async handleSlowInternet(state) {
+    if (state) {
+      const notification = {
+        preventSwipe: true,
+        data: {
+          text: 'It seems you have a slow Internet connection',
+        },
+      };
+
+      this.showNotification('slowInternet', true, notification);
+    } else {
+      this.showNotification('slowInternet', false);
+    }
+  }
+
+  /**
+   * Show or hide in-app notifications
+   *
+   * @param {string} name – notofication name
+   * @param {boolean} state – show or hide state
+   * @param {object} [options] – notification options
+   * @returns {Promise<void>}
+   */
+  async showNotification(name, state, options) {
+    const nid = this.notificationsIds[name];
+
+    if (state) {
+      if (nid) {
+        await this.showNotification(name, false);
+      }
+
+      this.notificationsIds[name] = await store.dispatch('app/addNotification', options);
+    } else {
+      if (nid) {
+        await store.dispatch('app/removeNotification', this.notificationsIds[name]);
+        this.notificationsIds[name] = null;
+      }
     }
   }
 }

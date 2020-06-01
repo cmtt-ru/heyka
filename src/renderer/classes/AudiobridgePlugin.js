@@ -106,6 +106,7 @@ class AudiobridgePlugin extends EventEmitter {
           return;
         }
         this._debug('slowLink', uplink);
+        this.emit('audio-slow-link', uplink);
       },
 
       // Handle a message from plugin
