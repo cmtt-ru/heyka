@@ -105,5 +105,11 @@
     "message": "Update is ready to install",
     "install": "Quit & Install",
     "later": "Later"
+  },
+  "connectionCheck": {
+    "onlineStatus": "It seems you are disconnected from the Internet",
+    "slowInternet": "It seems you have a slow Internet connection",
+    "socketReconnecting": "Trying to reconnect to socket server",
+    "serverAvailability": "It seems that server is down"
   }
 }
