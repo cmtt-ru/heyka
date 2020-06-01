@@ -25,7 +25,7 @@
       >
         <img
           class="workspace-avatar"
-          src="workspace.avatar"
+          :src="workspace.avatar"
         >
         {{ workspace.name }}
 
