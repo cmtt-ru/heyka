@@ -214,7 +214,7 @@ class AudioCheck extends EventEmitter {
     if (process.platform !== 'darwin') {
       return false;
     }
-    if (systemPreferences.getMediaAccessStatus('microphone') !== 'granted') {
+    if (systemPreferences.getMediaAccessStatus('microphone') === 'restricted' || systemPreferences.getMediaAccessStatus('microphone') === 'denied') {
       const notification = {
         data: {
           text: texts.nomicpermission.text,

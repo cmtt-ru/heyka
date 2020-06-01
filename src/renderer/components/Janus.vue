@@ -39,9 +39,6 @@ export default {
     ...mapState('janus', {
       janusOptions: state => state,
     }),
-    ...mapState('app', {
-      microphoneVolume: state => state.microphoneVolume,
-    }),
     ...mapState('me', {
       selectedChannelId: 'selectedChannelId',
       userId: 'id',

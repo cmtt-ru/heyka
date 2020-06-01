@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain, protocol, nativeTheme, systemPreferences } from 'electron';
+import { app, ipcMain, protocol, nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
@@ -72,7 +72,6 @@ function createWindow() {
       loadingScreenID = null;
     }
     mainWindow.webContents.openDevTools();
-    // console.log(systemPreferences.getMediaAccessStatus('microphone'));
   });
 
   if (!isDevelopment) {
