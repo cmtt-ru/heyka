@@ -1,4 +1,5 @@
 import store from '@/store';
+import i18n from '@/i18n';
 
 /**
  * Connection checking class
@@ -26,20 +27,21 @@ class ConnectionCheck {
    * @returns {void}
    */
   async handleOnlineStatus(event) {
+    const name = 'onlineStatus';
     const state = event.type === 'online';
 
     if (state) {
-      this.showNotification('onlineStatus', false);
+      this.showNotification(name, false);
     } else {
       const notification = {
         infinite: true,
         preventSwipe: true,
         data: {
-          text: 'It seems you are disconnected from the Internet',
+          text: this.getText(name),
         },
       };
 
-      this.showNotification('onlineStatus', true, notification);
+      this.showNotification(name, true, notification);
     }
   }
 
@@ -50,17 +52,19 @@ class ConnectionCheck {
    * @returns {void}
    */
   async handleSlowInternet(state) {
+    const name = 'slowInternet';
+
     if (state) {
       const notification = {
         preventSwipe: true,
         data: {
-          text: 'It seems you have a slow Internet connection',
+          text: this.getText(name),
         },
       };
 
-      this.showNotification('slowInternet', true, notification);
+      this.showNotification(name, true, notification);
     } else {
-      this.showNotification('slowInternet', false);
+      this.showNotification(name, false);
     }
   }
 
@@ -71,18 +75,20 @@ class ConnectionCheck {
    * @returns {void}
    */
   async handleSocketReconnecting(state) {
+    const name = 'socketReconnecting';
+
     if (state) {
       const notification = {
         preventSwipe: true,
         infinite: true,
         data: {
-          text: 'Trying to reconnect to socket server',
+          text: this.getText(name),
         },
       };
 
-      this.showNotification('socketReconnecting', true, notification);
+      this.showNotification(name, true, notification);
     } else {
-      this.showNotification('socketReconnecting', false);
+      this.showNotification(name, false);
     }
   }
 
@@ -93,18 +99,20 @@ class ConnectionCheck {
    * @returns {void}
    */
   async handleServerAvailability(state) {
+    const name = 'serverAvailability';
+
     if (state) {
-      this.showNotification('serverAvailability', false);
+      this.showNotification(name, false);
     } else {
       const notification = {
         preventSwipe: true,
         infinite: true,
         data: {
-          text: 'It seems that server is down',
+          text: this.getText(name),
         },
       };
 
-      this.showNotification('serverAvailability', true, notification);
+      this.showNotification(name, true, notification);
     }
   }
 
@@ -131,6 +139,15 @@ class ConnectionCheck {
         this.notificationsIds[name] = null;
       }
     }
+  }
+
+  /**
+   * Get needed texts from I18n-locale file
+   * @param {string} name – key
+   * @returns {Promise<*>}
+   */
+  getText(name) {
+    return i18n.t(`connectionCheck.${name}`);
   }
 }
 
