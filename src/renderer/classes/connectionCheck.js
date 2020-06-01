@@ -15,6 +15,7 @@ class ConnectionCheck {
       onlineStatus: null,
       slowInternet: null,
       socketReconnecting: null,
+      serverAvailability: null,
     };
   }
 
@@ -66,7 +67,7 @@ class ConnectionCheck {
   /**
    * Handle reconnecting socket
    *
-   * @param {boolean} state – slow or not
+   * @param {boolean} state – reconnecting or not
    * @returns {void}
    */
   async handleSocketReconnecting(state) {
@@ -82,6 +83,28 @@ class ConnectionCheck {
       this.showNotification('socketReconnecting', true, notification);
     } else {
       this.showNotification('socketReconnecting', false);
+    }
+  }
+
+  /**
+   * Handle server availability
+   *
+   * @param {boolean} state – down or not
+   * @returns {void}
+   */
+  async handleServerAvailability(state) {
+    if (state) {
+      this.showNotification('serverAvailability', false);
+    } else {
+      const notification = {
+        preventSwipe: true,
+        infinite: true,
+        data: {
+          text: 'It seems that server is down',
+        },
+      };
+
+      this.showNotification('serverAvailability', true, notification);
     }
   }
 
