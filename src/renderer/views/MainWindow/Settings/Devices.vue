@@ -44,22 +44,13 @@
 import UiButton from '@components/UiButton';
 import { UiSelect } from '@components/Form';
 import ProgressBar from '@components/ProgressBar';
-import hark from 'hark';
+import AudioCheck from '@classes/AudioCheck';
 
 /**
  * DB compensator
  * @type {number}
  */
 const DB_COMPENSATOR = 100;
-
-/**
- * Audio element for audio test
- * @type {HTMLAudioElement}
- */
-const audioTest = new Audio(require('@assets/audio/test-sound.mp3'));
-
-let mediaStream = null;
-let harkInstance = null;
 
 export default {
   components: {
@@ -137,11 +128,9 @@ export default {
   },
 
   mounted() {
-    this.changeDevice();
-  },
-
-  destroyed() {
-    this.destroyMediaStream();
+    AudioCheck.on('volume_change', (db) => {
+      this.microphoneVolume = Math.max(0, db + Math.round(DB_COMPENSATOR));
+    });
   },
 
   methods: {
@@ -150,44 +139,7 @@ export default {
      * @returns {void}
      */
     playTestSound() {
-      audioTest.play();
-    },
-
-    /**
-     * Change's device for test sound and microphone volume test
-     * @return {void}
-     */
-    async changeDevice() {
-      this.destroyMediaStream();
-
-      mediaStream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          deviceId: this.selectedMicrophone,
-        },
-      });
-
-      audioTest.setSinkId(this.selectedDevices.speaker);
-
-      harkInstance = hark(mediaStream, {});
-
-      harkInstance.on('volume_change', (db) => {
-        // console.log(db);
-        this.microphoneVolume = db + DB_COMPENSATOR;
-      });
-    },
-
-    /**
-     * Destroy's hark instance and media stream
-     * @returns {void}
-     */
-    destroyMediaStream() {
-      if (harkInstance) {
-        harkInstance.stop();
-      }
-
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-      }
+      AudioCheck.playTestSound();
     },
 
     /**

@@ -89,7 +89,6 @@ export default {
       }
       this.janusWrapper.setMuting(!state);
       if (state) {
-        console.log('button');
         AudioCheck.checkAudio();
       }
     },
@@ -209,6 +208,9 @@ export default {
       // common events
       janusWrapper.on(JanusWrapper.events.channelJoined, () => {
         this.setOperationFinish('join');
+        if (this.microphone) {
+          AudioCheck.checkAudio();
+        }
       });
 
       // audio events
@@ -341,55 +343,6 @@ export default {
         if (this.speakers) {
           this.$refs.audio.muted = false;
         }
-      }
-    },
-
-    async checkAudio() {
-      const HALF_VOL = -99;
-      const MUTE_VOL = -100;
-
-      console.log(this.microphoneVolume);
-
-      const checkDelay = 1000; // milliseconds
-
-      await new Promise(resolve => setTimeout(resolve, checkDelay));
-
-      console.log(this.microphoneVolume);
-
-      if (this.microphoneVolume === MUTE_VOL) {
-        //! can be a problem with Janus! Mb tell user we have server problems?
-        const notification = {
-          data: {
-            text: `No audio detected. Maybe restart system?`,
-            buttons: [
-              {
-                text: 'OK',
-                type: 1,
-                close: true,
-              },
-            ],
-          },
-        };
-
-        await this.$store.dispatch('app/addNotification', notification);
-      } else if (this.microphoneVolume < HALF_VOL) {
-        const notification = {
-          data: {
-            text: `Speak up!`,
-            buttons: [
-              {
-                text: 'Connect',
-                type: 1,
-              },
-              {
-                text: 'Cancel',
-                close: true,
-              },
-            ],
-          },
-        };
-
-        await this.$store.dispatch('app/addNotification', notification);
       }
     },
 
