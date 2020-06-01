@@ -92,8 +92,8 @@
     "userProfile": {
       "profile": "Profile",
       "online": "Online",
-      "idle": "Idle",
-      "offline": "Offline"
+      "idle": "Away",
+      "offline": "Invisible"
     },
     "userInChannel": {
       "profile": "Open profile",
