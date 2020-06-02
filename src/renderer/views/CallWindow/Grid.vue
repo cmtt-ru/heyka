@@ -62,7 +62,11 @@
             :size="100"
             square
           />
-          <div class="badge cell__username">
+
+          <div
+            class="badge cell__username"
+            :class="{'cell__username--hidden': isStreaming(user.id)}"
+          >
             <div v-textfade>
               {{ user.name }}
             </div>
@@ -472,9 +476,12 @@ export default {
       position absolute
 
     .badge--hidden
+    .cell__username--hidden
       opacity 0
+      transition opacity 0.15s ease
 
     .cell__inner:hover .badge--hidden
+    .cell__inner:hover .cell__username--hidden
       opacity 1
 
     .badge--hidden.context-menu--opened
