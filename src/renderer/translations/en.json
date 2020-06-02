@@ -80,7 +80,7 @@
   "popover": {
     "workspace": {
       "invite": "Invite members",
-      "manage": "Manager workspace",
+      "manage": "Manage workspace",
       "new": "New workspace",
       "settings": "Settings",
       "quit": "Quit Heyka"
@@ -105,5 +105,14 @@
     "message": "Update is ready to install",
     "install": "Quit & Install",
     "later": "Later"
+  },
+  "tooltips": {
+    "search": "Search",
+    "newChannel": "New Channel",
+    "newUser": "Invite user",
+    "microphoneOn" : "Unmute",
+    "microphoneOff": "Mute",
+    "speakerOn": "Sound on",
+    "speakerOff": "Sound off"
   }
 }
