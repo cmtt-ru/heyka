@@ -30,9 +30,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
  */
 class WindowManager {
   /**
-   * Inits windowmanager class, assigns mainwindow
-   * @param {object} mainWindow mainWindow instance
-   * @returns {void}
+   * Inits window manager class, assigns mainwindow
    */
   constructor() {
     this.windows = [];
