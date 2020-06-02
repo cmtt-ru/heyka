@@ -71,7 +71,10 @@ function createWindow() {
       WindowManager.closeWindow({ id: loadingScreenID });
       loadingScreenID = null;
     }
-    mainWindow.webContents.openDevTools();
+
+    if (isDevelopment) {
+      mainWindow.webContents.openDevTools();
+    }
   });
 
   if (!isDevelopment) {
