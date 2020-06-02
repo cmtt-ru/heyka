@@ -159,7 +159,7 @@ class AudioCheck extends EventEmitter {
    */
   async _checkNoSound() {
     console.log(this._devices().microphones);
-    if (this._devices().microphones.length === 2) {
+    if (this._devices().microphones.length > 2) {
       const notification = {
         data: {
           text: texts.othermic.text,
