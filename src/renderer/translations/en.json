@@ -109,7 +109,7 @@
   "tooltips": {
     "search": "Search",
     "newChannel": "New Channel",
-    "newUser": "Add to workspace",
+    "newUser": "Invite user",
     "microphoneOn" : "Unmute",
     "microphoneOff": "Mute",
     "speakerOn": "Sound on",
