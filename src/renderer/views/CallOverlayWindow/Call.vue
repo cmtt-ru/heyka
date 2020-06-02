@@ -97,7 +97,6 @@ export default {
         display block
         width 100%
         height 213px
-        background #333
         object-fit cover
 
 </style>
