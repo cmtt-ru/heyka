@@ -352,7 +352,7 @@ export default {
      * @returns {boolean}
      */
     isStreaming(id) {
-      if (this.getUsersWhoSharesMedia.includes(id)) {
+      if (this.getUsersWhoShareMedia.includes(id)) {
         return true;
       }
 
