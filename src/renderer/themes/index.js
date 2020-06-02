@@ -81,7 +81,6 @@ class Themes {
  */
   __setTheme(name) {
     this.storeVue.currentTheme = name;
-    console.log(this.storeVue.currentTheme, this.storeVue.auto);
     heykaStore.set('theme', {
       name: this.storeVue.currentTheme,
       auto: this.storeVue.auto,
