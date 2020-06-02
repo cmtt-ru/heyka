@@ -46,7 +46,6 @@ function determineLocale() {
     return heykaStore.get('language');
   } else if (supportedLocales.includes(remote.app.getLocale())) {
     heykaStore.set('language', remote.app.getLocale());
-    console.log('remote locale:', remote.app.getLocale());
 
     return remote.app.getLocale();
   } else {
