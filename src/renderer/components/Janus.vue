@@ -18,6 +18,8 @@
 import JanusWrapper from '@classes/JanusWrapper.js';
 import StreamHost from '@classes/StreamSharing/Host';
 import mediaCapturer from '@classes/mediaCapturer';
+import AudioCheck from '@classes/AudioCheck';
+
 import { mapState } from 'vuex';
 const WAIT_PUBLISHER_INVERVAL = 100;
 const WAIT_PUBLISHER_ATTEMPTS = 20;
@@ -80,6 +82,9 @@ export default {
         return;
       }
       this.janusWrapper.setMuting(!state);
+      if (state) {
+        AudioCheck.checkAudio();
+      }
     },
 
     /**
@@ -161,6 +166,9 @@ export default {
       this.janusWrapper.disconnect();
     }
   },
+  destroyed() {
+    AudioCheck.destroyMediaStream();
+  },
   methods: {
     setOperationStart(operation) {
       this.$store.dispatch('janus/setInProgress', true);
@@ -194,6 +202,9 @@ export default {
       // common events
       janusWrapper.on(JanusWrapper.events.channelJoined, () => {
         this.setOperationFinish('join');
+        if (this.microphone) {
+          AudioCheck.checkAudio();
+        }
       });
 
       // audio events

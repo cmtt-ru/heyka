@@ -102,6 +102,27 @@
       "mute": "Mute for all"
     }
   },
+  "notifications":{
+    "nomic": {
+      "text": "No microphone detected!",
+      "button1": "Shit"
+    },
+    "othermic": {
+      "text": "Please choose another microphone",
+      "button1": "Settings",
+      "button2": "Cancel"
+    },
+    "noaudio": {
+      "text": "No audio detected. Maybe restart system?",
+      "button1": "Restart",
+      "button2": "Cancel"
+    },
+    "nomicpermission": {
+      "text": "You didn't give us access to mic. You can change that in system preferences",
+      "button1": "Open",
+      "button2": "Cancel"
+    }
+  },
   "autoUpdate": {
     "message": "Update is ready to install",
     "install": "Quit & Install",
