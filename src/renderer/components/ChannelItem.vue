@@ -146,7 +146,7 @@ export default {
     background-color var(--item-bg-hover)
 
   &__type
-    margin 4px 4px 0 4px
+    margin 3px 4px 0 4px
     display flex
 
   &__name-wrapper
