@@ -15,7 +15,8 @@
       "inviteBySlackButton": "Send invite by Slack",
       "localTime": "Local time",
       "email": "Email"
-    }
+    },
+    "empty": "So far you’ve been disconnected\nfrom all channels"
   },
   "settings": {
     "labels": {
@@ -80,7 +81,7 @@
   "popover": {
     "workspace": {
       "invite": "Invite members",
-      "manage": "Manager workspace",
+      "manage": "Manage workspace",
       "new": "New workspace",
       "settings": "Settings",
       "quit": "Quit Heyka"
@@ -92,13 +93,34 @@
     "userProfile": {
       "profile": "Profile",
       "online": "Online",
-      "idle": "Idle",
-      "offline": "Offline"
+      "idle": "Away",
+      "offline": "Invisible"
     },
     "userInChannel": {
       "profile": "Open profile",
       "poke": "Poke",
       "mute": "Mute for all"
+    }
+  },
+  "notifications":{
+    "nomic": {
+      "text": "No microphone detected!",
+      "button1": "Shit"
+    },
+    "othermic": {
+      "text": "Please choose another microphone",
+      "button1": "Settings",
+      "button2": "Cancel"
+    },
+    "noaudio": {
+      "text": "No audio detected. Maybe restart system?",
+      "button1": "Restart",
+      "button2": "Cancel"
+    },
+    "nomicpermission": {
+      "text": "You didn't give us access to mic. You can change that in system preferences",
+      "button1": "Open",
+      "button2": "Cancel"
     }
   },
   "autoUpdate": {
@@ -111,5 +133,14 @@
     "slowInternet": "It seems you have a slow Internet connection",
     "socketReconnecting": "Trying to reconnect to socket server",
     "serverAvailability": "It seems that server is down"
+  },
+  "tooltips": {
+    "search": "Search",
+    "newChannel": "New Channel",
+    "newUser": "Invite user",
+    "microphoneOn" : "Unmute",
+    "microphoneOff": "Mute",
+    "speakerOn": "Sound on",
+    "speakerOff": "Sound off"
   }
 }

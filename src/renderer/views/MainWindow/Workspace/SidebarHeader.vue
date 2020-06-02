@@ -28,6 +28,7 @@
         />
         <ui-button
           v-show="!inputActive"
+          v-tooltip="$t('tooltips.search')"
           :type="7"
           class="workspace__search__icon"
           size="small"
