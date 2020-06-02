@@ -10,13 +10,17 @@ const heykaStore = new Store({
 
 Vue.use(VueI18n);
 
+const supportedLocales = [];
+
+const messages = loadLocaleMessages();
+
 /**
  * Loads language files
  * @returns {array} all translation sheets
  */
 function loadLocaleMessages() {
   const locales = require.context('./translations', true, /[A-Za-z0-9-_,\s]+\.json$/i);
-  const messages = {};
+  const msgs = {};
 
   locales.keys().forEach(key => {
     const matched = key.match(/([A-Za-z0-9-_]+)\./i);
@@ -24,18 +28,37 @@ function loadLocaleMessages() {
     if (matched && matched.length > 1) {
       const locale = matched[1];
 
-      messages[locale] = locales(key);
+      supportedLocales.push(locale);
+
+      msgs[locale] = locales(key);
     }
   });
 
-  return messages;
+  return msgs;
+}
+
+/**
+ * Select locale. Get locale from electron store, if none we use system language, if none/not_supported we use 'en'
+ * @returns {string} locale's short string (eg. 'en')
+ */
+function determineLocale() {
+  if (heykaStore.has('language')) {
+    return heykaStore.get('language');
+  } else if (supportedLocales.includes(remote.app.getLocale())) {
+    heykaStore.set('language', remote.app.getLocale());
+
+    return remote.app.getLocale();
+  } else {
+    heykaStore.set('language', 'en');
+
+    return 'en';
+  }
 }
 
 export default new VueI18n({
-  /* Get theme from electron store, if none we use system language, if none/not_supported we use 'en' */
-  locale: heykaStore.get('language') || remote.app.getLocale() || 'en',
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
-  messages: loadLocaleMessages(),
+  locale: determineLocale(),
+  fallbackLocale: 'en',
+  messages,
 });
 
 const defaultPluralization = VueI18n.prototype.getChoiceIndex;
