@@ -61,7 +61,7 @@ export default new VueI18n({
   messages,
 });
 
-const defaultPluralization = VueI18n.prototype.getChoiceIndex;
+// const defaultPluralization = VueI18n.prototype.getChoiceIndex;
 
 /**
  * Custom pluralization method for russian locale
@@ -70,25 +70,25 @@ const defaultPluralization = VueI18n.prototype.getChoiceIndex;
  * @param {number} choicesLength - an overall amount of available choices
  * @returns {number} index -  a final choice index to select plural word by
  */
-VueI18n.prototype.getChoiceIndex = function (choice, choicesLength) {
-  if (this.locale !== 'ru') {
-    return defaultPluralization.call(this, choice, choicesLength);
-  }
-
-  if (choice === 0) {
-    return 0;
-  }
-
-  const teen = choice > 10 && choice < 20;
-  const endsWithOne = choice % 10 === 1;
-
-  if (!teen && endsWithOne) {
-    return 1;
-  }
-
-  if (!teen && choice % 10 >= 2 && choice % 10 <= 4) {
-    return 2;
-  }
-
-  return (choicesLength < 4) ? 2 : 3;
-};
+// VueI18n.prototype.getChoiceIndex = function (choice, choicesLength) {
+//   if (this.locale !== 'ru') {
+//     return defaultPluralization.call(this, choice, choicesLength);
+//   }
+//
+//   if (choice === 0) {
+//     return 0;
+//   }
+//
+//   const teen = choice > 10 && choice < 20;
+//   const endsWithOne = choice % 10 === 1;
+//
+//   if (!teen && endsWithOne) {
+//     return 1;
+//   }
+//
+//   if (!teen && choice % 10 >= 2 && choice % 10 <= 4) {
+//     return 2;
+//   }
+//
+//   return (choicesLength < 4) ? 2 : 3;
+// };
