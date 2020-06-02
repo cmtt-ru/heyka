@@ -1,7 +1,7 @@
 <template>
   <layout>
     <template #sidebar-header>
-      <div class="l-p-8 l-fw-m">
+      <div class="settings-title l-pl-12 l-fw-m">
         {{ texts.header }}
       </div>
     </template>
@@ -59,7 +59,6 @@
         >
           <ui-button
             :type="7"
-            class="channel-info__more"
             size="small"
             icon="close"
           />
@@ -120,7 +119,7 @@ export default {
 
 .link
     display block
-    padding 4px 8px
+    padding 4px
     border-radius 4px
     font-size 14px
     text-decoration none
@@ -143,5 +142,9 @@ export default {
   display flex
   flex-direction row
   justify-content flex-end
+
+.settings-title
+  height 40px
+  line-height 40px
 
 </style>
