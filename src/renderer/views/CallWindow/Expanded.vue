@@ -223,6 +223,8 @@ export default {
     background-color var(--button-bg-5)
     padding 8px
     border-radius 4px
+    font-weight 500
+    align-items center
 
     &__avatar
       margin-right 8px
