@@ -19,6 +19,7 @@
         class="channel-header__label l-ml-4"
       >{{ texts.channelsHeader }}</a>
       <ui-button
+        v-tooltip="$t('tooltips.newChannel')"
         :type="7"
         class="channel-header__add"
         size="small"
@@ -57,6 +58,7 @@
         class="channel-header__label l-ml-4"
       >{{ texts.usersHeader }}</a>
       <ui-button
+        v-tooltip="$t('tooltips.newUser')"
         :type="7"
         class="channel-header__add"
         size="small"

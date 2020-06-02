@@ -1,8 +1,13 @@
 import Vue from 'vue';
 import themes from './themes.json';
-import store from '@/store';
 import { ipcRenderer } from 'electron';
+import Store from 'electron-store';
+import vuex from '@/store';
 const { nativeTheme } = require('electron').remote;
+
+const heykaStore = new Store({
+  name: 'app',
+});
 
 /**
  * A class that handles themes
@@ -23,8 +28,11 @@ class Themes {
     });
     this.storeVue.themeArray = themes;
 
-    /* Get current theme and auto mode from vuex store */
-    const theme = { ...store.state.app.theme };
+    /* Get current theme and auto mode from local store */
+    const theme = heykaStore.get('theme', {
+      name: 'light',
+      auto: true,
+    });
 
     this.storeVue.auto = theme.auto;
     this.storeVue.currentTheme = theme.name;
@@ -73,6 +81,14 @@ class Themes {
  */
   __setTheme(name) {
     this.storeVue.currentTheme = name;
+    heykaStore.set('theme', {
+      name: this.storeVue.currentTheme,
+      auto: this.storeVue.auto,
+    });
+    vuex.commit('app/SET_THEME', {
+      name: this.storeVue.currentTheme,
+      auto: this.storeVue.auto,
+    });
     if (Object.prototype.hasOwnProperty.call(this.storeVue.themeArray, name)) {
       for (const prop in this.storeVue.themeArray[name].colors['root']) { // задаём глобальные переменные css
         document.documentElement.style.setProperty(prop, this.storeVue.themeArray[name].colors['root'][prop]);

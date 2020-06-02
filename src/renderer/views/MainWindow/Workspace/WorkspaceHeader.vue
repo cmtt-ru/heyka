@@ -5,14 +5,14 @@
       class="user"
     >
       <microphone
-        v-tooltip="mediaState.microphone ? 'Mute' : 'Unmute'"
+        v-tooltip="microphoneTooltip"
         class="user__status"
         :active="user.microphone"
         @click.native="switchProp('microphone')"
       />
 
       <ui-button
-        v-tooltip="mediaState.speakers ? 'Deafen' : 'Undeafen'"
+        v-tooltip="speakerTooltip"
         :type="7"
         class="user__status"
         size="small"
@@ -95,6 +95,30 @@ export default {
         speakers: ICON_MAP.speakers[this.user.speakers],
         screen: ICON_MAP.screen[this.user.screen],
       };
+    },
+
+    /**
+     * Microphone tooltip
+     * @returns {string}
+     */
+    microphoneTooltip() {
+      if (this.mediaState.microphone) {
+        return this.$t('tooltips.microphoneOff');
+      } else {
+        return this.$t('tooltips.microphoneOn');
+      }
+    },
+
+    /**
+     * Speaker tooltip
+     * @returns {string}
+     */
+    speakerTooltip() {
+      if (this.mediaState.speaker) {
+        return this.$t('tooltips.speakerOff');
+      } else {
+        return this.$t('tooltips.speakerOn');
+      }
     },
   },
 

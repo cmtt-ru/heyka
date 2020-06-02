@@ -1,6 +1,6 @@
 {
   "name": "heyka",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -27,6 +27,7 @@
     "draggable-vue-directive": "^2.1.0",
     "electron-builder": "^22.6.0",
     "electron-notarize": "^0.3.0",
+    "electron-shutdown-command": "0.0.8",
     "electron-store": "^5.1.1",
     "electron-updater": "^2.2.4",
     "fast-levenshtein": "^2.0.6",
