@@ -286,6 +286,7 @@ export default {
     &__content
       flex 1 1 auto
       display flex
+      -webkit-app-region no-drag
 
     &__options
       margin-top 13px
@@ -297,7 +298,6 @@ export default {
       justify-content space-between
       padding 0 20px
       flex-grow 1
-      -webkit-app-region no-drag
 
       &[count="1"]
         & ^[-2]__source
