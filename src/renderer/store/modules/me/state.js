@@ -35,7 +35,7 @@ const state = () => {
   return {
     id: '',
     selectedWorkspaceId: meStore.get('selectedWorkspaceId'),
-    selectedChannelId: '',
+    selectedChannelId: null,
     mediaState: initialMediaState,
     pokes: [],
   };
