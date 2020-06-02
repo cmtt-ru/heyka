@@ -14,8 +14,8 @@
         <div>{{ $tc("call.grid.users", usersCount) }}</div>
       </div>
       <ui-button
+        class="top-content__devices"
         v-popover.click="{name: 'Devices'}"
-        class="call-buttons__button"
         :type="7"
         size="medium"
         icon="settings"
@@ -384,7 +384,7 @@ export default {
   .top-content
     height 116px
     box-sizing border-box
-    padding 24px 40px
+    padding 24px 30px 24px 40px
     font-weight 500
     font-size 36px
     line-height 42px
@@ -392,6 +392,9 @@ export default {
     flex-direction row
     justify-content space-between
     align-items flex-start
+
+    &__devices
+      margin-top 6px
 
   .left-info
     display grid
