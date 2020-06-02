@@ -15,7 +15,8 @@
       "inviteBySlackButton": "Send invite by Slack",
       "localTime": "Local time",
       "email": "Email"
-    }
+    },
+    "empty": "So far you’ve been disconnected\nfrom all channels"
   },
   "settings": {
     "labels": {
