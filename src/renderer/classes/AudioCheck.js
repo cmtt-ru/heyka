@@ -223,7 +223,7 @@ class AudioCheck extends EventEmitter {
               text: texts.nomicpermission.button1,
               type: 1,
               action: () => {
-                window.open('x-apple.systempreferences:', '_blank');
+                window.open('x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone', '_blank');
               },
             },
             {
