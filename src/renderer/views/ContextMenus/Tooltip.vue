@@ -33,6 +33,7 @@ export default {
     border-radius 6px
     box-sizing border-box
     transition opacity .5s
+    z-index 1000
 
     &__arrow
       position absolute
