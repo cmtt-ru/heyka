@@ -24,7 +24,6 @@ class AudioCheck extends EventEmitter {
  */
   constructor() {
     super();
-    this._changeDevice();
     this.__mediaStream = null;
     this.__harkInstance = null;
   }
@@ -54,15 +53,15 @@ class AudioCheck extends EventEmitter {
   }
 
   /**
-     * Change's device for test sound and microphone volume test
+     * Start media stream for microphone volume test
      * @return {void}
      */
-  async _changeDevice() {
+  async startMediaStream() {
     this.destroyMediaStream();
 
     this.__mediaStream = await navigator.mediaDevices.getUserMedia({
       audio: {
-        deviceId: this._selectedMicrophone,
+        deviceId: this._selectedMicrophone(),
       },
     });
 
@@ -102,12 +101,14 @@ class AudioCheck extends EventEmitter {
 
   /**
  * Check audio troubles
- * @returns {void}
+ * @returns {boolean}
  */
   async checkAudio() {
     if (this._checkNoMic()) {
       return true;
-    };
+    }
+
+    this.startMediaStream();
 
     const checkDelay = 100; // milliseconds
     const sufficientAmount = 20; // times
@@ -116,13 +117,20 @@ class AudioCheck extends EventEmitter {
     for (let i = 0; i < sufficientAmount; i++) {
       await new Promise(resolve => setTimeout(resolve, checkDelay));
       if (this.microphoneVolume !== vol1) {
+        this.destroyMediaStream();
+
         return true;
       }
     }
 
     if (this._checkNoPermission()) {
+      this.destroyMediaStream();
+
       return true;
-    };
+    }
+
+    this.destroyMediaStream();
+
     this._checkNoSound();
   }
 
@@ -150,7 +158,7 @@ class AudioCheck extends EventEmitter {
       return true;
     } else {
       return false;
-    };
+    }
   }
 
   /**
@@ -158,7 +166,6 @@ class AudioCheck extends EventEmitter {
    * @returns {void}
    */
   async _checkNoSound() {
-    console.log(this._devices().microphones);
     if (this._devices().microphones.length > 2) {
       const notification = {
         data: {
@@ -214,6 +221,7 @@ class AudioCheck extends EventEmitter {
     if (process.platform !== 'darwin') {
       return false;
     }
+
     if (systemPreferences.getMediaAccessStatus('microphone') === 'restricted' || systemPreferences.getMediaAccessStatus('microphone') === 'denied') {
       const notification = {
         data: {
@@ -239,7 +247,7 @@ class AudioCheck extends EventEmitter {
       return true;
     } else {
       return false;
-    };
+    }
   }
 }
 
