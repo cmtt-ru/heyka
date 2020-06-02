@@ -177,6 +177,9 @@ export default {
       this.sourceButton = type;
       this.sources = await mediaCapturer.getSources(type, THUMBNAIL_SIZE);
       this.selectedSource = null;
+
+      /** Select first source */
+      this.handleSource(this.sources[0]);
     },
 
     /**
