@@ -18,9 +18,10 @@
 import JanusWrapper from '@classes/JanusWrapper.js';
 import StreamHost from '@classes/StreamSharing/Host';
 import mediaCapturer from '@classes/mediaCapturer';
+import connectionCheck from '@classes/connectionCheck';
 import AudioCheck from '@classes/AudioCheck';
-
 import { mapState } from 'vuex';
+
 const WAIT_PUBLISHER_INVERVAL = 100;
 const WAIT_PUBLISHER_ATTEMPTS = 20;
 
@@ -213,12 +214,14 @@ export default {
       janusWrapper.on(JanusWrapper.events.audioStreamActive, this.onAudioStreamActive.bind(this));
       janusWrapper.on(JanusWrapper.events.speaking, this.onSpeakingChange.bind(this));
       janusWrapper.on(JanusWrapper.events.volumeChange, this.onVolumeChange.bind(this));
+      janusWrapper.on(JanusWrapper.events.audioSlowLink, this.onAudioSlowLink.bind(this));
 
       // video events
       janusWrapper.on(JanusWrapper.events.videoPublishersList, this.onVideoPublishersList.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherJoined, this.onVideoPublisherJoined.bind(this));
       janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
       janusWrapper.on(JanusWrapper.events.localVideoStream, this.onLocalVideoStream.bind(this));
+      janusWrapper.on(JanusWrapper.events.videoSlowLink, this.onVideoSlowLink.bind(this));
       janusWrapper.on(JanusWrapper.events.successVideoPublishing, () => {
         this.setOperationFinish('publish');
       });
@@ -530,8 +533,26 @@ export default {
     },
 
     /**
+     * Handle audio slow link
+     * @param {boolean} uplink - false when all of our packets is not received by Janus, true – some packets lost
+     * @returns {void}
+     */
+    onAudioSlowLink(uplink) {
+      connectionCheck.handleSlowInternet(true);
+    },
+
+    /**
+     * Handle video slow link
+     * @param {boolean} uplink - false when all of our packets is not received by Janus, true – some packets lost
+     * @returns {void}
+     */
+    onVideoSlowLink(uplink) {
+      connectionCheck.handleSlowInternet(true);
+    },
+
+    /**
      * Internal log function
-     * @returns {nothing}
+     * @returns {void}
      */
     log() {
       console.log('JANUS.VUE: ', ...arguments);
