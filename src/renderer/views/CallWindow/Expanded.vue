@@ -2,6 +2,7 @@
   <div
     class="expanded-window"
     :style="$themes.getColors('popover')"
+    @dblclick="showGridHandler"
   >
     <!-- <svg
       class="svg-border"
@@ -165,6 +166,14 @@ export default {
       this.$refs.video.onloadedmetadata = () => {
         this.$refs.video.play();
       };
+    },
+
+    /**
+     * Show grid handler
+     * @returns {void}
+     */
+    showGridHandler() {
+      this.$router.push('/call-window');
     },
   },
 
