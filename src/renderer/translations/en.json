@@ -105,5 +105,14 @@
     "message": "Update is ready to install",
     "install": "Quit & Install",
     "later": "Later"
+  },
+  "tooltips": {
+    "search": "Search",
+    "newChannel": "New Channel",
+    "newUser": "Add to workspace",
+    "microphoneOn" : "Unmute",
+    "microphoneOff": "Mute",
+    "speakerOn": "Sound on",
+    "speakerOff": "Sound off"
   }
 }
