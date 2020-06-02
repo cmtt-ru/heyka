@@ -10,7 +10,7 @@ import mediaDevices from '@classes/mediaDevices';
 import createMutationsSharer from 'vuex-shared-mutations';
 import broadcastActions from '@classes/broadcastActions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
-import broadcastState from '../classes/broadcastState';
+import broadcastState from '@classes/broadcastState';
 
 const debug = process.env.NODE_ENV !== 'production';
 

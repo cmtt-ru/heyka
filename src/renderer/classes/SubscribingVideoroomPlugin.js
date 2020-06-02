@@ -106,6 +106,7 @@ class VideoroomPlugin extends EventEmitter {
           return;
         }
         this._debug('slowLink', uplink);
+        this.emit('video-slow-link', uplink);
       },
 
       // Handle a message from plugin

@@ -99,17 +99,36 @@ export default {
     heykaStore.set('collectAnalytics', collectAnalytics);
   },
 
-  addNotification({ commit }, notif) {
+  /**
+   * Add notification
+   *
+   * @param {function} commit – store commit
+   * @param {object} options – notification options
+   * @returns {string} id – notification id
+   */
+  addNotification({ commit }, options) {
     const id = uuidV4();
     const notification = {
       id,
-      ...notif,
+      ...options,
     };
 
     commit('ADD_NOTIFICATION', notification);
 
     return id;
   },
+
+  /**
+   * Remove notification
+   *
+   * @param {function} commit – store commit
+   * @param {string} id – notification id
+   * @returns {void}
+   */
+  removeNotification({ commit }, id) {
+    commit('REMOVE_NOTIFICATION', id);
+  },
+
   /**
    * Set selected devices
    *
