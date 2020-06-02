@@ -53,6 +53,8 @@ export default {
     ...mapState([ 'isSocketConnected' ]),
     ...mapState('app', {
       selectedCameraDevice: state => state.selectedDevices.camera,
+      selectedMicrophoneDevice: state => state.selectedDevices.microphone,
+      selectedSpeakerDevice: state => state.selectedDevices.speaker,
     }),
   },
   watch: {
@@ -154,6 +156,10 @@ export default {
 
     videoPublishers(val) {
       console.log('%c videoPublishers:', 'background: green;', Object.keys(val).length, val);
+    },
+
+    selectedSpeakerDevice(deviceId) {
+      this.$refs.audio.setSinkId(deviceId);
     },
   },
   async created() {
@@ -304,6 +310,7 @@ export default {
     onRemoteAudioStream(stream) {
       this.log('Attach audio stream to the audio element');
       JanusWrapper.attachMediaStream(this.$refs.audio, stream);
+      this.$refs.audio.muted = !this.speakers;
     },
 
     /**
