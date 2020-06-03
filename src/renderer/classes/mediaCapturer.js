@@ -80,6 +80,9 @@ class MediaCapturer extends EventEmitter {
     stream.getVideoTracks().forEach(track => {
       track.stop();
     });
+    stream.getAudioTracks().forEach(track => {
+      track.stop();
+    });
   }
 }
 
