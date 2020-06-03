@@ -2,6 +2,12 @@ import store from '@/store';
 import i18n from '@/i18n';
 
 /**
+ * User for make some debounce for slow internet event
+ * @type {number}
+ */
+const SLOW_INTERNET_INTERVAL = 2000;
+
+/**
  * Connection checking class
  */
 class ConnectionCheck {
@@ -18,6 +24,8 @@ class ConnectionCheck {
       socketReconnecting: null,
       serverAvailability: null,
     };
+
+    this.slowInternetLastCallTime = null;
   }
 
   /**
@@ -53,19 +61,24 @@ class ConnectionCheck {
    */
   async handleSlowInternet(state) {
     const name = 'slowInternet';
+    const now = Date.now();
 
-    if (state) {
-      const notification = {
-        preventSwipe: true,
-        data: {
-          text: this.getText(name),
-        },
-      };
+    if (this.slowInternetLastCallTime && now - this.slowInternetLastCallTime < SLOW_INTERNET_INTERVAL) {
+      if (state) {
+        const notification = {
+          preventSwipe: true,
+          data: {
+            text: this.getText(name),
+          },
+        };
 
-      this.showNotification(name, true, notification);
-    } else {
-      this.showNotification(name, false);
+        this.showNotification(name, true, notification);
+      } else {
+        this.showNotification(name, false);
+      }
     }
+
+    this.slowInternetLastCallTime = now;
   }
 
   /**
@@ -77,7 +90,7 @@ class ConnectionCheck {
   async handleSocketReconnecting(state) {
     const name = 'socketReconnecting';
 
-    if (state) {
+    if (state && !this.notificationsIds.onlineStatus) {
       const notification = {
         preventSwipe: true,
         infinite: true,
@@ -101,7 +114,7 @@ class ConnectionCheck {
   async handleServerAvailability(state) {
     const name = 'serverAvailability';
 
-    if (state) {
+    if (state && !this.notificationsIds.onlineStatus) {
       this.showNotification(name, false);
     } else {
       const notification = {
