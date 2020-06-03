@@ -142,6 +142,17 @@ class Window extends EventEmitter {
   }
 
   /**
+   * Toggle console visibility - send signal to main process
+   * @returns {void}
+   */
+  toggleConsole() {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'console',
+      id: this.windowId,
+    });
+  }
+
+  /**
    * Open url in window - send signal to main process
    * @param {string} route route to move to
    * @param {string} url url to move to (if not index.html)

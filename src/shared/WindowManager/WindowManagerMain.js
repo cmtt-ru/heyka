@@ -40,6 +40,7 @@ class WindowManager {
       blur: this.blurWindow,
       size: this.sizeWindow,
       fullscreen: this.toggleFullscreenWindow,
+      console: this.toggleConsoleWindow,
       openurl: this.openUrl,
     };
 
@@ -294,6 +295,15 @@ class WindowManager {
    */
   toggleFullscreenWindow({ id }) {
     this.windows[id].browserWindow.setFullScreen(!this.windows[id].isFullScreen());
+  }
+
+  /**
+   * Toggle console visibility
+   * @param {string} id - ID of window in question
+   * @returns {void}
+   */
+  toggleConsoleWindow({ id }) {
+    this.windows[id].browserWindow.webContents.toggleDevTools();
   }
 
   /**
