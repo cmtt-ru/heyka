@@ -59,6 +59,7 @@ export default new VueI18n({
   locale: determineLocale(),
   fallbackLocale: 'en',
   messages,
+  silentTranslationWarn: true,
 });
 
 // const defaultPluralization = VueI18n.prototype.getChoiceIndex;
