@@ -8,7 +8,7 @@
   },
   "main": {
     "width": 500,
-    "height": 600,
+    "height": 500,
     "frame": true,
     "resizable": false
   },
