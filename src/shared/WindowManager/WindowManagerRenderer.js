@@ -62,6 +62,9 @@ class Window extends EventEmitter {
     ipcRenderer.on(`window-focus-${windowId}`, () => {
       this.emit('focus');
     });
+    ipcRenderer.on(`window-hide-${windowId}`, () => {
+      this.emit('hide');
+    });
   }
 
   /**

@@ -58,17 +58,16 @@
       <ui-button
         :type="11"
         icon="disconnect"
-        @click.native="quitAppHandler"
-      >
-        {{ texts.quit }}
-      </ui-button>
-
-      <ui-button
-        :type="11"
-        icon="disconnect"
         @click.native="logoutHandler"
       >
         Logout
+      </ui-button>
+      <ui-button
+        :type="11"
+        icon="disconnect"
+        @click.native="quitAppHandler"
+      >
+        {{ texts.quit }}
       </ui-button>
     </div>
   </popover>
