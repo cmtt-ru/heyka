@@ -51,7 +51,7 @@ export default {
     });
 
     autoUpdater.on('update-downloaded', () => {
-      mainWindow.webContents.send('update-download-complete');
+      mainWindow.webContents.send('update-downloaded');
     });
 
     autoUpdater.on('checking-for-update', () => {
