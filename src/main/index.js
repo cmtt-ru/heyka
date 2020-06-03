@@ -42,7 +42,7 @@ function createWindow() {
   } else {
     params = {
       position: 'center',
-      template: 'main',
+      template: isDevelopment ? 'mainDev' : 'main',
       preventClose: true,
     };
   }
@@ -71,15 +71,16 @@ function createWindow() {
       WindowManager.closeWindow({ id: loadingScreenID });
       loadingScreenID = null;
     }
-    mainWindow.webContents.openDevTools();
+    
+    if (isDevelopment) {
+      mainWindow.webContents.openDevTools();
+    } else {
+      Autoupdater.init(mainWindow);
+      mainWindow.webContents.on('did-finish-load', () => {
+        WindowManager.closeAll();
+      });
+    }
   });
-
-  if (!isDevelopment) {
-    Autoupdater.init(mainWindow);
-    mainWindow.webContents.on('did-finish-load', () => {
-      WindowManager.closeAll();
-    });
-  }
 }
 
 /**

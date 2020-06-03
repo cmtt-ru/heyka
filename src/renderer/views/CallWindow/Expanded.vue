@@ -2,6 +2,7 @@
   <div
     class="expanded-window"
     :style="$themes.getColors('popover')"
+    @dblclick="showGridHandler"
   >
     <!-- <svg
       class="svg-border"
@@ -174,6 +175,14 @@ export default {
         this.$refs.video.play();
       };
     },
+
+    /**
+     * Show grid handler
+     * @returns {void}
+     */
+    showGridHandler() {
+      this.$router.push('/call-window');
+    },
   },
 
 };
@@ -188,7 +197,7 @@ export default {
   .sharing
     width 100%
     height 100%
-    background-color #dbdbdb
+    background-color var(--app-bg)
 
   .svg-border
     width 100%
@@ -219,9 +228,11 @@ export default {
     left 30px
     display flex
     flex-direction row
-    background-color var(--app-bg)
+    background-color var(--button-bg-5)
     padding 8px
     border-radius 4px
+    font-weight 500
+    align-items center
 
     &__avatar
       margin-right 8px
@@ -242,6 +253,7 @@ export default {
     height auto
     opacity 1
     transition opacity 0.2s ease
+    box-shadow 0 0 0 1px var(--button-bg-5)
 
     &--hidden
       opacity 0

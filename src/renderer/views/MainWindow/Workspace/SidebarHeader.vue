@@ -136,6 +136,7 @@ export default {
      * @returns {void}
      */
     closeInput() {
+      this.searchText = '';
       this.inputActive = false;
     },
   },
