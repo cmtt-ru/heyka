@@ -33,6 +33,7 @@ class MediaDevices extends EventEmitter {
    * @return {Promise<void>}
    */
   async deviceChangeHandler() {
+    console.log('Device changed');
     await this.updateDevices();
   }
 
