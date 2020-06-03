@@ -5,12 +5,12 @@
       autoplay
       muted
     />
-    <!-- <video
+    <video
       v-for="publisher in videoPublishers"
       :key="publisher.userId"
       :ref="`video${publisher.userId}`"
       style="width: 100px; height: 80px"
-    /> -->
+    />
   </div>
 </template>
 
@@ -165,6 +165,12 @@ export default {
     selectedMicrophoneDevice(deviceId) {
       if (this.janusWrapper) {
         this.janusWrapper.setMicrophoneDevice(deviceId);
+      }
+    },
+
+    selectedCameraDevice(deviceId) {
+      if (this.janusWrapper && this.camera) {
+        this.janusWrapper.setCameraDevice(deviceId);
       }
     },
   },
@@ -534,16 +540,14 @@ export default {
         userId: this.userId,
         stream,
       });
-
       await new Promise(resolve => this.$nextTick(resolve));
-
       // Insert stream
-      // const el = this.$refs[`video${this.userId}`][0];
+      const el = this.$refs[`video${this.userId}`][0];
 
-      // el.srcObject = stream;
-      // el.onloadedmetadata = function () {
-      //   el.play();
-      // };
+      el.srcObject = stream;
+      el.onloadedmetadata = function () {
+        el.play();
+      };
     },
 
     /**

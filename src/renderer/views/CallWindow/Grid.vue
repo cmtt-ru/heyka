@@ -105,7 +105,7 @@ import CallButtons from '../CallOverlayWindow/CallButtons';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import commonStreams from '@classes/commonStreams';
 
 /**
@@ -133,6 +133,9 @@ export default {
   },
   computed: {
     ...mapGetters([ 'getUsersWhoShareMedia' ]),
+    ...mapState('app', {
+      selectedCameraDevice: state => state.selectedDevices.camera,
+    }),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -238,6 +241,23 @@ export default {
         this.requestStreams();
       }
     },
+
+    async selectedCameraDevice() {
+      if (this.getUsersWhoShareMedia.includes(this.myId)) {
+        commonStreams.clearStream(this.myId);
+        await new Promise(resolve => setTimeout(resolve, parseInt('1000')));
+        const stream = await commonStreams.getStream(this.myId);
+        const htmlVideo = this.$refs[`video${this.myId}`][0];
+
+        if (!htmlVideo) {
+          return;
+        }
+        htmlVideo.srcObject = stream;
+        htmlVideo.onloadedmetadata = () => {
+          htmlVideo.play();
+        };
+      }
+    },
   },
   async mounted() {
     this.mounted = true;
@@ -245,11 +265,40 @@ export default {
     this.resize();
     await new Promise(resolve => this.$nextTick(resolve));
     this.requestStreams();
+
+    commonStreams.on('stream-canceled', async userId => {
+      console.log(`Stream canceled for ${userId}`);
+      if (this.getUsersWhoShareMedia.includes(userId)) {
+        const stream = await commonStreams.getStream(userId);
+
+        console.log(`Insert new stream for ${userId}`, stream);
+        this.insertVideoStreamForUser(userId, stream);
+      }
+    });
   },
   destroyed() {
     window.removeEventListener('resize', this.resize, false);
   },
   methods: {
+    /**
+     * Insert stream in HTML5 video tag
+     * @param {string} userId User id
+     * @param {MediaStream} stream User video stream
+     * @returns {void}
+     */
+    insertVideoStreamForUser(userId, stream) {
+      const htmlVideo = this.$refs[`video${userId}`][0];
+
+      if (!htmlVideo) {
+        console.log(`!!!!!!!!!!!!!!!!!!!!!!!!! Not found HTML video tag for user ${userId}`);
+
+        return;
+      }
+      htmlVideo.srcObject = stream;
+      htmlVideo.onloadedmetadata = () => {
+        htmlVideo.play();
+      };
+    },
     /**
      * Request not loaded streams and insert loaded
      * @returns {void}
@@ -283,17 +332,7 @@ export default {
 
         console.log(`stream received for ${id}`);
 
-        const htmlVideo = this.$refs[`video${id}`][0];
-
-        if (!htmlVideo) {
-          console.log('!!!!!!!!!!!!!!!!!!!!!!!!! NOT FOUND');
-
-          return;
-        }
-        htmlVideo.srcObject = stream;
-        htmlVideo.onloadedmetadata = () => {
-          htmlVideo.play();
-        };
+        this.insertVideoStreamForUser(id, stream);
       });
     },
 
@@ -370,7 +409,6 @@ export default {
       }
       this.$router.push({ path: `/call-window/expanded/${id}` });
     },
-
   },
 };
 </script>
