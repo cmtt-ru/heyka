@@ -71,16 +71,16 @@ function createWindow() {
       WindowManager.closeWindow({ id: loadingScreenID });
       loadingScreenID = null;
     }
+    
+    if (isDevelopment) {
+      mainWindow.webContents.openDevTools();
+    } else {
+      Autoupdater.init(mainWindow);
+      mainWindow.webContents.on('did-finish-load', () => {
+        WindowManager.closeAll();
+      });
+    }
   });
-
-  if (isDevelopment) {
-    mainWindow.webContents.openDevTools();
-  } else {
-    Autoupdater.init(mainWindow);
-    mainWindow.webContents.on('did-finish-load', () => {
-      WindowManager.closeAll();
-    });
-  }
 }
 
 /**
