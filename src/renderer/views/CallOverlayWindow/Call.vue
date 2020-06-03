@@ -57,6 +57,15 @@ export default {
     if (this.getUserWhoSharesMedia) {
       this.requestStream(this.getUserWhoSharesMedia);
     }
+
+    // Если стрим прекратился, но юзер еще шэрит камеру
+    // то запрашиваем стрим еще раз
+    // самый частый юзкейс - юзер изменил камеру, поэтому стрим обновился
+    commonStreams.on('stream-canceled', userId => {
+      if (this.getUserWhoSharesMedia === userId) {
+        this.requestStream(userId);
+      }
+    });
   },
   methods: {
     async requestStream(user) {
