@@ -22,8 +22,8 @@ import connectionCheck from '@classes/connectionCheck';
 import AudioCheck from '@classes/AudioCheck';
 import { mapState } from 'vuex';
 
-const WAIT_PUBLISHER_INVERVAL = 100;
-const WAIT_PUBLISHER_ATTEMPTS = 20;
+const WAIT_PUBLISHER_INVERVAL = 80;
+const WAIT_PUBLISHER_ATTEMPTS = 10;
 
 export default {
   name: 'Janus',

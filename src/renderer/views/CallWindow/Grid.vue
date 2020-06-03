@@ -14,8 +14,8 @@
         <div>{{ $tc("call.grid.users", usersCount) }}</div>
       </div>
       <ui-button
-        class="top-content__devices"
         v-popover.click="{name: 'Devices'}"
+        class="top-content__devices"
         :type="7"
         size="medium"
         icon="settings"
@@ -255,7 +255,13 @@ export default {
 
     // Запрашиваем стрим юзера, если он прекратился
     commonStreams.on('stream-canceled', async userId => {
+      if (!this.selectedChannel) {
+        return;
+      }
+
       if (this.getUsersWhoShareMedia.includes(userId)) {
+        console.log('Again request stream', userId);
+
         const stream = await commonStreams.getStream(userId);
 
         this.insertVideoStreamForUser(userId, stream);
