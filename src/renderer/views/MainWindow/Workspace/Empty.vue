@@ -5,6 +5,8 @@ import {ipcRenderer} from "electron";
       <img
         :src="'https://leonardo.osnova.io/c462d95d-0461-e592-a706-8121afd4fda8/'|formImageUrl(160)"
         alt="doggy"
+        width="160"
+        height="160"
       >
       <p>{{ texts.empty }}</p>
     </div>
