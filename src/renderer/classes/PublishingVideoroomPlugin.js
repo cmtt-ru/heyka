@@ -228,7 +228,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
    * Replace old video with new stream;
    * @param {MediaStream} stream New video stream
    * @returns {void}
-   */1
+   */
   async replaceStream(stream) {
     const untilCleanUp = new Promise((resolve, reject) => {
       let timeoutError = null;
