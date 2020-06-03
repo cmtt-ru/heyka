@@ -142,6 +142,14 @@ export default {
     });
 
     this.requestStream();
+
+    // Запрашиваем стрим шэрящего юзера, если он
+    // по каким-то причинам прекратился
+    commonStreams.on('stream-canceled', userId => {
+      if (this.$store.getters.getUsersWhoShareMedia.includes(this.userId)) {
+        this.requestStream();
+      }
+    });
   },
 
   destroyed() {

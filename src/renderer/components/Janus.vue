@@ -5,12 +5,12 @@
       autoplay
       muted
     />
-    <video
+    <!-- <video
       v-for="publisher in videoPublishers"
       :key="publisher.userId"
       :ref="`video${publisher.userId}`"
       style="width: 100px; height: 80px"
-    />
+    /> -->
   </div>
 </template>
 
@@ -430,7 +430,7 @@ export default {
         stream,
       });
       console.log('=================================', this.videoPublishers);
-      await new Promise(resolve => this.$nextTick(resolve));
+      // await new Promise(resolve => this.$nextTick(resolve));
 
       // Insert stream
       // const el = this.$refs[`video${newPublisher.userId}`][0];
@@ -536,18 +536,19 @@ export default {
      * @returns {void}
      */
     async onLocalVideoStream(stream) {
+      this.streamHost.closeStreamSharing(this.userId);
       this.$set(this.videoPublishers, this.userId, {
         userId: this.userId,
         stream,
       });
-      await new Promise(resolve => this.$nextTick(resolve));
-      // Insert stream
-      const el = this.$refs[`video${this.userId}`][0];
+      // await new Promise(resolve => this.$nextTick(resolve));
+      // // Insert stream
+      // const el = this.$refs[`video${this.userId}`][0];
 
-      el.srcObject = stream;
-      el.onloadedmetadata = function () {
-        el.play();
-      };
+      // el.srcObject = stream;
+      // el.onloadedmetadata = function () {
+      //   el.play();
+      // };
     },
 
     /**

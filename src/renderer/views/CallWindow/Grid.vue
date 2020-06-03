@@ -241,23 +241,6 @@ export default {
         this.requestStreams();
       }
     },
-
-    async selectedCameraDevice() {
-      if (this.getUsersWhoShareMedia.includes(this.myId)) {
-        commonStreams.clearStream(this.myId);
-        await new Promise(resolve => setTimeout(resolve, parseInt('1000')));
-        const stream = await commonStreams.getStream(this.myId);
-        const htmlVideo = this.$refs[`video${this.myId}`][0];
-
-        if (!htmlVideo) {
-          return;
-        }
-        htmlVideo.srcObject = stream;
-        htmlVideo.onloadedmetadata = () => {
-          htmlVideo.play();
-        };
-      }
-    },
   },
   async mounted() {
     this.mounted = true;
@@ -266,12 +249,11 @@ export default {
     await new Promise(resolve => this.$nextTick(resolve));
     this.requestStreams();
 
+    // Запрашиваем стрим юзера, если он прекратился
     commonStreams.on('stream-canceled', async userId => {
-      console.log(`Stream canceled for ${userId}`);
       if (this.getUsersWhoShareMedia.includes(userId)) {
         const stream = await commonStreams.getStream(userId);
 
-        console.log(`Insert new stream for ${userId}`, stream);
         this.insertVideoStreamForUser(userId, stream);
       }
     });
