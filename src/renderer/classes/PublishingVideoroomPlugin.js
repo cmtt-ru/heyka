@@ -318,7 +318,6 @@ class PublishingVideoroomPlugin extends EventEmitter {
   _onUnpublished(message) {
     this._debug('remove publisher', message);
 
-    console.log('unpublished');
     this.emit('publisher-left', message);
   }
 
