@@ -114,8 +114,8 @@ export default {
 .app-info
   font-size 10px
   color var(--text-1)
-  white-space pre
-  padding 8px
+  white-space pre-line
+  padding 4px
 
 .link
     display block
