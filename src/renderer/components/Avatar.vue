@@ -1,14 +1,15 @@
 <template>
-<div
-  class="avatar"
-  :style="containerSize"
->
+  <div
+    class="avatar"
+    :style="containerSize"
+  >
     <img
       loading="lazy"
       class="avatar__image"
       :class="{'avatar__image--square': square}"
       alt=""
-      :src="avatarImage">
+      :src="avatarImage"
+    >
 
     <div
       v-if="statusStyle"

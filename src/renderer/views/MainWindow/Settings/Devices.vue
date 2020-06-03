@@ -99,6 +99,7 @@ export default {
       },
       set(value) {
         this.selectDevice('speaker', value);
+        AudioCheck.startMediaStream();
       },
     },
 
@@ -111,6 +112,7 @@ export default {
       },
       set(value) {
         this.selectDevice('microphone', value);
+        AudioCheck.startMediaStream();
       },
     },
 
@@ -128,9 +130,14 @@ export default {
   },
 
   mounted() {
+    AudioCheck.startMediaStream();
     AudioCheck.on('volume_change', (db) => {
       this.microphoneVolume = Math.max(0, db + Math.round(DB_COMPENSATOR));
     });
+  },
+
+  destroyed() {
+    AudioCheck.destroyMediaStream();
   },
 
   methods: {

@@ -1,13 +1,9 @@
-import { ipcMain, BrowserWindow, screen } from 'electron';
+import { ipcMain, BrowserWindow, screen, Menu } from 'electron';
 import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
-
-// const isMac = process.platform === 'darwin';
-// const isLinux = process.platform === 'linux';
-// const isWin = !isMac && !isLinux;
 
 const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   width: 780,
@@ -30,9 +26,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
  */
 class WindowManager {
   /**
-   * Inits windowmanager class, assigns mainwindow
-   * @param {object} mainWindow mainWindow instance
-   * @returns {void}
+   * Inits window manager class, assigns mainwindow
    */
   constructor() {
     this.windows = [];
@@ -103,7 +97,7 @@ class WindowManager {
     const browserWindow = new BrowserWindow(windowOptions);
 
     if (process.env.NODE_ENV === 'production') {
-      browserWindow.removeMenu();
+      Menu.setApplicationMenu(null);
     }
     this.windows[windowId] = {
       browserWindow,
