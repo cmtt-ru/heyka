@@ -24,7 +24,7 @@ export default {
 
   /**
    * Set inProgress flag
-   * @param {functtion} commit – store commit
+   * @param {function} commit – store commit
    * @param {boolean} state – progress state
    * @returns {void}
    */
