@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import hark from 'hark';
+import mediaCapturer from '@classes/mediaCapturer';
 const JANUS_PLUGIN = 'janus.plugin.audiobridge';
 const HARK_UPDATE_INTERVAL_MS = 75;
 
@@ -15,6 +16,7 @@ class AudiobridgePlugin extends EventEmitter {
    * @param {number} options.room Room in audiobridge plugin
    * @param {string} options.token Authentication token for room
    * @param {string} options.userId Connected user id
+   * @param {string} options.microphoneDeviceId Unique id for selected microphone device
    * @param {boolean} [options.debug=false] Is debug output enabled
    */
   constructor(options) {
@@ -25,10 +27,12 @@ class AudiobridgePlugin extends EventEmitter {
       room,
       token,
       userId,
+      microphoneDeviceId,
       debug = false,
     } = options;
 
     this.__janus = janus;
+    this.__deviceId = microphoneDeviceId;
     this.__room = room;
     this.__token = token;
     this.__userId = userId;
@@ -37,6 +41,7 @@ class AudiobridgePlugin extends EventEmitter {
 
     // hark stream
     this.__harkStream = null;
+    this.__localStream = null;
 
     this.__detached = false;
     this.__pluginHandle = null;
@@ -191,6 +196,10 @@ class AudiobridgePlugin extends EventEmitter {
       this.__harkStream.stop();
       this.__harkStream = null;
     }
+    if (this.__localStream) {
+      mediaCapturer.destroyStream(this.__localStream);
+      this.__localStream = null;
+    }
   }
 
   /**
@@ -203,6 +212,44 @@ class AudiobridgePlugin extends EventEmitter {
       message: {
         request: 'configure',
         muted: muted,
+      },
+    });
+  }
+
+  /**
+   * Change source for audio stream
+   * @param {string} deviceId New soure device id
+   * @returns {void}
+   */
+  setMicrophoneDevice(deviceId) {
+    if (this.__harkStream) {
+      this.__harkStream.stop();
+      this.__harkStream = null;
+    }
+    if (this.__localStream) {
+      mediaCapturer.destroyStream(this.__localStream);
+      this.__localStream = null;
+    }
+    this.__deviceId = deviceId;
+    this.__pluginHandle.createOffer({
+      media: {
+        replaceAudio: true,
+        video: false,
+        echoCancellation: true,
+        noiseSuppression: true,
+        audio: {
+          deviceId,
+        },
+      },
+      success: (jsep) => {
+        this.__pluginHandle.send({
+          message: { request: 'configure' },
+          jsep: jsep,
+        });
+        this._debug(`Microphone was sucessfully changed!')`);
+      },
+      error: (error) => {
+        this._debug(`WebRTC error on change microphone: ${error}`, error);
       },
     });
   }
@@ -244,7 +291,11 @@ class AudiobridgePlugin extends EventEmitter {
     this.__pluginHandle.createOffer({
       media: {
         video: false,
-        audio: true,
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          deviceId: this.__deviceId,
+        },
       },
       success: jsep => {
         this.__pluginHandle.send({
@@ -277,6 +328,8 @@ class AudiobridgePlugin extends EventEmitter {
    * @returns {undefined}
    */
   _onLocalAudioStream(stream) {
+    this.__localStream = stream;
+
     this.__harkStream = hark(stream, {
       interval: HARK_UPDATE_INTERVAL_MS,
     });

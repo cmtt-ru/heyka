@@ -1,15 +1,18 @@
 import StreamReceiver from '@classes/StreamSharing/Receiver';
 import mediaCapturer from './mediaCapturer';
+import { EventEmitter } from 'events';
 
 /**
  * Manage video streams for CallWindow (Grid and Expanded view)
  * @class
  */
-class CommonStreams {
+class CommonStreams extends EventEmitter {
   /**
    * Prepare instance
    */
   constructor() {
+    super();
+
     this.streams = {};
     this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
     this.streamReceiver.on('connection-closed', this.onConnectionClosed.bind(this));
@@ -46,6 +49,18 @@ class CommonStreams {
   }
 
   /**
+   * Clear stream for specific user
+   * @param {string} userId User id
+   * @returns {void}
+   */
+  clearStream(userId) {
+    if (this.streams[userId]) {
+      mediaCapturer.destroyStream(this.streams[userId].stream);
+      delete this.streams[userId];
+    }
+  }
+
+  /**
    * Returns promise that resolves when stream is received
    * @param {string} userId User id
    * @returns {promise<MediaStream>}
@@ -75,6 +90,7 @@ class CommonStreams {
       mediaCapturer.destroyStream(this.streams[userId].stream);
     }
     delete this.streams[userId];
+    this.emit('stream-canceled', userId);
   }
 
   /**

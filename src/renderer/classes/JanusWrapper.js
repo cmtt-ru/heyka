@@ -13,6 +13,8 @@ const ERROR_CODES = {
   UNKNOW: 'Unknow error',
 };
 const REQUEST_VIDEOSTREAM_TIMEOUT = 5000;
+const DEFAULT_BITRATE_CAMERA_ = 256000;
+const DEFAULT_BITRATE_SCREEN = 1400000;
 
 // Possible events for subscribing
 const JANUS_WRAPPER_EVENTS = {
@@ -46,6 +48,7 @@ class JanusWrapper extends EventEmitter {
    * @param {number} config.audioRoomId Janus audio room id
    * @param {number} config.videoRoomId Janus video room id
    * @param {string} config.userId Application user id
+   * @param {string} config.microphoneDeviceId Device id of selected microphone
    * @param {boolean} config.debug Enable or disable debug output
    */
   constructor({
@@ -55,6 +58,7 @@ class JanusWrapper extends EventEmitter {
     audioRoomId,
     videoRoomId,
     userId,
+    microphoneDeviceId,
     debug,
   }) {
     super();
@@ -66,6 +70,7 @@ class JanusWrapper extends EventEmitter {
     this.__audioRoomId = audioRoomId;
     this.__videoRoomId = videoRoomId;
     this.__userId = userId;
+    this.__microphoneDeviceId = microphoneDeviceId;
     this.__debug = debug;
 
     this.__janus = null;
@@ -128,6 +133,7 @@ class JanusWrapper extends EventEmitter {
       room: this.__audioRoomId,
       token: this.__channelToken,
       userId: this.__userId,
+      microphoneDeviceId: this.__microphoneDeviceId,
       debug: this.__debug,
     });
 
@@ -191,6 +197,30 @@ class JanusWrapper extends EventEmitter {
   }
 
   /**
+   * Set new microphone source
+   * @param {string} deviceId Device id
+   * @returns {void}
+   */
+  setMicrophoneDevice(deviceId) {
+    if (this.__audiobridgePlugin) {
+      this.__audiobridgePlugin.setMicrophoneDevice(deviceId);
+    }
+  }
+
+  /**
+   * Set new camera source
+   * @param {string} deviceId Device id
+   * @returns {void}
+   */
+  async setCameraDevice(deviceId) {
+    if (this.__videoroomPlugin) {
+      const stream = await mediaCapturer.getCameraStream(deviceId);
+
+      this.__videoroomPlugin.replaceStream(stream);
+    }
+  }
+
+  /**
    * Publish video stream
    * @param {string} type "camera" or "screen"
    * @param {string} source Source id (camera device id or screen source id)
@@ -207,7 +237,7 @@ class JanusWrapper extends EventEmitter {
       stream = await mediaCapturer.getStream(source);
     }
 
-    this.__videoroomPlugin.publishVideo(stream);
+    this.__videoroomPlugin.publishVideo(stream, type === 'camera' ? DEFAULT_BITRATE_CAMERA_ : DEFAULT_BITRATE_SCREEN);
   }
 
   /**

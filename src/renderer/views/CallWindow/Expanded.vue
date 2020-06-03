@@ -115,10 +115,28 @@ export default {
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
+    /**
+     * Current selected channel
+     * @returns {string}
+     */
+    selectedChannelId() {
+      return this.$store.state.me.selectedChannelId;
+    },
+
+    /**
+     * Is current user sharing media
+     * @returns {boolean}
+     */
+    isUserSharingMedia() {
+      return this.$store.getters.getUsersWhoShareMedia.includes(this.userId);
+    },
+
   },
   watch: {
-    userId() {
-      this.requestStream();
+    isUserSharingMedia(val) {
+      if (val === false) {
+        this.showGridHandler();
+      }
     },
   },
 
@@ -143,6 +161,10 @@ export default {
     });
 
     this.requestStream();
+
+    // Запрашиваем стрим шэрящего юзера, если он
+    // по каким-то причинам прекратился
+    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
   },
 
   destroyed() {
@@ -152,6 +174,8 @@ export default {
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
+
+    commonStreams.removeAllListeners('stream-canceled');
   },
   methods: {
     /**
@@ -175,6 +199,22 @@ export default {
     showGridHandler() {
       this.$router.push('/call-window');
     },
+
+    /**
+     * Stream canceled handler
+     * @param {string} userId – user id
+     * @returns {Promise<void>}
+     */
+    async streamCanceledHandler(userId) {
+      if (!this.selectedChannelId) {
+        return;
+      }
+
+      if (this.isUserSharingMedia) {
+        this.requestStream();
+      }
+    },
+
   },
 
 };

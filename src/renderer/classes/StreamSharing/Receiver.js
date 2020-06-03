@@ -104,6 +104,9 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // Request stream
     broadcastEvents.dispatch('request-stream', data);
+    broadcastEvents.once(`failed-request-${data.requestId}`, () => {
+      this._streamSharingClosed(data.userId, data.requestId);
+    });
   }
 
   /**
