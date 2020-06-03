@@ -109,7 +109,7 @@ import CallButtons from '../CallOverlayWindow/CallButtons';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import commonStreams from '@classes/commonStreams';
 
 /**
@@ -137,9 +137,7 @@ export default {
   },
   computed: {
     ...mapGetters([ 'getUsersWhoShareMedia' ]),
-    ...mapState('app', {
-      selectedCameraDevice: state => state.selectedDevices.camera,
-    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
