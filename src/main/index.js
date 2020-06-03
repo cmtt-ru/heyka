@@ -71,7 +71,7 @@ function createWindow() {
       WindowManager.closeWindow({ id: loadingScreenID });
       loadingScreenID = null;
     }
-    
+
     if (isDevelopment) {
       mainWindow.webContents.openDevTools();
     } else {
