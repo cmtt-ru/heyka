@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain, protocol, nativeTheme, globalShortcut } from 'electron';
+import { app, ipcMain, protocol, nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
@@ -123,10 +123,6 @@ app.on('ready', async () => {
   // load splash screen (fast) and start loading main screen (not so fast)
   createLoadingScreen();
   createWindow();
-
-  globalShortcut.register('CommandOrControl+Shift+I', () => {
-    mainWindow.webContents.toggleDevTools();
-  });
 
   /**
    * Vue devtools chrome extension
