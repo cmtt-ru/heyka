@@ -3,6 +3,7 @@
     <div
       v-if="isMediaSharing"
       class="call-window__media"
+      @dblclick="showGridHandler"
     >
       <video ref="video" />
     </div>
@@ -19,6 +20,7 @@ import CallControls from './CallControls';
 import { mapGetters } from 'vuex';
 import broadcastActions from '@classes/broadcastActions';
 import commonStreams from '@classes/commonStreams';
+import broadcastEvents from '@classes/broadcastEvents';
 
 export default {
   components: {
@@ -70,6 +72,15 @@ export default {
         };
       }
     },
+
+    /**
+     * Show grid handler
+     * @returns {void}
+     */
+    showGridHandler() {
+      broadcastActions.dispatch('openGrid');
+      broadcastEvents.dispatch('grid');
+    },
   },
 };
 </script>
@@ -86,7 +97,6 @@ export default {
         display block
         width 100%
         height 213px
-        background #333
         object-fit cover
 
 </style>

@@ -57,7 +57,7 @@ export default {
     buttons: {
       type: Array,
       default: function () {
-        return ['speakers', 'microphone', 'grid', 'leave'];
+        return ['microphone', 'camera', 'screen', 'speakers', 'leave'];
       },
     },
   },
