@@ -161,6 +161,12 @@ export default {
     selectedSpeakerDevice(deviceId) {
       this.$refs.audio.setSinkId(deviceId);
     },
+
+    selectedMicrophoneDevice(deviceId) {
+      if (this.janusWrapper) {
+        this.janusWrapper.setMicrophoneDevice(deviceId);
+      }
+    },
   },
   async created() {
     await JanusWrapper.init();
@@ -200,6 +206,7 @@ export default {
 
       const janusWrapper = new JanusWrapper({
         ...this.janusOptions,
+        microphoneDeviceId: this.selectedMicrophoneDevice,
         userId: this.userId,
         debug: process.env.VUE_APP_JANUS_DEBUG === 'true',
       });

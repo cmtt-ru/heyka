@@ -28,8 +28,6 @@ const JANUS_WRAPPER_EVENTS = {
   localVideoStream: 'local-video-stream',
   successVideoPublishing: 'success-video-publishing',
   channelJoined: 'channel-joined',
-  audioSlowLink: 'audio-slow-link',
-  videoSlowLink: 'video-slow-link',
 };
 
 /**
@@ -46,6 +44,7 @@ class JanusWrapper extends EventEmitter {
    * @param {number} config.audioRoomId Janus audio room id
    * @param {number} config.videoRoomId Janus video room id
    * @param {string} config.userId Application user id
+   * @param {string} config.microphoneDeviceId Device id of selected microphone
    * @param {boolean} config.debug Enable or disable debug output
    */
   constructor({
@@ -55,6 +54,7 @@ class JanusWrapper extends EventEmitter {
     audioRoomId,
     videoRoomId,
     userId,
+    microphoneDeviceId,
     debug,
   }) {
     super();
@@ -66,6 +66,7 @@ class JanusWrapper extends EventEmitter {
     this.__audioRoomId = audioRoomId;
     this.__videoRoomId = videoRoomId;
     this.__userId = userId;
+    this.__microphoneDeviceId = microphoneDeviceId;
     this.__debug = debug;
 
     this.__janus = null;
@@ -128,6 +129,7 @@ class JanusWrapper extends EventEmitter {
       room: this.__audioRoomId,
       token: this.__channelToken,
       userId: this.__userId,
+      microphoneDeviceId: this.__microphoneDeviceId,
       debug: this.__debug,
     });
 
@@ -148,7 +150,6 @@ class JanusWrapper extends EventEmitter {
     audiobridgePlugin.on('start-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, true));
     audiobridgePlugin.on('stop-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, false));
     audiobridgePlugin.on('volume-change', (db) => this.emit(JANUS_WRAPPER_EVENTS.volumeChange, db));
-    audiobridgePlugin.on('audio-slow-link', (uplink) => this.emit(JANUS_WRAPPER_EVENTS.audioSlowLink, uplink));
 
     this.__audiobridgePlugin = audiobridgePlugin;
 
@@ -176,7 +177,6 @@ class JanusWrapper extends EventEmitter {
     videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
     videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
     videoroomPlugin.on('success-publishing', () => this.emit(JANUS_WRAPPER_EVENTS.successVideoPublishing));
-    videoroomPlugin.on('video-slow-link', () => this.emit(JANUS_WRAPPER_EVENTS.videoSlowLink));
 
     this.__videoroomPlugin = videoroomPlugin;
   }
@@ -188,6 +188,17 @@ class JanusWrapper extends EventEmitter {
    */
   setMuting(muted) {
     this.__audiobridgePlugin.setMuting(muted);
+  }
+
+  /**
+   * Set new microphone source
+   * @param {string} deviceId Device id
+   * @returns {void}
+   */
+  setMicrophoneDevice(deviceId) {
+    if (this.__audiobridgePlugin) {
+      this.__audiobridgePlugin.setMicrophoneDevice(deviceId);
+    }
   }
 
   /**
