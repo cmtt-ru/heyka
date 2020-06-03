@@ -67,6 +67,7 @@ class WindowManager {
    */
   willQuit() {
     this.quitting = true;
+    console.log('willQuit');
   }
 
   /**
@@ -115,6 +116,7 @@ class WindowManager {
     });
 
     browserWindow.on('close', e => {
+      console.log('closing:', windowId, this.mainWindowId);
       if (this.windows[windowId].options.preventClose && !this.quitting) {
         e.preventDefault();
         browserWindow.hide();
@@ -122,8 +124,13 @@ class WindowManager {
     });
 
     browserWindow.on('closed', e => {
-      delete this.windows[windowId];
-      this.send(`window-close-${windowId}`);
+      console.log('closed:', windowId, this.mainWindowId);
+      try {
+        delete this.windows[windowId];
+        this.send(`window-close-${windowId}`);
+      } catch (error) {
+        console.error('window already closed');
+      }
     });
 
     browserWindow.on('ready-to-show', (event) => {
@@ -164,6 +171,9 @@ class WindowManager {
     });
     browserWindow.on('focus', (event) => {
       this.sendAll(`window-focus-${windowId}`);
+    });
+    browserWindow.on('hide', (event) => {
+      this.sendAll(`window-hide-${windowId}`);
     });
 
     return windowId;
@@ -326,8 +336,10 @@ class WindowManager {
    * @returns {void}
    */
   send(event, data) {
-    if (this.windows[this.mainWindowId] && this.windows[this.mainWindowId].browserWindow) {
+    try {
       this.windows[this.mainWindowId].browserWindow.webContents.send(event, data);
+    } catch (err) {
+      console.log('could not send to renderer');
     }
   }
 
@@ -339,7 +351,11 @@ class WindowManager {
    */
   sendAll(event, data = null) {
     for (const w in this.windows) {
-      this.windows[w].browserWindow.webContents.send(event, data);
+      try {
+        this.windows[w].browserWindow.webContents.send(event, data);
+      } catch (err) {
+        console.log('could not send to renderer at:', w);
+      }
     }
   }
 

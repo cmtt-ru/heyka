@@ -129,7 +129,7 @@ class CallWindow {
         clearTimeout(this.gridTimeout);
         this.hideOverlay();
       });
-      this.gridWindow.on('close', () => {
+      this.gridWindow.on('hide', () => {
         clearTimeout(this.gridTimeout);
         this.showOverlay();
       });
