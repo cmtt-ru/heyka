@@ -62,7 +62,7 @@ export default {
      * Reacts on channel is changed
      * @param {string} id New channel id
      * @param {string} oldId Previous channel id
-     * @returns {nothing}
+     * @returns {void}
      */
     selectedChannelId(id, oldId) {
       if (oldId !== null) {
@@ -78,7 +78,7 @@ export default {
     /**
      * Reacts on microphone state is changed
      * @param {boolean} state Is microphone enabled
-     * @returns {undefined}
+     * @returns {void}
      */
     microphone(state) {
       if (!this.janusWrapper) {
@@ -93,7 +93,7 @@ export default {
     /**
      * Reacts on speakers state is changed
      * @param {boolean} state Is speakers enabled
-     * @returns {undefined}
+     * @returns {void}
      */
     speakers(state) {
       console.log(`Set muting of speakers ${!state}`);
@@ -250,7 +250,7 @@ export default {
 
     /**
      * Leave the Janus channel
-     * @returns {undefined}
+     * @returns {void}
      */
     unselectChannel() {
       if (this.janusWrapper) {
@@ -318,7 +318,7 @@ export default {
     /**
      * Handles remote audio stream
      * @param {object} stream remote audio stream
-     * @returns {undefined}
+     * @returns {void}
      */
     onRemoteAudioStream(stream) {
       this.log('Attach audio stream to the audio element');
@@ -330,7 +330,7 @@ export default {
     /**
      * Handles Janus connection error
      * @param {string} errorCode Janus error code
-     * @returns {undefined}
+     * @returns {void}
      */
     onConnectionError(errorCode) {
       switch (errorCode) {
@@ -349,7 +349,7 @@ export default {
     /**
      * Handles event when media connection activity is changed
      * @param {boolean} isActive Is media connection active
-     * @returns {undefined}
+     * @returns {void}
      */
     onAudioStreamActive(isActive) {
       console.log('------ onAudioStreamActive');
@@ -367,7 +367,7 @@ export default {
     /**
      * Handles user speaking state changes
      * @param {boolean} isSpeaking is user speaking
-     * @returns {undefined}
+     * @returns {void}
      */
     onSpeakingChange(isSpeaking) {
       // ignore speaking state if you are muted
