@@ -28,6 +28,8 @@ const JANUS_WRAPPER_EVENTS = {
   localVideoStream: 'local-video-stream',
   successVideoPublishing: 'success-video-publishing',
   channelJoined: 'channel-joined',
+  audioSlowLink: 'audio-slow-link',
+  videoSlowLink: 'video-slow-link',
 };
 
 /**
@@ -150,6 +152,7 @@ class JanusWrapper extends EventEmitter {
     audiobridgePlugin.on('start-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, true));
     audiobridgePlugin.on('stop-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, false));
     audiobridgePlugin.on('volume-change', (db) => this.emit(JANUS_WRAPPER_EVENTS.volumeChange, db));
+    audiobridgePlugin.on('audio-slow-link', (uplink) => this.emit(JANUS_WRAPPER_EVENTS.audioSlowLink, uplink));
 
     this.__audiobridgePlugin = audiobridgePlugin;
 
@@ -177,6 +180,7 @@ class JanusWrapper extends EventEmitter {
     videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
     videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
     videoroomPlugin.on('success-publishing', () => this.emit(JANUS_WRAPPER_EVENTS.successVideoPublishing));
+    videoroomPlugin.on('video-slow-link', () => this.emit(JANUS_WRAPPER_EVENTS.videoSlowLink));
 
     this.__videoroomPlugin = videoroomPlugin;
   }
