@@ -14,8 +14,8 @@
         <div>{{ $tc("call.grid.users", usersCount) }}</div>
       </div>
       <ui-button
+        class="top-content__devices"
         v-popover.click="{name: 'Devices'}"
-        class="call-buttons__button"
         :type="7"
         size="medium"
         icon="settings"
@@ -62,7 +62,11 @@
             :size="100"
             square
           />
-          <div class="badge cell__username">
+
+          <div
+            class="badge cell__username"
+            :class="{'cell__username--hidden': isStreaming(user.id)}"
+          >
             <div v-textfade>
               {{ user.name }}
             </div>
@@ -384,7 +388,7 @@ export default {
   .top-content
     height 116px
     box-sizing border-box
-    padding 24px 40px
+    padding 24px 30px 24px 40px
     font-weight 500
     font-size 36px
     line-height 42px
@@ -392,6 +396,9 @@ export default {
     flex-direction row
     justify-content space-between
     align-items flex-start
+
+    &__devices
+      margin-top 6px
 
   .left-info
     display grid
@@ -440,7 +447,6 @@ export default {
       width 100%
       height 100%
       border-radius 4px
-      background: #FFFFFF;
 
     &__talking
       position absolute
@@ -469,9 +475,12 @@ export default {
       position absolute
 
     .badge--hidden
+    .cell__username--hidden
       opacity 0
+      transition opacity 0.15s ease
 
     .cell__inner:hover .badge--hidden
+    .cell__inner:hover .cell__username--hidden
       opacity 1
 
     .badge--hidden.context-menu--opened
