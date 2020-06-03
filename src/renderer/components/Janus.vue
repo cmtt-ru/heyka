@@ -324,6 +324,7 @@ export default {
       this.log('Attach audio stream to the audio element');
       JanusWrapper.attachMediaStream(this.$refs.audio, stream);
       this.$refs.audio.muted = !this.speakers;
+      this.$refs.audio.setSinkId(this.selectedSpeakerDevice);
     },
 
     /**
