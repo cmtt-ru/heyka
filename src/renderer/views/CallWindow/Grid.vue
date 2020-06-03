@@ -254,22 +254,11 @@ export default {
     this.requestStreams();
 
     // Запрашиваем стрим юзера, если он прекратился
-    commonStreams.on('stream-canceled', async userId => {
-      if (!this.selectedChannel) {
-        return;
-      }
-
-      if (this.getUsersWhoShareMedia.includes(userId)) {
-        console.log('Again request stream', userId);
-
-        const stream = await commonStreams.getStream(userId);
-
-        this.insertVideoStreamForUser(userId, stream);
-      }
-    });
+    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
   },
   destroyed() {
     window.removeEventListener('resize', this.resize, false);
+    commonStreams.removeAllListeners('stream-canceled');
   },
   methods: {
     /**
@@ -298,7 +287,7 @@ export default {
     requestStreams() {
       const users = this.getUsersWhoShareMedia;
 
-      console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
+      // console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
       // delete streams that were inserted but users have already stopped sharing
       this.users.filter(u => !u.camera && !u.screen && !!this.videoStreams[u.id]).forEach(u => {
         console.log(`clear stream for ${u.id}`);
@@ -311,7 +300,7 @@ export default {
         }
       });
 
-      console.log('filter who should be added');
+      // console.log('filter who should be added');
 
       // add streams that were not inserted
       users.filter(id => !this.videoStreams[id]).map(async id => {
@@ -400,6 +389,25 @@ export default {
         return;
       }
       this.$router.push({ path: `/call-window/expanded/${id}` });
+    },
+
+    /**
+     * Stream canceled handler
+     * @param {string} userId – user id
+     * @returns {Promise<void>}
+     */
+    async streamCanceledHandler(userId) {
+      if (!this.selectedChannel) {
+        return;
+      }
+
+      if (this.getUsersWhoShareMedia.includes(userId)) {
+        console.log('Again request stream', userId);
+
+        const stream = await commonStreams.getStream(userId);
+
+        this.insertVideoStreamForUser(userId, stream);
+      }
     },
   },
 };
