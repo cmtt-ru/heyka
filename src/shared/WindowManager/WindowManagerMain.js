@@ -325,7 +325,15 @@ class WindowManager {
    */
   sizeWindow({ id, width, height }) {
     if (this.windows[id]) {
+      const isResizable = this.windows[id].browserWindow.resizable;
+
+      if (!isResizable) {
+        this.windows[id].browserWindow.setResizable(true);
+      }
       this.windows[id].browserWindow.setSize(width, height);
+      if (!isResizable) {
+        this.windows[id].browserWindow.setResizable(false);
+      }
       adjustBounds(this.windows[id].browserWindow);
     }
   }
