@@ -40,6 +40,10 @@ export default {
     isMediaSharing() {
       return this.isAnybodySharingMedia && !this.amISharingMedia;
     },
+
+    selectedChannelId() {
+      return this.$store.state.me.selectedChannelId;
+    },
   },
 
   watch: {
@@ -63,7 +67,10 @@ export default {
     // Если стрим прекратился, но юзер еще шэрит камеру
     // то запрашиваем стрим еще раз
     // самый частый юзкейс - юзер изменил камеру, поэтому стрим обновился
-    commonStreams.on('stream-canceled', userId => {
+    commonStreams.on('stream-canceled', async userId => {
+      if (!this.selectedChannelId) {
+        return;
+      }
       if (this.getUserWhoSharesMedia === userId) {
         this.requestStream(userId);
       }

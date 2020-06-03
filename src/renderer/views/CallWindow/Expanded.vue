@@ -115,6 +115,14 @@ export default {
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
+    /**
+     * Current selected channel
+     * @returns {string}
+     */
+    selectedChannelId() {
+      return this.$store.state.me.selectedChannelId;
+    },
+
   },
   watch: {
     userId() {
@@ -147,6 +155,10 @@ export default {
     // Запрашиваем стрим шэрящего юзера, если он
     // по каким-то причинам прекратился
     commonStreams.on('stream-canceled', userId => {
+      if (!this.selectedChannelId) {
+        return;
+      }
+
       if (this.$store.getters.getUsersWhoShareMedia.includes(this.userId)) {
         this.requestStream();
       }
