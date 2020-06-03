@@ -13,6 +13,8 @@ const ERROR_CODES = {
   UNKNOW: 'Unknow error',
 };
 const REQUEST_VIDEOSTREAM_TIMEOUT = 5000;
+const DEFAULT_BITRATE_CAMERA_ = 256000;
+const DEFAULT_BITRATE_SCREEN = 1400000;
 
 // Possible events for subscribing
 const JANUS_WRAPPER_EVENTS = {
@@ -235,7 +237,7 @@ class JanusWrapper extends EventEmitter {
       stream = await mediaCapturer.getStream(source);
     }
 
-    this.__videoroomPlugin.publishVideo(stream);
+    this.__videoroomPlugin.publishVideo(stream, type === 'camera' ? DEFAULT_BITRATE_CAMERA_ : DEFAULT_BITRATE_SCREEN);
   }
 
   /**

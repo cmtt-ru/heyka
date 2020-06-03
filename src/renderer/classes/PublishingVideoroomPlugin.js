@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
-const DEFAULT_BITRATE = 1400000;
 const WAITING_UNPUBLISH_TIMEOUT = 2000;
 /* eslint-disable */
 
@@ -185,16 +184,17 @@ class PublishingVideoroomPlugin extends EventEmitter {
   /**
    * Create offer and send video stream to another participants
    * @param {object} stream Video stream
+   * @param {number} bitrate Video bitrate
    * @returns {void}
    */
-  publishVideo(stream) {
+  publishVideo(stream, bitrate) {
     this.__pluginHandle.createOffer({
       stream,
       success: jsep => {
         this.__pluginHandle.send({
           message: {
             request: 'publish',
-            bitrate: DEFAULT_BITRATE,
+            bitrate,
             audio: false,
             video: true,
             display: this.__userId,
