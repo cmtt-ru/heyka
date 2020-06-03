@@ -40,6 +40,10 @@ export default {
     isMediaSharing() {
       return this.isAnybodySharingMedia && !this.amISharingMedia;
     },
+
+    selectedChannelId() {
+      return this.$store.state.me.selectedChannelId;
+    },
   },
 
   watch: {
@@ -59,6 +63,14 @@ export default {
     if (this.getUserWhoSharesMedia) {
       this.requestStream(this.getUserWhoSharesMedia);
     }
+
+    // Если стрим прекратился, но юзер еще шэрит камеру
+    // то запрашиваем стрим еще раз
+    // самый частый юзкейс - юзер изменил камеру, поэтому стрим обновился
+    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
+  },
+  destroyed() {
+    commonStreams.removeAllListeners('stream-canceled');
   },
   methods: {
     async requestStream(user) {
@@ -80,6 +92,20 @@ export default {
     showGridHandler() {
       broadcastActions.dispatch('openGrid');
       broadcastEvents.dispatch('grid');
+    },
+
+    /**
+     * Stream canceled handler
+     * @param {string} userId – user id
+     * @returns {Promise<void>}
+     */
+    async streamCanceledHandler(userId) {
+      if (!this.selectedChannelId) {
+        return;
+      }
+      if (this.getUserWhoSharesMedia === userId) {
+        this.requestStream(userId);
+      }
     },
   },
 };

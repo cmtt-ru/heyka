@@ -22,8 +22,8 @@ import connectionCheck from '@classes/connectionCheck';
 import AudioCheck from '@classes/AudioCheck';
 import { mapState } from 'vuex';
 
-const WAIT_PUBLISHER_INVERVAL = 100;
-const WAIT_PUBLISHER_ATTEMPTS = 20;
+const WAIT_PUBLISHER_INVERVAL = 80;
+const WAIT_PUBLISHER_ATTEMPTS = 10;
 
 export default {
   name: 'Janus',
@@ -53,6 +53,8 @@ export default {
     ...mapState([ 'isSocketConnected' ]),
     ...mapState('app', {
       selectedCameraDevice: state => state.selectedDevices.camera,
+      selectedMicrophoneDevice: state => state.selectedDevices.microphone,
+      selectedSpeakerDevice: state => state.selectedDevices.speaker,
     }),
   },
   watch: {
@@ -155,6 +157,22 @@ export default {
     videoPublishers(val) {
       console.log('%c videoPublishers:', 'background: green;', Object.keys(val).length, val);
     },
+
+    selectedSpeakerDevice(deviceId) {
+      this.$refs.audio.setSinkId(deviceId);
+    },
+
+    selectedMicrophoneDevice(deviceId) {
+      if (this.janusWrapper) {
+        this.janusWrapper.setMicrophoneDevice(deviceId);
+      }
+    },
+
+    selectedCameraDevice(deviceId) {
+      if (this.janusWrapper && this.camera) {
+        this.janusWrapper.setCameraDevice(deviceId);
+      }
+    },
   },
   async created() {
     await JanusWrapper.init();
@@ -194,6 +212,7 @@ export default {
 
       const janusWrapper = new JanusWrapper({
         ...this.janusOptions,
+        microphoneDeviceId: this.selectedMicrophoneDevice,
         userId: this.userId,
         debug: process.env.VUE_APP_JANUS_DEBUG === 'true',
       });
@@ -304,6 +323,8 @@ export default {
     onRemoteAudioStream(stream) {
       this.log('Attach audio stream to the audio element');
       JanusWrapper.attachMediaStream(this.$refs.audio, stream);
+      this.$refs.audio.muted = !this.speakers;
+      this.$refs.audio.setSinkId(this.selectedSpeakerDevice);
     },
 
     /**
@@ -410,7 +431,7 @@ export default {
         stream,
       });
       console.log('=================================', this.videoPublishers);
-      await new Promise(resolve => this.$nextTick(resolve));
+      // await new Promise(resolve => this.$nextTick(resolve));
 
       // Insert stream
       // const el = this.$refs[`video${newPublisher.userId}`][0];
@@ -516,14 +537,13 @@ export default {
      * @returns {void}
      */
     async onLocalVideoStream(stream) {
+      this.streamHost.closeStreamSharing(this.userId);
       this.$set(this.videoPublishers, this.userId, {
         userId: this.userId,
         stream,
       });
-
-      await new Promise(resolve => this.$nextTick(resolve));
-
-      // Insert stream
+      // await new Promise(resolve => this.$nextTick(resolve));
+      // // Insert stream
       // const el = this.$refs[`video${this.userId}`][0];
 
       // el.srcObject = stream;

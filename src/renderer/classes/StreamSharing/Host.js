@@ -140,6 +140,7 @@ export default class StreamSharingHost extends EventEmitter {
    * @returns {void}
    */
   _onRequestStream(data) {
+    console.log('Stream is requested', data);
     this.emit('request-stream', data);
   }
 

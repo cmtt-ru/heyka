@@ -14,8 +14,8 @@
         <div>{{ $tc("call.grid.users", usersCount) }}</div>
       </div>
       <ui-button
-        class="top-content__devices"
         v-popover.click="{name: 'Devices'}"
+        class="top-content__devices"
         :type="7"
         size="medium"
         icon="settings"
@@ -137,6 +137,7 @@ export default {
   },
   computed: {
     ...mapGetters([ 'getUsersWhoShareMedia' ]),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -249,11 +250,34 @@ export default {
     this.resize();
     await new Promise(resolve => this.$nextTick(resolve));
     this.requestStreams();
+
+    // Запрашиваем стрим юзера, если он прекратился
+    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
   },
   destroyed() {
     window.removeEventListener('resize', this.resize, false);
+    commonStreams.removeAllListeners('stream-canceled');
   },
   methods: {
+    /**
+     * Insert stream in HTML5 video tag
+     * @param {string} userId User id
+     * @param {MediaStream} stream User video stream
+     * @returns {void}
+     */
+    insertVideoStreamForUser(userId, stream) {
+      const htmlVideo = this.$refs[`video${userId}`][0];
+
+      if (!htmlVideo) {
+        console.log(`!!!!!!!!!!!!!!!!!!!!!!!!! Not found HTML video tag for user ${userId}`);
+
+        return;
+      }
+      htmlVideo.srcObject = stream;
+      htmlVideo.onloadedmetadata = () => {
+        htmlVideo.play();
+      };
+    },
     /**
      * Request not loaded streams and insert loaded
      * @returns {void}
@@ -261,7 +285,7 @@ export default {
     requestStreams() {
       const users = this.getUsersWhoShareMedia;
 
-      console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
+      // console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
       // delete streams that were inserted but users have already stopped sharing
       this.users.filter(u => !u.camera && !u.screen && !!this.videoStreams[u.id]).forEach(u => {
         console.log(`clear stream for ${u.id}`);
@@ -274,7 +298,7 @@ export default {
         }
       });
 
-      console.log('filter who should be added');
+      // console.log('filter who should be added');
 
       // add streams that were not inserted
       users.filter(id => !this.videoStreams[id]).map(async id => {
@@ -287,17 +311,7 @@ export default {
 
         console.log(`stream received for ${id}`);
 
-        const htmlVideo = this.$refs[`video${id}`][0];
-
-        if (!htmlVideo) {
-          console.log('!!!!!!!!!!!!!!!!!!!!!!!!! NOT FOUND');
-
-          return;
-        }
-        htmlVideo.srcObject = stream;
-        htmlVideo.onloadedmetadata = () => {
-          htmlVideo.play();
-        };
+        this.insertVideoStreamForUser(id, stream);
       });
     },
 
@@ -375,6 +389,24 @@ export default {
       this.$router.push({ path: `/call-window/expanded/${id}` });
     },
 
+    /**
+     * Stream canceled handler
+     * @param {string} userId – user id
+     * @returns {Promise<void>}
+     */
+    async streamCanceledHandler(userId) {
+      if (!this.selectedChannel) {
+        return;
+      }
+
+      if (this.getUsersWhoShareMedia.includes(userId)) {
+        console.log('Again request stream', userId);
+
+        const stream = await commonStreams.getStream(userId);
+
+        this.insertVideoStreamForUser(userId, stream);
+      }
+    },
   },
 };
 </script>

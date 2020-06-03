@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
-const DEFAULT_BITRATE = 1400000;
+const WAITING_UNPUBLISH_TIMEOUT = 2000;
 /* eslint-disable */
 
 /**
@@ -35,6 +35,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
     this.__userId = userId;
     this.__debugEnabled = debug;
 
+    this.__localVideoStream = null;
     this.__detached = false;
     this.__pluginHandle = null;
   }
@@ -169,6 +170,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
           return;
         }
         this._debug('cleanup');
+        this.emit('webrtc-cleanup');
       },
 
       // Plugin is detached (it can't be used)
@@ -182,16 +184,17 @@ class PublishingVideoroomPlugin extends EventEmitter {
   /**
    * Create offer and send video stream to another participants
    * @param {object} stream Video stream
+   * @param {number} bitrate Video bitrate
    * @returns {void}
    */
-  publishVideo(stream) {
+  publishVideo(stream, bitrate) {
     this.__pluginHandle.createOffer({
       stream,
       success: jsep => {
         this.__pluginHandle.send({
           message: {
             request: 'publish',
-            bitrate: DEFAULT_BITRATE,
+            bitrate,
             audio: false,
             video: true,
             display: this.__userId,
@@ -219,6 +222,28 @@ class PublishingVideoroomPlugin extends EventEmitter {
         },
       });
     }
+  }
+
+  /**
+   * Replace old video with new stream;
+   * @param {MediaStream} stream New video stream
+   * @returns {void}
+   */
+  async replaceStream(stream) {
+    const untilCleanUp = new Promise((resolve, reject) => {
+      let timeoutError = null;
+      this.once('webrtc-cleanup', () => {
+        clearInterval(timeoutError);
+        timeoutError = null;
+        resolve();
+      });
+      setTimeout(() => {
+        reject(new Error('Waiting unpublish error'));
+      }, WAITING_UNPUBLISH_TIMEOUT);
+    })
+    this.unpublishVideo();
+    await untilCleanUp;
+    this.publishVideo(stream);
   }
 
   /**
