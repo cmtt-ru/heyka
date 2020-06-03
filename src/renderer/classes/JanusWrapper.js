@@ -202,6 +202,19 @@ class JanusWrapper extends EventEmitter {
   }
 
   /**
+   * Set new camera source
+   * @param {string} deviceId Device id
+   * @returns {void}
+   */
+  async setCameraDevice(deviceId) {
+    if (this.__videoroomPlugin) {
+      const stream = await mediaCapturer.getCameraStream(deviceId);
+
+      this.__videoroomPlugin.replaceStream(stream);
+    }
+  }
+
+  /**
    * Publish video stream
    * @param {string} type "camera" or "screen"
    * @param {string} source Source id (camera device id or screen source id)

@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 const DEFAULT_BITRATE = 1400000;
+const WAITING_UNPUBLISH_TIMEOUT = 2000;
 /* eslint-disable */
 
 /**
@@ -35,6 +36,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
     this.__userId = userId;
     this.__debugEnabled = debug;
 
+    this.__localVideoStream = null;
     this.__detached = false;
     this.__pluginHandle = null;
   }
@@ -169,6 +171,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
           return;
         }
         this._debug('cleanup');
+        this.emit('webrtc-cleanup');
       },
 
       // Plugin is detached (it can't be used)
@@ -219,6 +222,28 @@ class PublishingVideoroomPlugin extends EventEmitter {
         },
       });
     }
+  }
+
+  /**
+   * Replace old video with new stream;
+   * @param {MediaStream} stream New video stream
+   * @returns {void}
+   */1
+  async replaceStream(stream) {
+    const untilCleanUp = new Promise((resolve, reject) => {
+      let timeoutError = null;
+      this.once('webrtc-cleanup', () => {
+        clearInterval(timeoutError);
+        timeoutError = null;
+        resolve();
+      });
+      setTimeout(() => {
+        reject(new Error('Waiting unpublish error'));
+      }, WAITING_UNPUBLISH_TIMEOUT);
+    })
+    this.unpublishVideo();
+    await untilCleanUp;
+    this.publishVideo(stream);
   }
 
   /**
@@ -293,6 +318,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
   _onUnpublished(message) {
     this._debug('remove publisher', message);
 
+    console.log('unpublished');
     this.emit('publisher-left', message);
   }
 
