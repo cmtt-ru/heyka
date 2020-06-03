@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain, protocol, nativeTheme } from 'electron';
+import { app, ipcMain, protocol, nativeTheme, globalShortcut } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
@@ -42,7 +42,7 @@ function createWindow() {
   } else {
     params = {
       position: 'center',
-      template: 'main',
+      template: isDevelopment ? 'mainDev' : 'main',
       preventClose: true,
     };
   }
@@ -71,10 +71,11 @@ function createWindow() {
       WindowManager.closeWindow({ id: loadingScreenID });
       loadingScreenID = null;
     }
-    mainWindow.webContents.openDevTools();
   });
 
-  if (!isDevelopment) {
+  if (isDevelopment) {
+    mainWindow.webContents.openDevTools();
+  } else {
     Autoupdater.init(mainWindow);
     mainWindow.webContents.on('did-finish-load', () => {
       WindowManager.closeAll();
@@ -122,6 +123,10 @@ app.on('ready', async () => {
   // load splash screen (fast) and start loading main screen (not so fast)
   createLoadingScreen();
   createWindow();
+
+  globalShortcut.register('CommandOrControl+Shift+I', () => {
+    mainWindow.webContents.toggleDevTools();
+  });
 
   /**
    * Vue devtools chrome extension
