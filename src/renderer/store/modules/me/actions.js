@@ -1,17 +1,10 @@
 import API from '@api';
 import Store from 'electron-store';
 import callWindow from '@classes/callWindow';
-import sleep from 'es7-sleep';
 
 const meStore = new Store({
   name: 'store-module-me',
 });
-
-/**
- * Used when user want to switch from camera to screen or vice versa
- * @type {number}
- */
-const MEDIA_STATE_DELAY = 100;
 
 export default {
   /**
@@ -54,14 +47,20 @@ export default {
         mediaState.screen = false;
       }
 
-      /** Set media state of camera & screen to false */
-      commit('SET_MEDIA_STATE', {
+      const newState = {
         ...state.mediaState,
         camera: false,
         screen: false,
-      });
+      };
 
-      await sleep(MEDIA_STATE_DELAY);
+      /** Set media state of camera & screen to false */
+      commit('SET_MEDIA_STATE', newState);
+
+      if (selectedChannelId) {
+        await API.user.setMediaState(newState);
+      }
+
+      await dispatch('janus/untilIdle', null, { root: true });
     }
 
     commit('SET_MEDIA_STATE', mediaState);
@@ -75,6 +74,24 @@ export default {
     if (selectedChannelId) {
       await API.user.setMediaState(mediaState);
     }
+  },
+
+  /**
+   * Stop all media sharing
+   *
+   * @param {function} commit – store commit
+   * @param {MeState} state – state
+   * @param {function} dispatch – dispatch action
+   * @returns {void}
+   */
+  async stopMediaSharing({ commit, state, dispatch }) {
+    dispatch('janus/setSharingSource', null, { root: true });
+
+    dispatch('setMediaState', {
+      ...state.mediaState,
+      camera: false,
+      screen: false,
+    });
   },
 
   /**
