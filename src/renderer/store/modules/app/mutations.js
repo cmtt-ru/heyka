@@ -59,7 +59,6 @@ export default {
    */
   SET_THEME(state, theme) {
     state.theme = theme;
-    console.log('REQUEST theme', theme);
   },
 
   /**
