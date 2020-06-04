@@ -11,6 +11,8 @@ const meStore = new Store({
  * @property {string} selectedChannelId – selected channel id
  * @property {MediaState} mediaState – my media state
  * @property {array} pokes – list of pokes
+ * @property {string} onlineStatus – online status
+ * @property {string} previousOnlineStatus – previous online status
  */
 
 /**
@@ -29,6 +31,8 @@ const state = () => {
     speaking: false,
   });
 
+  const onlineStatus = meStore.get('onlineStatus', 'online');
+
   /**
    * @namespace MeState
    */
@@ -38,6 +42,8 @@ const state = () => {
     selectedChannelId: null,
     mediaState: initialMediaState,
     pokes: [],
+    onlineStatus: onlineStatus,
+    previousOnlineStatus: onlineStatus,
   };
 };
 
