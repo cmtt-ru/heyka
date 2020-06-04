@@ -1,3 +1,4 @@
+import electron from "electron";
 <template>
   <div>
     <janus />
@@ -7,7 +8,7 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
+import electron, { ipcRenderer } from 'electron';
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
 
@@ -21,6 +22,7 @@ export default {
   data() {
     return {
       deepLink: {},
+      updateNotificationShown: false,
     };
   },
 
@@ -51,9 +53,13 @@ export default {
     });
 
     ipcRenderer.on('update-downloaded', () => {
-      console.log('update-downloaded');
-      this.showUpdateNotification();
+      if (!this.updateNotificationShown) {
+        this.showUpdateNotification();
+        this.updateNotificationShown = true;
+      }
     });
+
+    this.showUpdateNotification();
 
     ipcRenderer.send('update-check');
   },
@@ -76,7 +82,8 @@ export default {
               type: 1,
               close: true,
               action: () => {
-                ipcRenderer.send('update-install');
+                electron.remote.app.relaunch();
+                electron.remote.app.quit();
               },
             },
             {
