@@ -192,9 +192,10 @@ export default {
     setOperationStart(operation) {
       this.$store.dispatch('janus/setInProgress', true);
       this.currentOperation = operation;
+      console.log('%c setOperationStart', 'background: #C9EAD7', operation);
     },
     setOperationFinish(operation) {
-      this.log('set operation finish', operation, this.currentOperation);
+      console.log('%c setOperationFinish', 'background: #C9EAD7', operation);
       if (operation === this.currentOperation) {
         this.$store.dispatch('janus/setInProgress', false);
         console.log(this.$store.state.janus);
@@ -241,6 +242,7 @@ export default {
       janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
       janusWrapper.on(JanusWrapper.events.localVideoStream, this.onLocalVideoStream.bind(this));
       janusWrapper.on(JanusWrapper.events.videoSlowLink, this.onVideoSlowLink.bind(this));
+      janusWrapper.on(JanusWrapper.events.webrtcCleanUp, this.onWebrtcCleanUp.bind(this));
       janusWrapper.on(JanusWrapper.events.successVideoPublishing, () => {
         this.setOperationFinish('publish');
       });
@@ -450,8 +452,6 @@ export default {
     onVideoPublisherLeft(publisher) {
       // if current user unpublished video
       if (publisher.unpublished === 'ok') {
-        this.setOperationFinish('unpublish');
-
         return;
       }
 
@@ -568,6 +568,14 @@ export default {
      */
     onVideoSlowLink(uplink) {
       connectionCheck.handleSlowInternet(true);
+    },
+
+    /**
+     * Handle webrtc clean up
+     * @returns {void}
+     */
+    onWebrtcCleanUp() {
+      this.setOperationFinish('unpublish');
     },
 
     /**
