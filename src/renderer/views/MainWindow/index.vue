@@ -59,8 +59,6 @@ export default {
       }
     });
 
-    this.showUpdateNotification();
-
     ipcRenderer.send('update-check');
   },
 
