@@ -97,6 +97,14 @@ export default {
       type: Boolean,
       default: undefined,
     },
+
+    /**
+     * Enable's volume fill color
+     */
+    fillColor: {
+      type: String,
+      default: undefined,
+    },
   },
 
   computed: {
@@ -115,7 +123,8 @@ export default {
     volume() {
       return {
         // eslint-disable-next-line no-magic-numbers
-        height: Math.floor(this.$store.getters['app/getMicrophoneVolume'] + 100) * 0.46 + '%',
+        transform: `scaleY(${Math.floor(this.$store.getters['app/getMicrophoneVolume'] + 100) / 100})`,
+        backgroundColor: this.fillColor,
       };
     },
     /**
@@ -177,6 +186,8 @@ export default {
         position absolute
         bottom 42%
         left 38%
+        height 46%
+        transform-origin bottom left
 
     &__icon
         position relative
