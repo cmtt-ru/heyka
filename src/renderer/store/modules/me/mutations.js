@@ -55,4 +55,27 @@ export default {
     state.previousOnlineStatus = state.onlineStatus;
     state.onlineStatus = status;
   },
+
+  /**
+   * Sets our suspend state
+   *
+   * @param {MeState} state – module me state
+   * @param {boolean} value – state
+   * @constructor
+   */
+  SET_SUSPEND_STATE(state, value) {
+    state.suspendState = value;
+  },
+
+  /**
+   * Sets our lock screen state
+   *
+   * @param {MeState} state – module me state
+   * @param {boolean} value – state
+   * @constructor
+   */
+  SET_LOCK_SCREEN_STATE(state, value) {
+    state.lockScreenState = value;
+  },
+
 };

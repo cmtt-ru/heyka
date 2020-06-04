@@ -13,6 +13,8 @@ const meStore = new Store({
  * @property {array} pokes – list of pokes
  * @property {string} onlineStatus – online status
  * @property {string} previousOnlineStatus – previous online status
+ * @property {boolean} suspendState – sleep / awake state
+ * @property {boolean} lockScreenState – screen lock / unlock state
  */
 
 /**
@@ -44,6 +46,8 @@ const state = () => {
     pokes: [],
     onlineStatus: onlineStatus,
     previousOnlineStatus: onlineStatus,
+    suspendState: false,
+    lockScreenState: false,
   };
 };
 
