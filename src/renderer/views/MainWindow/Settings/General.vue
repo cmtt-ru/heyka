@@ -45,6 +45,7 @@
 <script>
 
 import { UiSelect, UiSwitch } from '@components/Form';
+import broadcastEvents from '@classes/broadcastEvents';
 
 export default {
   components: {
@@ -92,6 +93,10 @@ export default {
       },
       set(value) {
         this.$store.dispatch('app/setLanguage', value);
+        broadcastEvents.dispatch('shared-action', {
+          action: 'app/setLanguage',
+          data: value,
+        });
       },
     },
 
@@ -116,6 +121,10 @@ export default {
       },
       set(value) {
         this.$store.dispatch('app/setTheme', { ...value });
+        broadcastEvents.dispatch('shared-action', {
+          action: 'app/setTheme',
+          data: { ...value },
+        });
       },
     },
 

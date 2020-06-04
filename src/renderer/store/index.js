@@ -9,6 +9,7 @@ import mutations from './mutations';
 import mediaDevices from '@classes/mediaDevices';
 import createMutationsSharer from 'vuex-shared-mutations';
 import broadcastActions from '@classes/broadcastActions';
+import broadcastEvents from '@classes/broadcastEvents';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import broadcastState from '@classes/broadcastState';
 
@@ -95,5 +96,9 @@ if (isMainWindow()) {
     store.replaceState(state);
   });
 }
+
+broadcastEvents.on('shared-action', ({ action, data }) => {
+  store.dispatch(action, data);
+});
 
 export default store;
