@@ -5,10 +5,17 @@
 </template>
 
 <script>
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
 export default {
   created() {
     this.loadSvgSprite();
+
+    window.addEventListener('keypress', function (e) {
+      if ((e.shiftKey && e.code == 'KeyI') || (e.ctrlKey && e.code == 'KeyI')) {
+        WindowManager.getCurrentWindow().toggleConsole();
+      }
+    }, true);
   },
 
   methods: {

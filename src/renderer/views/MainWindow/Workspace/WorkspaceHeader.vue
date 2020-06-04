@@ -4,30 +4,24 @@
       v-if="user"
       class="user"
     >
-      <ui-button
-        :type="7"
+      <microphone
+        v-tooltip="microphoneTooltip"
         class="user__status"
-        size="small"
-        :icon="icons.screen"
-        @click.native="switchProp('screen')"
-        v-tooltip="mediaState.speakers ? 'Start screen sharing' : 'Stop screen sharing'"
+        :active="user.microphone"
+        @click.native="switchProp('microphone')"
       />
+
       <ui-button
+        v-tooltip="speakerTooltip"
         :type="7"
         class="user__status"
         size="small"
         :icon="icons.speakers"
         @click.native="switchProp('speakers')"
-        v-tooltip="mediaState.speakers ? 'Deafen' : 'Undeafen'"
-      />
-      <microphone
-        class="user__status"
-        :active="user.microphone"
-        @click.native="switchProp('microphone')"
-        v-tooltip="mediaState.microphone ? 'Mute' : 'Unmute'"
       />
 
       <avatar
+        v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
         :image="user.avatar"
         :status="user.onlineStatus"
@@ -101,6 +95,30 @@ export default {
         speakers: ICON_MAP.speakers[this.user.speakers],
         screen: ICON_MAP.screen[this.user.screen],
       };
+    },
+
+    /**
+     * Microphone tooltip
+     * @returns {string}
+     */
+    microphoneTooltip() {
+      if (this.mediaState.microphone) {
+        return this.$t('tooltips.microphoneOff');
+      } else {
+        return this.$t('tooltips.microphoneOn');
+      }
+    },
+
+    /**
+     * Speaker tooltip
+     * @returns {string}
+     */
+    speakerTooltip() {
+      if (this.mediaState.speaker) {
+        return this.$t('tooltips.speakerOff');
+      } else {
+        return this.$t('tooltips.speakerOn');
+      }
     },
   },
 

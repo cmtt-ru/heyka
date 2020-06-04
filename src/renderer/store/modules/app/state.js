@@ -30,6 +30,8 @@ const heykaStore = new Store({
  * @property {string} selectedDevices.camera – selected camera
  *
  * @property {number} microphoneVolume – current microphone volume in decibels
+ * @property {array} notifications – in-app notifications
+ * @property {string} search – workspace search
  */
 
 /**

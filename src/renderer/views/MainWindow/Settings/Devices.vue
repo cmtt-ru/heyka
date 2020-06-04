@@ -5,7 +5,7 @@
     </div>
     <div class="setting-with-icon">
       <ui-select
-        v-model="selectedDevices.speaker"
+        v-model="selectedSpeaker"
         :data="devices.speakers"
       />
       <ui-button
@@ -21,7 +21,7 @@
       {{ texts.micLabel }}
     </div>
     <ui-select
-      v-model="selectedDevices.microphone"
+      v-model="selectedMicrophone"
       :data="devices.microphones"
     />
     <progress-bar
@@ -33,7 +33,7 @@
       {{ texts.cameraLabel }}
     </div>
     <ui-select
-      v-model="selectedDevices.camera"
+      v-model="selectedCamera"
       :data="devices.cameras"
     />
   </div>
@@ -44,22 +44,14 @@
 import UiButton from '@components/UiButton';
 import { UiSelect } from '@components/Form';
 import ProgressBar from '@components/ProgressBar';
-import hark from 'hark';
+import AudioCheck from '@classes/AudioCheck';
+import mediaDevices from '@classes/mediaDevices';
 
 /**
  * DB compensator
  * @type {number}
  */
 const DB_COMPENSATOR = 100;
-
-/**
- * Audio element for audio test
- * @type {HTMLAudioElement}
- */
-const audioTest = new Audio(require('@assets/audio/test-sound.mp3'));
-
-let mediaStream = null;
-let harkInstance = null;
 
 export default {
   components: {
@@ -70,7 +62,6 @@ export default {
 
   data() {
     return {
-      selectedDevices: { ...this.$store.getters['app/getSelectedDevices'] },
       microphoneVolume: 0,
     };
   },
@@ -91,24 +82,66 @@ export default {
     devices() {
       return this.$store.getters['app/getDevices'];
     },
-  },
 
-  watch: {
-    selectedDevices: {
-      handler() {
-        this.$store.dispatch('app/setSelectedDevices', { ...this.selectedDevices });
-        this.changeDevice();
+    /**
+     * List of selected devices
+     * @returns {object}
+     */
+    selectedDevices() {
+      return this.$store.getters['app/getSelectedDevices'];
+    },
+
+    /**
+     * Selected speaker model
+     */
+    selectedSpeaker: {
+      get() {
+        return this.selectedDevices.speaker;
       },
-      deep: true,
+      set(value) {
+        this.selectDevice('speaker', value);
+        AudioCheck.startMediaStream();
+      },
+    },
+
+    /**
+     * Selected microphone model
+     */
+    selectedMicrophone: {
+      get() {
+        return this.selectedDevices.microphone;
+      },
+      set(value) {
+        this.selectDevice('microphone', value);
+        AudioCheck.startMediaStream();
+      },
+    },
+
+    /**
+     * Selected camera model
+     */
+    selectedCamera: {
+      get() {
+        return this.selectedDevices.camera;
+      },
+      set(value) {
+        this.selectDevice('camera', value);
+      },
     },
   },
 
   mounted() {
-    this.changeDevice();
+    AudioCheck.startMediaStream();
+    AudioCheck.on('volume_change', (db) => {
+      this.microphoneVolume = Math.max(0, db + Math.round(DB_COMPENSATOR));
+    });
+
+    mediaDevices.startLinuxDeviceChangeTimer();
   },
 
   destroyed() {
-    this.destroyMediaStream();
+    AudioCheck.destroyMediaStream();
+    mediaDevices.stopLinuxDeviceChangeTimer();
   },
 
   methods: {
@@ -117,43 +150,21 @@ export default {
      * @returns {void}
      */
     playTestSound() {
-      audioTest.play();
+      AudioCheck.playTestSound();
     },
 
     /**
-     * Change's device for test sound and microphone volume test
-     * @return {void}
-     */
-    async changeDevice() {
-      this.destroyMediaStream();
-
-      mediaStream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          deviceId: this.selectedDevices.microphone,
-        },
-      });
-
-      audioTest.setSinkId(this.selectedDevices.speaker);
-
-      harkInstance = hark(mediaStream, {});
-
-      harkInstance.on('volume_change', (db) => {
-        this.microphoneVolume = db + DB_COMPENSATOR;
-      });
-    },
-
-    /**
-     * Destroy's hark instance and media stream
+     * Save selected devices
+     * @param {string} device – device type
+     * @param {string} deviceId – device id
      * @returns {void}
      */
-    destroyMediaStream() {
-      if (harkInstance) {
-        harkInstance.stop();
-      }
+    selectDevice(device, deviceId) {
+      const data = { ...this.selectedDevices };
 
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-      }
+      data[device] = deviceId;
+
+      this.$store.dispatch('app/setSelectedDevices', data);
     },
   },
 };

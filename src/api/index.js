@@ -50,6 +50,12 @@ function middleware(func, functionName) {
     try {
       return await func.apply(null, arguments);
     } catch (err) {
+      if (err.response === undefined) {
+        await handleError(err);
+
+        return;
+      }
+
       /** Update tokens if token is expired */
       if (err.response.data.message === errorMessages.accessTokenExpired) {
         await updateTokens();

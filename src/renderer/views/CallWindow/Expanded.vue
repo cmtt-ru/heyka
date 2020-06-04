@@ -2,6 +2,7 @@
   <div
     class="expanded-window"
     :style="$themes.getColors('popover')"
+    @dblclick="showGridHandler"
   >
     <!-- <svg
       class="svg-border"
@@ -32,7 +33,10 @@
       />
     </svg> -->
 
-    <video class="sharing" />
+    <video
+      ref="video"
+      class="sharing"
+    />
 
     <div class="badge user">
       <avatar
@@ -77,6 +81,7 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
+import commonStreams from '@classes/commonStreams';
 
 export default {
   components: {
@@ -110,6 +115,29 @@ export default {
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
+    /**
+     * Current selected channel
+     * @returns {string}
+     */
+    selectedChannelId() {
+      return this.$store.state.me.selectedChannelId;
+    },
+
+    /**
+     * Is current user sharing media
+     * @returns {boolean}
+     */
+    isUserSharingMedia() {
+      return this.$store.getters.getUsersWhoShareMedia.includes(this.userId);
+    },
+
+  },
+  watch: {
+    isUserSharingMedia(val) {
+      if (val === false) {
+        this.showGridHandler();
+      }
+    },
   },
 
   /**
@@ -131,6 +159,12 @@ export default {
     broadcastEvents.on('grid', () => {
       this.$router.replace('/call-window');
     });
+
+    this.requestStream();
+
+    // Запрашиваем стрим шэрящего юзера, если он
+    // по каким-то причинам прекратился
+    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
   },
 
   destroyed() {
@@ -140,6 +174,47 @@ export default {
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
+
+    commonStreams.removeAllListeners('stream-canceled');
+  },
+  methods: {
+    /**
+     * Request stream and insert it
+     * @returns {void}
+     */
+    async requestStream() {
+      const id = this.userId;
+      const stream = await commonStreams.getStream(id);
+
+      this.$refs.video.srcObject = stream;
+      this.$refs.video.onloadedmetadata = () => {
+        this.$refs.video.play();
+      };
+    },
+
+    /**
+     * Show grid handler
+     * @returns {void}
+     */
+    showGridHandler() {
+      this.$router.push('/call-window');
+    },
+
+    /**
+     * Stream canceled handler
+     * @param {string} userId – user id
+     * @returns {Promise<void>}
+     */
+    async streamCanceledHandler(userId) {
+      if (!this.selectedChannelId) {
+        return;
+      }
+
+      if (this.isUserSharingMedia) {
+        this.requestStream();
+      }
+    },
+
   },
 
 };
@@ -154,7 +229,7 @@ export default {
   .sharing
     width 100%
     height 100%
-    background-color #dbdbdb
+    background-color var(--app-bg)
 
   .svg-border
     width 100%
@@ -185,9 +260,11 @@ export default {
     left 30px
     display flex
     flex-direction row
-    background-color var(--app-bg)
+    background-color var(--button-bg-5)
     padding 8px
     border-radius 4px
+    font-weight 500
+    align-items center
 
     &__avatar
       margin-right 8px
@@ -208,6 +285,7 @@ export default {
     height auto
     opacity 1
     transition opacity 0.2s ease
+    box-shadow 0 0 0 1px var(--button-bg-5)
 
     &--hidden
       opacity 0

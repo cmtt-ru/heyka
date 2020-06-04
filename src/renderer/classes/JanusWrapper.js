@@ -1,6 +1,9 @@
 import { EventEmitter } from 'events';
 import Janus from './janus';
 import AudiobridgePlugin from './AudiobridgePlugin';
+import PublishingVideoroomPlugin from './PublishingVideoroomPlugin';
+import SubscribingVideoroomPlugin from './SubscribingVideoroomPlugin';
+import mediaCapturer from './mediaCapturer';
 // eslint-disable-next-line no-unused-vars
 import adapter from 'webrtc-adapter';
 
@@ -8,6 +11,27 @@ const ERROR_CODES = {
   SERVER_DOWN: 'Server is down',
   AUTHENTICATION_ERROR: 'Authentication error',
   UNKNOW: 'Unknow error',
+};
+const REQUEST_VIDEOSTREAM_TIMEOUT = 5000;
+const DEFAULT_BITRATE_CAMERA_ = 256000;
+const DEFAULT_BITRATE_SCREEN = 1400000;
+
+// Possible events for subscribing
+const JANUS_WRAPPER_EVENTS = {
+  connectionError: 'connection-error',
+  remoteAudioStream: 'remote-audio-stream',
+  audioStreamActive: 'audio-stream-active',
+  speaking: 'speaking',
+  volumeChange: 'volume-change',
+  videoPublishersList: 'video-publishers-list',
+  videoPublisherJoined: 'video-publisher-joined',
+  videoPublisherLeft: 'video-publisher-left',
+  remoteVideoStream: 'remote-video-stream',
+  localVideoStream: 'local-video-stream',
+  successVideoPublishing: 'success-video-publishing',
+  channelJoined: 'channel-joined',
+  audioSlowLink: 'audio-slow-link',
+  videoSlowLink: 'video-slow-link',
 };
 
 /**
@@ -24,6 +48,7 @@ class JanusWrapper extends EventEmitter {
    * @param {number} config.audioRoomId Janus audio room id
    * @param {number} config.videoRoomId Janus video room id
    * @param {string} config.userId Application user id
+   * @param {string} config.microphoneDeviceId Device id of selected microphone
    * @param {boolean} config.debug Enable or disable debug output
    */
   constructor({
@@ -33,6 +58,7 @@ class JanusWrapper extends EventEmitter {
     audioRoomId,
     videoRoomId,
     userId,
+    microphoneDeviceId,
     debug,
   }) {
     super();
@@ -44,13 +70,19 @@ class JanusWrapper extends EventEmitter {
     this.__audioRoomId = audioRoomId;
     this.__videoRoomId = videoRoomId;
     this.__userId = userId;
+    this.__microphoneDeviceId = microphoneDeviceId;
     this.__debug = debug;
 
     this.__janus = null;
 
     // plugins
     this.__audiobridgePlugin = null;
+    this.__audiobridgeReady = false;
     this.__videoroomPlugin = null;
+    this.__videoroomReady = false;
+
+    // plugins for specific video publishers
+    this.__videoroomPlugins = {};
   }
 
   /**
@@ -94,23 +126,65 @@ class JanusWrapper extends EventEmitter {
     /** Connect to Janus */
     await this._connect();
 
+    // connect audiobridge plugin
+
     const audiobridgePlugin = new AudiobridgePlugin({
       janus: this.__janus,
       room: this.__audioRoomId,
       token: this.__channelToken,
       userId: this.__userId,
+      microphoneDeviceId: this.__microphoneDeviceId,
       debug: this.__debug,
     });
 
     audiobridgePlugin.attach();
 
-    audiobridgePlugin.on('remote-audio-stream', stream => this.emit('remote-audio-stream', stream));
-    audiobridgePlugin.on('media-state', isActive => this.emit('audio-stream-active', isActive));
-    audiobridgePlugin.on('start-speaking', () => this.emit('speaking', true));
-    audiobridgePlugin.on('stop-speaking', () => this.emit('speaking', false));
-    audiobridgePlugin.on('volume-change', (db) => this.emit('volume-change', db));
+    audiobridgePlugin.on('remote-audio-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.remoteAudioStream, stream));
+    audiobridgePlugin.on('media-state', isActive => {
+      this.emit(JANUS_WRAPPER_EVENTS.audioStreamActive, isActive);
+      if (isActive) {
+        this.__audiobridgeReady = true;
+        // Сообщаем о том, что join к каналу успешно завершен
+        // Если перед этим videoroom заджойнился к каналу
+        if (this.__videoroomReady) {
+          this.emit(JANUS_WRAPPER_EVENTS.channelJoined);
+        }
+      }
+    });
+    audiobridgePlugin.on('start-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, true));
+    audiobridgePlugin.on('stop-speaking', () => this.emit(JANUS_WRAPPER_EVENTS.speaking, false));
+    audiobridgePlugin.on('volume-change', (db) => this.emit(JANUS_WRAPPER_EVENTS.volumeChange, db));
+    audiobridgePlugin.on('audio-slow-link', (uplink) => this.emit(JANUS_WRAPPER_EVENTS.audioSlowLink, uplink));
 
     this.__audiobridgePlugin = audiobridgePlugin;
+
+    // connect videoroom plugin
+    const videoroomPlugin = new PublishingVideoroomPlugin({
+      janus: this.__janus,
+      room: this.__videoRoomId,
+      token: this.__channelToken,
+      userId: this.__userId,
+      debug: this.__debug,
+    });
+
+    videoroomPlugin.attach();
+
+    videoroomPlugin.on('active-publishers', publishers => {
+      this.emit(JANUS_WRAPPER_EVENTS.videoPublishersList, publishers);
+      this.__videoroomReady = true;
+      // videoroom готов, сообщаем что присоединение к каналу завершено
+      // если при этом audiobridge уже заджойнился
+      if (this.__audiobridgeReady) {
+        this.emit(JANUS_WRAPPER_EVENTS.channelJoined);
+      }
+    });
+    videoroomPlugin.on('publisher-joined', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherJoined, publisher));
+    videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
+    videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
+    videoroomPlugin.on('success-publishing', () => this.emit(JANUS_WRAPPER_EVENTS.successVideoPublishing));
+    videoroomPlugin.on('video-slow-link', () => this.emit(JANUS_WRAPPER_EVENTS.videoSlowLink));
+
+    this.__videoroomPlugin = videoroomPlugin;
   }
 
   /**
@@ -123,6 +197,109 @@ class JanusWrapper extends EventEmitter {
   }
 
   /**
+   * Set new microphone source
+   * @param {string} deviceId Device id
+   * @returns {void}
+   */
+  setMicrophoneDevice(deviceId) {
+    if (this.__audiobridgePlugin) {
+      this.__audiobridgePlugin.setMicrophoneDevice(deviceId);
+    }
+  }
+
+  /**
+   * Set new camera source
+   * @param {string} deviceId Device id
+   * @returns {void}
+   */
+  async setCameraDevice(deviceId) {
+    if (this.__videoroomPlugin) {
+      const stream = await mediaCapturer.getCameraStream(deviceId);
+
+      this.__videoroomPlugin.replaceStream(stream);
+    }
+  }
+
+  /**
+   * Publish video stream
+   * @param {string} type "camera" or "screen"
+   * @param {string} source Source id (camera device id or screen source id)
+   * @returns {void}
+   */
+  async publishVideoStream(type = 'camera', source) {
+    let stream = null;
+
+    this._debug('Start sharing video', type, source);
+
+    if (type === 'camera') {
+      stream = await mediaCapturer.getCameraStream(source);
+    } else {
+      stream = await mediaCapturer.getStream(source);
+    }
+
+    this.__videoroomPlugin.publishVideo(stream, type === 'camera' ? DEFAULT_BITRATE_CAMERA_ : DEFAULT_BITRATE_SCREEN);
+  }
+
+  /**
+   * Unpublish video stream
+   * @returns {void}
+   */
+  unpublishVideoStream() {
+    this.__videoroomPlugin.unpublishVideo();
+  }
+
+  /**
+   * Request video stream for given publisher
+   * @param {string} janusId Janus user id subscribe for
+   * @returns {Promise<MediaStream>} Return media stream
+   */
+  async requestVideoStream(janusId) {
+    const plugin = new SubscribingVideoroomPlugin({
+      janus: this.__janus,
+      userId: this.__userId,
+      room: this.__videoRoomId,
+      janusId,
+      debug: this.__debug,
+      token: this.__channelToken,
+    });
+
+    this.__videoroomPlugins[janusId] = plugin;
+
+    console.log(`%c videoroomPlugins ADDED ${Object.keys(this.__videoroomPlugins).length}`, 'background: red; color: white;', this.__videoroomPlugins);
+    let requestTimeout;
+    const prom = new Promise((resolve, reject) => {
+      requestTimeout = setTimeout(() => {
+        console.error('REQUEST_VIDEOSTREAM_TIMEOUT');
+      }, REQUEST_VIDEOSTREAM_TIMEOUT);
+      plugin.once('remote-video-stream', stream => {
+        clearTimeout(requestTimeout);
+        resolve(stream);
+      });
+    });
+
+    plugin.attach();
+
+    return prom;
+  }
+
+  /**
+   * Stops receiving video stream from given publisher
+   * @param {string} janusId Janus user id
+   * @returns {void}
+   */
+  async stopReceivingVideoStream(janusId) {
+    if (!this.__videoroomPlugins[janusId]) {
+      return;
+    }
+
+    this.__videoroomPlugins[janusId].detach();
+
+    delete this.__videoroomPlugins[janusId];
+
+    console.log(`%c videoroomPlugins REMOVED ${Object.keys(this.__videoroomPlugins).length}`, 'background: red; color: white;', this.__videoroomPlugins);
+  }
+
+  /**
    * Connects to the Janus server
    * @private
    * @returns {Promise<null>}
@@ -131,8 +308,23 @@ class JanusWrapper extends EventEmitter {
     return new Promise((resolve, reject) => {
       let isFullfilled = false;
 
+      // convert url to websocket connect
+      // url is like "http://janus-host.domen.zone:8088/janus";
+      let wsurl = '';
+
+      if (this.__url.indexOf('http') + 1) {
+        wsurl = this.__url.replace('http', 'ws')
+          .replace('8088', '8188')
+          .replace('/janus', '');
+      } else {
+        wsurl = this.__url.replace('https', 'wss')
+          .replace('8089', '8189')
+          .replace('/janus', '');
+      }
+      this._debug(`Connect to janus. rest-api: ${this.__url}, ws-api: ${wsurl}`);
+
       this.__janus = new Janus({
-        server: this.__url,
+        server: [wsurl, this.__url],
         token: this.__workspaceToken,
         success: () => {
           resolve();
@@ -181,6 +373,14 @@ class JanusWrapper extends EventEmitter {
       this.__audiobridgePlugin.detach();
       this.__audiobridgePlugin = null;
     }
+    if (this.__videoroomPlugin) {
+      this.__videoroomPlugin.detach();
+      this.__videoroomPlugin = null;
+    }
+    Object.keys(this.__videoroomPlugins).forEach(key => {
+      this.__videoroomPlugins[key].detach();
+      delete this.__videoroomPlugins[key];
+    });
     this.__janus.destroy();
     this.__janus = null;
   }
@@ -198,5 +398,6 @@ class JanusWrapper extends EventEmitter {
 };
 
 JanusWrapper.errors = ERROR_CODES;
+JanusWrapper.events = JANUS_WRAPPER_EVENTS;
 
 export default JanusWrapper;

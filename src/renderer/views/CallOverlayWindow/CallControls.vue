@@ -57,7 +57,7 @@ export default {
     buttons: {
       type: Array,
       default: function () {
-        return ['speakers', 'microphone', 'grid', 'leave'];
+        return ['microphone', 'camera', 'screen', 'speakers', 'leave'];
       },
     },
   },
@@ -85,7 +85,7 @@ export default {
      */
     speakingUser() {
       if (this.selectedChannel) {
-        const speakingUsers = this.selectedChannel.users.filter(u => u.speaking);
+        const speakingUsers = this.selectedChannel.users.filter(u => u.speaking && u.microphone);
 
         if (speakingUsers.length) {
           const speakingUserId = speakingUsers[0].userId;
@@ -201,7 +201,15 @@ export default {
       line-height 14px
       margin-left -2px
       margin-top 1px
-      flex-shrink 0
+
+      svg
+        flex-shrink 0
+
+      span
+        min-width 0
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
 
     &__button
       margin-right 8px

@@ -3,8 +3,9 @@
     <div
       v-if="isMediaSharing"
       class="call-window__media"
+      @dblclick="showGridHandler"
     >
-      <video />
+      <video ref="video" />
     </div>
 
     <call-controls
@@ -16,19 +17,95 @@
 
 <script>
 import CallControls from './CallControls';
+import { mapGetters } from 'vuex';
+import broadcastActions from '@classes/broadcastActions';
+import commonStreams from '@classes/commonStreams';
+import broadcastEvents from '@classes/broadcastEvents';
 
 export default {
   components: {
     CallControls,
   },
   computed: {
+    ...mapGetters([
+      'getUserWhoSharesMedia',
+      'amISharingMedia',
+      'isAnybodySharingMedia',
+    ]),
+
     mediaState() {
       return this.$store.getters['me/getMediaState'];
     },
 
     isMediaSharing() {
-      return false;
-      // return this.mediaState.screen || this.mediaState.camera;
+      return this.isAnybodySharingMedia && !this.amISharingMedia;
+    },
+
+    selectedChannelId() {
+      return this.$store.state.me.selectedChannelId;
+    },
+  },
+
+  watch: {
+    isMediaSharing() {
+      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+    },
+    getUserWhoSharesMedia(user) {
+      if (user) {
+        this.requestStream(user);
+      }
+    },
+  },
+  created() {
+    if (this.isMediaSharing) {
+      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+    }
+    if (this.getUserWhoSharesMedia) {
+      this.requestStream(this.getUserWhoSharesMedia);
+    }
+
+    // Если стрим прекратился, но юзер еще шэрит камеру
+    // то запрашиваем стрим еще раз
+    // самый частый юзкейс - юзер изменил камеру, поэтому стрим обновился
+    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
+  },
+  destroyed() {
+    commonStreams.removeAllListeners('stream-canceled');
+  },
+  methods: {
+    async requestStream(user) {
+      const stream = await commonStreams.getStream(user);
+      const htmlElement = this.$refs.video;
+
+      if (htmlElement) {
+        htmlElement.srcObject = stream;
+        htmlElement.onloadedmetadata = function () {
+          htmlElement.play();
+        };
+      }
+    },
+
+    /**
+     * Show grid handler
+     * @returns {void}
+     */
+    showGridHandler() {
+      broadcastActions.dispatch('openGrid');
+      broadcastEvents.dispatch('grid');
+    },
+
+    /**
+     * Stream canceled handler
+     * @param {string} userId – user id
+     * @returns {Promise<void>}
+     */
+    async streamCanceledHandler(userId) {
+      if (!this.selectedChannelId) {
+        return;
+      }
+      if (this.getUserWhoSharesMedia === userId) {
+        this.requestStream(userId);
+      }
     },
   },
 };
@@ -45,7 +122,7 @@ export default {
       video
         display block
         width 100%
-        height 100%
-        background #333
+        height 213px
+        object-fit cover
 
 </style>

@@ -15,7 +15,9 @@ export default {
    * Set online status
    *
    * @param {UserState} state – user module state
-   * @param {object} data — online status data
+   * @param {object} data — online status object
+   * @param {string} data.userId – user id
+   * @param {string} data.onlineStatus – user online status
    * @constructor
    */
   SET_ONLINE_STATUS(state, data) {

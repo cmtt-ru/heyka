@@ -1,22 +1,25 @@
 <template>
   <popover>
-    <router-link :to="{ name: 'user', params: { id: userId }}">
-      <ui-button :type="11">
-        Open profile
+    <div class="buttons">
+      <router-link :to="{ name: 'user', params: { id: userId }}">
+        <ui-button :type="11">
+          {{ texts.profile }}
+        </ui-button>
+      </router-link>
+      <ui-button
+        :type="11"
+        data-popover-close
+        @click="pokeClickHandler"
+      >
+        {{ texts.poke }}
       </ui-button>
-    </router-link>
-    <ui-button
-      :type="11"
-      @click="pokeClickHandler"
-    >
-      Poke
-    </ui-button>
-    <ui-button
-      :type="11"
-      @click="muteClickHandler"
-    >
-      Mute for all
-    </ui-button>
+      <ui-button
+        :type="11"
+        @click="muteClickHandler"
+      >
+        {{ texts.mute }}
+      </ui-button>
+    </div>
   </popover>
 </template>
 
@@ -37,6 +40,16 @@ export default {
     userId: {
       type: String,
       default: '',
+    },
+  },
+
+  computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('popover.userInChannel');
     },
   },
 

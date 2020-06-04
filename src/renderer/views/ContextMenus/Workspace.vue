@@ -25,7 +25,7 @@
       >
         <img
           class="workspace-avatar"
-          src="workspace.avatar"
+          :src="workspace.avatar"
         >
         {{ workspace.name }}
 
@@ -58,6 +58,13 @@
       <ui-button
         :type="11"
         icon="disconnect"
+        @click.native="logoutHandler"
+      >
+        Logout
+      </ui-button>
+      <ui-button
+        :type="11"
+        icon="disconnect"
         @click.native="quitAppHandler"
       >
         {{ texts.quit }}
@@ -70,6 +77,7 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import electron from 'electron';
+import logout from '@api/auth/logout';
 
 export default {
   components: {
@@ -118,6 +126,14 @@ export default {
      */
     quitAppHandler() {
       electron.remote.app.quit();
+    },
+
+    /**
+     * Logout handler
+     * @returns {void}
+     */
+    logoutHandler() {
+      logout();
     },
   },
 };

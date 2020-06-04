@@ -1,12 +1,20 @@
 {
-  "main": {
+  "mainDev": {
+    "minWidth": 500,
+    "minHeight": 500,
     "width": 1200,
     "height": 1000,
     "frame": true
   },
+  "main": {
+    "width": 500,
+    "height": 600,
+    "frame": true,
+    "resizable": false
+  },
   "maintray": {
     "width": 500,
-    "height": 700
+    "height": 600
   },
   "splash": {
     "width": 90,
@@ -25,9 +33,31 @@
     "frame": false,
     "skipTaskbar": true
   },
+  "overlay": {
+    "alwaysOnTop": true,
+    "fullscreenable": false,
+    "backgroundColor": "#000",
+    "skipTaskbar": true,
+    "resizable": false
+  },
+  "sharingSelectDev": {
+    "width": 500,
+    "height": 500,
+    "alwaysOnTop": true,
+    "backgroundColor": "#000"
+  },
+  "sharingSelect": {
+    "width": 500,
+    "height": 500,
+    "alwaysOnTop": true,
+    "backgroundColor": "#000",
+    "resizable": false
+  },
   "call": {
     "width": 1500,
     "height": 1000,
+    "minWidth": 500,
+    "minHeight": 500,
     "frame": true,
     "fullscreenable": true
   },
@@ -36,7 +66,6 @@
     "movable": false,
     "resizable": false,
     "frame": false,
-    "alwaysOnTop": true,
     "skipTaskbar": true,
     "enableLargerThanScreen": true,
     "hasShadow": false
