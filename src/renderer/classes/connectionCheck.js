@@ -114,9 +114,9 @@ class ConnectionCheck {
   async handleServerAvailability(state) {
     const name = 'serverAvailability';
 
-    if (state && !this.notificationsIds.onlineStatus) {
+    if (state) {
       this.showNotification(name, false);
-    } else {
+    } else if (this.notificationsIds.onlineStatus) {
       const notification = {
         preventSwipe: true,
         infinite: true,
