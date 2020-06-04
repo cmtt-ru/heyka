@@ -183,7 +183,7 @@ export default {
 
         &__input
           pointer-events auto
-          background-color var(--text-tech-3)
+          background-color var(--button-bg-3)
 
         &__icon
           pointer-events auto
