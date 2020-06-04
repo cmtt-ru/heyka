@@ -1,6 +1,5 @@
 <template>
   <popover
-    :style="$themes.getColors('content')"
     class="device-popover-wrapper"
   >
     <devices class="device-popover" />
@@ -24,6 +23,5 @@ export default {
 .device-popover
   width 300px
   height 235px
-  margin-right 12px
   color var(--text-0)
 </style>
