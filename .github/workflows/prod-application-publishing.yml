@@ -2,8 +2,8 @@ name: Prod-Appliction-Publishing
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v.**'
     
 jobs:
   build-mac:
