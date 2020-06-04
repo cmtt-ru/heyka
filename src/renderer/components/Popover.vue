@@ -1,7 +1,7 @@
 <template>
   <div
     class="popover"
-    :style="$themes.getColors('content')"
+    :style="$themes.getColors('popover')"
   >
     <slot />
   </div>
@@ -16,7 +16,7 @@ export default {
 <style lang="stylus" scoped>
   .popover
     display flex
-    background #fff
+    background var(--app-bg)
     border 1px solid var(--shadow-20)
     box-shadow 0 3px 8px var(--shadow-15), 0 0 8px var(--shadow-15)
     border-radius 4px
