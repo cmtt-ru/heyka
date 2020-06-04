@@ -2,7 +2,7 @@
   <div class="sharing-window">
     <div class="sharing-window__header">
       <div class="sharing-window__header__title">
-        <span class="sharing-window__title">Sharing preview</span>
+        <span class="sharing-window__title">{{ texts.title }}</span>
         <ui-button
           class="sharing-window__close"
           :type="7"
@@ -20,7 +20,7 @@
           size="small"
           @click="updateSources('screen')"
         >
-          Screen
+          {{ texts.screen }}
         </ui-button>
 
         <ui-button
@@ -30,7 +30,7 @@
           size="small"
           @click="updateSources('window')"
         >
-          Window
+          {{ texts.window }}
         </ui-button>
       </div>
     </div>
@@ -72,7 +72,7 @@
         :disabled="nothingSelected"
         @click="startSharingHandler"
       >
-        Start sharing
+        {{ texts.start }}
       </ui-button>
 
       <ui-button
@@ -81,14 +81,14 @@
         :type="12"
         @click="stopSharingHandler"
       >
-        Stop sharing
+        {{ texts.stop }}
       </ui-button>
 
       <ui-button
         :type="8"
         @click="closeHandler"
       >
-        Cancel
+        {{ texts.cancel }}
       </ui-button>
     </div>
   </div>
@@ -119,6 +119,14 @@ export default {
   },
 
   computed: {
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('call.sharing');
+    },
+
     /**
      * Is sharing enabled
      * @returns {boolean}
@@ -169,6 +177,9 @@ export default {
       this.sourceButton = type;
       this.sources = await mediaCapturer.getSources(type, THUMBNAIL_SIZE);
       this.selectedSource = null;
+
+      /** Select first source */
+      this.handleSource(this.sources[0]);
     },
 
     /**
@@ -275,6 +286,7 @@ export default {
     &__content
       flex 1 1 auto
       display flex
+      -webkit-app-region no-drag
 
     &__options
       margin-top 13px
@@ -286,7 +298,6 @@ export default {
       justify-content space-between
       padding 0 20px
       flex-grow 1
-      -webkit-app-region no-drag
 
       &[count="1"]
         & ^[-2]__source

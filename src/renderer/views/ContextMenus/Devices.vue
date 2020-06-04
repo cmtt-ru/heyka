@@ -1,5 +1,7 @@
 <template>
-  <popover class="device-popover-wrapper">
+  <popover
+    class="device-popover-wrapper"
+  >
     <devices class="device-popover" />
   </popover>
 </template>
@@ -21,5 +23,5 @@ export default {
 .device-popover
   width 300px
   height 235px
-  margin-right 12px
+  color var(--text-0)
 </style>

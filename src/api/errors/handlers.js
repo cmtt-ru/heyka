@@ -1,5 +1,6 @@
 import { errorMessages } from './types';
 import logout from '@api/auth/logout';
+import connectionCheck from '@classes/connectionCheck';
 
 export const errorHandlers = {};
 
@@ -68,6 +69,15 @@ defineErrorHandler(errorMessages.accessDenied, error => {
   /** Show fancy error */
   alert('It seems you don\'t have access');
   console.log(error);
+
+  throw error;
+});
+
+/**
+ * Server is down
+ */
+defineErrorHandler(errorMessages.serverIsDown, error => {
+  connectionCheck.handleServerAvailability(false);
 
   throw error;
 });

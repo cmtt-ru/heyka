@@ -7,7 +7,7 @@ const OVERLAY_WINDOW_SIZES = {
   },
   mediaSharing: {
     width: 340,
-    height: 222,
+    height: 265,
   },
 };
 
@@ -33,14 +33,11 @@ class CallWindow {
     if (this.overlayWindow === null) {
       this.overlayWindow = WindowManager.create({
         route: '/call-overlay',
+        template: 'overlay',
         position: 'bottomRight',
         visibleOnAllWorkspaces: true,
         window: {
           ...OVERLAY_WINDOW_SIZES['default'],
-          alwaysOnTop: true,
-          fullscreenable: false,
-          backgroundColor: '#000',
-          skipTaskbar: true,
         },
         onClose: () => {
           this.overlayWindow = null;
@@ -69,13 +66,8 @@ class CallWindow {
     if (this.sharingWindow === null) {
       this.sharingWindow = WindowManager.create({
         route: '/call-sharing',
+        template: process.env.NODE_ENV === 'production' ? 'sharingSelect' : 'sharingSelectDev',
         position: 'center',
-        window: {
-          width: 500,
-          height: 500,
-          alwaysOnTop: true,
-          backgroundColor: '#000',
-        },
         onClose: () => {
           this.sharingWindow = null;
         },
@@ -115,7 +107,8 @@ class CallWindow {
         route: '/call-window',
         position: 'center',
         template: 'call',
-        alwaysOnTop: true,
+        openDevTools: true,
+        preventClose: true,
         onClose: () => {
           this.gridWindow = null;
         },
@@ -136,8 +129,9 @@ class CallWindow {
         clearTimeout(this.gridTimeout);
         this.hideOverlay();
       });
-      this.gridWindow.on('close', () => {
+      this.gridWindow.on('hide', () => {
         clearTimeout(this.gridTimeout);
+        this.showOverlay();
       });
     } else {
       this.gridWindow.show();

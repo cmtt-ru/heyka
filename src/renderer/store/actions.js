@@ -55,6 +55,11 @@ export default {
    * @returns {object} selected channel
    */
   async selectChannel({ commit, getters, state }, id) {
+    commit('me/SET_MEDIA_STATE', {
+      ...getters['me/getMediaState'],
+      camera: false,
+      screen: false,
+    });
     const response = await API.channel.select(id, getters['me/getMediaState']);
 
     if (state.me.selectedChannelId !== null && state.me.selectedChannelId !== '') {
@@ -75,7 +80,6 @@ export default {
     commit('me/SET_CHANNEL_ID', id);
 
     callWindow.showOverlay();
-    // callWindow.setMediaSharingMode(getters['me/getMediaState'].screen);
   },
 
   /**

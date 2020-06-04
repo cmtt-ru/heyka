@@ -3331,22 +3331,22 @@ function setMediaBitrate(sdp, media, bitrate) {
 	  return sdp;
 	}
 	console.debug("Found the m line for", media, "at line", line);
-   
+
 	// Pass the m line
 	line++;
-   
+
 	// Skip i and c lines
 	while(lines[line].indexOf("i=") === 0 || lines[line].indexOf("c=") === 0) {
 	  line++;
 	}
-   
+
 	// If we're on a b line, replace it
 	if (lines[line].indexOf("b") === 0) {
 	  console.debug("Replaced b line at line", line);
 	  lines[line] = "b=AS:"+bitrate;
 	  return lines.join("\n");
 	}
-	
+
 	// Add a new b line
 	console.debug("Adding new b line before line", line);
 	var newLines = lines.slice(0, line)

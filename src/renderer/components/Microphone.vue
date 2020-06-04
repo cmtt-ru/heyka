@@ -14,7 +14,8 @@
       />
       <svg-icon
         class="mic__icon"
-        :name="icon"
+        :name="iconProp.icon"
+        :stroke="iconColor && iconProp.stroke"
         :width="iconSizeComp"
         :height="iconSizeComp"
       />
@@ -28,8 +29,14 @@
  * Mic icons
  */
 const STATES = {
-  true: 'mic',
-  false: 'mic-off',
+  true: {
+    icon: 'mic',
+    stroke: 'var(--text-0)',
+  },
+  false: {
+    icon: 'mic-off',
+    stroke: 'var(--text-1)',
+  },
 };
 
 /**
@@ -82,6 +89,22 @@ export default {
       type: String,
       default: 'small',
     },
+
+    /**
+     * Enable's icon color depends on state
+     */
+    iconColor: {
+      type: Boolean,
+      default: undefined,
+    },
+
+    /**
+     * Enable's volume fill color
+     */
+    fillColor: {
+      type: String,
+      default: undefined,
+    },
   },
 
   computed: {
@@ -89,7 +112,7 @@ export default {
      * Display either active or inactive icon
      * @returns {object}
      */
-    icon() {
+    iconProp() {
       return STATES[this.active];
     },
 
@@ -100,7 +123,8 @@ export default {
     volume() {
       return {
         // eslint-disable-next-line no-magic-numbers
-        height: Math.floor(this.$store.getters['app/getMicrophoneVolume'] + 100) * 0.46 + '%',
+        transform: `scaleY(${Math.floor(this.$store.getters['app/getMicrophoneVolume'] + 100) / 100})`,
+        backgroundColor: this.fillColor,
       };
     },
     /**
@@ -162,6 +186,8 @@ export default {
         position absolute
         bottom 42%
         left 38%
+        height 46%
+        transform-origin bottom left
 
     &__icon
         position relative

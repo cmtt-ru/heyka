@@ -120,6 +120,17 @@ export default {
   },
 
   /**
+   * Remove in-app notification by ID
+   *
+   * @param {function} commit – store commit
+   * @param {string} id – notification id
+   * @returns {void}
+   */
+  removeNotification({ commit }, id) {
+    commit('REMOVE_NOTIFICATION', id);
+  },
+
+  /**
    * Add new push
    *
    * @param {function} commit – store commit
@@ -140,7 +151,7 @@ export default {
   },
 
   /**
-   * Add new push
+   * Remove push by ID
    *
    * @param {function} commit – store commit
    * @param {string} id – push's id

@@ -6,26 +6,33 @@
     <microphone
       v-if="buttons.includes('microphone')"
       class="call-buttons__button ui-button"
+      :disabled="janusInProgress"
       :active="mediaState.microphone"
       :size="size"
+      :icon-color="true"
+      fill-color="var(--text-0)"
       @click.native="switchProp('microphone')"
     />
 
     <ui-button
       v-if="buttons.includes('camera')"
+      :disabled="janusInProgress"
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonIcons.camera"
+      :icon="buttonIcons.camera.icon"
+      :stroke="buttonIcons.camera.stroke"
       @click="switchProp('camera')"
     />
 
     <ui-button
       v-if="buttons.includes('screen')"
+      :disabled="janusInProgress"
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonIcons.screen"
+      :icon="buttonIcons.screen.icon"
+      :stroke="buttonIcons.screen.stroke"
       @click="sharingHandler"
     />
 
@@ -34,7 +41,8 @@
       class="call-buttons__button"
       :type="7"
       :size="size"
-      :icon="buttonIcons.speakers"
+      :icon="buttonIcons.speakers.icon"
+      :stroke="buttonIcons.speakers.stroke"
       @click.native="switchProp('speakers')"
     />
 
@@ -49,6 +57,7 @@
 
     <ui-button
       v-if="buttons.includes('leave')"
+      :disabled="janusInProgress"
       class="call-buttons__button call-buttons__button--disconnect"
       :type="7"
       :size="size"
@@ -68,21 +77,35 @@ import Microphone from '@components/Microphone';
  * Map media state points to corresponding icons
  */
 const ICON_MAP = {
-  microphone: {
-    true: 'mic',
-    false: 'mic-off',
-  },
   speakers: {
-    true: 'headphones',
-    false: 'headphones-off',
+    true: {
+      icon: 'headphones',
+      stroke: 'var(--text-0)',
+    },
+    false: {
+      icon: 'headphones-off',
+      stroke: 'var(--text-1)',
+    },
   },
   camera: {
-    true: 'video',
-    false: 'video-off',
+    true: {
+      icon: 'video',
+      stroke: 'var(--text-0)',
+    },
+    false: {
+      icon: 'video-off',
+      stroke: 'var(--text-1)',
+    },
   },
   screen: {
-    true: 'screencast',
-    false: 'screencast-off',
+    true: {
+      icon: 'screencast',
+      stroke: 'var(--text-0)',
+    },
+    false: {
+      icon: 'screencast-off',
+      stroke: 'var(--text-1)',
+    },
   },
 };
 
@@ -128,11 +151,14 @@ export default {
      */
     buttonIcons() {
       return {
-        microphone: ICON_MAP.microphone[this.mediaState.microphone],
         speakers: ICON_MAP.speakers[this.mediaState.speakers],
         camera: ICON_MAP.camera[this.mediaState.camera],
         screen: ICON_MAP.screen[this.mediaState.screen],
       };
+    },
+
+    janusInProgress() {
+      return this.$store.getters['janus/inProgress'];
     },
   },
 
@@ -173,19 +199,11 @@ export default {
      */
     sharingHandler() {
       if (this.mediaState.screen === true) {
-        broadcastActions.dispatch('janus/setSharingSourceId', null);
+        broadcastActions.dispatch('janus/setSharingSource', null);
         this.switchProp('screen');
       } else {
         broadcastActions.dispatch('openSharingWindow');
       }
-    },
-
-    /**
-     * Camera button handler
-     * @returns {void}
-     */
-    cameraHandler() {
-      console.log('camera click');
     },
   },
 };

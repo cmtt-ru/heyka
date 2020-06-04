@@ -9,14 +9,17 @@ import mutations from './mutations';
 import mediaDevices from '@classes/mediaDevices';
 import createMutationsSharer from 'vuex-shared-mutations';
 import broadcastActions from '@classes/broadcastActions';
+import broadcastEvents from '@classes/broadcastEvents';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
-import broadcastState from '../classes/broadcastState';
+import broadcastState from '@classes/broadcastState';
 
 const debug = process.env.NODE_ENV !== 'production';
 
 const plugins = [
   createMutationsSharer({
     predicate: [
+      'app/SET_SELECTED_DEVICES',
+      'janus/SET_IN_PROGRESS',
       'me/SET_MEDIA_STATE',
       'me/SET_CHANNEL_ID',
       'channels/ADD_USER',
@@ -25,11 +28,12 @@ const plugins = [
       'app/SET_MICROPHONE_VOLUME',
       'app/ADD_PUSH',
       'app/REMOVE_PUSH',
+      'app/SET_DEVICES',
     ],
   }),
 ];
 
-if (debug) {
+if (!debug) {
   plugins.push(createLogger({
     /**
      * Filter mutations to be logged
@@ -95,5 +99,9 @@ if (isMainWindow()) {
     store.replaceState(state);
   });
 }
+
+broadcastEvents.on('shared-action', ({ action, data }) => {
+  store.dispatch(action, data);
+});
 
 export default store;

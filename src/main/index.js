@@ -37,11 +37,13 @@ function createWindow() {
     params = {
       position: 'tray',
       template: 'maintray',
+      preventClose: true,
     };
   } else {
     params = {
       position: 'center',
-      template: 'main',
+      template: isDevelopment ? 'mainDev' : 'main',
+      preventClose: true,
     };
   }
 
@@ -66,28 +68,22 @@ function createWindow() {
   ipcMain.on('page-rendered', (event, args) => {
     if (loadingScreenID) {
       console.timeEnd('init');
-      WindowManager.closeWindow(loadingScreenID);
+      WindowManager.closeWindow({ id: loadingScreenID });
       loadingScreenID = null;
     }
-    mainWindow.webContents.openDevTools();
-  });
 
-  if (!isDevelopment) {
-    Autoupdater.init(mainWindow);
+    if (isDevelopment) {
+      mainWindow.webContents.openDevTools();
+    } else {
+      Autoupdater.init(mainWindow);
+    }
+
+    /**
+     * Close all windows on main window refresh
+     */
     mainWindow.webContents.on('did-finish-load', () => {
       WindowManager.closeAll();
     });
-  }
-
-  mainWindow.on('close', (event) => {
-    if (process.platform === 'darwin' && mainWindow.isVisible()) {
-      event.preventDefault();
-      mainWindow.hide();
-    }
-  });
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-    app.quit();
   });
 }
 
@@ -118,6 +114,14 @@ app.on('activate', () => {
   }
 });
 
+app.on('second-instance', () => {
+  if (mainWindow === null) {
+    createWindow();
+  } else {
+    mainWindow.show();
+  }
+});
+
 app.on('ready', async () => {
   createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
@@ -136,14 +140,9 @@ app.on('ready', async () => {
   }
 });
 
-app.on('before-quit', function () {
-  console.log('before-quit');
-  mainWindow.hide();
-});
-
-app.on('will-quit', function () {
-  console.log('will-quit');
-  mainWindow = null;
+app.on('before-quit', function (e) {
+  // trigger flag in WindpwManager so that windows won't prevent closing
+  WindowManager.willQuit();
 });
 
 // Open external links (with target="_blank") in browser

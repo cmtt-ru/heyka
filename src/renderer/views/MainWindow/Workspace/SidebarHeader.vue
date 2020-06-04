@@ -15,7 +15,7 @@
           class="workspace__search__input"
           placeholder="Search"
           icon="search"
-          @keydown.native.esc="clearInput();deactivateInput()"
+          @keydown.native.esc="closeInput()"
         />
         <ui-button
           v-show="inputActive"
@@ -24,10 +24,11 @@
           size="small"
           height="16"
           icon="close"
-          @click.native="clearInput(); activateInput()"
+          @click.native="closeInput()"
         />
         <ui-button
           v-show="!inputActive"
+          v-tooltip="$t('tooltips.search')"
           :type="7"
           class="workspace__search__icon"
           size="small"
@@ -69,7 +70,6 @@ export default {
 
   data() {
     return {
-      searchText: '',
       inputActive: false,
     };
   },
@@ -84,17 +84,19 @@ export default {
 
       return this.$store.getters['workspaces/getWorkspaceById'](channelId);
     },
-  },
 
-  watch: {
     /**
-     * Update search string in vuex
-     * @param {string} newValue newValue
-     * @param {string} oldValue oldValue
-     * @returns {void}
+     * Search string in vuex
+     *
+     * @returns {string}
      */
-    searchText(newValue, oldValue) {
-      this.$store.commit('app/SET_SEARCH_TEXT', newValue);
+    searchText: {
+      get() {
+        return this.$store.state.app.search;
+      },
+      set(value) {
+        this.$store.commit('app/SET_SEARCH_TEXT', value);
+      },
     },
   },
 
@@ -112,6 +114,7 @@ export default {
      * @returns {void}
      */
     activateInput() {
+      this.searchText = '';
       this.inputActive = true;
       this.$nextTick(() => {
         this.$refs.globalSearch.focusInput();
@@ -119,7 +122,7 @@ export default {
     },
 
     /**
-     * Hide searchbar if it is empty
+     * Close searchbar if it is empty
      * @returns {void}
      */
     deactivateInput() {
@@ -129,11 +132,12 @@ export default {
     },
 
     /**
-     * Clear searchbar
+     * Close searchbar
      * @returns {void}
      */
-    clearInput() {
+    closeInput() {
       this.searchText = '';
+      this.inputActive = false;
     },
   },
 
@@ -179,7 +183,7 @@ export default {
 
         &__input
           pointer-events auto
-          background-color var(--text-tech-3)
+          background-color var(--button-bg-3)
 
         &__icon
           pointer-events auto

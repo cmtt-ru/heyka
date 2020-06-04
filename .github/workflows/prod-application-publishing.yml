@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
     
 jobs:
   build-mac:
@@ -26,6 +28,10 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        CSC_LINK: ${{ secrets.apple_cert }}
+        CSC_KEY_PASSWORD: ${{ secrets.apple_cert_password }}
+        APPLE_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
+        APPLE_ASP: ${{ secrets.APPLE_ASP }}
         CI: true
 
   build-linux-win:

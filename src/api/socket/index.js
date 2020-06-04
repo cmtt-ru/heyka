@@ -2,6 +2,7 @@ import store from '@/store';
 import eventNames from './eventNames';
 import { client, connect } from './client';
 import { getAccessToken } from '../tokens';
+import connectionCheck from '@classes/connectionCheck';
 
 /**
  * Connect to socket, authorize and bind events
@@ -53,14 +54,14 @@ export async function destroy() {
  */
 async function authorize() {
   const accessToken = await getAccessToken();
+  const onlineStatus = store.getters['me/getOnlineStatus'];
 
   return new Promise((resolve, reject) => {
     client.emit(eventNames.auth, {
       transaction: 'auth',
       workspaceId: store.getters['me/getSelectedWorkspaceId'],
       token: accessToken,
-      // todo: online status
-      onlineStatus: 'online',
+      onlineStatus: onlineStatus,
     });
 
     store.dispatch('app/addPrivacyLog', {
@@ -93,8 +94,13 @@ function bindErrorEvents() {
     store.dispatch('setSocketConnected', false);
   });
 
+  client.on(eventNames.reconnecting, data => {
+    connectionCheck.handleSocketReconnecting(true);
+  });
+
   client.on(eventNames.reconnect, data => {
     console.log('reconnect', data);
+    connectionCheck.handleSocketReconnecting(false);
     authorize();
   });
 

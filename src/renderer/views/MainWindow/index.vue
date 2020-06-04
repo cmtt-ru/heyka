@@ -1,3 +1,4 @@
+import electron from "electron";
 <template>
   <div>
     <janus />
@@ -7,7 +8,7 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
+import electron, { ipcRenderer } from 'electron';
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
 
@@ -21,6 +22,7 @@ export default {
   data() {
     return {
       deepLink: {},
+      updateNotificationShown: false,
     };
   },
 
@@ -42,10 +44,55 @@ export default {
     } catch (e) {
       console.log('redirecting to login');
     }
+
+    /**
+     * Auto update stuff
+     */
+    ipcRenderer.on('update-error', (event, error) => {
+      console.log('update-error', error);
+    });
+
+    ipcRenderer.on('update-downloaded', () => {
+      if (!this.updateNotificationShown) {
+        this.showUpdateNotification();
+        this.updateNotificationShown = true;
+      }
+    });
+
+    ipcRenderer.send('update-check');
   },
 
   methods: {
+    /**
+     * Show update install notification
+     * @returns {void}
+     */
+    async showUpdateNotification() {
+      const texts = this.$t('autoUpdate');
 
+      const notification = {
+        infinite: true,
+        data: {
+          text: texts.message,
+          buttons: [
+            {
+              text: texts.install,
+              type: 1,
+              action: () => {
+                electron.remote.app.relaunch();
+                electron.remote.app.quit();
+              },
+            },
+            {
+              text: texts.later,
+              close: true,
+            },
+          ],
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
+    },
   },
 };
 </script>

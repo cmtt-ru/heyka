@@ -15,7 +15,7 @@
       </div>
       <ui-button
         v-popover.click="{name: 'Devices'}"
-        class="call-buttons__button"
+        class="top-content__devices"
         :type="7"
         size="medium"
         icon="settings"
@@ -29,7 +29,7 @@
     >
       <div
         v-for="(user, index) in users"
-        :key="index"
+        :key="user.id"
         class="cell"
         :style="cellDimensions(index)"
       >
@@ -37,7 +37,11 @@
           class="cell__inner"
           @dblclick="expandedClickHandler(user.id)"
         >
-          <video class="cell__feed" />
+          <video
+            v-show="videoStreams[user.id]"
+            :ref="`video${user.id}`"
+            class="cell__feed"
+          />
           <div
             v-show="user.speaking && user.microphone"
             class="cell__talking"
@@ -52,12 +56,17 @@
           />
 
           <avatar
+            v-show="!user.camera && !user.screen"
             class="cell__avatar"
             :image="user.avatar"
             :size="100"
             square
           />
-          <div class="badge cell__username">
+
+          <div
+            class="badge cell__username"
+            :class="{'cell__username--hidden': isStreaming(user.id)}"
+          >
             <div v-textfade>
               {{ user.name }}
             </div>
@@ -76,6 +85,7 @@
           </div>
 
           <ui-button
+            v-if="isStreaming(user.id)"
             class="badge badge--hidden cell__expand"
             :type="7"
             size="medium"
@@ -99,6 +109,8 @@ import CallButtons from '../CallOverlayWindow/CallButtons';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
+import { mapGetters } from 'vuex';
+import commonStreams from '@classes/commonStreams';
 
 /**
  * Aspect ratio 124 / 168;
@@ -120,9 +132,12 @@ export default {
       currentGrid: [],
       avatarWidth: null,
       padding: {},
+      videoStreams: {},
     };
   },
   computed: {
+    ...mapGetters([ 'getUsersWhoShareMedia' ]),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -210,16 +225,95 @@ export default {
     usersCount: function () {
       this.resize();
     },
+
+    getUsersWhoShareMedia: {
+      deep: true,
+      handler(users) {
+        this.requestStreams();
+      },
+    },
+
+    selectedChannel(channelId) {
+      if (!channelId) {
+        Object.keys(this.videoStreams).forEach(key => {
+          this.$delete(this.videoStreams, key);
+        });
+      }
+      if (channelId) {
+        this.requestStreams();
+      }
+    },
   },
-  mounted() {
+  async mounted() {
     this.mounted = true;
     window.addEventListener('resize', this.resize, false); // TODO: add small debounce for performance
     this.resize();
+    await new Promise(resolve => this.$nextTick(resolve));
+    this.requestStreams();
+
+    // Запрашиваем стрим юзера, если он прекратился
+    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
   },
   destroyed() {
     window.removeEventListener('resize', this.resize, false);
+    commonStreams.removeAllListeners('stream-canceled');
   },
   methods: {
+    /**
+     * Insert stream in HTML5 video tag
+     * @param {string} userId User id
+     * @param {MediaStream} stream User video stream
+     * @returns {void}
+     */
+    insertVideoStreamForUser(userId, stream) {
+      const htmlVideo = this.$refs[`video${userId}`][0];
+
+      if (!htmlVideo) {
+        console.log(`!!!!!!!!!!!!!!!!!!!!!!!!! Not found HTML video tag for user ${userId}`);
+
+        return;
+      }
+      htmlVideo.srcObject = stream;
+      htmlVideo.onloadedmetadata = () => {
+        htmlVideo.play();
+      };
+    },
+    /**
+     * Request not loaded streams and insert loaded
+     * @returns {void}
+     */
+    requestStreams() {
+      const users = this.getUsersWhoShareMedia;
+
+      // console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
+      // delete streams that were inserted but users have already stopped sharing
+      this.users.filter(u => !u.camera && !u.screen && !!this.videoStreams[u.id]).forEach(u => {
+        console.log(`clear stream for ${u.id}`);
+        this.$delete(this.videoStreams, u.id);
+      });
+      Object.keys(this.videoStreams).forEach(uId => {
+        if (!this.users.map(u => u.id).includes(uId)) {
+          console.log(`clear stream 2 for ${uId}`);
+          this.$delete(this.videoStreams, uId);
+        }
+      });
+
+      // console.log('filter who should be added');
+
+      // add streams that were not inserted
+      users.filter(id => !this.videoStreams[id]).map(async id => {
+        this.$set(this.videoStreams, id, true);
+        console.log(`wait stream for ${id}`);
+        console.time(`request-${id}`);
+        const stream = await commonStreams.getStream(id);
+
+        console.timeEnd(`request-${id}`);
+
+        console.log(`stream received for ${id}`);
+
+        this.insertVideoStreamForUser(id, stream);
+      });
+    },
 
     /**
      * Assign dimentions to the cell depending on its index
@@ -228,8 +322,8 @@ export default {
      */
     cellDimensions(index) {
       return {
-        width: this.avatarWidth * this.currentGrid[index] + 'px',
-        height: this.avatarWidth * ASPECT_RATIO * this.currentGrid[index] + 'px',
+        width: Math.floor(this.avatarWidth * this.currentGrid[index]) + 'px',
+        height: Math.floor(this.avatarWidth * ASPECT_RATIO * this.currentGrid[index]) + 'px',
       };
     },
 
@@ -271,14 +365,48 @@ export default {
     },
 
     /**
+     * If this person has camera/screensharing on. Should we show "fullscreen" button for this person?
+     * @param {string} id user's id
+     * @returns {boolean}
+     */
+    isStreaming(id) {
+      if (this.getUsersWhoShareMedia.includes(id)) {
+        return true;
+      }
+
+      return false;
+    },
+
+    /**
      * fullscreen click handler
      * @param {string} id user's id
      * @returns {void}
      */
     expandedClickHandler(id) {
+      if (!this.isStreaming(id)) {
+        return;
+      }
       this.$router.push({ path: `/call-window/expanded/${id}` });
     },
 
+    /**
+     * Stream canceled handler
+     * @param {string} userId – user id
+     * @returns {Promise<void>}
+     */
+    async streamCanceledHandler(userId) {
+      if (!this.selectedChannel) {
+        return;
+      }
+
+      if (this.getUsersWhoShareMedia.includes(userId)) {
+        console.log('Again request stream', userId);
+
+        const stream = await commonStreams.getStream(userId);
+
+        this.insertVideoStreamForUser(userId, stream);
+      }
+    },
   },
 };
 </script>
@@ -292,7 +420,7 @@ export default {
   .top-content
     height 116px
     box-sizing border-box
-    padding 24px 40px
+    padding 24px 30px 24px 40px
     font-weight 500
     font-size 36px
     line-height 42px
@@ -300,6 +428,9 @@ export default {
     flex-direction row
     justify-content space-between
     align-items flex-start
+
+    &__devices
+      margin-top 6px
 
   .left-info
     display grid
@@ -334,6 +465,12 @@ export default {
       justify-content space-between
       align-items center
       position relative
+      overflow hidden
+
+      video
+        width 100%
+        height 100%
+        object-fit cover
 
     &__feed
       position absolute
@@ -342,8 +479,6 @@ export default {
       width 100%
       height 100%
       border-radius 4px
-      background: #FFFFFF;
-      opacity: 0.05;
 
     &__talking
       position absolute
@@ -372,9 +507,12 @@ export default {
       position absolute
 
     .badge--hidden
+    .cell__username--hidden
       opacity 0
+      transition opacity 0.15s ease
 
     .cell__inner:hover .badge--hidden
+    .cell__inner:hover .cell__username--hidden
       opacity 1
 
     .badge--hidden.context-menu--opened
@@ -392,7 +530,7 @@ export default {
       padding 8px
       border-radius 4px
       flex-shrink 0
-      max-width calc(100% - 88px)
+      max-width calc(100% - 8px)
       box-sizing border-box
       width auto
       overflow hidden

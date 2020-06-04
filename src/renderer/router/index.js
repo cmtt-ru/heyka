@@ -13,9 +13,10 @@ const AuthTemp = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/
 
 /* Workspace layout */
 const Workspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace');
-const TestWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Workspace');
 const Channel = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Channel');
 const User = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/User');
+const WorkspaceEmpty = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Empty');
+// const TestWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Workspace');
 
 /* Settings layout */
 const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings');
@@ -95,7 +96,7 @@ const routes = [
           {
             path: '',
             name: 'workspace',
-            component: TestWorkspace,
+            component: WorkspaceEmpty,
           },
           {
             path: 'channel/:id',

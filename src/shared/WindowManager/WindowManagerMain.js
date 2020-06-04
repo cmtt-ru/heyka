@@ -1,13 +1,9 @@
-import { ipcMain, BrowserWindow, screen } from 'electron';
+import { ipcMain, BrowserWindow, screen, Menu } from 'electron';
 import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
-
-// const isMac = process.platform === 'darwin';
-// const isLinux = process.platform === 'linux';
-// const isWin = !isMac && !isLinux;
 
 const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   width: 780,
@@ -30,12 +26,28 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
  */
 class WindowManager {
   /**
-   * Inits windowmanager class, assigns mainwindow
-   * @param {object} mainWindow mainWindow instance
-   * @returns {void}
+   * Inits window manager class, assigns mainwindow
    */
   constructor() {
     this.windows = [];
+    this.quitting = false;
+    this.events = {
+      show: this.showWindow,
+      hide: this.hideWindow,
+      close: this.closeWindow,
+      showInactive: this.showInactiveWindow,
+      focus: this.focusWindow,
+      blur: this.blurWindow,
+      size: this.sizeWindow,
+      fullscreen: this.toggleFullscreenWindow,
+      console: this.toggleConsoleWindow,
+      openurl: this.openUrl,
+    };
+
+    ipcMain.on('window-manager-event', (event, options) => {
+      this.events[options.event].call(this, options);
+      event.returnValue = true;
+    });
 
     ipcMain.on('window-manager-create', (event, options) => {
       const windowId = this.createWindow(options);
@@ -45,91 +57,32 @@ class WindowManager {
       };
     });
 
-    ipcMain.on('window-manager-close', (event, options) => {
-      // console.log('window-manager-close', options);
-      this.closeWindow(options.id);
-      event.returnValue = true;
-    });
-
-    ipcMain.on('window-manager-hide', (event, options) => {
-      // console.log('window-manager-hide', options);
-      this.hideWindow(options.id);
-      event.returnValue = true;
-    });
-
-    ipcMain.on('window-manager-show', (event, options) => {
-      // console.log('window-manager-show', options);
-      this.showWindow(options.id);
-      event.returnValue = true;
-    });
-
-    ipcMain.on('window-manager-show-inactive', (event, options) => {
-      this.showInactiveWindow(options.id);
-      event.returnValue = true;
-    });
-
-    ipcMain.on('window-manager-focus', (event, options) => {
-      this.focusWindow(options.id);
-      event.returnValue = true;
-    });
-
-    ipcMain.on('window-manager-blur', (event, options) => {
-      this.blurWindow(options.id);
-      event.returnValue = true;
-    });
-
-    ipcMain.on('window-manager-size', (event, options) => {
-      this.sizeWindow(options);
-      event.returnValue = true;
-    });
-
-    ipcMain.on('window-manager-fullscreen', (event, options) => {
-      this.toggleFullscreenWindow(options.id);
-      event.returnValue = true;
-    });
-    ipcMain.on('window-manager-openurl', (event, options) => {
-      this.openUrl(options.id, options.route);
-      event.returnValue = true;
-    });
-
     ipcMain.on('window-manager-is-main-window', (event, options) => {
       event.returnValue = this.mainWindowId === options.id;
     });
+  }
 
-    ipcMain.on('window-manager-move-me', (event, options) => {
-      // console.log('window-manager-show', options);
-      const { x, y } = screen.getCursorScreenPoint();
-      const newX = x - options.mouseX;
-      const newY = y - options.mouseY;
-      const browserWindow = event.sender.getOwnerBrowserWindow();
-
-      browserWindow.setPosition(newX, newY);
-    });
-
-    ipcMain.on('main-window-unload', () => {
-      Object.keys(this.windows).forEach(windowId => {
-        try {
-          this.windows[windowId].close();
-        } catch (e) {
-        }
-        this.windows[windowId] = null;
-        delete this.windows[windowId];
-      });
-    });
+  /**
+   * Tell WindowManager that app is closing and we should force-close the windows
+   * @returns {void}
+   */
+  willQuit() {
+    this.quitting = true;
+    console.log('willQuit');
   }
 
   /**
    * Get BrowserWindow instance by ID
-   * @param {string} windowId window ID
+   * @param {string} id - window ID
    * @returns {object} BrowserWindow instance
    */
-  getWindow(windowId) {
-    return this.windows[windowId];
+  getWindow(id) {
+    return this.windows[id].browserWindow;
   }
 
   /**
    * Create secondary Window
-   * @param {object} options mainWindow instance
+   * @param {object} options - mainWindow instance
    * @returns {string} ID of created window
    */
   createWindow(options) {
@@ -143,172 +96,223 @@ class WindowManager {
 
     windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
 
-    const newWindow = new BrowserWindow(windowOptions);
+    const browserWindow = new BrowserWindow(windowOptions);
 
     if (process.env.NODE_ENV === 'production') {
-      newWindow.removeMenu();
+      Menu.setApplicationMenu(null);
     }
-    this.windows[windowId] = newWindow;
+    this.windows[windowId] = {
+      browserWindow,
+      options,
+    };
 
     if (options.ignoreMouseEvents) {
-      newWindow.setIgnoreMouseEvents(true);
+      browserWindow.setIgnoreMouseEvents(true);
     }
 
-    this.openUrl(windowId, options.route, options.url);
+    this.openUrl({
+      id: windowId,
+      route: options.route,
+      url: options.url,
+    });
 
-    const position = getWindowPosition(newWindow, options.position, options.margin);
+    browserWindow.on('close', e => {
+      console.log('closing:', windowId, this.mainWindowId);
+      if (this.windows[windowId].options.preventClose && !this.quitting) {
+        e.preventDefault();
+        browserWindow.hide();
+      }
+    });
 
-    // newWindow.setAlwaysOnTop(true, 'floating', 3);
-    newWindow.setPosition(position.x, position.y);
+    browserWindow.on('closed', e => {
+      console.log('closed:', windowId, this.mainWindowId);
+      try {
+        delete this.windows[windowId];
+        this.send(`window-close-${windowId}`);
+      } catch (error) {
+        console.error('window already closed');
+      }
+    });
 
-    if (options.displayId) {
-      const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+    browserWindow.on('ready-to-show', (event) => {
+      // browserWindow.setAlwaysOnTop(true, 'floating', 3);
+      const position = this.__getWindowPosition(browserWindow, options.position, options.margin);
 
-      if (display) {
-        newWindow.setPosition(display.bounds.x, display.bounds.y);
+      browserWindow.setPosition(position.x, position.y);
 
-        if (options.maximize) {
-          newWindow.setSize(display.bounds.width, display.bounds.height);
-          newWindow.setAlwaysOnTop(true, 'pop-up-menu');
+      if (options.displayId) {
+        const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+
+        if (display) {
+          browserWindow.setPosition(display.bounds.x, display.bounds.y);
+
+          if (options.maximize) {
+            browserWindow.setSize(display.bounds.width, display.bounds.height);
+            browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
+          }
         }
       }
-    }
 
-    if (options.visibleOnAllWorkspaces) {
-      newWindow.setVisibleOnAllWorkspaces(true);
-    }
+      if (options.visibleOnAllWorkspaces) {
+        browserWindow.setVisibleOnAllWorkspaces(true);
+      }
 
-    newWindow.once('close', e => {
-      this.send(`window-close-${windowId}`);
+      // Set floating level for linux
+      if (windowOptions.alwaysOnTop) {
+        const FLOATING_LEVEL = 3;
+
+        browserWindow.setAlwaysOnTop(true, 'floating', FLOATING_LEVEL);
+      }
+
+      browserWindow.show();
     });
 
-    newWindow.on('ready-to-show', (event) => {
-      newWindow.show();
-    });
-
-    newWindow.on('blur', (event) => {
+    browserWindow.on('blur', (event) => {
       this.sendAll(`window-blur-${windowId}`);
     });
-    newWindow.on('focus', (event) => {
+    browserWindow.on('focus', (event) => {
       this.sendAll(`window-focus-${windowId}`);
+    });
+    browserWindow.on('hide', (event) => {
+      this.sendAll(`window-hide-${windowId}`);
     });
 
     return windowId;
   }
 
   /**
+ * Adjust window position in regard to tray
+ * @param {object} wnd - window instance
+ * @param {string} pos - window position
+ * @param {number} margin margin from window borders
+ * @returns {object} adjusted window coordinates
+ */
+  __getWindowPosition(wnd, pos = 'center', margin) {
+    const positioner = new Positioner(wnd, margin);
+
+    return positioner.calculate(pos);
+  }
+
+  /**
    * Open specific url in window
-   * @param {string} id window's id
-   * @param {string} route route to move to
-   * @param {string} url url to move to (if not index.html)
+   * @param {string} id - window's id
+   * @param {string} route - route to move to
+   * @param {string} url - url to move to (if not index.html)
    * @returns {void}
    */
-  openUrl(id, route, url = 'index.html') {
+  openUrl({ id, route, url = 'index.html' }) {
     const devUrl = process.env.WEBPACK_DEV_SERVER_URL + url + '#' + route;
     const prodUrl = 'heyka://./' + url + '#' + route;
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
-      this.windows[id].loadURL(devUrl);
+      this.windows[id].browserWindow.loadURL(devUrl);
       // if (!process.env.IS_TEST) {
-      //   newWindow.webContents.openDevTools();
+      //   browserWindow.webContents.openDevTools();
       // }
     } else {
-      this.windows[id].loadURL(prodUrl);
+      this.windows[id].browserWindow.loadURL(prodUrl);
     }
   }
 
   /**
    * Set window position
-   * @param {object} wnd window instance
-   * @param {string} pos position of window
+   * @param {object} wnd - window instance
+   * @param {string} pos - position of window
    * @returns {string} ID of created window
    */
   setPosition(wnd, pos = 'center') {
-    const position = getWindowPosition(wnd, pos);
+    const position = this.__getWindowPosition(wnd, pos);
 
     wnd.setPosition(position.x, position.y);
   }
 
   /**
    * Destroy window
-   * @param {string} windowId ID of window in question
+   * @param {string} id - ID of window in question
    * @returns {void}
    */
-  closeWindow(windowId) {
-    if (this.windows[windowId]) {
+  closeWindow({ id }) {
+    if (this.windows[id] !== undefined) {
       try {
-        this.windows[windowId].close();
+        this.windows[id].browserWindow.destroy();
+        delete this.windows[id];
       } catch (e) {
         console.error('window already closed');
       }
-
-      this.windows[windowId] = null;
-      delete this.windows[windowId];
     }
   }
 
   /**
    * Hide window
-   * @param {string} windowId ID of window in question
+   * @param {string} id - ID of window in question
    * @returns {void}
    */
-  hideWindow(windowId) {
-    if (this.windows[windowId]) {
-      this.windows[windowId].hide();
+  hideWindow({ id }) {
+    if (this.windows[id]) {
+      this.windows[id].browserWindow.hide();
     }
   }
 
   /**
    * Show window
-   * @param {string} windowId ID of window in question
+   * @param {string} id - ID of window in question
    * @returns {void}
    */
-  showWindow(windowId) {
-    if (this.windows[windowId]) {
-      this.windows[windowId].show();
+  showWindow({ id }) {
+    if (this.windows[id]) {
+      this.windows[id].browserWindow.show();
     }
   }
 
   /**
    * Show window inactive
-   * @param {string} windowId ID of window in question
+   * @param {string} id - ID of window in question
    * @returns {void}
    */
-  showInactiveWindow(windowId) {
-    if (this.windows[windowId]) {
-      this.windows[windowId].showInactive();
+  showInactiveWindow({ id }) {
+    if (this.windows[id]) {
+      this.windows[id].browserWindow.showInactive();
     }
   }
 
   /**
    * Focus window
-   * @param {string} windowId ID of window in question
+   * @param {string} id - ID of window in question
    * @returns {void}
    */
-  focusWindow(windowId) {
-    if (this.windows[windowId]) {
-      this.windows[windowId].focus();
+  focusWindow([ id ]) {
+    if (this.windows[id]) {
+      this.windows[id].browserWindow.focus();
     }
   }
 
   /**
    * Blur window
-   * @param {string} windowId ID of window in question
+   * @param {string} id - ID of window in question
    * @returns {void}
    */
-  blurWindow(windowId) {
-    if (this.windows[windowId]) {
-      this.windows[windowId].blur();
+  blurWindow({ id }) {
+    if (this.windows[id]) {
+      this.windows[id].browserWindow.blur();
     }
   }
 
   /**
    * Toggle fullscreen mode
-   * @param {string} windowId ID of window in question
+   * @param {string} id - ID of window in question
    * @returns {void}
    */
-  toggleFullscreenWindow(windowId) {
-    this.windows[windowId].setFullScreen(!this.windows[windowId].isFullScreen());
+  toggleFullscreenWindow({ id }) {
+    this.windows[id].browserWindow.setFullScreen(!this.windows[id].isFullScreen());
+  }
+
+  /**
+   * Toggle console visibility
+   * @param {string} id - ID of window in question
+   * @returns {void}
+   */
+  toggleConsoleWindow({ id }) {
+    this.windows[id].browserWindow.webContents.toggleDevTools();
   }
 
   /**
@@ -320,18 +324,26 @@ class WindowManager {
    */
   sizeWindow({ id, width, height, margin }) {
     if (this.windows[id]) {
-      this.windows[id].setSize(width, height);
-      adjustBounds(this.windows[id], margin);
+      const isResizable = this.windows[id].browserWindow.resizable;
+
+      if (!isResizable) {
+        this.windows[id].browserWindow.setResizable(true);
+      }
+      this.windows[id].browserWindow.setSize(width, height);
+      if (!isResizable) {
+        this.windows[id].browserWindow.setResizable(false);
+      }
+      adjustBounds(this.windows[id].browserWindow, margin);
     }
   }
 
   /**
    * Set's main window id
-   * @param {string} windowId – main window id
+   * @param {string} id – main window id
    * @returns {void}
    */
-  setMainWindowId(windowId) {
-    this.mainWindowId = windowId;
+  setMainWindowId(id) {
+    this.mainWindowId = id;
   }
 
   /**
@@ -341,8 +353,10 @@ class WindowManager {
    * @returns {void}
    */
   send(event, data) {
-    if (this.windows[this.mainWindowId]) {
-      this.windows[this.mainWindowId].webContents.send(event, data);
+    try {
+      this.windows[this.mainWindowId].browserWindow.webContents.send(event, data);
+    } catch (err) {
+      console.log('could not send to renderer');
     }
   }
 
@@ -353,11 +367,13 @@ class WindowManager {
    * @returns {void}
    */
   sendAll(event, data = null) {
-    const windows = BrowserWindow.getAllWindows();
-
-    windows.forEach((w) => {
-      w.webContents.send(event, data);
-    });
+    for (const w in this.windows) {
+      try {
+        this.windows[w].browserWindow.webContents.send(event, data);
+      } catch (err) {
+        console.log('could not send to renderer at:', w);
+      }
+    }
   }
 
   /**
@@ -366,24 +382,11 @@ class WindowManager {
    */
   closeAll() {
     for (const w in this.windows) {
-      if (w != this.mainWindowId) {
-        this.closeWindow(w);
+      if (w !== this.mainWindowId) {
+        this.closeWindow({ id: w });
       }
     }
   }
 }
 
 export default new WindowManager();
-
-/**
- * Adjust window position in regard to tray
- * @param {object} wnd window instance
- * @param {string} pos window position
- * @param {number} margin margin from window borders
- * @returns {object} adjusted window coordinates
- */
-function getWindowPosition(wnd, pos = 'center', margin) {
-  const positioner = new Positioner(wnd, margin);
-
-  return positioner.calculate(pos);
-}
