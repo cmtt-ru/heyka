@@ -76,10 +76,14 @@ function createWindow() {
       mainWindow.webContents.openDevTools();
     } else {
       Autoupdater.init(mainWindow);
-      mainWindow.webContents.on('did-finish-load', () => {
-        WindowManager.closeAll();
-      });
     }
+
+    /**
+     * Close all windows on main window refresh
+     */
+    mainWindow.webContents.on('did-finish-load', () => {
+      WindowManager.closeAll();
+    });
   });
 }
 
