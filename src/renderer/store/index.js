@@ -80,7 +80,6 @@ mediaDevices.on('bluetooth-microphone', (microphone) => {
 if (isMainWindow()) {
   broadcastActions.on('action', ({ action, data }) => {
     store.dispatch(action, data);
-    console.log(action, data);
   });
 
   /** Used for new windows to get actual state */
