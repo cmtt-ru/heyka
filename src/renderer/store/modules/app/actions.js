@@ -78,7 +78,6 @@ export default {
    * @returns {void}
    */
   setTheme({ commit }, theme) {
-    console.log('ACTION theme', theme);
     commit('SET_THEME', theme);
     if (theme.auto) {
       themes.autoSetTheme();
