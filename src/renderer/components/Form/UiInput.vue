@@ -133,6 +133,7 @@ export default {
   font-family Inter, sans-serif
   font-size 14px
   line-height 18px
+  color var(--text-0)
 
   &__icon
     position absolute
