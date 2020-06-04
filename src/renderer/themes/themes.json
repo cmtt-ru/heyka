@@ -53,6 +53,7 @@
                 "--icon-0": "#000000",
                 "--icon-1": "#76787B",
                 "--icon-2": "#B1B3B5",
+                "--button-bg-5": "transparent",
                 "--scroll-bar": "0, 0, 0"
             },
             "popover": {
@@ -80,6 +81,7 @@
                 "--color-2": "#2886ff",
                 "--color-3": "#FDCB4B",
                 "--color-4": "#B1B3B5",
+                "--color-5": "#000000",
                 "--stroke-0": "#F6D4CF",
                 "--stroke-1": "#C9EAD7",
                 "--stroke-2": "#C4DCFB",
@@ -102,7 +104,7 @@
             },
             "navbar": {
                 "--app-bg": "#191919",
-                "--line-stroke": "#D6D8DA",
+                "--line-stroke": "#535353",
                 "--item-bg-active": "#000000",
                 "--text-0": "#FFFFFF",
                 "--text-1": "#76787B",
@@ -112,13 +114,14 @@
             },
             "content": {
                 "--app-bg": "#333333",
-                "--line-stroke": "#D6D8DA",
+                "--line-stroke": "#535353",
                 "--item-bg-hover": "#111111",
                 "--text-0": "#FFFFFF",
                 "--text-1": "#76787B",
                 "--icon-0": "#FFFFFF",
                 "--icon-1": "#76787B",
                 "--icon-2": "#B1B3B5",
+                "--button-bg-5": "transparent",
                 "--scroll-bar": "255, 255, 255"
             },
             "popover": {
