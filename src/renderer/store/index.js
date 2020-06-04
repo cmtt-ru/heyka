@@ -99,7 +99,6 @@ if (isMainWindow()) {
 
 broadcastEvents.on('shared-action', ({ action, data }) => {
   store.dispatch(action, data);
-  console.log(action, data);
 });
 
 export default store;
