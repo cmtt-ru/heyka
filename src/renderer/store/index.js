@@ -95,12 +95,12 @@ if (isMainWindow()) {
    */
   /** Sleep / Awake */
   ipcRenderer.on('power-monitor-suspend', (event, state) => {
-    store.dispatch('setSuspendState', state);
+    store.dispatch('me/setSuspendState', state);
   });
 
   /** Lock / Unlock screen */
   ipcRenderer.on('power-monitor-lock-screen', (event, state) => {
-    store.dispatch('setLockScreenState', state);
+    store.dispatch('me/setLockScreenState', state);
   });
 } else {
   /** Request state */
