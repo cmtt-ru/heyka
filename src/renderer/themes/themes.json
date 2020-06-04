@@ -89,7 +89,7 @@
                 "--button-bg-0": "#FDF6F5",
                 "--button-bg-1": "#F4FBF7",
                 "--button-bg-2": "#F3F8FE",
-                "--button-bg-3": "#FFFFFF",
+                "--button-bg-3": "#000000",
                 "--button-bg-4": "#333333",
                 "--button-bg-5": "transparent",
                 "--button-bg-6": "#555555",
