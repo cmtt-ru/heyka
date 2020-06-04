@@ -78,7 +78,6 @@ export default {
             {
               text: texts.install,
               type: 1,
-              close: true,
               action: () => {
                 electron.remote.app.relaunch();
                 electron.remote.app.quit();
