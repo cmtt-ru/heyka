@@ -90,7 +90,7 @@ class ConnectionCheck {
   async handleSocketReconnecting(state) {
     const name = 'socketReconnecting';
 
-    if (state && !this.notificationsIds.onlineStatus) {
+    if (state && this.notificationsIds.onlineStatus) {
       const notification = {
         preventSwipe: true,
         infinite: true,
