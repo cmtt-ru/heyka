@@ -8,13 +8,13 @@
   },
   "main": {
     "width": 500,
-    "height": 500,
+    "height": 600,
     "frame": true,
     "resizable": false
   },
   "maintray": {
     "width": 500,
-    "height": 700
+    "height": 600
   },
   "splash": {
     "width": 90,

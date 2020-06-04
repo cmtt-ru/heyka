@@ -10,6 +10,7 @@
       :active="mediaState.microphone"
       :size="size"
       :icon-color="true"
+      fill-color="var(--text-0)"
       @click.native="switchProp('microphone')"
     />
 
