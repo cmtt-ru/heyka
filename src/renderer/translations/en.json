@@ -124,8 +124,8 @@
     }
   },
   "autoUpdate": {
-    "message": "Update is ready to install",
-    "install": "Quit & Install",
+    "message": "An updated version of Heyka is available and will be installed at the next launch",
+    "install": "Install",
     "later": "Later"
   },
   "connectionCheck": {
