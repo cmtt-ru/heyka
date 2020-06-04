@@ -45,6 +45,7 @@ import UiButton from '@components/UiButton';
 import { UiSelect } from '@components/Form';
 import ProgressBar from '@components/ProgressBar';
 import AudioCheck from '@classes/AudioCheck';
+import mediaDevices from '@classes/mediaDevices';
 
 /**
  * DB compensator
@@ -134,10 +135,13 @@ export default {
     AudioCheck.on('volume_change', (db) => {
       this.microphoneVolume = Math.max(0, db + Math.round(DB_COMPENSATOR));
     });
+
+    mediaDevices.startLinuxDeviceChangeTimer();
   },
 
   destroyed() {
     AudioCheck.destroyMediaStream();
+    mediaDevices.stopLinuxDeviceChangeTimer();
   },
 
   methods: {

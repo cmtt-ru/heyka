@@ -7,6 +7,18 @@ import { EventEmitter } from 'events';
 const DEBOUNCE_TIMEOUT = 500;
 
 /**
+ * Interval for linux device change event fallback
+ * @type {number}
+ */
+const LINUX_DEVICE_CHANGE_INTERVAL = 1500;
+
+/**
+ * Detect linux platform
+ * @type {boolean}
+ */
+const isLinux = process.platform === 'linux';
+
+/**
  * Class for device management
  */
 class MediaDevices extends EventEmitter {
@@ -22,6 +34,8 @@ class MediaDevices extends EventEmitter {
       cameras: [],
     };
 
+    this.linuxDeviceChangeInterval = null;
+
     navigator.mediaDevices.addEventListener('devicechange', this.deviceChangeHandler.bind(this));
 
     this.updateDevices();
@@ -33,7 +47,6 @@ class MediaDevices extends EventEmitter {
    * @return {Promise<void>}
    */
   async deviceChangeHandler() {
-    console.log('Device changed');
     await this.updateDevices();
   }
 
@@ -108,6 +121,30 @@ class MediaDevices extends EventEmitter {
     }
 
     return devices;
+  }
+
+  /**
+   * Start interval for update device list on linux
+   * @returns {void}
+   */
+  startLinuxDeviceChangeTimer() {
+    if (isLinux) {
+      this.stopLinuxDeviceChangeTimer();
+
+      this.linuxDeviceChangeInterval = setInterval(() => {
+        this.updateDevices();
+      }, LINUX_DEVICE_CHANGE_INTERVAL);
+    }
+  }
+
+  /**
+   * Stop interval for linux device list
+   * @returns {void}
+   */
+  stopLinuxDeviceChangeTimer() {
+    if (isLinux) {
+      clearInterval(this.linuxDeviceChangeInterval);
+    }
   }
 }
 
