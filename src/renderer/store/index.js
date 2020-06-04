@@ -12,6 +12,7 @@ import broadcastActions from '@classes/broadcastActions';
 import broadcastEvents from '@classes/broadcastEvents';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import broadcastState from '@classes/broadcastState';
+import { ipcRenderer } from 'electron';
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -76,9 +77,10 @@ mediaDevices.on('bluetooth-microphone', (microphone) => {
 });
 
 /**
- * Listen for broadcasted actions and dispatch them
+ * Window specific code
  */
 if (isMainWindow()) {
+  /** Listen for broadcasted actions and dispatch them */
   broadcastActions.on('action', ({ action, data }) => {
     store.dispatch(action, data);
   });
@@ -87,9 +89,21 @@ if (isMainWindow()) {
   broadcastState.on('state-request', (state) => {
     broadcastState.resolveState(store.state);
   });
+
+  /**
+   * Handle power monitor events
+   */
+  /** Sleep / Awake */
+  ipcRenderer.on('power-monitor-suspend', (event, state) => {
+    store.dispatch('setSuspendState', state);
+  });
+
+  /** Lock / Unlock screen */
+  ipcRenderer.on('power-monitor-lock-screen', (event, state) => {
+    store.dispatch('setLockScreenState', state);
+  });
 } else {
   /** Request state */
-  console.log('REQUEST STATE');
   broadcastState.requestState();
 
   /** Listen to state event and replace state */
