@@ -135,4 +135,43 @@ export default {
     callWindow.closeSharing();
   },
 
+  /**
+   * Set suspend state
+   * @param {object} context – store context
+   * @param {boolean} state – state
+   * @returns {void}
+   */
+  async setSuspendState({ commit }, state) {
+
+  },
+
+  /**
+   * Set sleep state
+   * @param {object} context – store context
+   * @param {boolean} state – state
+   * @returns {void}
+   */
+  async setLockScreenState({ dispatch, getters }, state) {
+    const statusByState = state ? 'idle' : 'online';
+    const currentOnlineStatus = getters['me/getOnlineStatus'];
+    const previousOnlineStatus = getters['me/getPreviousOnlineStatus'];
+
+    /** Stop all media sharing */
+    dispatch('me/stopMediaSharing');
+
+    /** Screen locked */
+    if (state) {
+      if (currentOnlineStatus === 'online') {
+        dispatch('me/setOnlineStatus', statusByState);
+      } else {
+        dispatch('me/setOnlineStatus', currentOnlineStatus);
+      }
+    }
+
+    /** Screen unlocked */
+    if (!state && previousOnlineStatus === 'online') {
+      dispatch('me/setOnlineStatus', statusByState);
+    }
+  },
+
 };
