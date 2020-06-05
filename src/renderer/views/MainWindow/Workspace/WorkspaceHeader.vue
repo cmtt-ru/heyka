@@ -114,7 +114,7 @@ export default {
      * @returns {string}
      */
     speakerTooltip() {
-      if (this.mediaState.speaker) {
+      if (this.mediaState.speakers) {
         return this.$t('tooltips.speakerOff');
       } else {
         return this.$t('tooltips.speakerOn');
