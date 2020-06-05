@@ -84,23 +84,7 @@ export default {
      * @return {object}
      */
     speakingUser() {
-      if (this.selectedChannel) {
-        const speakingUsers = this.selectedChannel.users.filter(u => u.speaking && u.microphone);
-
-        if (speakingUsers.length) {
-          const speakingUserId = speakingUsers[0].userId;
-          const speakingUser = this.$store.getters['users/getUserById'](speakingUserId);
-
-          if (speakingUser) {
-            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-            this.lastSpeakingUser = speakingUser;
-
-            return speakingUser;
-          }
-        }
-      }
-
-      return this.lastSpeakingUser;
+      return this.$store.getters['getSpeakingUser'];
     },
 
     /**
