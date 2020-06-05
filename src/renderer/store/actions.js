@@ -134,5 +134,4 @@ export default {
   async closeSharingWindow() {
     callWindow.closeSharing();
   },
-
 };

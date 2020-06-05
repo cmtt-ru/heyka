@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain, protocol, nativeTheme } from 'electron';
+import { app, ipcMain, protocol, nativeTheme, powerMonitor } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
@@ -138,6 +138,15 @@ app.on('ready', async () => {
         console.log('Unable to install `vue-devtools`: \n', err);
       });
   }
+
+  /**
+   * Power monitor events
+   * Handle sleep / awake & lock / unlock screen events
+   */
+  powerMonitor.on('suspend', () => mainWindow.webContents.send('power-monitor-suspend', true));
+  powerMonitor.on('resume', () => mainWindow.webContents.send('power-monitor-suspend', false));
+  powerMonitor.on('lock-screen', () => mainWindow.webContents.send('power-monitor-lock-screen', true));
+  powerMonitor.on('unlock-screen', () => mainWindow.webContents.send('power-monitor-lock-screen', false));
 });
 
 app.on('before-quit', function (e) {

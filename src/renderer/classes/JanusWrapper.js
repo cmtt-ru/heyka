@@ -32,6 +32,7 @@ const JANUS_WRAPPER_EVENTS = {
   channelJoined: 'channel-joined',
   audioSlowLink: 'audio-slow-link',
   videoSlowLink: 'video-slow-link',
+  webrtcCleanUp: 'webrtc-cleanup',
 };
 
 /**
@@ -183,6 +184,7 @@ class JanusWrapper extends EventEmitter {
     videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
     videoroomPlugin.on('success-publishing', () => this.emit(JANUS_WRAPPER_EVENTS.successVideoPublishing));
     videoroomPlugin.on('video-slow-link', () => this.emit(JANUS_WRAPPER_EVENTS.videoSlowLink));
+    videoroomPlugin.on('webrtc-cleanup', () => this.emit(JANUS_WRAPPER_EVENTS.webrtcCleanUp));
 
     this.__videoroomPlugin = videoroomPlugin;
   }

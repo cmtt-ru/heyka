@@ -43,4 +43,39 @@ export default {
   SET_MEDIA_STATE(state, mediaState) {
     state.mediaState = mediaState;
   },
+
+  /**
+   * Sets our online status
+   *
+   * @param {MeState} state – module me state
+   * @param {string} status – online status
+   * @constructor
+   */
+  SET_ONLINE_STATUS(state, status) {
+    state.previousOnlineStatus = state.onlineStatus;
+    state.onlineStatus = status;
+  },
+
+  /**
+   * Sets our suspend state
+   *
+   * @param {MeState} state – module me state
+   * @param {boolean} value – state
+   * @constructor
+   */
+  SET_SUSPEND_STATE(state, value) {
+    state.suspendState = value;
+  },
+
+  /**
+   * Sets our lock screen state
+   *
+   * @param {MeState} state – module me state
+   * @param {boolean} value – state
+   * @constructor
+   */
+  SET_LOCK_SCREEN_STATE(state, value) {
+    state.lockScreenState = value;
+  },
+
 };

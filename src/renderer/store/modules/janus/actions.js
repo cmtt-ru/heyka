@@ -1,4 +1,5 @@
 import callWindow from '@classes/callWindow';
+import sleep from 'es7-sleep';
 
 export default {
   /**
@@ -30,5 +31,18 @@ export default {
    */
   setInProgress({ commit }, state) {
     commit('SET_IN_PROGRESS', state);
+  },
+
+  /**
+   * Wait until janus finishes operations
+   * @param {JanusState} state – progress state
+   * @returns {void}
+   */
+  async untilIdle({ state }) {
+    const timeout = 50;
+
+    while (state.inProgress) {
+      await sleep(timeout);
+    }
   },
 };
