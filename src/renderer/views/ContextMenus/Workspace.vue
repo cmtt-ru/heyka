@@ -4,12 +4,14 @@
       <ui-button
         :type="11"
         icon="add"
+        @click="_notImplemented()"
       >
         {{ texts.invite }}
       </ui-button>
       <ui-button
         :type="11"
         icon="edit"
+        @click="_notImplemented()"
       >
         {{ texts.manage }}
       </ui-button>
@@ -39,6 +41,7 @@
       <ui-button
         :type="11"
         icon="workspace"
+        @click="_notImplemented()"
       >
         {{ texts.new }}
       </ui-button>

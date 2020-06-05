@@ -75,6 +75,7 @@ export default {
      */
     muteClickHandler() {
       console.log('mute user', this.userId);
+      this._notImplemented();
     },
   },
 };

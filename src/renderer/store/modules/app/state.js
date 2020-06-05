@@ -51,7 +51,7 @@ const state = () => {
     autorun: heykaStore.get('autorun', true),
     theme: heykaStore.get('theme', {
       name: 'light',
-      auto: true,
+      auto: false,
     }),
     devices: {
       speakers: [],

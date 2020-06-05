@@ -8,7 +8,9 @@ import API from '@api';
 import SvgIcon from '@components/SvgIcon.vue';
 import '@/filters/leonardo';
 import '@/directives';
+import { Mixin } from '@/mixins';
 
+Vue.mixin(Mixin);
 Vue.prototype.$themes = themes;
 Vue.prototype.$API = API;
 Vue.component('SvgIcon', SvgIcon);

@@ -120,7 +120,8 @@
       "text": "You didn't give us access to mic. You can change that in system preferences",
       "button1": "Open",
       "button2": "Cancel"
-    }
+    },
+    "notImplemented": "This feature is not implemented yet"
   },
   "push": {
     "invitesto": "Invites to",

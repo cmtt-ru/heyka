@@ -166,7 +166,7 @@ export default {
      * @returns {void}
      */
     moreHandler() {
-      console.log('more');
+      this._notImplemented();
     },
   },
 

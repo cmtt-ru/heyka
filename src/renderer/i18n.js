@@ -60,6 +60,7 @@ export default new VueI18n({
   fallbackLocale: 'en',
   messages,
   silentTranslationWarn: true,
+  silentFallbackWarn: true,
 });
 
 // const defaultPluralization = VueI18n.prototype.getChoiceIndex;
