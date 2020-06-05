@@ -18,6 +18,7 @@
 <script>
 import Push from './Push';
 import broadcastActions from '@classes/broadcastActions';
+import broadcastEvents from '@classes/broadcastEvents';
 
 export default {
   components: {
@@ -57,6 +58,7 @@ export default {
       });
       if (response.action === 'accept') {
         await broadcastActions.dispatch('selectChannel', data.channel);
+        await broadcastEvents.dispatch('open-channel', data.channel);
       }
     },
   },

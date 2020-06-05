@@ -31,7 +31,8 @@
     "resizable": false,
     "alwaysOnTop": true,
     "frame": false,
-    "skipTaskbar": true
+    "skipTaskbar": true,
+    "hasShadow": false
   },
   "overlay": {
     "alwaysOnTop": true,

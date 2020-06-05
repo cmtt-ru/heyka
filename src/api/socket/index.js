@@ -222,9 +222,20 @@ function bindPushEvents() {
   });
 
   /** Get response to push notification */
-  client.on(eventNames.messageResponse, data => {
-    if (data.response.showResponse) {
-      store.dispatch('app/addPush', data);
+  client.on(eventNames.messageResponse, ({ messageId, userId, response }) => {
+    // console.log('messageResponse', data);
+    if (response.showResponse) {
+      store.dispatch('app/addPush', {
+        messageId,
+        userId,
+        message: response,
+      });
+    } else if (response === 'no-response') {
+      store.dispatch('app/addPush', {
+        messageId: Date.now(),
+        userId,
+        message: response,
+      });
     }
   });
 }
