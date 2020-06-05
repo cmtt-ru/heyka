@@ -2,7 +2,6 @@ import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import store from '@/store';
 
 const ONE_PUSH_SIZE = {
-
   width: 368,
   height: 76,
 };
