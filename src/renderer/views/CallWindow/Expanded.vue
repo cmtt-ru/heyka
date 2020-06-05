@@ -99,7 +99,7 @@ export default {
      * @returns {boolean}
      */
     isUserSharingMedia() {
-      return this.$store.getters.getUsersWhoSharesMedia.includes(this.userId);
+      return this.$store.getters.getUsersWhoShareMedia.includes(this.userId);
     },
 
   },
