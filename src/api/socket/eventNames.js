@@ -2,14 +2,14 @@
  * Socket event names
  */
 export default Object.freeze({
-  /** Socket API errors */
+  /** Default socket io events */
   disconnect: 'disconnect',
   connectError: 'connect_error',
   reconnect: 'reconnect',
   reconnecting: 'reconnecting',
   error: 'error',
 
-  /** Default socket io events */
+  /** Socket API events */
   auth: 'auth',
   authSuccess: 'auth-success',
   authSuccessError: 'socket-api-error-auth',
