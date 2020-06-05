@@ -116,7 +116,6 @@ export default {
   async setOnlineStatus({ commit }, status) {
     commit('SET_ONLINE_STATUS', status);
     meStore.set('onlineStatus', status);
-    console.log('setOnlineStatus');
     await API.user.setOnlineStatus(status);
   },
 
