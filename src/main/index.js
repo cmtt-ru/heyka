@@ -141,7 +141,7 @@ app.on('ready', async () => {
 
   /**
    * Power monitor events
-   *
+   * Handle sleep / awake & lock / unlock screen events
    */
   powerMonitor.on('suspend', () => mainWindow.webContents.send('power-monitor-suspend', true));
   powerMonitor.on('resume', () => mainWindow.webContents.send('power-monitor-suspend', false));
