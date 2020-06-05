@@ -152,7 +152,7 @@ export default {
   },
 
   /**
-   * Set sleep state
+   * Set lock screen state
    * @param {object} context – store context
    * @param {boolean} value – state
    * @param {MeState} state – store context
