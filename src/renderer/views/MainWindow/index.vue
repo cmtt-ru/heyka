@@ -1,4 +1,3 @@
-import electron from "electron";
 <template>
   <div>
     <janus />

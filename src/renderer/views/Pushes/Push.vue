@@ -92,7 +92,7 @@ export default {
     /**
       * Inner data with "user", "channel" and "buttons"
       * Buttons is an array with fields:
-      * "text", "type", "action" (outer function to trigger),
+      * "text", "type", "response",
       * and "close" (flag that shows we shoud close push after clicking this button)
     */
     data: {
@@ -106,14 +106,6 @@ export default {
     lifespan: {
       type: Number,
       default: 40000,
-    },
-
-    /**
-     * Prevent swiping logic
-     */
-    preventSwipe: {
-      type: Boolean,
-      default: false,
     },
   },
 
@@ -211,8 +203,8 @@ export default {
      * @returns {void}
     */
     closeButtonAction() {
-      if (this.data.buttons) {
-        const cancelbutton = this.data.buttons.find(el => el.close);
+      if (this.buttons) {
+        const cancelbutton = this.buttons.find(el => el.close);
 
         if (cancelbutton.response) {
           this.$emit('response', {
