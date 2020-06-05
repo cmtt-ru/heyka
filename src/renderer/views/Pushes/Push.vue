@@ -42,7 +42,7 @@
       </div>
       <div class="push__button-wrapper">
         <ui-button
-          v-for="button in data.buttons"
+          v-for="button in buttons"
           :key="button.text"
           :type="button.type || 3"
           size="medium"
@@ -61,6 +61,7 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import Vue from 'vue';
 import { VueHammer } from 'vue2-hammer';
+import { buttonTemplates } from './buttons';
 Vue.use(VueHammer);
 VueHammer.config.pan = {
   threshold: 10,
@@ -104,7 +105,7 @@ export default {
      */
     lifespan: {
       type: Number,
-      default: 440000,
+      default: 40000,
     },
 
     /**
@@ -142,12 +143,16 @@ export default {
       return this.$t('push');
     },
 
+    buttons() {
+      return buttonTemplates[this.data.action] || null;
+    },
+
     /**
      * Get user's info
      * @returns {object}
      */
     user() {
-      return this.$store.getters['users/getUserById'](this.data.user);
+      return this.$store.getters['users/getUserById'](this.data.userId);
     },
 
     /**
@@ -190,8 +195,12 @@ export default {
      * @returns {void}
     */
     clickHandler(button) {
-      if (button.action) {
-        button.action();
+      if (button.response) {
+        this.$emit('response', {
+          response: button.response,
+          messageId: this.data.messageId,
+          data: this.data,
+        });
       }
       this.close(true);
     },
@@ -205,8 +214,12 @@ export default {
       if (this.data.buttons) {
         const cancelbutton = this.data.buttons.find(el => el.close);
 
-        if (cancelbutton.action) {
-          cancelbutton.action();
+        if (cancelbutton.response) {
+          this.$emit('response', {
+            response: cancelbutton.response,
+            messageId: this.data.messageId,
+            data: this.data,
+          });
         }
       }
     },
@@ -291,7 +304,7 @@ export default {
       if (!clicked) {
         this.closeButtonAction();
       }
-      this.$emit('close', this.id);
+      this.$emit('close', this.data.messageId);
     },
 
   },

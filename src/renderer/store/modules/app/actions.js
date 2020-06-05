@@ -1,3 +1,4 @@
+import API from '@api';
 import themes from '@/themes';
 import pushWindow from '@classes/pushWindow';
 import i18n from '@/i18n';
@@ -131,23 +132,52 @@ export default {
   },
 
   /**
+   * Send push
+   *
+   * @param {function} commit – store commit
+   * @param {object} notif – push
+   * @returns {string} id
+   */
+  async sendPush({ commit, state }, { userId, isResponseNeeded = false, message }) {
+    const { messageId } = await API.user.sendMessage({
+      userId,
+      isResponseNeeded,
+      message,
+    });
+
+    return messageId;
+  },
+
+  /**
+   * Send push response
+   *
+   * @param {function} commit – store commit
+   * @param {object} notif – push
+   * @returns {string} id
+   */
+  async sendPushResponse({ commit, state }, { response, messageId }) {
+    await API.user.sendMessageResponse({
+      messageId,
+      response,
+    });
+  },
+
+  /**
    * Add new push
    *
    * @param {function} commit – store commit
    * @param {object} notif – push
    * @returns {string} id
    */
-  addPush({ commit, state }, notif) {
-    const id = uuidV4();
+  addPush({ commit, state }, { messageId, userId, message }) {
     const push = {
-      id,
-      ...notif,
+      messageId,
+      userId,
+      ...message,
     };
 
     commit('ADD_PUSH', push);
     pushWindow.updateCount(state.pushes.length);
-
-    return id;
   },
 
   /**

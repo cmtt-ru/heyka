@@ -1,4 +1,5 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import store from '@/store';
 
 const ONE_PUSH_SIZE = {
 
@@ -10,6 +11,12 @@ const PUSH_MOVEOUT_TIMER = 500;
 const MAX_AMOUNT = 7;
 
 /**
+ * Audio element for audio test
+ * @type {HTMLAudioElement}
+ */
+const audioNewPush = new Audio(require('@assets/audio/push.mp3'));
+
+/**
  * Class for controlling push window
  */
 class PushWindow {
@@ -18,6 +25,7 @@ class PushWindow {
    */
   constructor() {
     this.window = null;
+    this.closewWindowTimeout = null;
     this.notifications = 0;
   }
 
@@ -34,14 +42,27 @@ class PushWindow {
         margin: 0,
         template: 'push',
         visibleOnAllWorkspaces: true,
-        window: ONE_PUSH_SIZE,
+        window: {
+          width: ONE_PUSH_SIZE.width,
+          height: ONE_PUSH_SIZE.height + TOP_MARGIN,
+        },
         onClose: () => {
           this.window = null;
         },
+
       });
+      audioNewPush.setSinkId(this._selectedSpeaker());
     } else {
       this.window.showInactive();
     }
+  }
+
+  /**
+   * Selected speakes
+   * @returns {string}
+   */
+  _selectedSpeaker() {
+    return store.getters['app/getSelectedDevices'].speaker;
   }
 
   /**
@@ -51,16 +72,23 @@ class PushWindow {
    */
   updateCount(amount) {
     if (amount === 0) {
-      setTimeout(() => {
+      this.closewWindowTimeout = setTimeout(() => {
         this.window.close();
       }, PUSH_MOVEOUT_TIMER);
     } else if (this.window === null) {
       this.show();
+      clearTimeout(this.closewWindowTimeout);
+      audioNewPush.play();
     } else {
       if (this.notifications < amount) {
-        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount, MAX_AMOUNT), 0);
+        clearTimeout(this.closewWindowTimeout);
+        audioNewPush.play();
+        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount + 1, MAX_AMOUNT), 0);
+        this.closewWindowTimeout = setTimeout(() => {
+          this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount, MAX_AMOUNT), 0);
+        }, PUSH_MOVEOUT_TIMER);
       } else {
-        setTimeout(() => {
+        this.closewWindowTimeout = setTimeout(() => {
           this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount, MAX_AMOUNT), 0);
         }, PUSH_MOVEOUT_TIMER);
       }
