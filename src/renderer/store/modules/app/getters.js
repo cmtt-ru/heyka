@@ -64,4 +64,5 @@ export default {
    * @returns {object}
    */
   getMicrophoneVolume: (state) => state.microphoneVolume,
+
 };

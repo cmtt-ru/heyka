@@ -58,8 +58,15 @@ export default {
      * Poke click handler
      * @returns {void}
      */
-    pokeClickHandler() {
-      console.log('poke to user', this.userId);
+    async pokeClickHandler() {
+      await this.$store.dispatch('app/sendPush', {
+        userId: this.userId,
+        isResponseNeeded: true,
+        message: {
+          action: 'invite',
+          channel: this.$store.getters['me/getSelectedChannelId'],
+        },
+      });
     },
 
     /**

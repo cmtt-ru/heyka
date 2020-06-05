@@ -6,19 +6,12 @@
     <br><br>
 
     <button @click="openPushWindow()">
-      Открыть пуш
+      Пригласить в канал
     </button>
-    <button @click="closePushWindow()">
-      Закрыть пуш
+    <button @click="openBusyWindow()">
+      Я занят
     </button>
     <br><br>
-
-    <button @click="openCallWindow">
-      Открыть окно звонка
-    </button>
-    <button @click="closeCallWindow">
-      Закрыть
-    </button>
 
     <br><br>
     <button @click="loadInitialState()">
@@ -74,12 +67,8 @@
 
 <script>
 import { ipcRenderer } from 'electron';
-import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import logout from '@api/auth/logout';
 import UiButton from '@components/UiButton';
-
-let pushWindow;
-let callWindow;
 
 export default {
   components: {
@@ -118,44 +107,47 @@ export default {
     },
 
     async openPushWindow() {
-      if (!pushWindow) {
-        pushWindow = WindowManager.create({
-          route: '/push-window',
-          position: 'topRight',
-          template: 'push',
-          onClose: () => {
-            pushWindow = null;
-          },
-        });
-      }
+      this.$store.dispatch('app/addPush', {
+        data: {
+          user: this.$store.getters['me/getMyId'],
+          channel: this.$store.getters['me/getSelectedChannelId'],
+          buttons: [
+            {
+              text: 'Join',
+              type: 1,
+              action: this.alert,
+            },
+            {
+              text: 'Busy',
+              close: true,
+              action: this.close,
+            },
+          ],
+        },
+      });
     },
 
-    closePushWindow() {
-      if (pushWindow) {
-        pushWindow.close();
-        pushWindow = null;
-      }
+    async openBusyWindow() {
+      this.$store.dispatch('app/addPush', {
+        data: {
+          user: this.$store.getters['me/getMyId'],
+          buttons: [
+            {
+              text: 'Close',
+              close: true,
+              action: this.close,
+            },
+          ],
+        },
+      });
     },
 
-    openCallWindow() {
-      if (!callWindow) {
-        callWindow = WindowManager.create({
-          route: '/call-window',
-          position: 'center',
-          template: 'call',
-          alwaysOnTop: true,
-          onClose: () => {
-            callWindow = null;
-          },
-        });
-      }
+    alert() {
+      console.log('Action');
     },
 
-    closeCallWindow() {
-      if (callWindow) {
-        callWindow.close();
-        callWindow = null;
-      }
+    close() {
+      console.log('Cancel');
     },
 
     async loadInitialState() {

@@ -136,7 +136,7 @@ class WindowManager {
 
     browserWindow.on('ready-to-show', (event) => {
       // browserWindow.setAlwaysOnTop(true, 'floating', 3);
-      const position = this.__getWindowPosition(browserWindow, options.position);
+      const position = this.__getWindowPosition(browserWindow, options.position, options.margin);
 
       browserWindow.setPosition(position.x, position.y);
 
@@ -184,12 +184,11 @@ class WindowManager {
  * Adjust window position in regard to tray
  * @param {object} wnd - window instance
  * @param {string} pos - window position
- * @param {boolean} trayAdjust - if position is near tray
+ * @param {number} margin margin from window borders
  * @returns {object} adjusted window coordinates
  */
-  __getWindowPosition(wnd, pos = 'center') {
-    const testMargin = 20;
-    const positioner = new Positioner(wnd, testMargin);
+  __getWindowPosition(wnd, pos = 'center', margin) {
+    const positioner = new Positioner(wnd, margin);
 
     return positioner.calculate(pos);
   }
@@ -323,7 +322,7 @@ class WindowManager {
    * @param {number} height – window height
    * @returns {void}
    */
-  sizeWindow({ id, width, height }) {
+  sizeWindow({ id, width, height, margin }) {
     if (this.windows[id]) {
       const isResizable = this.windows[id].browserWindow.resizable;
 
@@ -334,7 +333,7 @@ class WindowManager {
       if (!isResizable) {
         this.windows[id].browserWindow.setResizable(false);
       }
-      adjustBounds(this.windows[id].browserWindow);
+      adjustBounds(this.windows[id].browserWindow, margin);
     }
   }
 

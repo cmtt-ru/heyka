@@ -27,6 +27,8 @@ const plugins = [
       'channels/REMOVE_USER',
       'channels/SET_USER_MEDIA_STATE',
       'app/SET_MICROPHONE_VOLUME',
+      'app/ADD_PUSH',
+      'app/REMOVE_PUSH',
       'app/SET_DEVICES',
     ],
   }),
