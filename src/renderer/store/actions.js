@@ -88,14 +88,17 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ commit, state }, id) {
+  async unselectChannel({ commit, dispatch, state }, id) {
     await API.channel.unselect(id);
 
     commit('channels/REMOVE_USER', {
       userId: state.me.id,
       channelId: id,
     });
+
     commit('me/SET_CHANNEL_ID', null);
+
+    dispatch('me/setDefaultMediaState');
 
     callWindow.hideAll();
   },
