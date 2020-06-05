@@ -28,6 +28,10 @@ class BroadcastActions extends EventEmitter {
     });
 
     this.broadcastChannel.postMessage(message);
+    this.emit('action', {
+      action,
+      data,
+    });
   }
 
   /**

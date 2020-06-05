@@ -179,7 +179,7 @@ export default {
      * @returns {void}
      */
     createChannelHandler() {
-      console.log('Create new channel handler');
+      this._notImplemented();
     },
 
     /**
@@ -187,7 +187,7 @@ export default {
      * @returns {void}
      */
     addUserHandler() {
-      console.log('Add new user handler');
+      this._notImplemented();
     },
 
     /**
@@ -195,7 +195,7 @@ export default {
      * @returns {void}
      */
     moreHandler() {
-      console.log('more');
+      this._notImplemented();
     },
   },
 
