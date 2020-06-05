@@ -22,7 +22,7 @@
       :size="size"
       :icon="buttonIcons.camera.icon"
       :stroke="buttonIcons.camera.stroke"
-      @click="switchProp('camera')"
+      @click="cameraHandler();switchProp('camera')"
     />
 
     <ui-button
@@ -174,6 +174,16 @@ export default {
       newState[property] = !this.mediaState[property];
 
       broadcastActions.dispatch('me/setMediaState', newState);
+    },
+
+    /**
+     * Open Grid if camera is turned on
+     * @returns {void}
+     */
+    cameraHandler() {
+      if (!this.mediaState.camera) {
+        this.gridHandler();
+      }
     },
 
     /**

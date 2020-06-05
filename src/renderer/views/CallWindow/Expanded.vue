@@ -4,35 +4,6 @@
     :style="$themes.getColors('popover')"
     @dblclick="showGridHandler"
   >
-    <!-- <svg
-      class="svg-border"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <linearGradient
-          id="gradient"
-          x1="0%"
-          y1="0%"
-          x2="0%"
-          y2="100%"
-        >
-          <stop
-            offset="0%"
-            stop-color="#00bc9b"
-          />
-          <stop
-            offset="100%"
-            stop-color="#5eaefd"
-          />
-        </linearGradient>
-      </defs>
-      <rect
-        class="rect-path"
-        stroke="url(#gradient)"
-        style="fill:none"
-      />
-    </svg> -->
-
     <video
       ref="video"
       class="sharing"
