@@ -1,9 +1,7 @@
 import API from '@api';
 import Store from 'electron-store';
 import callWindow from '@classes/callWindow';
-import { client } from '@api/socket/client';
-
-console.log(client);
+import * as sockets from '@api/socket';
 
 const meStore = new Store({
   name: 'store-module-me',
@@ -139,11 +137,12 @@ export default {
     if (value) {
       /** Stop all media sharing */
       await dispatch('stopMediaSharing');
+      sockets.destroy();
     }
 
     /** Wake up */
     if (!value) {
-
+      await dispatch('initial', null, { root: true });
     }
 
     commit('SET_SUSPEND_STATE', value);
