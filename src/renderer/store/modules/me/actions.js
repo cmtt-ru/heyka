@@ -126,7 +126,7 @@ export default {
    * @param {boolean} value – state
    * @returns {void}
    */
-  async setSuspendState({ commit, dispatch, state }, value) {
+  async setSuspendState({ commit, dispatch, getters, state }, value) {
     if (value) {
       console.log('%c Sleep', 'background: #8d96a2');
     } else {
@@ -135,8 +135,12 @@ export default {
 
     /** Sleep */
     if (value) {
-      /** Stop all media sharing */
-      await dispatch('stopMediaSharing');
+      /** Leave channel */
+      const selectedChannelId = getters['getSelectedChannelId'];
+
+      if (selectedChannelId) {
+        await dispatch('unselectChannel', selectedChannelId, { root: true });
+      }
       sockets.destroy();
     }
 
