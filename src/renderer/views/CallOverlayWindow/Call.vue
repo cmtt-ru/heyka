@@ -71,13 +71,13 @@ export default {
     },
 
     getUserWhoSharesMedia(user) {
-      if (user) {
+      if (user && this.mediaState.screen === false) {
         this.requestStream(user);
       }
     },
 
     getSpeakingUserId(userId) {
-      if (userId) {
+      if (userId && this.mediaState.screen === false) {
         this.requestStream(userId);
       }
     },
