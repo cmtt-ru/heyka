@@ -70,13 +70,13 @@ async function authorize() {
       data: [ store.getters['me/getSelectedWorkspaceId'] ],
     });
 
-    client.on(eventNames.authSuccess, data => {
+    client.once(eventNames.authSuccess, data => {
       console.log('socket auth success', data);
       store.dispatch('setSocketConnected', true);
       resolve(data);
     });
 
-    client.on(eventNames.authSuccessError, data => {
+    client.once(eventNames.authSuccessError, data => {
       console.error('socket auth error', data);
       reject(data);
     });
