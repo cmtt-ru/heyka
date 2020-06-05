@@ -55,6 +55,9 @@ export default {
    * @returns {object} selected channel
    */
   async selectChannel({ commit, getters, state }, id) {
+    if (id === getters['me/getSelectedChannelId']) {
+      return;
+    }
     commit('me/SET_MEDIA_STATE', {
       ...getters['me/getMediaState'],
       camera: false,

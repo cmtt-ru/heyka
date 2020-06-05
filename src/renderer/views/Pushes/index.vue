@@ -31,7 +31,7 @@ export default {
      * @returns {array}
     */
     pushes() {
-      return this.$store.getters['app/getPushes'];
+      return this.$store.state.app.pushes;
     },
   },
   methods: {
