@@ -53,7 +53,7 @@
         :type="3"
         :wide="true"
         class="user-action"
-        @click="openPushWindow"
+        @click="sendInvite"
       >
         <div
           v-textfade
@@ -201,22 +201,13 @@ export default {
 
   methods: {
 
-    /* //! Need to send this, not show! */
-    async openPushWindow() {
-      this.$store.dispatch('app/addPush', {
-        data: {
-          user: this.$store.getters['me/getMyId'],
+    async sendInvite() {
+      await this.$store.dispatch('app/sendPush', {
+        userId: this.userId,
+        isResponseNeeded: true,
+        message: {
+          action: 'invite',
           channel: this.$store.getters['me/getSelectedChannelId'],
-          buttons: [
-            {
-              text: 'Join',
-              type: 1,
-            },
-            {
-              text: 'Busy',
-              close: true,
-            },
-          ],
         },
       });
     },

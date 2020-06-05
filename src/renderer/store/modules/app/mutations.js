@@ -113,7 +113,7 @@ export default {
    * @constructor
    */
   REMOVE_PUSH(state, id) {
-    state.pushes = state.pushes.filter(el => el.id != id);
+    state.pushes = state.pushes.filter(el => el.messageId != id);
   },
 
   /**

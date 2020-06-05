@@ -5,11 +5,12 @@
   >
     <push
       v-for="push in pushes"
-      :id="push.id"
-      :key="push.id"
+      :id="push.messageId"
+      :key="push.messageId"
       :lifespan="push.lifespan"
-      :data="push.data"
+      :data="push"
       @close="closeHandler"
+      @response="responseHandler"
     />
   </div>
 </template>
@@ -41,6 +42,22 @@ export default {
     */
     closeHandler(id) {
       broadcastActions.dispatch('app/removePush', id);
+    },
+
+    /**
+     * Send response action
+     *
+     * @param {string} id id
+     * @returns {void}
+    */
+    async responseHandler({ response, messageId, data }) {
+      await broadcastActions.dispatch('app/sendPushResponse', {
+        response,
+        messageId,
+      });
+      if (response.action === 'accept') {
+        await broadcastActions.dispatch('selectChannel', data.channel);
+      }
     },
   },
 };

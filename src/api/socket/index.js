@@ -26,6 +26,9 @@ export async function init() {
   /** User events */
   bindUserEvents();
 
+  /** Push events */
+  bindPushEvents();
+
   /** Trying to authorize */
   try {
     await authorize();
@@ -204,5 +207,24 @@ function bindUserEvents() {
   /** User media status changed */
   client.on(eventNames.mediaStateUpdated, data => {
     store.commit('channels/SET_USER_MEDIA_STATE', data);
+  });
+}
+
+/**
+ * Bind push events
+ *
+ * @returns {void}
+ */
+function bindPushEvents() {
+  /** Get push notification */
+  client.on(eventNames.message, data => {
+    store.dispatch('app/addPush', data);
+  });
+
+  /** Get response to push notification */
+  client.on(eventNames.messageResponse, data => {
+    if (data.response.showResponse) {
+      store.dispatch('app/addPush', data);
+    }
   });
 }
