@@ -1,4 +1,3 @@
-import electron from "electron";
 <template>
   <div>
     <janus />
@@ -11,7 +10,7 @@ import electron from "electron";
 import electron, { ipcRenderer } from 'electron';
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
-
+import broadcastEvents from '@classes/broadcastEvents';
 import Notifications from '@components/Notifications';
 
 export default {
@@ -44,6 +43,13 @@ export default {
     } catch (e) {
       console.log('redirecting to login');
     }
+
+    broadcastEvents.on('open-channel', id => {
+      this.$router.push({
+        name: 'channel',
+        params: { id },
+      });
+    });
 
     /**
      * Auto update stuff

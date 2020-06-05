@@ -1,4 +1,6 @@
+import API from '@api';
 import themes from '@/themes';
+import pushWindow from '@classes/pushWindow';
 import i18n from '@/i18n';
 import { ipcRenderer } from 'electron';
 import Store from 'electron-store';
@@ -100,17 +102,17 @@ export default {
   },
 
   /**
-   * Add notification
+   * Add new in-app notification
    *
    * @param {function} commit – store commit
-   * @param {object} options – notification options
-   * @returns {string} id – notification id
+   * @param {object} notif – notification
+   * @returns {string} id
    */
-  addNotification({ commit }, options) {
+  addNotification({ commit }, notif) {
     const id = uuidV4();
     const notification = {
       id,
-      ...options,
+      ...notif,
     };
 
     commit('ADD_NOTIFICATION', notification);
@@ -119,7 +121,7 @@ export default {
   },
 
   /**
-   * Remove notification
+   * Remove in-app notification by ID
    *
    * @param {function} commit – store commit
    * @param {string} id – notification id
@@ -127,6 +129,67 @@ export default {
    */
   removeNotification({ commit }, id) {
     commit('REMOVE_NOTIFICATION', id);
+  },
+
+  /**
+   * Send push
+   *
+   * @param {function} commit – store commit
+   * @param {object} notif – push
+   * @returns {string} id
+   */
+  async sendPush({ state }, { userId, isResponseNeeded = false, message }) {
+    const { messageId } = await API.user.sendMessage({
+      userId,
+      isResponseNeeded,
+      message,
+    });
+
+    return messageId;
+  },
+
+  /**
+   * Send push response
+   *
+   * @param {function} commit – store commit
+   * @param {object} notif – push
+   * @returns {string} id
+   */
+  async sendPushResponse({ commit, state }, { response, messageId }) {
+    await API.user.sendMessageResponse({
+      messageId,
+      response,
+    });
+  },
+
+  /**
+   * Add new push
+   *
+   * @param {function} commit – store commit
+   * @param {object} notif – push
+   * @returns {string} id
+   */
+  addPush({ commit, state }, { messageId, userId, message }) {
+    const push = {
+      messageId,
+      userId,
+      ...message,
+    };
+
+    commit('ADD_PUSH', push);
+    pushWindow.updateCount(state.pushes.length);
+  },
+
+  /**
+   * Remove push by ID
+   *
+   * @param {function} commit – store commit
+   * @param {string} id – push's id
+   * @returns {void}
+   */
+  removePush({ commit, state }, id) {
+    commit('REMOVE_PUSH', id);
+    pushWindow.updateCount(state.pushes.length);
   },
 
   /**

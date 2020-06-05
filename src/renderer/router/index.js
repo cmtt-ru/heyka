@@ -40,8 +40,7 @@ const StyleguideNotifications = () => import(/* webpackChunkName: "main" */ '@vi
  * Push window views
  * @constructor
  */
-const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/PushWindow');
-const PushWindowPoke = () => import(/* webpackChunkName: "push" */ '@views/PushWindow/Poke');
+const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/Pushes');
 
 /**
  * Call window views
@@ -196,12 +195,6 @@ const routes = [
   {
     path: '/push-window',
     component: PushWindow,
-    children: [
-      {
-        path: '',
-        component: PushWindowPoke,
-      },
-    ],
   },
 
   /**

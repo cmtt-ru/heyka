@@ -9,7 +9,7 @@ export default Object.freeze({
   reconnecting: 'reconnecting',
   error: 'error',
 
-  /** Socket API errors */
+  /** Socket API events */
   auth: 'auth',
   authSuccess: 'auth-success',
   authSuccessError: 'socket-api-error-auth',
@@ -24,4 +24,6 @@ export default Object.freeze({
   userUpdated: 'user-updated',
   onlineStatusChanged: 'online-status-updated',
   socketApiError: 'socket-api-error',
+  message: 'message',
+  messageResponse: 'message-response',
 });

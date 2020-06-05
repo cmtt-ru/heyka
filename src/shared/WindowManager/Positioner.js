@@ -8,7 +8,7 @@ import TrayManager from '../../main/classes/TrayManager';
 const isLinux = process.platform === 'linux';
 
 export default class Positioner {
-  constructor(browserWindow, margin = 0) {
+  constructor(browserWindow, margin = 20) {
     this.browserWindow = browserWindow;
     this.margin = margin;
   }

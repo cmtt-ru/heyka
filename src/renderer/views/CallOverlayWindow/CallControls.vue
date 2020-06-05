@@ -172,7 +172,7 @@ export default {
       margin-bottom 8px
 
       &--controls
-        flex-shrink: 0;
+        flex-shrink 0
 
       &:last-child
         margin-bottom 0

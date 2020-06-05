@@ -53,6 +53,7 @@
         :type="3"
         :wide="true"
         class="user-action"
+        @click="sendInvite"
       >
         <div
           v-textfade
@@ -200,6 +201,16 @@ export default {
 
   methods: {
 
+    async sendInvite() {
+      await this.$store.dispatch('app/sendPush', {
+        userId: this.userId,
+        isResponseNeeded: true,
+        message: {
+          action: 'invite',
+          channel: this.$store.getters['me/getSelectedChannelId'],
+        },
+      });
+    },
   },
 
 };

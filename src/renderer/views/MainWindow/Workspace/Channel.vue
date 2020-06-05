@@ -150,7 +150,6 @@ export default {
      * @returns {void}
      */
     async clickConnectHandler() {
-      // TODO: добавить коннект к сокетам и всё такое
       await this.$store.dispatch('selectChannel', this.channelId);
     },
 
@@ -159,7 +158,6 @@ export default {
      * @returns {void}
      */
     async clickDisconnectHandler() {
-      // TODO: добавить дисконнект от сокетов и всё такое
       await this.$store.dispatch('unselectChannel', this.channelId);
     },
 
