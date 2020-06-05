@@ -68,7 +68,7 @@ VueHammer.config.pan = {
 };
 
 /* distance after which push is concidered swiped out */
-const TRESHOLD = 90;
+const THRESHOLD = 90;
 
 /* distance that push travels to the side during closing sequence */
 const SIDETRAVEL = 100;
@@ -231,7 +231,7 @@ export default {
     /**
      * Handle end of panning:
      * 1. Bring back transitions for smooth animations
-     * 2. If we are over TRESHOLD, add fade-to-side-animation and trigger this.close
+     * 2. If we are over THRESHOLD, add fade-to-side-animation and trigger this.close
      *
      * @param {object} event – hammer's event
      * @returns {void}
@@ -248,9 +248,9 @@ export default {
         });
       }
 
-      const overTreshold = event.deltaX > TRESHOLD;
+      const overThreshold = event.deltaX > THRESHOLD;
 
-      if (!overTreshold) {
+      if (!overThreshold) {
         this.styles.transform = null;
         this.styles.opacity = null;
       } else {
@@ -265,7 +265,7 @@ export default {
     },
 
     /**
-     * Handle every panning event: translate push and add opacity if over TRESHOLD
+     * Handle every panning event: translate push and add opacity if over THRESHOLD
      *
      * @param {object} event – hammer's event
      * @returns {void}
