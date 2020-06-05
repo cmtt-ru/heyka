@@ -41,6 +41,7 @@ export default {
       'getUserWhoSharesMedia',
       'amISharingMedia',
       'isAnybodySharingMedia',
+      'getSpeakingUser',
     ]),
 
     mediaState() {
@@ -54,18 +55,34 @@ export default {
     selectedChannelId() {
       return this.$store.state.me.selectedChannelId;
     },
+
+    getSpeakingUserId() {
+      if (this.getSpeakingUser) {
+        return this.getSpeakingUser.id;
+      }
+
+      return false;
+    },
   },
 
   watch: {
     isMediaSharing() {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     },
+
     getUserWhoSharesMedia(user) {
       if (user) {
         this.requestStream(user);
       }
     },
+
+    getSpeakingUserId(userId) {
+      if (userId) {
+        this.requestStream(userId);
+      }
+    },
   },
+
   created() {
     if (this.isMediaSharing) {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
@@ -125,7 +142,7 @@ export default {
     expandHandler() {
       if (this.getUserWhoSharesMedia) {
         broadcastActions.dispatch('openGrid');
-        broadcastEvents.dispatch('grid-expand', this.getUserWhoSharesMedia);
+        broadcastEvents.dispatch('grid-expand', this.getSpeakingUserId);
       }
     },
   },
