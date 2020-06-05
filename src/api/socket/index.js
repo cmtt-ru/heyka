@@ -231,7 +231,7 @@ function bindPushEvents() {
       });
     } else if (response === 'no-response') {
       store.dispatch('app/addPush', {
-        messageId: Date.now(),
+        messageId: `response-${messageId}`,
         userId,
         message: response,
       });
