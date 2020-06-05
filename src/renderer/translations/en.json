@@ -120,7 +120,8 @@
       "text": "You didn't give us access to mic. You can change that in system preferences",
       "button1": "Open",
       "button2": "Cancel"
-    }
+    },
+    "notImplemented": "This feature is not implemented yet"
   },
   "autoUpdate": {
     "message": "An updated version of Heyka is available and will be installed at the next launch",

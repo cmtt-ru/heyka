@@ -26,7 +26,7 @@
         class="user__more"
         size="small"
         icon="more"
-        @click.native="$emit('more')"
+        @click="_notImplemented()"
       />
     </div>
 
@@ -35,6 +35,7 @@
         :type="2"
         :wide="true"
         class="user-action"
+        @click="_notImplemented()"
       >
         <div>{{ texts.inviteBySlackButton }}</div>
       </ui-button>
@@ -45,6 +46,7 @@
         :type="1"
         :wide="true"
         class="user-action"
+        @click="_notImplemented()"
       >
         <div>{{ texts.privateTalkButton }}</div>
       </ui-button>

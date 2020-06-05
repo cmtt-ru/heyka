@@ -5,7 +5,7 @@
     </div>
     <textarea
       v-model="privacyLogs"
-      class="scroll scroll-vh"
+      class="scroll scroll--vh"
       readonly
       cols="30"
       rows="10"

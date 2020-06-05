@@ -113,38 +113,46 @@ generateLayoutClasses($layout-grid)
     overflow: overlay;
   }
   .scroll::-webkit-scrollbar {
-  width: 7px;
-  box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0);
-  border: solid 2.5px transparent;
-  border-radius: 100px;
-}
-.scroll:hover::-webkit-scrollbar{
-    box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.05);
-}
-
-.scroll::-webkit-scrollbar-thumb {
-  box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0);
-  border-radius: 100px;
-  border: solid 2.5px transparent;
-}
-
-.scroll::-webkit-scrollbar:hover{
-    border: solid 1.5px transparent;
-    box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.08);
-}
-
-.scroll::-webkit-scrollbar-thumb:hover{
-    border: solid 1.5px transparent;
-    box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.2);
-}
-
-.scroll:hover::-webkit-scrollbar-thumb{
-    box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.15);
-}
-
-.scroll::-webkit-scrollbar-thumb:active {
-  box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.35);
+    width: 7px;
+    box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0);
+    border: solid 2.5px transparent;
+    border-radius: 100px;
   }
+  .scroll::-webkit-scrollbar:horizontal {
+    height: 7px;
+  }
+  .scroll:hover::-webkit-scrollbar{
+      box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.05);
+  }
+
+  .scroll::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0);
+    border-radius: 100px;
+    border: solid 2.5px transparent;
+  }
+
+  .scroll::-webkit-scrollbar:hover{
+      border: solid 1.5px transparent;
+      box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.08);
+  }
+
+  .scroll::-webkit-scrollbar-thumb:hover{
+      border: solid 1.5px transparent;
+      box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.2);
+  }
+
+  .scroll:hover::-webkit-scrollbar-thumb{
+      box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.15);
+  }
+
+  .scroll::-webkit-scrollbar-thumb:active {
+    box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.35);
+  }
+
+  .scroll::-webkit-scrollbar-corner{
+    background: transparent; 
+  }
+
 }
 
 /**
