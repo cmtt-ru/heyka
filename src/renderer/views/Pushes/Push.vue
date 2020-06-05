@@ -181,7 +181,7 @@ export default {
       this.timeoutEnded = true;
       /* if we are holding the push, or push is already destroyed, do nothing */
       if (!this.holding && !this.closeRunning) {
-        this.close();
+        this.close(true);
       }
     }, this.lifespan);
   },
@@ -252,7 +252,7 @@ export default {
       if (this.timeoutEnded) {
         this.styles.opacity = 0;
         this.$nextTick(() => {
-          this.close();
+          this.close(true);
         });
       }
 

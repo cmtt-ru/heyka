@@ -2,7 +2,6 @@ import API from '@api';
 import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
-import router from '@/router';
 
 export default {
 
@@ -81,11 +80,6 @@ export default {
     commit('me/SET_CHANNEL_ID', id);
 
     callWindow.showOverlay();
-
-    router.push({
-      name: 'channel',
-      params: { id },
-    });
   },
 
   /**

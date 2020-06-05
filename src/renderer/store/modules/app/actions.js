@@ -138,7 +138,7 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  async sendPush({ commit, state }, { userId, isResponseNeeded = false, message }) {
+  async sendPush({ state }, { userId, isResponseNeeded = false, message }) {
     const { messageId } = await API.user.sendMessage({
       userId,
       isResponseNeeded,

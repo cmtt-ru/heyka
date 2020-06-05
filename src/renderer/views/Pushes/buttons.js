@@ -19,8 +19,5 @@ export const buttonTemplates = {
           },
         ],
   busy:
-    [ {
-      text: 'OK',
-      close: true,
-    } ],
+    [],
 };
