@@ -139,7 +139,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters([ 'getUsersWhoShareMedia' ]),
+    ...mapGetters([ 'getUsersWhoSharesMedia' ]),
 
     /**
      * Get needed texts from I18n-locale file
@@ -230,7 +230,7 @@ export default {
       this.resize();
     },
 
-    getUsersWhoShareMedia: {
+    getUsersWhoSharesMedia: {
       deep: true,
       handler(users) {
         this.requestStreams();
@@ -295,7 +295,7 @@ export default {
      * @returns {void}
      */
     requestStreams() {
-      const users = this.getUsersWhoShareMedia;
+      const users = this.getUsersWhoSharesMedia;
 
       // console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
       // delete streams that were inserted but users have already stopped sharing
@@ -382,7 +382,7 @@ export default {
      * @returns {boolean}
      */
     isStreaming(id) {
-      if (this.getUsersWhoShareMedia.includes(id)) {
+      if (this.getUsersWhoSharesMedia.includes(id)) {
         return true;
       }
 
@@ -411,7 +411,7 @@ export default {
         return;
       }
 
-      if (this.getUsersWhoShareMedia.includes(userId)) {
+      if (this.getUsersWhoSharesMedia.includes(userId)) {
         console.log('Again request stream', userId);
 
         const stream = await commonStreams.getStream(userId);

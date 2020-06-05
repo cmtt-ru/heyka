@@ -62,7 +62,7 @@ export default {
    * @param {object} getters – global getters
    * @returns {null|string}
    */
-  getUsersWhoShareMedia: (state, getters) => {
+  getUsersWhoSharesMedia: (state, getters) => {
     const selectedChannelId = getters['me/getSelectedChannelId'];
     const selectedChannel = getters['channels/getChannelById'](selectedChannelId);
 
