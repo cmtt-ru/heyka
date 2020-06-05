@@ -6,6 +6,14 @@
       @dblclick="showGridHandler"
     >
       <video ref="video" />
+
+      <ui-button
+        class="call-window__media__expand"
+        :type="7"
+        size="medium"
+        icon="fullscreen"
+        @click="expandHandler"
+      />
     </div>
 
     <call-controls
@@ -21,16 +29,19 @@ import { mapGetters } from 'vuex';
 import broadcastActions from '@classes/broadcastActions';
 import commonStreams from '@classes/commonStreams';
 import broadcastEvents from '@classes/broadcastEvents';
+import UiButton from '@components/UiButton';
 
 export default {
   components: {
     CallControls,
+    UiButton,
   },
   computed: {
     ...mapGetters([
       'getUserWhoSharesMedia',
       'amISharingMedia',
       'isAnybodySharingMedia',
+      'getSpeakingUser',
     ]),
 
     mediaState() {
@@ -44,18 +55,34 @@ export default {
     selectedChannelId() {
       return this.$store.state.me.selectedChannelId;
     },
+
+    getSpeakingUserId() {
+      if (this.getSpeakingUser) {
+        return this.getSpeakingUser.id;
+      }
+
+      return false;
+    },
   },
 
   watch: {
     isMediaSharing() {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     },
+
     getUserWhoSharesMedia(user) {
-      if (user) {
+      if (user && this.mediaState.screen === false) {
         this.requestStream(user);
       }
     },
+
+    getSpeakingUserId(userId) {
+      if (userId && this.mediaState.screen === false) {
+        this.requestStream(userId);
+      }
+    },
   },
+
   created() {
     if (this.isMediaSharing) {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
@@ -107,6 +134,17 @@ export default {
         this.requestStream(userId);
       }
     },
+
+    /**
+     * Expand click handler
+     * @returns {void}
+     */
+    expandHandler() {
+      if (this.getUserWhoSharesMedia) {
+        broadcastActions.dispatch('openGrid');
+        broadcastEvents.dispatch('grid-expand', this.getSpeakingUserId);
+      }
+    },
   },
 };
 </script>
@@ -117,6 +155,7 @@ export default {
     flex-direction column
 
     &__media
+      position relative
       flex-grow 1
 
       video
@@ -124,5 +163,16 @@ export default {
         width 100%
         height 213px
         object-fit cover
+
+      &__expand
+        position absolute
+        bottom 8px
+        right 8px
+        transition opacity 0.15s ease
+        opacity 0
+
+    &:hover
+      .call-window__media__expand
+        opacity 1
 
 </style>

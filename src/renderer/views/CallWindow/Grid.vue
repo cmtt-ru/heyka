@@ -111,6 +111,7 @@ import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
 import commonStreams from '@classes/commonStreams';
+import broadcastEvents from '@classes/broadcastEvents';
 
 /**
  * Aspect ratio 124 / 168;
@@ -126,6 +127,7 @@ export default {
     UiButton,
     Avatar,
   },
+
   data() {
     return {
       mounted: false,
@@ -135,6 +137,7 @@ export default {
       videoStreams: {},
     };
   },
+
   computed: {
     ...mapGetters([ 'getUsersWhoShareMedia' ]),
 
@@ -220,6 +223,7 @@ export default {
     },
 
   },
+
   watch: {
     /* re-count grid because number of users has changed */
     usersCount: function () {
@@ -244,6 +248,7 @@ export default {
       }
     },
   },
+
   async mounted() {
     this.mounted = true;
     window.addEventListener('resize', this.resize, false); // TODO: add small debounce for performance
@@ -253,11 +258,18 @@ export default {
 
     // Запрашиваем стрим юзера, если он прекратился
     commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
+
+    broadcastEvents.on('grid-expand', (userId) => {
+      this.expandedClickHandler(userId);
+    });
   },
+
   destroyed() {
     window.removeEventListener('resize', this.resize, false);
     commonStreams.removeAllListeners('stream-canceled');
+    broadcastEvents.removeAllListeners('grid-expand');
   },
+
   methods: {
     /**
      * Insert stream in HTML5 video tag
