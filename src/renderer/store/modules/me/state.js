@@ -27,7 +27,7 @@ const state = () => {
    */
   const initialMediaState = meStore.get('mediaState', {
     microphone: false,
-    speakers: false,
+    speakers: true,
     screen: false,
     camera: false,
     speaking: false,

@@ -78,6 +78,26 @@ export default {
   },
 
   /**
+   * Set default media state
+   *
+   * @param {function} commit – store commit
+   * @param {MeState} state – state
+   * @returns {void}
+   */
+  async setDefaultMediaState({ commit, state }) {
+    const defaultState = {
+      ...state.mediaState,
+      camera: false,
+      screen: false,
+      microphone: false,
+      speakers: true,
+      speaking: false,
+    };
+
+    commit('SET_MEDIA_STATE', defaultState);
+  },
+
+  /**
    * Stop all media sharing
    *
    * @param {function} commit – store commit
