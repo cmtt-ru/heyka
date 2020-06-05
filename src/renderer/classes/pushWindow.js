@@ -77,12 +77,10 @@ class PushWindow {
       }, PUSH_MOVEOUT_TIMER);
     } else if (this.window === null) {
       this.show();
-      clearTimeout(this.closewWindowTimeout);
-      audioNewPush.play();
+      this._newPushSupport();
     } else {
       if (this.notifications < amount) {
-        clearTimeout(this.closewWindowTimeout);
-        audioNewPush.play();
+        this._newPushSupport();
         this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount + 1, MAX_AMOUNT), 0);
         this.closewWindowTimeout = setTimeout(() => {
           this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount, MAX_AMOUNT), 0);
@@ -94,6 +92,15 @@ class PushWindow {
       }
     }
     this.notifications = amount;
+  }
+
+  /**
+   * Secondary things to do on new push
+   * @returns {void}
+   */
+  _newPushSupport() {
+    clearTimeout(this.closewWindowTimeout);
+    audioNewPush.play();
   }
 
   /**
