@@ -34,6 +34,16 @@ class WindowManager {
   getCurrentWindow() {
     return new Window(this.getCurrentWindowId());
   }
+
+  /**
+   * Set will quit flag
+   * @returns {void}
+   */
+  willQuit() {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'willQuit',
+    });
+  }
 }
 
 /**
@@ -184,16 +194,6 @@ class Window extends EventEmitter {
       width,
       height,
       margin,
-    });
-  }
-
-  /**
-   * Set will quit flag
-   * @returns {void}
-   */
-  willQuit() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'willQuit',
     });
   }
 }
