@@ -186,6 +186,16 @@ class Window extends EventEmitter {
       margin,
     });
   }
+
+  /**
+   * Set will quit flag
+   * @returns {void}
+   */
+  willQuit() {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'willQuit',
+    });
+  }
 }
 
 export default new WindowManager();
