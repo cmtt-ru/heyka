@@ -7,11 +7,12 @@
 </template>
 
 <script>
-import electron, { ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron';
 import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
 import broadcastEvents from '@classes/broadcastEvents';
 import Notifications from '@components/Notifications';
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
 export default {
   components: {
@@ -85,8 +86,10 @@ export default {
               text: texts.install,
               type: 1,
               action: () => {
-                electron.remote.app.relaunch();
-                electron.remote.app.quit();
+                WindowManager.willQuit();
+                ipcRenderer.send('update-install');
+                // electron.remote.app.relaunch();
+                // electron.remote.app.quit();
               },
             },
             {

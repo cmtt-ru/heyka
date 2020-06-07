@@ -42,6 +42,7 @@ class WindowManager {
       fullscreen: this.toggleFullscreenWindow,
       console: this.toggleConsoleWindow,
       openurl: this.openUrl,
+      willQuit: this.willQuit,
     };
 
     ipcMain.on('window-manager-event', (event, options) => {
