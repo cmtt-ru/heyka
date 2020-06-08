@@ -26,6 +26,12 @@ class AudioCheck extends EventEmitter {
     super();
     this.__mediaStream = null;
     this.__harkInstance = null;
+    this.__needMediaStream = false;
+    store.watch(() => store.getters['app/getSelectedDevices'], n => {
+      if (this.__needMediaStream) {
+        this.startMediaStream();
+      }
+    });
   }
 
   /**
@@ -59,6 +65,13 @@ class AudioCheck extends EventEmitter {
   async startMediaStream() {
     this.destroyMediaStream();
 
+    this.__needMediaStream = true;
+    console.log();
+
+    if (this._selectedMicrophone() === null) {
+      return;
+    }
+
     this.__mediaStream = await navigator.mediaDevices.getUserMedia({
       audio: {
         deviceId: this._selectedMicrophone(),
@@ -89,6 +102,8 @@ class AudioCheck extends EventEmitter {
     if (this.__mediaStream) {
       this.__mediaStream.getTracks().forEach(track => track.stop());
     }
+
+    this.__needMediaStream = true;
   }
 
   /**
