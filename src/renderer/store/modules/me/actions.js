@@ -2,6 +2,7 @@ import API from '@api';
 import Store from 'electron-store';
 import callWindow from '@classes/callWindow';
 import * as sockets from '@api/socket';
+import { ipcRenderer } from 'electron';
 
 const meStore = new Store({
   name: 'store-module-me',
@@ -74,6 +75,12 @@ export default {
 
     if (selectedChannelId) {
       await API.user.setMediaState(mediaState);
+
+      if (mediaState.microphone === true) {
+        ipcRenderer.send('tray-animation', true);
+      } else {
+        ipcRenderer.send('tray-animation', false);
+      }
     }
   },
 
