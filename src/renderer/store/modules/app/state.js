@@ -59,9 +59,9 @@ const state = () => {
       cameras: [],
     },
     selectedDevices: {
-      speaker: heykaStore.get('selectedSpeaker', 'default'),
-      microphone: heykaStore.get('selectedMicrophone', 'default'),
-      camera: heykaStore.get('selectedCamera', ''),
+      speaker: null,
+      microphone: null,
+      camera: null,
     },
     collectAnalytics: heykaStore.get('collectAnalytics', true),
     privacyLogs: [],
