@@ -7,6 +7,7 @@
         </ui-button>
       </router-link>
       <ui-button
+        v-if="notMe"
         :type="11"
         data-popover-close
         @click="pokeClickHandler"
@@ -14,6 +15,7 @@
         {{ texts.poke }}
       </ui-button>
       <ui-button
+        v-if="notMe"
         :type="11"
         @click="muteClickHandler"
       >
@@ -50,6 +52,10 @@ export default {
      */
     texts() {
       return this.$t('popover.userInChannel');
+    },
+
+    notMe() {
+      return (this.$store.state.me.id !== this.userId);
     },
   },
 

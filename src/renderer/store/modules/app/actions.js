@@ -138,7 +138,10 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  async sendPush({ state }, { userId, isResponseNeeded = false, message }) {
+  async sendPush({ rootGetters }, { userId, isResponseNeeded = false, message }) {
+    if (rootGetters['me/getMyId'] === userId) {
+      return;
+    }
     const { messageId } = await API.user.sendMessage({
       userId,
       isResponseNeeded,
