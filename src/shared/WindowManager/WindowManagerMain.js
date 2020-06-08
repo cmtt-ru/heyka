@@ -41,6 +41,7 @@ class WindowManager {
       size: this.sizeWindow,
       fullscreen: this.toggleFullscreenWindow,
       console: this.toggleConsoleWindow,
+      reload: this.reloadWindow,
       openurl: this.openUrl,
     };
 
@@ -313,6 +314,15 @@ class WindowManager {
    */
   toggleConsoleWindow({ id }) {
     this.windows[id].browserWindow.webContents.toggleDevTools();
+  }
+
+  /**
+   * Reload window
+   * @param {string} id - ID of window in question
+   * @returns {void}
+   */
+  reloadWindow({ id }) {
+    this.windows[id].browserWindow.reload();
   }
 
   /**
