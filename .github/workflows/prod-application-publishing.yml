@@ -3,9 +3,7 @@ name: Prod-Appliction-Publishing
 on:
   push:
     tags:
-      - '*'
-    tags-ignore:
-      - '*-dev'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build-mac:
