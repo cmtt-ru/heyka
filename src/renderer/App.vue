@@ -14,7 +14,7 @@ export default {
     window.addEventListener('keypress', function (e) {
       if ((e.shiftKey && e.code == 'KeyI') || (e.ctrlKey && e.code == 'KeyI')) {
         WindowManager.getCurrentWindow().toggleConsole();
-      } else if (e.ctrlKey && e.code == 'KeyQ') {
+      } else if (e.ctrlKey && e.code == 'KeyR') {
         WindowManager.getCurrentWindow().reload();
       }
     }, true);
