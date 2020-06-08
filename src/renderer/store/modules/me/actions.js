@@ -89,7 +89,6 @@ export default {
       ...state.mediaState,
       camera: false,
       screen: false,
-      microphone: false,
       speakers: true,
       speaking: false,
     };
