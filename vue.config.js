@@ -1,4 +1,20 @@
 const path = require('path');
+const HawkWebpackPlugin = require('@hawk.so/webpack-plugin');
+const buildRevision = Date.now();
+const isProd = process.env.NODE_ENV === 'production';
+const webpackPlugins = [];
+
+/**
+ * Initialize Hawk error catcher
+ */
+if (process.env.VUE_APP_HAWK_TOKEN) {
+  webpackPlugins.push(
+    new HawkWebpackPlugin({
+      integrationToken: process.env.VUE_APP_HAWK_TOKEN,
+      release: buildRevision,
+    })
+  );
+}
 
 module.exports = {
   pages: {
@@ -25,6 +41,8 @@ module.exports = {
         '@contextMenus': path.resolve(__dirname, 'src/renderer/views/ContextMenus'),
       },
     },
+    plugins: webpackPlugins,
+    devtool: isProd ? 'hidden-source-map' : false,
   },
 
   pluginOptions: {
@@ -63,5 +81,19 @@ module.exports = {
       .rule('svg-sprite')
       .use('svgo-loader')
       .loader('svgo-loader');
+
+    /**
+     * Use DefinePlugin to pass some variables to the sources
+     */
+    config.plugin('define').tap((definitions) => {
+      definitions[0] = Object.assign(definitions[0], {
+        /**
+         * Current bundle version will be passed to the Hawk Catcher
+         */
+        buildRevision,
+      });
+
+      return definitions;
+    });
   },
 };
