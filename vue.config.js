@@ -5,7 +5,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const webpackPlugins = [];
 
 /**
- * Initialize Hawk error catcher
+ * Add the Hawk plugin for sending source maps
  */
 if (process.env.VUE_APP_HAWK_TOKEN) {
   webpackPlugins.push(
