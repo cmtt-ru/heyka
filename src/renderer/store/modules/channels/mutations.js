@@ -46,7 +46,7 @@ export default {
 
     if (userIndex !== undefined) {
       users.splice(userIndex, 1);
-      console.log('Duplicate user occurred');
+      console.error('Duplicate user occurred');
     }
 
     users.push({
