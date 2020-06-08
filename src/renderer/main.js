@@ -1,3 +1,6 @@
+/* global buildRevision */
+
+import HawkCatcher from '@hawk.so/javascript';
 import Vue from 'vue';
 import App from '@/App.vue';
 import router from '@/router';
@@ -9,6 +12,18 @@ import SvgIcon from '@components/SvgIcon.vue';
 import '@/filters/leonardo';
 import '@/directives';
 import { Mixin } from '@/mixins';
+
+/**
+ * Initialize Hawk error catcher
+ */
+if (process.env.VUE_APP_HAWK_TOKEN) {
+  // eslint-disable-next-line no-new
+  new HawkCatcher({
+    token: process.env.VUE_APP_HAWK_TOKEN,
+    vue: Vue,
+    release: buildRevision,
+  });
+}
 
 Vue.mixin(Mixin);
 Vue.prototype.$themes = themes;
