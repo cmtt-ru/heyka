@@ -4,7 +4,9 @@ on:
   push:
     tags:
       - '*'
-    
+    tags-ignore:
+      - '*-dev'
+
 jobs:
   build-mac:
     runs-on: macOS-latest
