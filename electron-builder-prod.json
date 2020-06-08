@@ -18,12 +18,12 @@
   },
   "win": {
       "target": "nsis",
-      "icon": "public/icon.ico",
+      "icon": "public/icon.png",
       "legalTrademarks": "Heyka"
   },
   "linux": {
       "target": "AppImage",
-      "icon": "public/icon.ico",
+      "icon": "public/icon.png",
       "category": "Network"
   },
   "publish": {
