@@ -66,10 +66,6 @@ export default {
           name: 'Русский',
           value: 'ru',
         },
-        {
-          name: 'God fowgive me',
-          value: 'uwu',
-        },
       ],
 
     };
