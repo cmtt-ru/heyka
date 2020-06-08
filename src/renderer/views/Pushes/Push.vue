@@ -206,7 +206,7 @@ export default {
       if (this.buttons) {
         const cancelbutton = this.buttons.find(el => el.close);
 
-        if (cancelbutton.response) {
+        if (cancelbutton && cancelbutton.response) {
           this.$emit('response', {
             response: cancelbutton.response,
             messageId: this.data.messageId,
