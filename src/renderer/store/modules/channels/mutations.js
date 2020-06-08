@@ -42,6 +42,12 @@ export default {
    */
   ADD_USER(state, { userId, channelId, userMediaState }) {
     const users = state.collection[channelId].users;
+    const userIndex = searchIndexByKey(users, 'userId', userId);
+
+    if (userIndex !== undefined) {
+      users.splice(userIndex, 1);
+      console.log('Duplicate user occurred');
+    }
 
     users.push({
       userId,
