@@ -1,4 +1,5 @@
-import { ipcMain, BrowserWindow, screen, Menu } from 'electron';
+import path from 'path';
+import { ipcMain, BrowserWindow, screen, Menu, nativeImage } from 'electron';
 import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
@@ -14,6 +15,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   frame: false,
   fullscreenable: false,
   show: false,
+  icon: nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`)),
   skipTaskBar: true,
   webPreferences: Object.freeze({
     nodeIntegration: true,

@@ -7,6 +7,7 @@
     "entitlements": "build/entitlements.mac.plist",
     "entitlementsInherit": "build/entitlements.mac.plist",
     "darkModeSupport": true,
+    "icon": "public/icon.png",
     "extendInfo": {
         "LSUIElement": 1,
         "NSCameraUsageDescription": "This app requires camera access to record video.",
@@ -17,12 +18,12 @@
   },
   "win": {
       "target": "nsis",
-      "icon": "icon.ico",
+      "icon": "public/icon.png",
       "legalTrademarks": "Heyka"
   },
   "linux": {
       "target": "AppImage",
-      "icon": "public/icons/hejka.png",
+      "icon": "public/icon.png",
       "category": "Network"
   },
   "publish": {
