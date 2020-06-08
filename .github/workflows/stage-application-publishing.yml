@@ -2,21 +2,23 @@ name: Stage-Appliction-Publishing
 
 on:
   push:
-    branches:
-      - stage
+    tags:
+      - '*-dev'
     
 jobs:
   build-mac:
     runs-on: macOS-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/checkout@v2
+    - name: Cache node modules
+      uses: actions/cache@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ env.cache-name }}-
+          ${{ runner.OS }}-build-
+          ${{ runner.OS }}-
     - name: install dependencies
       run: npm install
     - name: set configuration
@@ -30,15 +32,17 @@ jobs:
 
   build-linux-win:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/checkout@v2
+    - name: Cache node modules
+      uses: actions/cache@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ env.cache-name }}-
+          ${{ runner.OS }}-build-
+          ${{ runner.OS }}-
     - name: install wine
       run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install wine32 && sudo apt-get install wine-stable
     - name: install dependencies
