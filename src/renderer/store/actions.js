@@ -2,6 +2,7 @@ import API from '@api';
 import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
+import { ipcRenderer } from 'electron';
 
 export default {
 
@@ -83,6 +84,10 @@ export default {
     commit('me/SET_CHANNEL_ID', id);
 
     callWindow.showOverlay();
+
+    if (state.me.mediaState.microphone === true) {
+      ipcRenderer.send('tray-animation', true);
+    }
   },
 
   /**
@@ -104,6 +109,8 @@ export default {
     dispatch('me/setDefaultMediaState');
 
     callWindow.hideAll();
+
+    ipcRenderer.send('tray-animation', false);
   },
 
   /**
