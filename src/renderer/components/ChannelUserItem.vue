@@ -35,6 +35,7 @@
       :type="7"
       size="small"
       icon="cast"
+      @click="expandHandler"
     />
   </div>
 </template>
@@ -42,6 +43,8 @@
 <script>
 import Avatar from '@components/Avatar';
 import UiButton from '@components/UiButton';
+import broadcastActions from '@classes/broadcastActions';
+import broadcastEvents from '@classes/broadcastEvents';
 
 const ICON_MAP = {
   mic: 'mic-off',
@@ -92,6 +95,13 @@ export default {
       return icons;
     },
 
+  },
+
+  methods: {
+    expandHandler() {
+      broadcastActions.dispatch('openGrid');
+      broadcastEvents.dispatch('grid-expand', this.user.id);
+    },
   },
 
 };
