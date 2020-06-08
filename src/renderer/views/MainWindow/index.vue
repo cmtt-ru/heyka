@@ -13,6 +13,7 @@ import Janus from '@components/Janus.vue';
 import broadcastEvents from '@classes/broadcastEvents';
 import Notifications from '@components/Notifications';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import mediaCapturer from '@classes/mediaCapturer';
 
 export default {
   components: {
@@ -67,6 +68,8 @@ export default {
     });
 
     ipcRenderer.send('update-check');
+
+    this.showMacScreenSharingPermission();
   },
 
   methods: {
@@ -101,6 +104,23 @@ export default {
       };
 
       await this.$store.dispatch('app/addNotification', notification);
+    },
+
+    /**
+     * Show mac screen sharing permission
+     * @returns {void}
+     */
+    async showMacScreenSharingPermission() {
+      const timeout = 1000;
+
+      if (process.platform === 'darwin') {
+        const screens = await mediaCapturer.getSources('screen', 0);
+        const stream = await mediaCapturer.getStream(screens[0].id);
+
+        setTimeout(() => {
+          mediaCapturer.destroyStream(stream);
+        }, timeout);
+      }
     },
   },
 };
