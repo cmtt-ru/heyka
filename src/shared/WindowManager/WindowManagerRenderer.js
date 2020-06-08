@@ -166,6 +166,17 @@ class Window extends EventEmitter {
   }
 
   /**
+   * Reload window - send signal to main process
+   * @returns {void}
+   */
+  reload() {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'reload',
+      id: this.windowId,
+    });
+  }
+
+  /**
    * Open url in window - send signal to main process
    * @param {string} route route to move to
    * @param {string} url url to move to (if not index.html)

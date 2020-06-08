@@ -8,17 +8,21 @@ export const Mixin = {
      * Get needed text from I18n-locale file
      * @returns {string}
      */
-    text() {
+    __notImplementedText() {
       return i18n.t('notifications.notImplemented');
     },
   },
 
   methods: {
+    /**
+     * Show "feature not implemented" notification
+     * @returns {string}
+     */
     _notImplemented: function () {
       const notification = {
         lifespan: 5000,
         data: {
-          text: this.text,
+          text: this.__notImplementedText,
         },
       };
 
