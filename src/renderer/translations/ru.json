@@ -1,66 +1,150 @@
 {
-  "message": "Ноль секунд | {n} секунда | {n} секунды | {n} секунд",
   "workspace": {
     "navbar": {
       "channelsHeader": "Каналы",
-      "usersHeader": "Юзеры"
+      "usersHeader": "Пользователи"
     },
     "channel": {
       "join": "Войти",
-      "disconnect": "Выйти"
+      "disconnect": "Отключиться"
     },
     "user": {
-      "privateTalkButton": "Приватный разговор",
+      "privateTalkButton": "Позвонить",
       "inviteButtonStart": "Пригласить в",
-      "inviteBySlackButton": "Отправить приглашение в Slack",
-      "localTime": "Местное время",
-      "email": "Почта"
-    }
+      "inviteBySlackButton": "Пригласить через Slack",
+      "localTime": "Локальное время",
+      "email": "Email"
+    },
+    "empty": "Вуф, вы отключены от всех каналов"
   },
   "settings": {
     "labels": {
       "header": "Настройки",
-      "general": "Основное",
+      "general": "Основные",
       "devices": "Устройства",
       "network": "Сеть",
       "about": "О приложении",
-      "support": "Поддержка",
+      "support": "Подджерка",
       "styleguide": "Стайлгайд"
     },
     "general": {
       "languageLabel": "Язык",
-      "behaviourLabel": "Поведение",
+      "behaviourLabel": "Запускать в",
       "behaviours": {
-        "window": "В окне",
-        "tray": "В трее"
+        "window": "Виде окна",
+        "tray": "Трее"
       },
-      "behaviourWillChange": "Перезапустите программу, чтобы увидеть изменения",
-      "autorunLabel": "Autorun",
-      "autorunSwitch": "Run at startup",
-      "appearanceLabel": "Тема",
+      "behaviourWillChange": "Перезагрузите приложение, чтобы применить изменения",
+      "autorunLabel": "Автозапуск",
+      "autorunSwitch": "Запускать с загрузкой системы",
+      "appearanceLabel": "Внешний вид",
       "theme": {
-        "light": "Светлая",
-        "dark": "Тёмная"
+        "light": "Светлая тема",
+        "dark": "Темная тема"
       },
-      "automaticallySwitch": "Automatically"
+      "automaticallySwitch": "Автоматически"
     },
     "devices": {
-      "speakersLabel": "Колонки",
-      "micLabel": "Microphone",
-      "cameraLabel": "Camera",
+      "speakersLabel": "Вывод аудио",
+      "micLabel": "Микрофон",
+      "cameraLabel": "Камера",
       "defaultDevice": "По умолчанию"
     },
     "network": {
-      "transparency": "Мы прозрачны и ценим вашу приватность: в этой вкладке всегда можно найти логи данных, которые отправляются на сервер.",
-      "googleLabel": "Отправка данных в Google Analytics для улучшения Heyka",
+      "transparency": "Мы прозрачны и уважаем вашу конфиденциальность. На этой вкладке отображаются все запросы, сделанные на наши серверы приложением.",
+      "googleLabel": "Рарзрешите нам собирать данные через Google Analytics, чтобы сделать Heyka лучше?",
       "googleSwitch": "Разрешить"
     },
     "about": {
       "version": "версия",
-      "notice": "Благодарности"
+      "notice": "Лицензионное соглашение"
     },
     "support": {
       "tellerror": "Сообщить об ошибке"
     }
+  },
+  "call": {
+    "grid": {
+      "users": "0 участников | {n} участник | {n} участника | {n} участников",
+      "you": "(Вы ✨)"
+    },
+    "sharing": {
+      "title": "Поделиться экраном",
+      "screen": "Весь экран",
+      "window": "Окно",
+      "start": "Поделиться",
+      "stop": "Остановить",
+      "cancel": "Отмена"
+    }
+  },
+  "popover": {
+    "workspace": {
+      "invite": "Пригласить участника",
+      "manage": "Настроить KMTT",
+      "new": "Новый workspace",
+      "settings": "Настройки",
+      "quit": "Выйти из приложения"
+    },
+    "griduser": {
+      "fullscreen": "Полный экран",
+      "mute": "Выкл. микрофон для всех"
+    },
+    "userProfile": {
+      "profile": "Профиль",
+      "online": "В сети",
+      "idle": "Отошел",
+      "offline": "Невидимый"
+    },
+    "userInChannel": {
+      "profile": "Перейти в профиль",
+      "poke": "Отправить пуш",
+      "mute": "Выкл. микрофон для всех"
+    }
+  },
+  "notifications":{
+    "nomic": {
+      "text": "Кажется, у вас нет микрофона",
+      "button1": "Упс"
+    },
+    "othermic": {
+      "text": "Пожалуйста, выберите другой микрофон",
+      "button1": "Настройки",
+      "button2": "Отмена"
+    },
+    "noaudio": {
+      "text": "Какие-то проблемы с аудио-подсистемой, давайте ее перезапустим?",
+      "button1": "Перезапустить",
+      "button2": "Отмена"
+    },
+    "nomicpermission": {
+      "text": "Вы не дали приложению доступ к микрофону, открыть системные настройки?",
+      "button1": "Открыть",
+      "button2": "Отмена"
+    },
+    "notImplemented": "Этой функции пока нет, но есть другие, тоже хорошие ✨"
+  },
+  "push": {
+    "invitesto": "Пригласить в",
+    "isbusy": "Недоступен"
+  },
+  "autoUpdate": {
+    "message": "Хорошие новости, вышло новое обновление, хотите скачать?",
+    "install": "Обновиться",
+    "later": "Позже"
+  },
+  "connectionCheck": {
+    "onlineStatus": "Кажется, у вас нет доступа к интернету, а он нужен, чтобы все работало",
+    "slowInternet": "Кажется, ваш интернет слишком медленный",
+    "socketReconnecting": "Пытаюсь подключиться к серверу",
+    "serverAvailability": "Сервера недоступны :("
+  },
+  "tooltips": {
+    "search": "Поиск",
+    "newChannel": "Создать канал",
+    "newUser": "Пригласить участника",
+    "microphoneOn" : "Вкл. микрофон",
+    "microphoneOff": "Выкл. микрофон",
+    "speakerOn": "Вкл. аудио",
+    "speakerOff": "Выкл. аудио"
   }
 }

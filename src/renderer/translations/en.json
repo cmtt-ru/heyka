@@ -11,11 +11,11 @@
     "user": {
       "privateTalkButton": "Private talk",
       "inviteButtonStart": "Invite to",
-      "inviteBySlackButton": "Send invite by Slack",
+      "inviteBySlackButton": "Send invite via Slack",
       "localTime": "Local time",
       "email": "Email"
     },
-    "empty": "So far you’ve been disconnected\nfrom all channels"
+    "empty": "So far you've been disconnected\nfrom all channels"
   },
   "settings": {
     "labels": {
@@ -36,7 +36,7 @@
       },
       "behaviourWillChange": "Restart app to apply changes",
       "autorunLabel": "Autorun",
-      "autorunSwitch": "Run at startup",
+      "autorunSwitch": "Open on startup",
       "appearanceLabel": "Appearance",
       "theme": {
         "light": "Light",
@@ -97,14 +97,14 @@
     },
     "userInChannel": {
       "profile": "Open profile",
-      "poke": "Poke",
+      "poke": "Send push",
       "mute": "Mute for all"
     }
   },
   "notifications":{
     "nomic": {
       "text": "No microphone detected!",
-      "button1": "Shit"
+      "button1": "This is bad"
     },
     "othermic": {
       "text": "Please choose another microphone",
@@ -112,23 +112,23 @@
       "button2": "Cancel"
     },
     "noaudio": {
-      "text": "No audio detected. Maybe restart system?",
+      "text": "No audio detected. Could I restart the audio-subsystem?",
       "button1": "Restart",
       "button2": "Cancel"
     },
     "nomicpermission": {
-      "text": "You didn't give us access to mic. You can change that in system preferences",
+      "text": "You didn't give us access to mic. You can change that in the system preferences",
       "button1": "Open",
       "button2": "Cancel"
     },
     "notImplemented": "This feature is not implemented yet"
   },
   "push": {
-    "invitesto": "Invites to",
+    "invitesto": "Invite to",
     "isbusy": "Is busy"
   },
   "autoUpdate": {
-    "message": "An updated version of Heyka is available and will be installed at the next launch",
+    "message": "Updated version of Heyka is available and will be installed at the next launch",
     "install": "Install",
     "later": "Later"
   },
@@ -136,7 +136,7 @@
     "onlineStatus": "It seems you are disconnected from the Internet",
     "slowInternet": "It seems you have a slow Internet connection",
     "socketReconnecting": "Trying to reconnect to socket server",
-    "serverAvailability": "It seems that server is down"
+    "serverAvailability": "It seems that server is down :("
   },
   "tooltips": {
     "search": "Search",
