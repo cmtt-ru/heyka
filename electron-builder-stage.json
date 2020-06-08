@@ -5,7 +5,7 @@
       "category": "public.app-category.productivity",
       "entitlements": "build/entitlements.mac.plist",
       "darkModeSupport": true,
-      "icon": "public/icon.png",
+      "icon": "public/icon.icns",
       "extendInfo": {
           "LSUIElement": 1,
           "NSCameraUsageDescription": "This app requires camera access to record video.",
