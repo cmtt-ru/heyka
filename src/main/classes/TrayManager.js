@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 import path from 'path';
-import { app, Menu, Tray, nativeImage, nativeTheme } from 'electron';
+import { app, Menu, Tray, nativeImage, nativeTheme, ipcMain } from 'electron';
 import Store from 'electron-store';
 
 const heykaStore = new Store({
@@ -64,6 +64,13 @@ class TrayManager {
       this.tray.on('click', (event) => {
         this.clickTray();
       });
+      ipcMain.on('tray-animation', (event, state) => {
+        if (state) {
+          this.setAnimation();
+        } else {
+          this.stopAnimation();
+        }
+      });
     });
   }
 
@@ -126,7 +133,7 @@ class TrayManager {
   * @param {number} interval interval between alternating icons
  * @returns {void}
  */
-  setAnimation(iconsArray = [], interval = 500) {
+  setAnimation(iconsArray = ['onair-1', 'onair-2'], interval = 1000) {
     const iconsCount = iconsArray.length;
     let counter = 0;
 
@@ -151,6 +158,7 @@ class TrayManager {
  */
   stopAnimation() {
     clearInterval(animationTimer);
+    this.set('default');
   }
 
   /**
