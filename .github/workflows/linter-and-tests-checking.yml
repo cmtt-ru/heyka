@@ -12,14 +12,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Cache node modules
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.OS }}-build-${{ env.cache-name }}-
-          ${{ runner.OS }}-build-
-          ${{ runner.OS }}-
+        path: |
+          ~/cache
+          !~/cache/exclude
+          **/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
     - name: install dependencies
       run: npm install
     - name: Run linter
