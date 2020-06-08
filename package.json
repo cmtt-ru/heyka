@@ -16,6 +16,8 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@hawk.so/javascript": "^2.4.0",
+    "@hawk.so/webpack-plugin": "0.0.10",
     "@popperjs/core": "^2.4.0",
     "auto-launch": "^5.0.5",
     "axios": "^0.19.2",
