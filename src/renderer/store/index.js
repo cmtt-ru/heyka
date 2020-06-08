@@ -70,19 +70,19 @@ const store = new Vuex.Store({
 });
 
 /**
- * Listen for bluetooth microphone becomes default
- */
-mediaDevices.on('bluetooth-microphone', (microphone) => {
-  console.log('bluetooth microphone detected', microphone);
-});
-
-/**
  * Window specific code
  */
 if (isMainWindow()) {
   /**
- * Listen for FIRST device change event to set selected devices
- */
+   * Listen for bluetooth microphone becomes default
+   */
+  mediaDevices.on('bluetooth-microphone', (microphone) => {
+    console.log('bluetooth microphone detected', microphone);
+  });
+
+  /**
+   * Listen for FIRST device change event to set selected devices
+   */
   mediaDevices.once('change', (devices) => {
     const selectedDevices = {
       speaker: heykaStore.get('selectedSpeaker', 'default'),
@@ -94,8 +94,8 @@ if (isMainWindow()) {
   });
 
   /**
- * Listen for device change event
- */
+   * Listen for device change event
+   */
   mediaDevices.on('change', (devices) => {
     store.commit('app/SET_DEVICES', devices);
 
