@@ -65,7 +65,7 @@ class MediaDevices extends EventEmitter {
 
       this.emit('change', this.devices);
 
-      if (defaultMicrophone.bluetooth) {
+      if (defaultMicrophone && defaultMicrophone.bluetooth) {
         this.emit('bluetooth-microphone', defaultMicrophone);
       }
     }, DEBOUNCE_TIMEOUT);
