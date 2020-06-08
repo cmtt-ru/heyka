@@ -68,6 +68,7 @@ export default {
     });
 
     ipcRenderer.send('update-check');
+    ipcRenderer.send('tray-animation', false);
 
     this.showMacScreenSharingPermission();
   },
