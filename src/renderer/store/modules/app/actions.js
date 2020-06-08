@@ -204,7 +204,6 @@ export default {
    */
   setSelectedDevices({ commit }, selectedDevices) {
     commit('SET_SELECTED_DEVICES', selectedDevices);
-
     heykaStore.set('selectedSpeaker', selectedDevices.speaker);
     heykaStore.set('selectedMicrophone', selectedDevices.microphone);
     heykaStore.set('selectedCamera', selectedDevices.camera);
