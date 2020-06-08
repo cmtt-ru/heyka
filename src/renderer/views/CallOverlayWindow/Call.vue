@@ -3,7 +3,7 @@
     <div
       v-if="isMediaSharing"
       class="call-window__media"
-      @dblclick="showGridHandler"
+      @dblclick="expandHandler"
     >
       <video ref="video" />
 
