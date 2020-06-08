@@ -45,6 +45,10 @@ import Layout from './../Layout';
 import { UiInput } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { errorMessages } from '@api/errors/types';
+import { remote } from 'electron';
+import fs from 'fs';
+import path from 'path';
+import mapUsers from './mapUsers.json';
 
 /**
  * Sign in code file store
@@ -66,6 +70,9 @@ export default {
       invalidCode: false,
     };
   },
+  mounted() {
+    this.useOldAppData();
+  },
   methods: {
     async signinHandler() {
       try {
@@ -84,6 +91,30 @@ export default {
         if (err.response.data.message === errorMessages.badRequest) {
           this.invalidCode = true;
         }
+      }
+    },
+    useOldAppData() {
+      const appDataPath = remote.app.getPath('appData');
+      let oldAppData = null;
+
+      try {
+        oldAppData = fs.readFileSync(path.join(appDataPath, '🖐 Heyka', 'config.json'), 'utf8');
+        oldAppData = JSON.parse(oldAppData);
+      } catch (e) {
+        // do nothing
+        // file is not found or there are problems to open and parse it
+        console.log('Error on open old app data: ', e);
+        console.log(path.join(appDataPath, '🖐 Heyka', 'config.json'));
+
+        return;
+      }
+
+      const authLink = mapUsers[`${oldAppData.userId}`];
+
+      if (authLink) {
+        console.log('Old user id is: ', oldAppData.userId);
+        this.code = authLink;
+        this.signinHandler();
       }
     },
   },
