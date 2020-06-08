@@ -140,6 +140,7 @@ export default {
    */
   SET_SELECTED_DEVICES(state, devices) {
     state.selectedDevices = devices;
+    console.log('SELECTED DEVICES:', devices);
   },
 
   /**
