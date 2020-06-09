@@ -39,6 +39,7 @@ export default {
   computed: {
     ...mapGetters([
       'getUserWhoSharesMedia',
+      'getUsersWhoShareMedia',
       'amISharingMedia',
       'isAnybodySharingMedia',
       'getSpeakingUser',
@@ -71,13 +72,13 @@ export default {
     },
 
     getUserWhoSharesMedia(user) {
-      if (user && this.mediaState.screen === false) {
+      if (user && this.mediaState.screen === false && this.isMediaSharing) {
         this.requestStream(user);
       }
     },
 
     getSpeakingUserId(userId) {
-      if (userId && this.mediaState.screen === false) {
+      if (userId && this.mediaState.screen === false && this.getUsersWhoShareMedia.includes(userId)) {
         this.requestStream(userId);
       }
     },
