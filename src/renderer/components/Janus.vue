@@ -273,13 +273,13 @@ export default {
      * @returns {void}
      */
     startSharingCamera() {
-      this.setOperationStart('publish');
-
       if (!this.janusWrapper) {
         this.log('Janus wrapper is not existed');
 
         return;
       }
+
+      this.setOperationStart('publish');
 
       this.janusWrapper.publishVideoStream('camera', this.selectedCameraDevice);
     },
@@ -289,13 +289,13 @@ export default {
      * @returns {void}
      */
     startSharingScreen() {
-      this.setOperationStart('publish');
-
       if (!this.janusWrapper) {
         this.log('Janus wrapper is not existed');
 
         return;
       }
+
+      this.setOperationStart('publish');
 
       this.janusWrapper.publishVideoStream('screen', this.janusOptions.sharingSource.id);
     },
@@ -305,11 +305,11 @@ export default {
      * @returns {void}
      */
     stopSharingVideo() {
-      this.setOperationStart('unpublish');
-
       if (!this.janusWrapper) {
         return;
       }
+
+      this.setOperationStart('unpublish');
 
       this.janusWrapper.unpublishVideoStream();
       this.$delete(this.videoPublishers, this.userId);
