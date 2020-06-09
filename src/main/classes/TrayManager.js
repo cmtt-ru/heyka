@@ -64,6 +64,9 @@ class TrayManager {
       this.tray.on('click', (event) => {
         this.clickTray();
       });
+      this.tray.on('double-click', (event) => {
+        this.clickTray();
+      });
       ipcMain.on('tray-animation', (event, state) => {
         if (state) {
           this.setAnimation();
@@ -122,6 +125,7 @@ class TrayManager {
 
     if (this.tray === undefined) {
       this.tray = new Tray(nImage);
+      this.tray.setIgnoreDoubleClickEvents('true');
     } else {
       this.tray.setImage(nImage);
     }

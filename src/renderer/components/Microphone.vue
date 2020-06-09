@@ -173,6 +173,7 @@ export default {
     align-items center
     justify-content center
     flex-shrink 0
+    -webkit-app-region no-drag
 
     &:hover
         background var(--button-bg-6)

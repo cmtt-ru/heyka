@@ -55,6 +55,21 @@ function createWindow() {
   DeepLink.bindMainWindow(mainWindow);
   TrayManager.bindMainWindow(mainWindow);
 
+  if (TrayManager.isInTray()) {
+    const waitTime = 200;
+
+    mainWindow.on('blur', () => {
+      // Reason for this timeout: 'window blur' is on mousedown, 'tray click' is on mouseup, and no way around it
+      setTimeout(() => {
+        mainWindow.hide();
+      }, waitTime);
+      // Reason for this timeout: we want to teleport window after closing animation is complete
+      setTimeout(() => {
+        WindowManager.setPosition(mainWindow, 'tray');
+      }, waitTime * 2);
+    });
+  }
+
   nativeTheme.on('updated', () => {
     WindowManager.sendAll('nativetheme-updated');
   });
