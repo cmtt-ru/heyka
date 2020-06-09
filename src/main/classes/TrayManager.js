@@ -51,6 +51,7 @@ class TrayManager {
     // For now, at least.
     //
     this.mode = heykaStore.get('runAppFrom', 'window');
+    this.lastBlurTime = 0;
 
     nativeTheme.on('updated', () => {
       this.updateTheme();
@@ -96,7 +97,7 @@ class TrayManager {
 
       return;
     }
-    this.mainWindow.isVisible() ? this.mainWindow.hide() : this.mainWindow.show();
+    this.toggleMainWindow();
   }
 
   /**
@@ -125,10 +126,18 @@ class TrayManager {
 
     if (this.tray === undefined) {
       this.tray = new Tray(nImage);
-      this.tray.setIgnoreDoubleClickEvents('true');
+      this.tray.setIgnoreDoubleClickEvents(true);
     } else {
       this.tray.setImage(nImage);
     }
+  }
+
+  /**
+    * get tray instance
+    * @returns {object}
+  */
+  get() {
+    return this.tray;
   }
 
   /**
@@ -278,6 +287,39 @@ class TrayManager {
 
     // this.tray.setToolTip('You have 0 notifications');
     this.tray.setContextMenu(contextMenu);
+  }
+
+  /**
+   * switch mainwindow's state between 'shown' and 'hidden'
+   * @returns {void}
+   */
+  toggleMainWindow() {
+    if (this.checkLastBlurTime()) {
+      if (this.mainWindow.isVisible()) {
+        this.mainWindow.hide();
+      } else {
+        this.mainWindow.show();
+      }
+    }
+  }
+
+  /**
+   * sets LastBlurTime
+   * @returns {void}
+   */
+  setLastBlurTime() {
+    this.lastBlurTime = Date.now();
+  }
+
+  /**
+   * Windows' bugfix
+   * if you click on tray icon then blur event will be triggered first (mousedown for blur vs mouseup for tray click)
+   *  @returns {boolean}
+   */
+  checkLastBlurTime() {
+    const now = Date.now();
+
+    return now - this.lastBlurTime > 300;
   }
 }
 export default new TrayManager('default');
