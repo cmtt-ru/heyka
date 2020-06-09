@@ -65,6 +65,30 @@ export default {
       await dispatch('janus/untilIdle', null, { root: true });
     }
 
+    /**
+     * Speaker on / off & Microphone mute / unmute logic
+     */
+    if (state.mediaState.speakers !== mediaState.speakers) {
+      /** If user going to off speakers than mute microphone */
+      if (mediaState.speakers === false) {
+        mediaState.microphone = false;
+      }
+
+      /** If user going to on speakers than set microphone to previous state*/
+      if (mediaState.speakers === true) {
+        mediaState.microphone = state.previousMediaState.microphone;
+      }
+    }
+
+    /**
+     * If microphone goes unmute, than on speakers
+     */
+    if (mediaState.microphone && !state.mediaState.speakers) {
+      mediaState.speakers = true;
+    }
+
+    commit('SET_PREVIOUS_STATE', state.mediaState);
+
     commit('SET_MEDIA_STATE', mediaState);
 
     try {
