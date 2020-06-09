@@ -5,7 +5,7 @@ import { ipcMain } from 'electron';
  * Check for update timeout
  * @type {number}
  */
-const CHECK_FOR_UPDATE_TIMEOUT = 60000;
+const CHECK_FOR_UPDATE_TIMEOUT = 600000;
 
 let updateTimer;
 
