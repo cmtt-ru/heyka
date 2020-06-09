@@ -4,6 +4,8 @@ import { client, connect } from './client';
 import { getAccessToken } from '../tokens';
 import connectionCheck from '@classes/connectionCheck';
 
+const DISCONNECT_TIMEOUT = 2000;
+
 /**
  * Connect to socket, authorize and bind events
  *
@@ -53,26 +55,14 @@ export async function destroy() {
 /**
  * Authorize in socket
  *
+ * @param {string?} prevSocketId Previous socket id
  * @returns {promise}
  */
-async function authorize() {
+async function authorize(prevSocketId) {
   const accessToken = await getAccessToken();
   const onlineStatus = store.getters['me/getOnlineStatus'];
 
   return new Promise((resolve, reject) => {
-    client.emit(eventNames.auth, {
-      transaction: 'auth',
-      workspaceId: store.getters['me/getSelectedWorkspaceId'],
-      token: accessToken,
-      onlineStatus: onlineStatus,
-    });
-
-    store.dispatch('app/addPrivacyLog', {
-      category: 'socket',
-      method: eventNames.auth,
-      data: [ store.getters['me/getSelectedWorkspaceId'] ],
-    });
-
     client.once(eventNames.authSuccess, data => {
       console.log('socket auth success', data);
       store.dispatch('setSocketConnected', true);
@@ -82,6 +72,20 @@ async function authorize() {
     client.once(eventNames.authSuccessError, data => {
       console.error('socket auth error', data);
       reject(data);
+    });
+
+    client.emit(eventNames.auth, {
+      transaction: 'auth',
+      workspaceId: store.getters['me/getSelectedWorkspaceId'],
+      token: accessToken,
+      onlineStatus: onlineStatus,
+      prevSocketId,
+    });
+
+    store.dispatch('app/addPrivacyLog', {
+      category: 'socket',
+      method: eventNames.auth,
+      data: [ store.getters['me/getSelectedWorkspaceId'] ],
     });
   });
 }
@@ -95,6 +99,12 @@ function bindErrorEvents() {
   client.on(eventNames.disconnect, data => {
     console.log('disconnect', data);
     store.dispatch('setSocketConnected', false);
+
+    // remember latest socket id
+    store.commit('app/SET_SOCKET_ID', {
+      id: client.id,
+      connectedAt: Date.now(),
+    });
   });
 
   client.on(eventNames.reconnecting, data => {
@@ -102,9 +112,12 @@ function bindErrorEvents() {
   });
 
   client.on(eventNames.reconnect, data => {
-    console.log('reconnect', data);
+    console.log('%c reconnected:', 'background: maroon; color: white', data);
     connectionCheck.handleSocketReconnecting(false);
-    authorize();
+
+    const prevSocketParams = store.state.app.socket;
+
+    authorize(Date.now() - prevSocketParams.connectedAt < DISCONNECT_TIMEOUT ? prevSocketParams.id : null);
   });
 
   client.on(eventNames.error, data => {
