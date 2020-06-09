@@ -16,7 +16,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   fullscreenable: false,
   show: false,
   icon: nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`)),
-  skipTaskBar: true,
+  skipTaskbar: false,
   webPreferences: Object.freeze({
     nodeIntegration: true,
     webSecurity: true,
@@ -168,7 +168,7 @@ class WindowManager {
         browserWindow.setAlwaysOnTop(true, 'floating', FLOATING_LEVEL);
       }
 
-      browserWindow.show();
+      browserWindow.showInactive();
     });
 
     browserWindow.on('blur', (event) => {
