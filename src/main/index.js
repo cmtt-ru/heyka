@@ -17,6 +17,8 @@ console.time('before-load');
 let mainWindow,
     loadingScreenID;
 
+const lastBlurTime = 0;
+
 protocol.registerSchemesAsPrivileged([ {
   scheme: 'heyka',
   privileges: {
@@ -59,14 +61,12 @@ function createWindow() {
     const waitTime = 200;
 
     mainWindow.on('blur', () => {
-      // Reason for this timeout: 'window blur' is on mousedown, 'tray click' is on mouseup, and no way around it
-      setTimeout(() => {
-        mainWindow.hide();
-      }, waitTime);
+      mainWindow.hide();
       // Reason for this timeout: we want to teleport window after closing animation is complete
       setTimeout(() => {
         WindowManager.setPosition(mainWindow, 'tray');
-      }, waitTime * 2);
+      }, waitTime);
+      TrayManager.setLastBlurTime();
     });
   }
 
