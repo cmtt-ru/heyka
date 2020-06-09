@@ -72,6 +72,7 @@ export default {
       /** If user going to off speakers than mute microphone */
       if (mediaState.speakers === false) {
         mediaState.microphone = false;
+        commit('SET_PREVIOUS_STATE', state.mediaState);
       }
 
       /** If user going to on speakers than set microphone to previous state*/
@@ -86,8 +87,6 @@ export default {
     if (mediaState.microphone && !state.mediaState.speakers) {
       mediaState.speakers = true;
     }
-
-    commit('SET_PREVIOUS_STATE', state.mediaState);
 
     commit('SET_MEDIA_STATE', mediaState);
 
