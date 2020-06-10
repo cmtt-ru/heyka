@@ -6,6 +6,14 @@ import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
 
+let icon;
+
+if (process.platform === 'win32') {
+  icon = nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`));
+} else {
+  icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
+}
+
 const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   width: 780,
   height: 560,
@@ -15,7 +23,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   frame: false,
   fullscreenable: false,
   show: false,
-  icon: nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`)),
+  icon: icon,
   skipTaskBar: true,
   webPreferences: Object.freeze({
     nodeIntegration: true,
