@@ -82,7 +82,7 @@ if (IS_MAIN_WINDOW) {
   ];
 
   const allowedMutationsList = [
-    'workspaces/SET_COLLECTION',
+    'channels/SET_COLLECTION',
     'users/SET_COLLECTION',
     'users/SET_ONLINE_STATUS',
     'workspaces/SET_COLLECTION',
