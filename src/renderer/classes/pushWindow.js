@@ -41,6 +41,7 @@ class PushWindow {
         margin: 0,
         template: 'push',
         visibleOnAllWorkspaces: true,
+        showInactive: true,
         window: {
           width: ONE_PUSH_SIZE.width,
           height: ONE_PUSH_SIZE.height + TOP_MARGIN,

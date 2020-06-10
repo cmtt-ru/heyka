@@ -11,7 +11,7 @@
         stroke="var(--icon-1)"
       />
       <div
-        v-textfade="channel.name"
+        v-textfade
         class="channel-info__name"
       >
         {{ channel.name }}

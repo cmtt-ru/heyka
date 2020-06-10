@@ -5,7 +5,9 @@
     class="ui-button"
     :class="classList"
     :style="buttonSize"
-    @click="$emit('click')"
+    @click.stop="$emit('click')"
+    @dblclick.stop
+    @mouseup.stop
   >
     <slot />
   </div>
@@ -16,12 +18,16 @@
     class="ui-button"
     :class="classList"
     :style="buttonSize"
-    @click="$emit('click')"
+    @click.stop="$emit('click')"
+    @dblclick.stop
+    @mouseup.stop
   >
     <conditional-wrapper :wrap="needToWrapIcon">
       <div
         class="ui-button__icon-bg"
-        @click="$emit('click')"
+        @click.stop="$emit('click')"
+        @dblclick.stop
+        @mouseup.stop
       >
         <svg-icon
           class="ui-button__icon"

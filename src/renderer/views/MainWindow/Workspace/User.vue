@@ -11,7 +11,7 @@
         :size="40"
       />
       <div
-        v-textfade="user.name"
+        v-textfade
         class="user__name"
       >
         {{ user.name }}

@@ -160,6 +160,7 @@ export default {
         margin-right 4px
         cursor pointer
         border-radius 50%
+        -webkit-app-region no-drag
 
         &:hover
             opacity 0.8

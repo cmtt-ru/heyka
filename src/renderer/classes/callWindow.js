@@ -34,6 +34,7 @@ class CallWindow {
       this.overlayWindow = WindowManager.create({
         route: '/call-overlay',
         template: 'overlay',
+        showInactive: true,
         position: 'bottomRight',
         visibleOnAllWorkspaces: true,
         window: {
@@ -161,6 +162,7 @@ class CallWindow {
         template: 'frame',
         url: 'frame.html',
         ignoreMouseEvents: true,
+        showInactive: true,
         displayId,
         maximize: true,
         visibleOnAllWorkspaces: true,

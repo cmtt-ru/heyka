@@ -3,6 +3,9 @@
     class="mic"
     :style="buttonSizeComp"
     :class="{'mic--disabled': disabled}"
+    @click.stop="$emit('click')"
+    @dblclick.stop
+    @mouseup.stop
   >
     <div
       class="volume-wrapper"
@@ -182,6 +185,7 @@ export default {
     align-items center
     justify-content center
     flex-shrink 0
+    -webkit-app-region no-drag
 
     &:hover
         background var(--button-bg-6)
