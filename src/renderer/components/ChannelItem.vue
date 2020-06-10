@@ -92,6 +92,16 @@ export default {
     },
 
     /**
+     * Determine if people are talking in a channel
+     * @returns {boolean}
+     */
+    isChannelActive() {
+      const peopleTalking = this.users.filter((user) => user.microphone).length;
+
+      return !!peopleTalking;
+    },
+
+    /**
      * Show icon corresponding to channel status
      * @returns {string} name of correct icon
      */
@@ -99,7 +109,7 @@ export default {
       if (this.channel.isPrivate) { // TODO: lifespan
         return ICON_MAP['private'];
       } else {
-        if (this.channel.talking) {
+        if (this.isChannelActive) {
           return ICON_MAP['publicOnline'];
         } else {
           return ICON_MAP['public'];
