@@ -22,8 +22,16 @@ const heykaStore = new Store({
 
 const debug = process.env.NODE_ENV !== 'production';
 
+/**
+ * Is this window main?
+ * * @type {boolean}
+ */
 const IS_MAIN_WINDOW = isMainWindow();
 
+/**
+ * Vuex plugins
+ * @type {array}
+ */
 const plugins = [
   createMutationsSharer({
     predicate: [
@@ -42,6 +50,9 @@ const plugins = [
   }),
 ];
 
+/**
+ * Vuex logger plugin
+ */
 if (!debug) {
   plugins.push(createLogger({
     /**
@@ -70,23 +81,27 @@ if (IS_MAIN_WINDOW) {
     'workspaces',
   ];
 
+  const allowedMutationsList = [
+    'workspaces/SET_COLLECTION',
+    'users/SET_COLLECTION',
+    'users/SET_ONLINE_STATUS',
+    'workspaces/SET_COLLECTION',
+  ];
+
   plugins.push(createPersistedState({
     paths: persistStorePaths,
     filter: mutation => {
-      /** Allow only if mutation begins with one of paths */
-      for (const path in persistStorePaths) {
-        if (mutation.type.indexOf(persistStorePaths[path]) === 0) {
-          return true;
-        }
-      }
-
-      return false;
+      return allowedMutationsList.includes(mutation.type);
     },
   }));
 }
 
 Vue.use(Vuex);
 
+/**
+ * Vuex store
+ * @type {Store}
+ */
 const store = new Vuex.Store({
   modules,
   state,
