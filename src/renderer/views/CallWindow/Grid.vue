@@ -373,7 +373,8 @@ export default {
      */
     findClosest(val, arr) {
       return arr.reduce((a, b) => {
-        return Math.abs(b.ratio - val) < Math.abs(a.ratio - val) ? b : a;
+        // here we imply that A is always smaller than B (our case)
+        return val < Math.sqrt(a.ratio * b.ratio) ? a : b;
       });
     },
 
