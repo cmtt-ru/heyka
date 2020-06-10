@@ -17,8 +17,6 @@ console.time('before-load');
 let mainWindow,
     loadingScreenID;
 
-const lastBlurTime = 0;
-
 protocol.registerSchemesAsPrivileged([ {
   scheme: 'heyka',
   privileges: {
