@@ -168,7 +168,7 @@ class WindowManager {
         browserWindow.setAlwaysOnTop(true, 'floating', FLOATING_LEVEL);
       }
 
-      browserWindow.showInactive();
+      browserWindow.show();
     });
 
     browserWindow.on('blur', (event) => {
