@@ -14,12 +14,15 @@ import isMainWindow from '@shared/WindowManager/isMainWindow';
 import broadcastState from '@classes/broadcastState';
 import { ipcRenderer } from 'electron';
 import Store from 'electron-store';
+import createPersistedState from 'vuex-persistedstate';
 
 const heykaStore = new Store({
   name: 'app',
 });
 
 const debug = process.env.NODE_ENV !== 'production';
+
+const IS_MAIN_WINDOW = isMainWindow();
 
 const plugins = [
   createMutationsSharer({
@@ -57,6 +60,31 @@ if (!debug) {
   }));
 }
 
+/**
+ * Vuex persisted state plugin
+ */
+if (IS_MAIN_WINDOW) {
+  const persistStorePaths = [
+    'channels',
+    'users',
+    'workspaces',
+  ];
+
+  plugins.push(createPersistedState({
+    paths: persistStorePaths,
+    filter: mutation => {
+      /** Allow only if mutation begins with one of paths */
+      for (const path in persistStorePaths) {
+        if (mutation.type.indexOf(persistStorePaths[path]) === 0) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+  }));
+}
+
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -72,7 +100,7 @@ const store = new Vuex.Store({
 /**
  * Window specific code
  */
-if (isMainWindow()) {
+if (IS_MAIN_WINDOW) {
   /**
    * Listen for bluetooth microphone becomes default
    */
