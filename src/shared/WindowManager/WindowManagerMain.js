@@ -6,6 +6,14 @@ import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
 
+let icon;
+
+if (process.platform === 'win32') {
+  icon = nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`));
+} else {
+  icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
+}
+
 const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   width: 780,
   height: 560,
@@ -15,8 +23,8 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   frame: false,
   fullscreenable: false,
   show: false,
-  icon: nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`)),
-  skipTaskbar: false,
+  icon: icon,
+  skipTaskBar: true,
   webPreferences: Object.freeze({
     nodeIntegration: true,
     webSecurity: true,
@@ -129,7 +137,7 @@ class WindowManager {
     });
 
     browserWindow.on('closed', e => {
-      console.log('closed:', windowId, this.mainWindowId);
+      console.log('closed:', windowId, ', mainWindow:', this.mainWindowId);
       try {
         delete this.windows[windowId];
         this.send(`window-close-${windowId}`);
@@ -168,7 +176,11 @@ class WindowManager {
         browserWindow.setAlwaysOnTop(true, 'floating', FLOATING_LEVEL);
       }
 
-      browserWindow.show();
+      if (options.showInactive) {
+        browserWindow.showInactive();
+      } else {
+        browserWindow.show();
+      }
     });
 
     browserWindow.on('blur', (event) => {
@@ -384,7 +396,7 @@ class WindowManager {
       try {
         this.windows[w].browserWindow.webContents.send(event, data);
       } catch (err) {
-        console.log('could not send to renderer at:', w);
+        console.log('could not send, this window is destroyed:', w);
       }
     }
   }
