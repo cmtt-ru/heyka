@@ -32,6 +32,7 @@
       <ui-button
         class="badge expanded"
         :type="7"
+        propagation
         size="medium"
         icon="grid"
       />

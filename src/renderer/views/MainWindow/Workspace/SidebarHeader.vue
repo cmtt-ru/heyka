@@ -47,6 +47,7 @@
         >
         <div>{{ workspace.name }}</div>
         <ui-button
+          propagation
           :type="7"
           class="workspace__expand"
           size="small"
