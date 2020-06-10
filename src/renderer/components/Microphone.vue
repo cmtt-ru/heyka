@@ -2,6 +2,7 @@
   <div
     class="mic"
     :style="buttonSizeComp"
+    :class="{'mic--disabled': disabled}"
   >
     <div
       class="volume-wrapper"
@@ -105,6 +106,14 @@ export default {
       type: String,
       default: undefined,
     },
+
+    /**
+     * Disabled state
+     */
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
@@ -191,6 +200,10 @@ export default {
 
     &__icon
         position relative
+
+    &--disabled
+      pointer-events none
+      opacity 0.5
 
 .volume-wrapper
   position absolute
