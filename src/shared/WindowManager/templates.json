@@ -14,7 +14,9 @@
   },
   "maintray": {
     "width": 500,
-    "height": 600
+    "height": 600,
+    "resizable": false,
+    "alwaysOnTop": true
   },
   "splash": {
     "width": 90,
@@ -22,7 +24,6 @@
     "transparent": true,
     "movable": false,
     "resizable": false,
-    "frame": false,
     "skipTaskbar": true
   },
   "push": {
@@ -30,7 +31,6 @@
     "movable": false,
     "resizable": false,
     "alwaysOnTop": true,
-    "frame": false,
     "skipTaskbar": true,
     "hasShadow": false
   },
@@ -66,7 +66,6 @@
     "transparent": true,
     "movable": false,
     "resizable": false,
-    "frame": false,
     "skipTaskbar": true,
     "enableLargerThanScreen": true,
     "hasShadow": false

@@ -72,6 +72,7 @@ export default {
       &--header
         flex 0 0 39px
         border-bottom 1px solid var(--line-stroke)
+        -webkit-app-region drag
 
       &--body
         flex 1 1 auto
