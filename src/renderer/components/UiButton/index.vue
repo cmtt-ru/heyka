@@ -8,6 +8,7 @@
     @click="universalClickHandler"
     @dblclick="universalClickHandler"
     @mouseup="universalClickHandler"
+    @mousedown="universalClickHandler"
   >
     <slot />
   </div>
@@ -21,6 +22,7 @@
     @click="universalClickHandler"
     @dblclick="universalClickHandler"
     @mouseup="universalClickHandler"
+    @mousedown="universalClickHandler"
   >
     <conditional-wrapper :wrap="needToWrapIcon">
       <div
@@ -28,6 +30,7 @@
         @click="universalClickHandler"
         @dblclick="universalClickHandler"
         @mouseup="universalClickHandler"
+        @mousedown="universalClickHandler"
       >
         <svg-icon
           class="ui-button__icon"
@@ -284,6 +287,7 @@ export default {
     universalClickHandler(event) {
       if (!this.propagation) {
         event.stopPropagation();
+        event.preventDefault();
       }
 
       this.$emit(event.type);

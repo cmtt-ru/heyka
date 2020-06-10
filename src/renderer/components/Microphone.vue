@@ -3,9 +3,10 @@
     class="mic"
     :style="buttonSizeComp"
     :class="{'mic--disabled': disabled}"
-    @click.stop="$emit('click')"
-    @dblclick.stop
-    @mouseup.stop
+    @click.stop.prevent="$emit('click')"
+    @dblclick.stop.prevent
+    @mouseup.stop.prevent
+    @mousedown.stop.prevent
   >
     <div
       class="volume-wrapper"
