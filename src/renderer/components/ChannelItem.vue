@@ -13,7 +13,7 @@
     <div class="channel__content">
       <div class="channel__name-wrapper">
         <div
-          v-textfade="channel.name"
+          v-textfade
           class="channel__name"
         >
           {{ channel.name }}
