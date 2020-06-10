@@ -8,15 +8,11 @@ const STYLE_DEFAULT = {
 };
 
 const STYLE_FADE = {
-  backgroundImage: '-webkit-linear-gradient(180deg, transparent, transparent 10px, currentColor 30px)',
-  webkitBackgroundClip: 'text',
-  webkitTextFillColor: 'transparent',
+  webkitMaskImage: 'linear-gradient(-90deg, transparent, transparent 10px, currentColor 30px)',
 };
 
 const STYLE_NOFADE = {
-  backgroundImage: null,
-  webkitBackgroundClip: null,
-  webkitTextFillColor: 'currentColor',
+  webkitMaskImage: null,
 };
 
 /**
@@ -26,10 +22,10 @@ const STYLE_NOFADE = {
  */
 function elementCheck(el) {
   if (el.offsetWidth < el.scrollWidth) {
-    if (el.style.webkitBackgroundClip !== 'text') {
+    if (!el.style.webkitMaskImage) {
       addStyles(el, STYLE_FADE);
     }
-  } else if (el.style.webkitBackgroundClip === 'text') {
+  } else if (el.style.webkitMaskImage) {
     addStyles(el, STYLE_NOFADE);
   }
 }
@@ -44,22 +40,6 @@ function addStyles(el, stylesheet) {
   for (const style in stylesheet) {
     el.style[style] = stylesheet[style];
   }
-}
-
-/**
- * We need to repaint backgroundImage if text hs changed in place
- * @param {object} el element
- * @returns {void}
- */
-function reflowElement(el) {
-  const paddingTop = el.style.paddingTop || getComputedStyle(el).paddingTop;
-
-  // eslint-disable-next-line no-magic-numbers
-  el.style.paddingTop = parseFloat(paddingTop) + 0.01 + 'px';
-  // eslint-disable-next-line no-unused-vars
-  const trick = el.offsetHeight;
-
-  el.style.paddingTop = paddingTop;
 }
 
 const fadeObserver = new ResizeObserver(entries => {
@@ -77,7 +57,6 @@ export default {
     if (binding.value && binding.value === binding.oldValue) {
       return;
     }
-    reflowElement(el);
     elementCheck(el);
   },
   unbind: (el) => {

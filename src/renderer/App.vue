@@ -6,18 +6,22 @@
 
 <script>
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import Mousetrap from 'mousetrap';
 require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
+
 export default {
   created() {
     this.loadSvgSprite();
 
-    window.addEventListener('keypress', function (e) {
-      if ((e.shiftKey && e.code == 'KeyI') || (e.ctrlKey && e.code == 'KeyI')) {
-        WindowManager.getCurrentWindow().toggleConsole();
-      } else if (e.ctrlKey && e.code == 'KeyR') {
-        WindowManager.getCurrentWindow().reload();
-      }
-    }, true);
+    Mousetrap.bind(['command+i', 'ctrl+i'], () => {
+      WindowManager.getCurrentWindow().toggleConsole();
+    });
+    Mousetrap.bind(['command+r', 'ctrl+r'], () => {
+      WindowManager.getCurrentWindow().reload();
+    });
+    Mousetrap.bind('up up down down left right left right b a enter', function () {
+      console.log('%ckonami code!', 'color: green; font: 4rem/1 Tahoma;');
+    });
   },
 
   methods: {

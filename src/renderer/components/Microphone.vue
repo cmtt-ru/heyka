@@ -2,6 +2,9 @@
   <div
     class="mic"
     :style="buttonSizeComp"
+    @click.stop="$emit('click')"
+    @dblclick.stop
+    @mouseup.stop
   >
     <div
       class="volume-wrapper"
