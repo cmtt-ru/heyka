@@ -6,7 +6,7 @@
     <microphone
       v-if="buttons.includes('microphone')"
       class="call-buttons__button ui-button"
-      :disabled="janusInProgress"
+      :disabled="!isDeviceAvailable('microphone') || janusInProgress"
       :active="mediaState.microphone"
       :size="size"
       :icon-color="true"
@@ -16,7 +16,7 @@
 
     <ui-button
       v-if="buttons.includes('camera')"
-      :disabled="janusInProgress"
+      :disabled="!isDeviceAvailable('camera') || janusInProgress"
       class="call-buttons__button"
       :type="7"
       :size="size"
@@ -160,6 +160,14 @@ export default {
     janusInProgress() {
       return this.$store.getters['janus/inProgress'];
     },
+
+    /**
+     * Selected devices
+     * @returns {object}
+     */
+    selectedDevices() {
+      return this.$store.getters['app/getSelectedDevices'];
+    },
   },
 
   methods: {
@@ -214,6 +222,15 @@ export default {
       } else {
         broadcastActions.dispatch('openSharingWindow');
       }
+    },
+
+    /**
+     * Return availability of specific device
+     * @param {string} deviceType – device type
+     * @returns {boolean}
+     */
+    isDeviceAvailable(deviceType) {
+      return !!this.selectedDevices[deviceType];
     },
   },
 };
