@@ -55,6 +55,8 @@ export default {
       selectedCameraDevice: state => state.selectedDevices.camera,
       selectedMicrophoneDevice: state => state.selectedDevices.microphone,
       selectedSpeakerDevice: state => state.selectedDevices.speaker,
+      microphonesDeviceList: state => state.devices.microphones,
+      speakersDeviceList: state => state.devices.speakers,
     }),
   },
   watch: {
@@ -171,6 +173,20 @@ export default {
     selectedCameraDevice(deviceId) {
       if (this.janusWrapper && this.camera) {
         this.janusWrapper.setCameraDevice(deviceId);
+      }
+    },
+
+    microphonesDeviceList() {
+      if (this.selectedMicrophoneDevice === 'default') {
+        if (this.janusWrapper) {
+          this.janusWrapper.setMicrophoneDevice(this.selectedMicrophoneDevice);
+        }
+      }
+    },
+
+    speakersDeviceList() {
+      if (this.selectedSpeakerDevice === 'default') {
+        this.$refs.audio.setSinkId(this.selectedSpeakerDevice);
       }
     },
   },
