@@ -296,7 +296,7 @@ class TrayManager {
    */
   toggleMainWindow() {
     if (this.checkLastBlurTime()) {
-      if (this.mainWindow.isVisible()) {
+      if (this.mainWindow.isVisible() && this.mainWindow.isFocused()) {
         this.mainWindow.hide();
       } else {
         this.mainWindow.show();
