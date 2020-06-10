@@ -5,7 +5,7 @@
     @click="ClickHandler()"
   >
     <div
-      v-textfade="text"
+      v-textfade
       class="switch__text"
     >
       {{ text }}
