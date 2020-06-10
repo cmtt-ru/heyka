@@ -161,6 +161,7 @@ export default {
         flex-direction row
         justify-content space-between
         align-items center
+        -webkit-app-region no-drag
 
     &__expand
         margin-left 4px
@@ -184,6 +185,7 @@ export default {
         &__input
           pointer-events auto
           background-color var(--button-bg-3)
+          -webkit-app-region no-drag
 
         &__icon
           pointer-events auto
