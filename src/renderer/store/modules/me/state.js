@@ -10,6 +10,7 @@ const meStore = new Store({
  * @property {string} selectedWorkspaceId – selected workspace id
  * @property {string} selectedChannelId – selected channel id
  * @property {MediaState} mediaState – my media state
+ * @property {MediaState} previousMediaState – my previous media state
  * @property {array} pokes – list of pokes
  * @property {string} onlineStatus – online status
  * @property {string} previousOnlineStatus – previous online status
@@ -43,6 +44,7 @@ const state = () => {
     selectedWorkspaceId: meStore.get('selectedWorkspaceId'),
     selectedChannelId: null,
     mediaState: initialMediaState,
+    previousMediaState: initialMediaState,
     pokes: [],
     onlineStatus: onlineStatus,
     previousOnlineStatus: onlineStatus,

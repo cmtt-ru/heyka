@@ -118,7 +118,9 @@ export default class StreamSharingReceiver extends EventEmitter {
   _streamSharingClosed(userId, requestId) {
     const pc = this.__pcs[userId];
 
-    console.log(requestId, pc, requestId !== pc.requestId);
+    if (!pc) {
+      return;
+    }
     if (requestId && pc && requestId !== pc.requestId) {
       return;
     }

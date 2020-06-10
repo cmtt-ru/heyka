@@ -45,6 +45,17 @@ export default {
   },
 
   /**
+   * Sets our media state
+   *
+   * @param {MeState} state – module me state
+   * @param {MediaState} mediaState – our media state
+   * @constructor
+   */
+  SET_PREVIOUS_STATE(state, mediaState) {
+    state.previousMediaState = mediaState;
+  },
+
+  /**
    * Sets our online status
    *
    * @param {MeState} state – module me state

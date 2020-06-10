@@ -14,7 +14,7 @@
   },
   "win": {
       "target": "nsis",
-      "icon": "public/icon.png",
+      "icon": "public/icon.ico",
       "legalTrademarks": "Heyka"
   },
   "linux": {
