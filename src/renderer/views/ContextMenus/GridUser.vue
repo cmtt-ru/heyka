@@ -7,6 +7,13 @@
       >
         {{ texts.mute }}
       </ui-button>
+      <ui-button
+        v-if="isStreaming && notMe"
+        :type="11"
+        @click="expandedClickHandler"
+      >
+        {{ texts.fullscreen }}
+      </ui-button>
     </div>
   </popover>
 </template>
@@ -29,6 +36,13 @@ export default {
       type: String,
       default: null,
     },
+    /**
+     * Is this user streaming
+     */
+    isStreaming: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
@@ -38,6 +52,18 @@ export default {
      */
     texts() {
       return this.$t('popover.griduser');
+    },
+
+    /**
+     * Get our ID
+     * @returns {object}
+     */
+    myId() {
+      return this.$store.getters['me/getMyId'];
+    },
+
+    notMe() {
+      return this.userId !== this.myId;
     },
   },
 
@@ -50,6 +76,18 @@ export default {
     muteClickHandler() {
       console.log('mute user', this.userId);
       this._notImplemented();
+    },
+
+    /**
+     * fullscreen click handler
+     * @param {string} id user's id
+     * @returns {void}
+     */
+    expandedClickHandler() {
+      if (!this.isStreaming) {
+        return;
+      }
+      this.$router.push({ path: `/call-window/expanded/${this.userId}` });
     },
   },
 };
