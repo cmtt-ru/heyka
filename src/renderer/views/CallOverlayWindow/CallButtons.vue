@@ -6,7 +6,7 @@
     <microphone
       v-if="buttons.includes('microphone')"
       class="call-buttons__button ui-button"
-      :disabled="janusInProgress"
+      :disabled="!isDeviceAvailable('microphone') || janusInProgress"
       :active="mediaState.microphone"
       :size="size"
       :icon-color="true"
