@@ -8,7 +8,7 @@
       class="dropdown__header"
       @click="headerClickHandler()"
     >
-      <div v-textfade="selectedText">
+      <div v-textfade>
         {{ selectedText }}
       </div>
       <svg-icon
@@ -257,4 +257,9 @@ export default {
 
     &__icon
       color var(--color-1)
+
+.text-ellipsis
+  white-space nowrap
+  text-overflow ellipsis
+  overflow hidden
 </style>
