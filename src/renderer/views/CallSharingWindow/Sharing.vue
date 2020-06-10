@@ -178,6 +178,9 @@ export default {
       this.sources = await mediaCapturer.getSources(type, THUMBNAIL_SIZE);
       this.selectedSource = null;
 
+      /** Filter windows with name `heyka` */
+      this.sources = this.sources.filter(s => s.name !== 'heyka');
+
       /** Select first source */
       this.handleSource(this.sources[0]);
     },
