@@ -95,5 +95,7 @@ module.exports = {
 
       return definitions;
     });
+
+    config.optimization.minimize(false);
   },
 };
