@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import path from 'path';
 import { app, Menu, Tray, nativeImage, nativeTheme, ipcMain } from 'electron';
 import Store from 'electron-store';
@@ -10,6 +9,8 @@ const heykaStore = new Store({
 const isMac = process.platform === 'darwin';
 const isWin = !isMac;
 let animationTimer;
+const blurDebounce = 300;
+const oneSecond = 1000;
 
 /**
  * Icon names for dark&light themes. No ".png", no "@2x/@3x" stuff
@@ -51,6 +52,7 @@ class TrayManager {
     // For now, at least.
     //
     this.mode = heykaStore.get('runAppFrom', 'window');
+    this.lastBlurTime = 0;
 
     nativeTheme.on('updated', () => {
       this.updateTheme();
@@ -62,6 +64,9 @@ class TrayManager {
       // this.attachContextMenu();
 
       this.tray.on('click', (event) => {
+        this.clickTray();
+      });
+      this.tray.on('double-click', (event) => {
         this.clickTray();
       });
       ipcMain.on('tray-animation', (event, state) => {
@@ -93,7 +98,7 @@ class TrayManager {
 
       return;
     }
-    this.mainWindow.isVisible() ? this.mainWindow.hide() : this.mainWindow.show();
+    this.toggleMainWindow();
   }
 
   /**
@@ -122,9 +127,18 @@ class TrayManager {
 
     if (this.tray === undefined) {
       this.tray = new Tray(nImage);
+      this.tray.setIgnoreDoubleClickEvents(true);
     } else {
       this.tray.setImage(nImage);
     }
+  }
+
+  /**
+    * get tray instance
+    * @returns {object}
+  */
+  get() {
+    return this.tray;
   }
 
   /**
@@ -133,7 +147,7 @@ class TrayManager {
   * @param {number} interval interval between alternating icons
  * @returns {void}
  */
-  setAnimation(iconsArray = ['onair-1', 'onair-2'], interval = 1000) {
+  setAnimation(iconsArray = ['onair-1', 'onair-2'], interval = oneSecond) {
     const iconsCount = iconsArray.length;
     let counter = 0;
 
@@ -274,6 +288,39 @@ class TrayManager {
 
     // this.tray.setToolTip('You have 0 notifications');
     this.tray.setContextMenu(contextMenu);
+  }
+
+  /**
+   * switch mainwindow's state between 'shown' and 'hidden'
+   * @returns {void}
+   */
+  toggleMainWindow() {
+    if (this.checkLastBlurTime()) {
+      if (this.mainWindow.isVisible() && this.mainWindow.isFocused()) {
+        this.mainWindow.hide();
+      } else {
+        this.mainWindow.show();
+      }
+    }
+  }
+
+  /**
+   * sets LastBlurTime
+   * @returns {void}
+   */
+  setLastBlurTime() {
+    this.lastBlurTime = Date.now();
+  }
+
+  /**
+   * Windows' bugfix
+   * if you click on tray icon then blur event will be triggered first (mousedown for blur vs mouseup for tray click)
+   *  @returns {boolean}
+   */
+  checkLastBlurTime() {
+    const now = Date.now();
+
+    return now - this.lastBlurTime > blurDebounce;
   }
 }
 export default new TrayManager('default');

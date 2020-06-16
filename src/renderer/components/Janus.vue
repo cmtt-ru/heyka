@@ -55,6 +55,8 @@ export default {
       selectedCameraDevice: state => state.selectedDevices.camera,
       selectedMicrophoneDevice: state => state.selectedDevices.microphone,
       selectedSpeakerDevice: state => state.selectedDevices.speaker,
+      microphonesDeviceList: state => state.devices.microphones,
+      speakersDeviceList: state => state.devices.speakers,
     }),
   },
   watch: {
@@ -173,6 +175,20 @@ export default {
         this.janusWrapper.setCameraDevice(deviceId);
       }
     },
+
+    microphonesDeviceList() {
+      if (this.selectedMicrophoneDevice === 'default') {
+        if (this.janusWrapper) {
+          this.janusWrapper.setMicrophoneDevice(this.selectedMicrophoneDevice);
+        }
+      }
+    },
+
+    speakersDeviceList() {
+      if (this.selectedSpeakerDevice === 'default') {
+        this.$refs.audio.setSinkId(this.selectedSpeakerDevice);
+      }
+    },
   },
   async created() {
     await JanusWrapper.init();
@@ -273,13 +289,13 @@ export default {
      * @returns {void}
      */
     startSharingCamera() {
-      this.setOperationStart('publish');
-
       if (!this.janusWrapper) {
         this.log('Janus wrapper is not existed');
 
         return;
       }
+
+      this.setOperationStart('publish');
 
       this.janusWrapper.publishVideoStream('camera', this.selectedCameraDevice);
     },
@@ -289,13 +305,13 @@ export default {
      * @returns {void}
      */
     startSharingScreen() {
-      this.setOperationStart('publish');
-
       if (!this.janusWrapper) {
         this.log('Janus wrapper is not existed');
 
         return;
       }
+
+      this.setOperationStart('publish');
 
       this.janusWrapper.publishVideoStream('screen', this.janusOptions.sharingSource.id);
     },
@@ -305,11 +321,11 @@ export default {
      * @returns {void}
      */
     stopSharingVideo() {
-      this.setOperationStart('unpublish');
-
       if (!this.janusWrapper) {
         return;
       }
+
+      this.setOperationStart('unpublish');
 
       this.janusWrapper.unpublishVideoStream();
       this.$delete(this.videoPublishers, this.userId);

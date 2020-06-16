@@ -48,7 +48,8 @@
           />
 
           <ui-button
-            v-popover.click="{name: 'GridUser', data: {userId: user.id}}"
+            :key="isStreaming(user.id)"
+            v-popover.click="{name: 'GridUser', data: {userId: user.id, isStreaming: isStreaming(user.id)}}"
             class="badge badge--hidden cell__more"
             :type="7"
             size="medium"
@@ -84,14 +85,14 @@
             />
           </div>
 
-          <ui-button
+          <!-- <ui-button
             v-if="isStreaming(user.id)"
             class="badge badge--hidden cell__expand"
             :type="7"
             size="medium"
             icon="fullscreen"
             @click="expandedClickHandler(user.id)"
-          />
+          /> -->
         </div>
       </div>
     </div>
@@ -372,7 +373,8 @@ export default {
      */
     findClosest(val, arr) {
       return arr.reduce((a, b) => {
-        return Math.abs(b.ratio - val) < Math.abs(a.ratio - val) ? b : a;
+        // here we imply that A is always smaller than B (our case)
+        return val < Math.sqrt(a.ratio * b.ratio) ? a : b;
       });
     },
 
@@ -395,7 +397,7 @@ export default {
      * @returns {void}
      */
     expandedClickHandler(id) {
-      if (!this.isStreaming(id)) {
+      if (!this.isStreaming(id) || id === this.myId) {
         return;
       }
       this.$router.push({ path: `/call-window/expanded/${id}` });

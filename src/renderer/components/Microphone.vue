@@ -2,6 +2,11 @@
   <div
     class="mic"
     :style="buttonSizeComp"
+    :class="{'mic--disabled': disabled}"
+    @click.stop.prevent="$emit('click')"
+    @dblclick.stop.prevent
+    @mouseup.stop.prevent
+    @mousedown.stop.prevent
   >
     <div
       class="volume-wrapper"
@@ -105,6 +110,14 @@ export default {
       type: String,
       default: undefined,
     },
+
+    /**
+     * Disabled state
+     */
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
@@ -173,6 +186,7 @@ export default {
     align-items center
     justify-content center
     flex-shrink 0
+    -webkit-app-region no-drag
 
     &:hover
         background var(--button-bg-6)
@@ -191,6 +205,10 @@ export default {
 
     &__icon
         position relative
+
+    &--disabled
+      pointer-events none
+      opacity 0.5
 
 .volume-wrapper
   position absolute

@@ -55,6 +55,19 @@ function createWindow() {
   DeepLink.bindMainWindow(mainWindow);
   TrayManager.bindMainWindow(mainWindow);
 
+  if (TrayManager.isInTray()) {
+    const waitTime = 200;
+
+    mainWindow.on('blur', () => {
+      mainWindow.hide();
+      // Reason for this timeout: we want to teleport window after closing animation is complete
+      setTimeout(() => {
+        WindowManager.setPosition(mainWindow, 'tray');
+      }, waitTime);
+      TrayManager.setLastBlurTime();
+    });
+  }
+
   nativeTheme.on('updated', () => {
     WindowManager.sendAll('nativetheme-updated');
   });
