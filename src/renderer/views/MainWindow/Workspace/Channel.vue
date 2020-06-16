@@ -37,7 +37,6 @@
       </ui-button>
       <ui-button
         v-if="isConnected"
-        :disabled="janusInProgress"
         :type="4"
         class="channel-info__connect"
         size="small"
@@ -150,6 +149,7 @@ export default {
      * @returns {void}
      */
     async clickConnectHandler() {
+      // await this.$store.dispatch('janus/untilIdle', null);
       await this.$store.dispatch('selectChannel', this.channelId);
     },
 
