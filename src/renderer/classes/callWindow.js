@@ -45,7 +45,7 @@ class CallWindow {
         },
       });
     } else {
-      this.overlayWindow.showInactive();
+      this.overlayWindow.action('showInactive');
     }
   }
 
@@ -55,7 +55,7 @@ class CallWindow {
    */
   hideOverlay() {
     if (this.overlayWindow) {
-      this.overlayWindow.hide();
+      this.overlayWindow.action('hide');
     }
   }
 
@@ -74,7 +74,7 @@ class CallWindow {
         },
       });
     } else {
-      this.sharingWindow.showInactive();
+      this.sharingWindow.action('showInactive');
     }
   }
 
@@ -84,7 +84,7 @@ class CallWindow {
    */
   hideSharing() {
     if (this.sharingWindow) {
-      this.sharingWindow.hide();
+      this.sharingWindow.action('hide');
     }
   }
 
@@ -94,7 +94,7 @@ class CallWindow {
    */
   closeSharing() {
     if (this.sharingWindow) {
-      this.sharingWindow.close();
+      this.sharingWindow.action('close');
     }
   }
 
@@ -137,7 +137,7 @@ class CallWindow {
         }
       });
     } else {
-      this.gridWindow.show();
+      this.gridWindow.action('show');
     }
   }
 
@@ -147,7 +147,7 @@ class CallWindow {
    */
   hideGrid() {
     if (this.gridWindow) {
-      this.gridWindow.hide();
+      this.gridWindow.action('hide');
     }
   }
 
@@ -171,7 +171,7 @@ class CallWindow {
         },
       });
     } else {
-      this.frameWindow.showInactive();
+      this.frameWindow.action('showInactive');
     }
   }
 
@@ -181,7 +181,7 @@ class CallWindow {
    */
   closeFrame() {
     if (this.frameWindow) {
-      this.frameWindow.close();
+      this.frameWindow.action('close');
     }
   }
 
@@ -193,10 +193,10 @@ class CallWindow {
     this.hideGrid();
     this.hideSharing();
     if (this.overlayWindow) {
-      this.overlayWindow.close();
+      this.overlayWindow.action('close');
     }
     if (this.frameWindow) {
-      this.frameWindow.close();
+      this.frameWindow.action('close');
     }
   }
 
@@ -206,16 +206,16 @@ class CallWindow {
    */
   closeAll() {
     if (this.gridWindow) {
-      this.gridWindow.close();
+      this.gridWindow.action('close');
     }
     if (this.sharingWindow) {
-      this.sharingWindow.close();
+      this.sharingWindow.action('close');
     }
     if (this.overlayWindow) {
-      this.overlayWindow.close();
+      this.overlayWindow.action('close');
     }
     if (this.frameWindow) {
-      this.frameWindow.close();
+      this.frameWindow.action('close');
     }
   }
 
