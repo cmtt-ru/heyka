@@ -4,6 +4,7 @@ import workspaceApi from './workspace';
 import channelApi from './channel';
 import { errorMessages } from './errors/types';
 import { handleError } from './errors';
+import trottleAPI from './throttle';
 import axios from 'axios';
 import { updateTokens } from './tokens';
 import store from '@/store';
@@ -48,6 +49,15 @@ function middleware(func, functionName) {
     });
 
     try {
+      // throttle some of the API methods
+      if (trottleAPI.needForThrottle(functionName)) {
+        if (trottleAPI.throttle(functionName)) {
+          return await func.apply(null, arguments);
+        } else {
+          throw new Error(`${functionName} throttled`);
+        }
+      }
+
       return await func.apply(null, arguments);
     } catch (err) {
       if (err.response === undefined) {
