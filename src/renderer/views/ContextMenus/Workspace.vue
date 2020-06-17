@@ -60,7 +60,7 @@
         </ui-button>
       </router-link>
       <ui-button
-        v-if="notProd"
+        v-if="IS_DEV"
         :type="11"
         icon="disconnect"
         @click.native="logoutHandler"
@@ -119,13 +119,6 @@ export default {
       return this.$t('popover.workspace');
     },
 
-    /**
-     * check if we are not in prod
-     * @returns {boolean}
-     */
-    notProd() {
-      return process.env.NODE_ENV !== 'production';
-    },
   },
 
   mounted() {

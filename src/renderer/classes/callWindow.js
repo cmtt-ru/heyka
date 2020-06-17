@@ -67,7 +67,7 @@ class CallWindow {
     if (this.sharingWindow === null) {
       this.sharingWindow = WindowManager.create({
         route: '/call-sharing',
-        template: process.env.NODE_ENV === 'production' ? 'sharingSelect' : 'sharingSelectDev',
+        template: IS_DEV ? 'sharingSelectDev' : 'sharingSelect',
         position: 'center',
         onClose: () => {
           this.sharingWindow = null;

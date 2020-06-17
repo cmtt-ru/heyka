@@ -233,7 +233,7 @@ class AudioCheck extends EventEmitter {
    * @returns {void}
    */
   async _checkNoPermission() {
-    if (process.platform !== 'darwin') {
+    if (!IS_MAC) {
       return false;
     }
 

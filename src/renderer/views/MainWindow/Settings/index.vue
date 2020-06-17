@@ -39,7 +39,7 @@
           {{ texts.support }}
         </router-link>
         <router-link
-          v-if="dev"
+          v-if="IS_DEV"
           class="link"
           :to="{name: 'styleguide'}"
         >
@@ -84,7 +84,6 @@ export default {
   },
   data() {
     return {
-      dev: process.env.NODE_ENV !== 'production',
       info: this.$store.getters['app/getGeneralInfo'],
     };
   },

@@ -13,14 +13,8 @@ import broadcastEvents from '@classes/broadcastEvents';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import broadcastState from '@classes/broadcastState';
 import { ipcRenderer } from 'electron';
-import Store from 'electron-store';
 import createPersistedState from 'vuex-persistedstate';
-
-const heykaStore = new Store({
-  name: 'app',
-});
-
-const debug = process.env.NODE_ENV !== 'production';
+import { heykaStore } from '@/store/localStore';
 
 /**
  * Is this window main?
@@ -53,7 +47,7 @@ const plugins = [
 /**
  * Vuex logger plugin
  */
-if (!debug) {
+if (!IS_DEV) {
   plugins.push(createLogger({
     /**
      * Filter mutations to be logged
@@ -108,7 +102,7 @@ const store = new Vuex.Store({
   mutations,
   actions,
   getters,
-  strict: debug,
+  strict: IS_DEV,
   plugins,
 });
 

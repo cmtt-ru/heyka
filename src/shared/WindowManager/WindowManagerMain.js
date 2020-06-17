@@ -5,10 +5,11 @@ import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
+import { IS_WIN, IS_DEV } from '../../shared/Constants';
 
 let icon;
 
-if (process.platform === 'win32') {
+if (IS_WIN) {
   icon = nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`));
 } else {
   icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
@@ -110,7 +111,7 @@ class WindowManager {
 
     const browserWindow = new BrowserWindow(windowOptions);
 
-    if (process.env.NODE_ENV === 'production') {
+    if (!IS_DEV) {
       Menu.setApplicationMenu(null);
     }
     this.windows[windowId] = {

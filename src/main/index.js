@@ -8,8 +8,7 @@ import './classes/AutoLaunch';
 import DeepLink from '../shared/DeepLink/DeepLinkMain';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-
-const isDevelopment = process.env.NODE_ENV !== 'production';
+import { IS_DEV, IS_WIN, IS_MAC } from '../shared/Constants';
 
 console.time('init');
 console.time('before-load');
@@ -42,7 +41,7 @@ function createWindow() {
   } else {
     params = {
       position: 'center',
-      template: isDevelopment ? 'mainDev' : 'main',
+      template: IS_DEV ? 'mainDev' : 'main',
       preventClose: true,
     };
   }
@@ -85,7 +84,7 @@ function createWindow() {
       loadingScreenID = null;
     }
 
-    if (isDevelopment) {
+    if (IS_DEV) {
       mainWindow.webContents.openDevTools();
     } else {
       Autoupdater.init(mainWindow);
@@ -114,7 +113,7 @@ function createLoadingScreen() {
 }
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (!IS_MAC) {
     app.quit();
   }
 });
@@ -144,7 +143,7 @@ app.on('ready', async () => {
   /**
    * Vue devtools chrome extension
    */
-  if (isDevelopment) {
+  if (IS_DEV) {
     installExtension(VUEJS_DEVTOOLS)
       .then(() => {})
       .catch(err => {
@@ -182,8 +181,8 @@ app.on('web-contents-created', (e, contents) => {
 });
 
 // Exit cleanly on request from parent process in development mode.
-if (isDevelopment) {
-  if (process.platform === 'win32') {
+if (IS_DEV) {
+  if (IS_WIN) {
     process.on('message', data => {
       if (data === 'graceful-exit') {
         app.quit();
