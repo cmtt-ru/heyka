@@ -87,10 +87,13 @@ export default class StreamSharingReceiver extends EventEmitter {
       const answer = await pc.createAnswer();
 
       await pc.setLocalDescription(answer);
+
+      const sdp = this._setMediaBitrate(answer.sdp, 'video', parseInt('512'));
+
       // send answer
       broadcastEvents.dispatch(`sdp-answer-receiver-${data.requestId}`, {
         sdpAnswer: {
-          sdp: answer.sdp,
+          sdp: sdp,
           type: 'answer',
         },
       });
@@ -153,5 +156,56 @@ export default class StreamSharingReceiver extends EventEmitter {
     if (this.__debugEnabled) {
       console.log('Stream sharing receiver: ', ...arguments);
     }
+  }
+
+  /**
+   * Modify sdp bitrate
+   * @param {string} sdp
+   * @param media
+   * @param bitrate
+   * @returns {string|*}
+   * @private
+   */
+  _setMediaBitrate(sdp, media, bitrate) {
+    var lines = sdp.split('\n');
+    var line = -1;
+
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].indexOf('m=' + media) === 0) {
+        line = i;
+        break;
+      }
+    }
+    if (line === -1) {
+      console.log('Could not find the m line for', media);
+
+      return sdp;
+    }
+    console.log('Found the m line for', media, 'at line', line);
+
+    // Pass the m line
+    line++;
+
+    // Skip i and c lines
+    while (lines[line].indexOf('i=') === 0 || lines[line].indexOf('c=') === 0) {
+      line++;
+    }
+
+    // If we're on a b line, replace it
+    if (lines[line].indexOf('b') === 0) {
+      console.log('Replaced b line at line', line);
+      lines[line] = 'b=AS:' + bitrate;
+
+      return lines.join('\n');
+    }
+
+    // Add a new b line
+    console.log('Adding new b line before line', line);
+    var newLines = lines.slice(0, line);
+
+    newLines.push('b=AS:' + bitrate);
+    newLines = newLines.concat(lines.slice(line, lines.length));
+
+    return newLines.join('\n');
   }
 }
