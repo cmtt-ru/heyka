@@ -149,7 +149,6 @@ export default {
      * @returns {void}
      */
     async clickConnectHandler() {
-      // await this.$store.dispatch('janus/untilIdle', null);
       await this.$store.dispatch('selectChannel', this.channelId);
     },
 

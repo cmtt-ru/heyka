@@ -46,6 +46,7 @@
           <channel-item
             v-show="notSelected(channel.id)"
             :channel="channel"
+            exclude-me
             class="list-channel"
             @more="moreHandler()"
           />

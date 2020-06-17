@@ -30,7 +30,7 @@
       </div>
 
       <div
-        v-show="channel.users.length"
+        v-show="users.length"
         class="channel__users"
       >
         <div class="channel__users__avatars">
@@ -80,14 +80,33 @@ export default {
         return {};
       },
     },
+    /**
+     * Whether we should explude us from avatar row
+     * (just for smooth connect-to-channel-animations)
+     */
+    excludeMe: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
+    /**
+     * Get our id
+     * @returns {object}
+     */
+    myId() {
+      return this.$store.getters['me/getMyId'];
+    },
     /**
      * Get users array
      * @returns {array} array of users
      */
     users() {
+      if (this.excludeMe) {
+        return this.$store.getters.getUsersByChannel(this.channel.id).filter((user) => user.id !== this.myId);
+      }
+
       return this.$store.getters.getUsersByChannel(this.channel.id);
     },
 
