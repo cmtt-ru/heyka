@@ -42,21 +42,19 @@ function injectMiddleware(functions) {
  */
 function middleware(func, functionName) {
   return async function () {
-    store.dispatch('app/addPrivacyLog', {
-      category: 'api',
-      method: functionName,
-      data: Array.prototype.slice.call(arguments),
-    });
-
     try {
       // throttle some of the API methods
       if (trottleAPI.needForThrottle(functionName)) {
-        if (trottleAPI.throttle(functionName)) {
-          return await func.apply(null, arguments);
-        } else {
+        if (!trottleAPI.throttle(functionName)) {
           throw new Error(`${functionName} throttled`);
         }
       }
+
+      store.dispatch('app/addPrivacyLog', {
+        category: 'api',
+        method: functionName,
+        data: Array.prototype.slice.call(arguments),
+      });
 
       return await func.apply(null, arguments);
     } catch (err) {
