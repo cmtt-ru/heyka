@@ -65,7 +65,7 @@ async function authorize(prevSocketId) {
   return new Promise((resolve, reject) => {
     client.once(eventNames.authSuccess, data => {
       console.log('socket auth success', data);
-      store.dispatch('setSocketConnected', true);
+      store.dispatch('setSocketConnected', data);
       resolve(data);
     });
 
@@ -74,13 +74,16 @@ async function authorize(prevSocketId) {
       reject(data);
     });
 
-    client.emit(eventNames.auth, {
+    const authData = {
       transaction: 'auth',
       workspaceId: store.getters['me/getSelectedWorkspaceId'],
       token: accessToken,
       onlineStatus: onlineStatus,
-      prevSocketId,
-    });
+      ...(prevSocketId ? { prevSocketId } : prevSocketId),
+    };
+
+    console.log('Auth with data', authData);
+    client.emit(eventNames.auth, authData);
 
     store.dispatch('app/addPrivacyLog', {
       category: 'socket',
@@ -96,13 +99,16 @@ async function authorize(prevSocketId) {
  * @returns {void}
  */
 function bindErrorEvents() {
+  const socketId = client.id;
+
   client.on(eventNames.disconnect, data => {
     console.log('disconnect', data);
     store.dispatch('setSocketConnected', false);
 
     // remember latest socket id
+    console.log('prevSocketParam: ', socketId, client, Date.now());
     store.commit('app/SET_SOCKET_ID', {
-      id: client.id,
+      id: socketId,
       connectedAt: Date.now(),
     });
   });
@@ -117,8 +123,21 @@ function bindErrorEvents() {
 
     const prevSocketParams = store.state.app.socket;
 
-    authorize(Date.now() - prevSocketParams.connectedAt < DISCONNECT_TIMEOUT ? prevSocketParams.id : null);
+    console.log(prevSocketParams);
+
+    const timeFromLastSocketConnected = Date.now() - parseInt(prevSocketParams.connectedAt);
+
+    if (timeFromLastSocketConnected < DISCONNECT_TIMEOUT) {
+      authorize(prevSocketParams.id);
+    } else {
+      authorize();
+    }
   });
+
+  setTimeout(() => {
+    client.disconnect();
+    client.connect();
+  }, parseInt('5000'));
 
   client.on(eventNames.error, data => {
     console.error('error', data);

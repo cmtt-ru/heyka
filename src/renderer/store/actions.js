@@ -125,11 +125,38 @@ export default {
   /**
    * Set socket connected
    * @param {object} context store context
-   * @param {boolean} value is socket connected
+   * @param {object} authData is socket connected
+   * @param {boolean} authData.connected Is socket connected
+   * @param {number} authData.audioRoomId Audio room id
+   * @param {number} authData.videoRoomId Video room id
+   * @param {string} authData.channelAuthToken Channel auth token
+   * @param {string} authData.serverAuthToken server auth token
+   * @param {string} authData.url Janus server url
+   * @param {string} authData.channelId Channel id
    * @returns {void}
    */
-  async setSocketConnected({ commit }, value) {
-    commit('SET_SOCKET_CONNECTED', value);
+  async setSocketConnected({ state, commit, getters }, authData) {
+    if (!authData || !authData.connected) {
+      commit('SET_SOCKET_CONNECTED', false);
+    } else {
+      commit('SET_SOCKET_CONNECTED', true);
+
+      commit('janus/SET_OPTIONS', authData);
+
+      commit('channels/ADD_USER', {
+        userId: state.me.id,
+        channelId: authData.channelId,
+        userMediaState: getters['me/getMediaState'],
+      });
+
+      commit('me/SET_CHANNEL_ID', authData.channelId);
+
+      callWindow.showOverlay();
+
+      if (state.me.mediaState.microphone === true) {
+        ipcRenderer.send('tray-animation', true);
+      }
+    }
   },
 
   /**
