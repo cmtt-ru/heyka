@@ -1,4 +1,4 @@
-const { IS_DEV, IS_WIN, IS_MAC, IS_LINUX } = require('./src/shared/Constants');
+const { IS_DEV } = require('./src/shared/Constants');
 const path = require('path');
 const HawkWebpackPlugin = require('@hawk.so/webpack-plugin');
 const buildRevision = Date.now();
@@ -92,10 +92,6 @@ module.exports = {
          * Current bundle version will be passed to the Hawk Catcher
          */
         buildRevision,
-        IS_DEV,
-        IS_WIN,
-        IS_MAC,
-        IS_LINUX,
       };
 
       return definitions;

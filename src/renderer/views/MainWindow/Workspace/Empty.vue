@@ -21,7 +21,7 @@ export default {
   },
   mounted() {
     ipcRenderer.send('page-rendered', 'Hello from Main!');
-    console.log('IS_DEV:', IS_DEV, ' ,IS_MAC:', IS_MAC, ' ,IS_WIN:', IS_WIN, ' ,IS_LINUX:', IS_LINUX);
+    console.log('IS_DEV:', IS_DEV, ', IS_MAC:', IS_MAC, ', IS_WIN:', IS_WIN, ', IS_LINUX:', IS_LINUX);
   },
 };
 </script>
