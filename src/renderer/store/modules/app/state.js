@@ -25,6 +25,10 @@ import { heykaStore } from '@/store/localStore';
  * @property {string} selectedDevices.microphone – selected microphone
  * @property {string} selectedDevices.camera – selected camera
  *
+ * @property {object} socket – current socket parameters
+ * @property {string} socket.id – id
+ * @property {number} socket.connectedAt – last time when socket was connected
+ *
  * @property {number} microphoneVolume – current microphone volume in decibels
  * @property {array} notifications – in-app notifications
  * @property {string} search – workspace search
@@ -65,6 +69,10 @@ const state = () => {
     notifications: [],
     pushes: [],
     search: '',
+    socket: {
+      id: '',
+      connectedAt: 0,
+    },
   };
 };
 
