@@ -56,8 +56,6 @@ class TrayManager {
     app.on('ready', () => {
       this.set(iconPath);
 
-      this.createContextMenu();
-
       this.tray.on('click', () => {
         this.clickTray();
       });
@@ -65,7 +63,13 @@ class TrayManager {
         this.clickTray();
       });
       this.tray.on('right-click', () => {
-        this.tray.popUpContextMenu();
+        this.tray.popUpContextMenu(Menu.buildFromTemplate([
+          ...(IS_MAC ? [ {
+            role: 'close',
+          } ] : [ {
+            role: 'quit',
+          } ]),
+        ]));
       });
       ipcMain.on('tray-animation', (event, state) => {
         if (state) {
@@ -204,22 +208,6 @@ class TrayManager {
       theme = 'light';
     }
     this.set('default');
-  }
-
-  /**
-   * Create tray's context menu
-   * @returns {void}
-   */
-  createContextMenu() {
-    const contextMenu = Menu.buildFromTemplate([
-      ...(IS_MAC ? [ {
-        role: 'close',
-      } ] : [ {
-        role: 'quit',
-      } ]),
-    ]);
-
-    this.tray.setContextMenu(contextMenu);
   }
 
   /**
