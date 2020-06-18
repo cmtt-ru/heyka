@@ -97,7 +97,6 @@ async function authorize(prevSocketId) {
       ...(prevSocketId ? { prevSocketId } : prevSocketId),
     };
 
-    console.log('Auth with data', authData);
     client.emit(eventNames.auth, authData);
 
     store.dispatch('app/addPrivacyLog', {
