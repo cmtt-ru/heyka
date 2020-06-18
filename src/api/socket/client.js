@@ -29,6 +29,8 @@ function connect() {
     }
 
     client.once('connect', data => {
+      client.lastSocketId = client.id;
+      console.log('ZHSBS client', client);
       resolve(data);
     });
 

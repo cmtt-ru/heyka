@@ -40,6 +40,18 @@ export async function init() {
 }
 
 /**
+ * Save current socket id and time
+ *
+ * @return {void}
+ */
+export async function saveSocketParams() {
+  store.commit('app/SET_SOCKET_ID', {
+    id: client.lastSocketId,
+    connectedAt: Date.now(),
+  });
+};
+
+/**
  * Destroy socket connection and unbind events
  *
  * @returns {Promise<void>}
@@ -65,7 +77,10 @@ async function authorize(prevSocketId) {
   return new Promise((resolve, reject) => {
     client.once(eventNames.authSuccess, data => {
       console.log('socket auth success', data);
-      store.dispatch('setSocketConnected', data);
+      store.dispatch('setSocketConnected', {
+        connected: true,
+        ...data,
+      });
       resolve(data);
     });
 
@@ -99,18 +114,12 @@ async function authorize(prevSocketId) {
  * @returns {void}
  */
 function bindErrorEvents() {
-  const socketId = client.id;
-
   client.on(eventNames.disconnect, data => {
     console.log('disconnect', data);
     store.dispatch('setSocketConnected', false);
 
     // remember latest socket id
-    console.log('prevSocketParam: ', socketId, client, Date.now());
-    store.commit('app/SET_SOCKET_ID', {
-      id: socketId,
-      connectedAt: Date.now(),
-    });
+    saveSocketParams();
   });
 
   client.on(eventNames.reconnecting, data => {
@@ -118,12 +127,14 @@ function bindErrorEvents() {
   });
 
   client.on(eventNames.reconnect, data => {
+    // rewrite last socket id
+    client.lastSocketId = client.id;
+
     console.log('%c reconnected:', 'background: maroon; color: white', data);
     connectionCheck.handleSocketReconnecting(false);
 
+    // try to authorize new connection as the old connection
     const prevSocketParams = store.state.app.socket;
-
-    console.log(prevSocketParams);
 
     const timeFromLastSocketConnected = Date.now() - parseInt(prevSocketParams.connectedAt);
 
@@ -133,11 +144,6 @@ function bindErrorEvents() {
       authorize();
     }
   });
-
-  setTimeout(() => {
-    client.disconnect();
-    client.connect();
-  }, parseInt('5000'));
 
   client.on(eventNames.error, data => {
     console.error('error', data);
