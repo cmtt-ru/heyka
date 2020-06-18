@@ -63,13 +63,9 @@ class TrayManager {
         this.clickTray();
       });
       this.tray.on('right-click', () => {
-        this.tray.popUpContextMenu(Menu.buildFromTemplate([
-          ...(IS_MAC ? [ {
-            role: 'close',
-          } ] : [ {
-            role: 'quit',
-          } ]),
-        ]));
+        this.tray.popUpContextMenu(Menu.buildFromTemplate([ {
+          role: 'quit',
+        } ]));
       });
       ipcMain.on('tray-animation', (event, state) => {
         if (state) {
