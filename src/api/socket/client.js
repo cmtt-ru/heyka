@@ -28,6 +28,7 @@ function connect() {
     }
 
     client.once('connect', data => {
+      client.lastSocketId = client.id;
       resolve(data);
     });
 
