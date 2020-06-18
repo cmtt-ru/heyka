@@ -41,6 +41,15 @@ defineErrorHandler(errorMessages.missingAuthentication, error => {
 });
 
 /**
+ * Invalid request payload input
+ */
+defineErrorHandler(errorMessages.invalidRequestPayloadInput, error => {
+  logout();
+
+  throw error;
+});
+
+/**
  * Internal server error
  */
 defineErrorHandler(errorMessages.internalServerError, error => {

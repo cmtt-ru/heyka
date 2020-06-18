@@ -3,6 +3,7 @@ import eventNames from './eventNames';
 import { client, connect } from './client';
 import { getAccessToken } from '../tokens';
 import connectionCheck from '@classes/connectionCheck';
+import { handleError } from '@api/errors';
 
 /**
  * Connect to socket, authorize and bind events
@@ -14,7 +15,7 @@ export async function init() {
   try {
     await connect();
   } catch (e) {
-    console.error(e);
+    handleError(e);
   }
 
   /** Bind error events */
@@ -33,7 +34,7 @@ export async function init() {
   try {
     await authorize();
   } catch (e) {
-    console.error(e);
+    handleError(e);
   }
 }
 
