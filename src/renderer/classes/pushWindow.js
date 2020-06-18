@@ -53,7 +53,7 @@ class PushWindow {
       });
       audioNewPush.setSinkId(this._selectedSpeaker());
     } else {
-      this.window.showInactive();
+      this.window.action('showInactive');
     }
   }
 
@@ -73,7 +73,7 @@ class PushWindow {
   updateCount(amount) {
     if (amount === 0) {
       this.closewWindowTimeout = setTimeout(() => {
-        this.window.close();
+        this.window.action('close');
       }, PUSH_MOVEOUT_TIMER);
     } else if (this.window === null) {
       this.show();
@@ -109,7 +109,7 @@ class PushWindow {
    */
   hide() {
     if (this.window) {
-      this.window.hide();
+      this.window.action('hide');
     }
   }
 }

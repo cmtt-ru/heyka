@@ -1,14 +1,14 @@
-/* eslint-disable no-magic-numbers */
 /* eslint-disable require-jsdoc */
 'use strict';
 
 import { screen } from 'electron';
 import TrayManager from '../../main/classes/TrayManager';
+import { IS_LINUX } from '../../shared/Constants';
 
-const isLinux = process.platform === 'linux';
+const DEFAULT_MARGIN = 20;
 
 export default class Positioner {
-  constructor(browserWindow, margin = 20) {
+  constructor(browserWindow, margin = DEFAULT_MARGIN) {
     this.browserWindow = browserWindow;
     this.margin = margin;
   }
@@ -119,14 +119,14 @@ export default class Positioner {
   }
 
   _getTrayBounds() {
-    if (isLinux) { // pretend tray on linux is bottom right
+    if (IS_LINUX) { // pretend tray on linux is top right
       const scr = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
 
       return {
         width: 0,
         height: 0,
         x: scr.x + scr.width,
-        y: scr.y + scr.height,
+        y: 0,
       };
     }
 

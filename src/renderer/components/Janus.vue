@@ -208,10 +208,10 @@ export default {
     setOperationStart(operation) {
       this.$store.dispatch('janus/setInProgress', true);
       this.currentOperation = operation;
-      console.log('%c setOperationStart', 'background: #C9EAD7', operation);
+      console.log('%c setOperationStart', 'background: #C9EAD7; color: black', operation);
     },
     setOperationFinish(operation) {
-      console.log('%c setOperationFinish', 'background: #C9EAD7', operation);
+      console.log('%c setOperationFinish', 'background: #C9EAD7; color: black', operation);
       if (operation === this.currentOperation) {
         this.$store.dispatch('janus/setInProgress', false);
         console.log(this.$store.state.janus);
@@ -592,6 +592,7 @@ export default {
      */
     onWebrtcCleanUp() {
       this.setOperationFinish('unpublish');
+      this.$store.dispatch('janus/setInProgress', false);
     },
 
     /**

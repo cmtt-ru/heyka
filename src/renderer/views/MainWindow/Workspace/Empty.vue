@@ -1,4 +1,3 @@
-import {ipcRenderer} from "electron";
 <template>
   <div class="doggy">
     <div class="doggy__inner">
@@ -22,6 +21,7 @@ export default {
   },
   mounted() {
     ipcRenderer.send('page-rendered', 'Hello from Main!');
+    console.log('IS_DEV:', IS_DEV, ', IS_MAC:', IS_MAC, ', IS_WIN:', IS_WIN, ', IS_LINUX:', IS_LINUX);
   },
 };
 </script>

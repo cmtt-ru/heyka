@@ -1,7 +1,7 @@
+const { IS_DEV } = require('./src/shared/Constants');
 const path = require('path');
 const HawkWebpackPlugin = require('@hawk.so/webpack-plugin');
 const buildRevision = Date.now();
-const isProd = process.env.NODE_ENV === 'production';
 const webpackPlugins = [];
 
 /**
@@ -42,7 +42,7 @@ module.exports = {
       },
     },
     plugins: webpackPlugins,
-    devtool: isProd ? 'hidden-source-map' : false,
+    devtool: !IS_DEV ? 'hidden-source-map' : false,
   },
 
   pluginOptions: {
@@ -86,14 +86,17 @@ module.exports = {
      * Use DefinePlugin to pass some variables to the sources
      */
     config.plugin('define').tap((definitions) => {
-      definitions[0] = Object.assign(definitions[0], {
+      definitions[0] = {
+        ...definitions[0],
         /**
          * Current bundle version will be passed to the Hawk Catcher
          */
         buildRevision,
-      });
+      };
 
       return definitions;
     });
+
+    config.optimization.minimize(false);
   },
 };

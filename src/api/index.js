@@ -4,13 +4,13 @@ import workspaceApi from './workspace';
 import channelApi from './channel';
 import { errorMessages } from './errors/types';
 import { handleError } from './errors';
+import trottleAPI from './throttle';
 import axios from 'axios';
 import { updateTokens } from './tokens';
 import store from '@/store';
+import { IS_DEV } from '../shared/Constants';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
-if (isDevelopment) {
+if (IS_DEV) {
   axios.defaults.baseURL = process.env.VUE_APP_DEV_URL;
 } else {
   axios.defaults.baseURL = process.env.VUE_APP_PROD_URL;
@@ -41,13 +41,20 @@ function injectMiddleware(functions) {
  */
 function middleware(func, functionName) {
   return async function () {
-    store.dispatch('app/addPrivacyLog', {
-      category: 'api',
-      method: functionName,
-      data: Array.prototype.slice.call(arguments),
-    });
-
     try {
+      // throttle some of the API methods
+      if (trottleAPI.needForThrottle(functionName)) {
+        if (!trottleAPI.throttle(functionName)) {
+          throw new Error(`${functionName} throttled`);
+        }
+      }
+
+      store.dispatch('app/addPrivacyLog', {
+        category: 'api',
+        method: functionName,
+        data: Array.prototype.slice.call(arguments),
+      });
+
       return await func.apply(null, arguments);
     } catch (err) {
       if (err.response === undefined) {
