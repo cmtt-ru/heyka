@@ -8,10 +8,9 @@ import trottleAPI from './throttle';
 import axios from 'axios';
 import { updateTokens } from './tokens';
 import store from '@/store';
+import { IS_DEV } from '../shared/Constants';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
-if (isDevelopment) {
+if (IS_DEV) {
   axios.defaults.baseURL = process.env.VUE_APP_DEV_URL;
 } else {
   axios.defaults.baseURL = process.env.VUE_APP_PROD_URL;

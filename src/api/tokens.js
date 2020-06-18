@@ -1,14 +1,6 @@
 import axios from 'axios';
-import Store from 'electron-store';
+import { authFileStore } from '@/store/localStore';
 import refreshToken from './auth/refreshToken';
-
-/**
- * Auth file store
- */
-const authFileStore = new Store({
-  name: 'auth',
-  encryptionKey: '1234543',
-});
 
 /**
  * Tokens
