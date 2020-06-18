@@ -13,12 +13,6 @@ const DEBOUNCE_TIMEOUT = 500;
 const LINUX_DEVICE_CHANGE_INTERVAL = 1500;
 
 /**
- * Detect linux platform
- * @type {boolean}
- */
-const isLinux = process.platform === 'linux';
-
-/**
  * Class for device management
  */
 class MediaDevices extends EventEmitter {
@@ -128,7 +122,7 @@ class MediaDevices extends EventEmitter {
    * @returns {void}
    */
   startLinuxDeviceChangeTimer() {
-    if (isLinux) {
+    if (IS_LINUX) {
       this.stopLinuxDeviceChangeTimer();
 
       this.linuxDeviceChangeInterval = setInterval(() => {
@@ -142,7 +136,7 @@ class MediaDevices extends EventEmitter {
    * @returns {void}
    */
   stopLinuxDeviceChangeTimer() {
-    if (isLinux) {
+    if (IS_LINUX) {
       clearInterval(this.linuxDeviceChangeInterval);
     }
   }

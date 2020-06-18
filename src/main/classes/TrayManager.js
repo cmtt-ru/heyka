@@ -1,13 +1,8 @@
 import path from 'path';
 import { app, Menu, Tray, nativeImage, nativeTheme, ipcMain } from 'electron';
-import Store from 'electron-store';
+import { IS_MAC } from '../../shared/Constants';
+import { heykaStore } from '../../renderer/store/localStore';
 
-const heykaStore = new Store({
-  name: 'app',
-});
-
-const isMac = process.platform === 'darwin';
-const isWin = !isMac;
 let animationTimer;
 const blurDebounce = 300;
 const oneSecond = 1000;
@@ -32,7 +27,7 @@ const icons = {
 
 let theme = 'light';
 
-if ((isMac && nativeTheme.shouldUseDarkColors) || isWin) {
+if ((IS_MAC && nativeTheme.shouldUseDarkColors) || !IS_MAC) {
   theme = 'dark';
 }
 
@@ -61,13 +56,16 @@ class TrayManager {
     app.on('ready', () => {
       this.set(iconPath);
 
-      // this.attachContextMenu();
-
-      this.tray.on('click', (event) => {
+      this.tray.on('click', () => {
         this.clickTray();
       });
-      this.tray.on('double-click', (event) => {
+      this.tray.on('double-click', () => {
         this.clickTray();
+      });
+      this.tray.on('right-click', () => {
+        this.tray.popUpContextMenu(Menu.buildFromTemplate([ {
+          role: 'quit',
+        } ]));
       });
       ipcMain.on('tray-animation', (event, state) => {
         if (state) {
@@ -91,7 +89,7 @@ class TrayManager {
   /**
    * Toggle Mainwindow on tray click
    * @returns {void}
- */
+   */
   clickTray() {
     if (this.mainWindow.isMinimized()) {
       this.mainWindow.restore();
@@ -200,94 +198,12 @@ class TrayManager {
    * @returns {void}
   */
   updateTheme() {
-    if ((isMac && nativeTheme.shouldUseDarkColors) || isWin) {
+    if ((IS_MAC && nativeTheme.shouldUseDarkColors) || !IS_MAC) {
       theme = 'dark';
     } else {
       theme = 'light';
     }
     this.set('default');
-  }
-
-  /**
-   * Attach context menu to tray
-   * @returns {void}
-   */
-  attachContextMenu() {
-    const contextMenu = Menu.buildFromTemplate([
-      // { role: 'appMenu' }
-      ...(isMac ? [ {
-        label: app.name,
-        submenu: [
-          { role: 'about' },
-          { type: 'separator' },
-          { role: 'services' },
-          { type: 'separator' },
-          { role: 'hide' },
-          { role: 'hideothers' },
-          { role: 'unhide' },
-          { type: 'separator' },
-          { role: 'quit' },
-        ],
-      } ] : []),
-
-      // { role: 'viewMenu' }
-      {
-        label: 'View',
-        submenu: [
-          { role: 'reload' },
-          { role: 'forcereload' },
-          { role: 'toggledevtools' },
-          { type: 'separator' },
-          { role: 'resetzoom' },
-          { role: 'zoomin' },
-          { role: 'zoomout' },
-          { type: 'separator' },
-          { role: 'togglefullscreen' },
-        ],
-      },
-      // { role: 'windowMenu' }
-      {
-        label: 'Window',
-        submenu: [
-          { role: 'minimize' },
-          { role: 'zoom' },
-          ...(isMac ? [
-            { type: 'separator' },
-            { role: 'front' },
-            { type: 'separator' },
-            { role: 'window' },
-          ] : [
-            { role: 'close' },
-          ]),
-        ],
-      },
-      { type: 'separator' },
-      {
-        role: 'help',
-        submenu: [
-          {
-            label: 'Learn More',
-            click: async () => {
-              const { shell } = require('electron');
-
-              await shell.openExternal('https://electronjs.org');
-            },
-          },
-        ],
-      },
-      ...(isMac ? [ {
-        role: 'close',
-        accelerator: 'CommandOrControl+Q',
-        registerAccelerator: true,
-      } ] : [ {
-        role: 'quit',
-        accelerator: 'CommandOrControl+Q',
-        registerAccelerator: true,
-      } ]),
-    ]);
-
-    // this.tray.setToolTip('You have 0 notifications');
-    this.tray.setContextMenu(contextMenu);
   }
 
   /**

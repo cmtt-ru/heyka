@@ -5,6 +5,7 @@ export const errorMessages = {
   missingAuthentication: 'Missing authentication',
   badRequest: 'Invalid request params input',
   serverIsDown: 'Server is down',
+  invalidRequestPayloadInput: 'Invalid request payload input',
 
   // Universal error messages
   accessDenied: 'Access denied',

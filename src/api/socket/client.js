@@ -1,11 +1,10 @@
 import io from 'socket.io-client';
 import eventNames from './eventNames';
-
-const isDevelopment = process.env.NODE_ENV !== 'production';
+import { IS_DEV } from '../../shared/Constants';
 
 let socketUrl = process.env.VUE_APP_PROD_URL;
 
-if (isDevelopment) {
+if (IS_DEV) {
   socketUrl = process.env.VUE_APP_DEV_URL;
 }
 
@@ -29,6 +28,7 @@ function connect() {
     }
 
     client.once('connect', data => {
+      client.lastSocketId = client.id;
       resolve(data);
     });
 

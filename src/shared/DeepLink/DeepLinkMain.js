@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import { IS_MAC } from '../../shared/Constants';
 
 /**
  * Transforms deep link string to command with hash
@@ -46,7 +47,7 @@ class DeepLinkMain {
   parseParams() {
     const deepLinkSetParams = this.setParams.bind(this);
 
-    if (process.platform === 'darwin') {
+    if (IS_MAC) {
       // deepLinkSetParams('heyka://call/test/123');
       app.on('open-url', (event, url) => {
         console.log('url mac:', url);

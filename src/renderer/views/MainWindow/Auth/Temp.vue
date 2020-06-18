@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import Store from 'electron-store';
 import Layout from './../Layout';
 import { UiInput } from '@components/Form';
 import UiButton from '@components/UiButton';
@@ -49,14 +48,7 @@ import { remote } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import mapUsers from './mapUsers.json';
-
-/**
- * Sign in code file store
- */
-const codeFileStore = new Store({
-  name: 'signin-code',
-  encryptionKey: '1234543',
-});
+import { codeFileStore } from '@/store/localStore';
 
 export default {
   components: {

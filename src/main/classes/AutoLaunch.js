@@ -1,17 +1,13 @@
 import { ipcMain, app } from 'electron';
 import AutoLaunch from 'auto-launch'; // ! Not Mac App Store friendly
-import Store from 'electron-store';
+import { IS_DEV } from '../../shared/Constants';
+import { heykaStore } from '../../renderer/store/localStore';
 const autoLauncher = new AutoLaunch({
   name: app.name,
 });
-const heykaStore = new Store({
-  name: 'app',
-});
-
-const isDevelopment = process.env.NODE_ENV !== 'production';
 
 /* Enable autolaunch if not in development mode and if setting is set to "true" */
-if (!isDevelopment && heykaStore.get('autolaunch', true)) {
+if (!IS_DEV && heykaStore.get('autolaunch', true)) {
   autoLauncher.isEnabled().then(function (isEnabled) {
     if (isEnabled) {
       return;

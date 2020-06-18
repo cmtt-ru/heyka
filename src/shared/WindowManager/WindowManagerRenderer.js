@@ -78,100 +78,13 @@ class Window extends EventEmitter {
   }
 
   /**
-   * Destroy window - send signal to main process
+   * All signals sent to main process
+   * @param {string} event - event name
    * @returns {void}
    */
-  close() {
+  action(event) {
     ipcRenderer.sendSync('window-manager-event', {
-      event: 'close',
-      id: this.windowId,
-    });
-  }
-
-  /**
-   * Hide window - send signal to main process
-   * @returns {void}
-   */
-  hide() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'hide',
-      id: this.windowId,
-    });
-  }
-
-  /**
-   * Show window - send signal to main process
-   * @returns {void}
-   */
-  show() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'show',
-      id: this.windowId,
-    });
-  }
-
-  /**
-   * Show window - send signal to main process
-   * @returns {void}
-   */
-  showInactive() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'showInactive',
-      id: this.windowId,
-    });
-  }
-
-  /**
-   * Focus window - send signal to main process
-   * @returns {void}
-   */
-  focus() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'focus',
-      id: this.windowId,
-    });
-  }
-
-  /**
-   * Blur window - send signal to main process
-   * @returns {void}
-   */
-  blur() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'blur',
-      id: this.windowId,
-    });
-  }
-
-  /**
-   * Toggle fullscreen mode - send signal to main process
-   * @returns {void}
-   */
-  toggleFullscreen() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'fullscreen',
-      id: this.windowId,
-    });
-  }
-
-  /**
-   * Toggle console visibility - send signal to main process
-   * @returns {void}
-   */
-  toggleConsole() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'console',
-      id: this.windowId,
-    });
-  }
-
-  /**
-   * Reload window - send signal to main process
-   * @returns {void}
-   */
-  reload() {
-    ipcRenderer.sendSync('window-manager-event', {
-      event: 'reload',
+      event,
       id: this.windowId,
     });
   }

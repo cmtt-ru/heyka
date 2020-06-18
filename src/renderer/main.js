@@ -1,5 +1,5 @@
 /* global buildRevision */
-
+import '@shared/Constants';
 import HawkCatcher from '@hawk.so/javascript';
 import Vue from 'vue';
 import App from '@/App.vue';
