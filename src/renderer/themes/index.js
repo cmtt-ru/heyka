@@ -1,13 +1,11 @@
 import Vue from 'vue';
 import themes from './themes.json';
 import { ipcRenderer } from 'electron';
-import Store from 'electron-store';
 import vuex from '@/store';
+import { heykaStore } from '@/store/localStore';
 const { nativeTheme } = require('electron').remote;
 
-const heykaStore = new Store({
-  name: 'app',
-});
+;
 
 /**
  * A class that handles themes

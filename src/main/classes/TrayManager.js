@@ -1,13 +1,8 @@
 import path from 'path';
 import { app, Menu, Tray, nativeImage, nativeTheme, ipcMain } from 'electron';
-import Store from 'electron-store';
+import { IS_MAC } from '../../shared/Constants';
+import { heykaStore } from '../../renderer/store/localStore';
 
-const heykaStore = new Store({
-  name: 'app',
-});
-
-const isMac = process.platform === 'darwin';
-const isWin = !isMac;
 let animationTimer;
 const blurDebounce = 300;
 const oneSecond = 1000;
@@ -32,7 +27,7 @@ const icons = {
 
 let theme = 'light';
 
-if ((isMac && nativeTheme.shouldUseDarkColors) || isWin) {
+if ((IS_MAC && nativeTheme.shouldUseDarkColors) || !IS_MAC) {
   theme = 'dark';
 }
 
@@ -203,7 +198,7 @@ class TrayManager {
    * @returns {void}
   */
   updateTheme() {
-    if ((isMac && nativeTheme.shouldUseDarkColors) || isWin) {
+    if ((IS_MAC && nativeTheme.shouldUseDarkColors) || !IS_MAC) {
       theme = 'dark';
     } else {
       theme = 'light';
@@ -217,7 +212,7 @@ class TrayManager {
    */
   createContextMenu() {
     const contextMenu = Menu.buildFromTemplate([
-      ...(isMac ? [ {
+      ...(IS_MAC ? [ {
         role: 'close',
       } ] : [ {
         role: 'quit',

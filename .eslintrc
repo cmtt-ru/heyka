@@ -200,6 +200,11 @@
     "Paragraph": true,
     "Header": true,
     "Embed": true,
-    "System": true
+    "System": true,
+    "IS_DEV": true,
+    "IS_WIN": true,
+    "IS_MAC": true,
+    "IS_LINUX": true,
+    "buildRevision": true
   }
 }

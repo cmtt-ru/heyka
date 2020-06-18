@@ -3,13 +3,9 @@ import themes from '@/themes';
 import pushWindow from '@classes/pushWindow';
 import i18n from '@/i18n';
 import { ipcRenderer } from 'electron';
-import Store from 'electron-store';
 import dateFormat from 'dateformat';
 import { v4 as uuidV4 } from 'uuid';
-
-const heykaStore = new Store({
-  name: 'app',
-});
+import { heykaStore } from '@/store/localStore';
 
 /**
  * @typedef PrivacyLogData

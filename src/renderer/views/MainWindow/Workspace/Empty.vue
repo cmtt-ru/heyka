@@ -1,4 +1,3 @@
-import {ipcRenderer} from "electron";
 <template>
   <div class="doggy">
     <div class="doggy__inner">

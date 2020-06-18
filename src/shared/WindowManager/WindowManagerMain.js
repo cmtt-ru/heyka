@@ -5,10 +5,11 @@ import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
+import { IS_WIN, IS_DEV } from '../../shared/Constants';
 
 let icon;
 
-if (process.platform === 'win32') {
+if (IS_WIN) {
   icon = nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`));
 } else {
   icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
@@ -24,7 +25,6 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   fullscreenable: false,
   show: false,
   icon: icon,
-  skipTaskBar: true,
   webPreferences: Object.freeze({
     nodeIntegration: true,
     webSecurity: true,
@@ -100,34 +100,44 @@ class WindowManager {
   createWindow(options) {
     const windowId = uuidV4();
 
+    // clone template if found
     if (options.template && templates[options.template]) {
       options.window = Object.assign(cloneDeep(templates[options.template]), cloneDeep(options.window));
     }
 
+    // mix in default window options
     const windowOptions = Object.assign(cloneDeep(DEFAULT_WINDOW_OPTIONS), cloneDeep(options.window));
 
+    // add global argument so we can identify window by its id
     windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
 
+    // create BrowserWindow!
     const browserWindow = new BrowserWindow(windowOptions);
 
-    if (process.env.NODE_ENV === 'production') {
-      Menu.setApplicationMenu(null);
-    }
+    // add window to WindowManager's array; also save options for later
     this.windows[windowId] = {
       browserWindow,
       options,
     };
 
+    // remove menu in prod
+    if (!IS_DEV) {
+      Menu.setApplicationMenu(null);
+    }
+
+    // set mouseEvents mode
     if (options.ignoreMouseEvents) {
       browserWindow.setIgnoreMouseEvents(true);
     }
 
+    // open route and url from options
     this.openUrl({
       id: windowId,
       route: options.route,
       url: options.url,
     });
 
+    // listen to "close" event so we can prevent closing if needed
     browserWindow.on('close', e => {
       console.log('closing:', windowId, this.mainWindowId);
       if (this.windows[windowId].options.preventClose && !this.quitting) {
@@ -136,6 +146,7 @@ class WindowManager {
       }
     });
 
+    // listen to "closed" event so we can clean up stuff and tell renderer that window is closed
     browserWindow.on('closed', e => {
       console.log('closed:', windowId, ', mainWindow:', this.mainWindowId);
       try {
@@ -146,7 +157,9 @@ class WindowManager {
       }
     });
 
+    // listen to "ready-to-show" event so we can show and position our window
     browserWindow.on('ready-to-show', (event) => {
+      // positioning stuff
       // browserWindow.setAlwaysOnTop(true, 'floating', 3);
       const position = this.__getWindowPosition(browserWindow, options.position, options.margin);
 
@@ -173,6 +186,7 @@ class WindowManager {
         browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
       }
 
+      // "show window" stuff
       if (options.showInactive) {
         browserWindow.showInactive();
       } else {
@@ -180,6 +194,7 @@ class WindowManager {
       }
     });
 
+    // tell renderer about blur, focus and hide events
     browserWindow.on('blur', (event) => {
       this.sendAll(`window-blur-${windowId}`);
     });
@@ -190,6 +205,7 @@ class WindowManager {
       this.sendAll(`window-hide-${windowId}`);
     });
 
+    // return this window Id after it's created
     return windowId;
   }
 
@@ -219,9 +235,6 @@ class WindowManager {
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
       this.windows[id].browserWindow.loadURL(devUrl);
-      // if (!process.env.IS_TEST) {
-      //   browserWindow.webContents.openDevTools();
-      // }
     } else {
       this.windows[id].browserWindow.loadURL(prodUrl);
     }

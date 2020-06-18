@@ -1,9 +1,5 @@
 import { remote } from 'electron';
-import Store from 'electron-store';
-
-const heykaStore = new Store({
-  name: 'app',
-});
+import { heykaStore } from '@/store/localStore';
 
 /**
  * @typedef {object} AppState
