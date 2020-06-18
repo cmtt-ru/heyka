@@ -72,18 +72,39 @@ export default {
    * Select (join) channel
    * @param {object} context – store context
    * @param {string} id – channel id
+   * @param {object?} janusOptions object
    * @returns {object} selected channel
    */
-  async selectChannel({ commit, getters, state }, id) {
+  async selectChannel({ dispatch, getters }, id) {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
+
+    const response = await API.channel.select(id, getters['me/getMediaState']);
+
+    dispatch('selectChannelWithoutAPICall', {
+      id,
+      connectionOptions: response.connectionOptions,
+    });
+  },
+
+  /**
+   * Select (join) channel without API call
+   * @param {object} context – store context
+   * @param {string} id – channel id
+   * @param {object} connectionOptions Connection options object
+   * @returns {object} selected channel
+   */
+  selectChannelWithoutAPICall({ commit, getters, state }, { id, connectionOptions }) {
+    if (id === getters['me/getSelectedChannelId']) {
+      return;
+    }
+
     commit('me/SET_MEDIA_STATE', {
       ...getters['me/getMediaState'],
       camera: false,
       screen: false,
     });
-    const response = await API.channel.select(id, getters['me/getMediaState']);
 
     if (state.me.selectedChannelId !== null && state.me.selectedChannelId !== '') {
       commit('channels/REMOVE_USER', {
@@ -92,7 +113,7 @@ export default {
       });
     }
 
-    commit('janus/SET_OPTIONS', response.connectionOptions);
+    commit('janus/SET_OPTIONS', connectionOptions);
 
     commit('channels/ADD_USER', {
       userId: state.me.id,
@@ -115,9 +136,18 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ commit, dispatch, state }, id) {
+  async unselectChannel({ dispatch }, id) {
     await API.channel.unselect(id);
+    dispatch('unselectChannelWithoutAPICall', id);
+  },
 
+  /**
+   * Unselect (join) channel without api call
+   * @param {object} context – store context
+   * @param {string} id – channel id
+   * @returns {object} unselected channel
+   */
+  unselectChannelWithoutAPICall({ commit, dispatch, state }, id) {
     commit('channels/REMOVE_USER', {
       userId: state.me.id,
       channelId: id,
@@ -167,54 +197,21 @@ export default {
         // if server said that channel is selected
         // then select channel in app
         if (authData.channelId && getters['me/getSelectedChannelId'] !== authData.channelId) {
-          commit('janus/SET_OPTIONS', authData);
-
-          commit('channels/ADD_USER', {
-            userId: state.me.id,
-            channelId: authData.channelId,
-            userMediaState: getters['me/getMediaState'],
+          dispatch('selectChannelWithoutAPICall', {
+            id: authData.channelId,
+            connectionOptions: authData,
           });
-
-          commit('me/SET_CHANNEL_ID', authData.channelId);
-
-          callWindow.showOverlay();
-
-          if (state.me.mediaState.microphone === true) {
-            ipcRenderer.send('tray-animation', true);
-          }
         }
 
         // if server said that channel not selected
         // unselect channel in app
         if (!authData.channelId && getters['me/getSelectedChannelId']) {
-          commit('channels/REMOVE_USER', {
-            userId: state.me.id,
-            channelId: authData.channelId,
-          });
-
-          commit('me/SET_CHANNEL_ID', null);
-
-          dispatch('me/setDefaultMediaState');
-
-          callWindow.hideAll();
-
-          ipcRenderer.send('tray-animation', false);
+          dispatch('unselectChannelWithoutAPICall', getters['me/getSelectedChannelId']);
         }
       }
 
       if (!authData.reconnected && getters['me/getSelectedChannelId']) {
-        commit('channels/REMOVE_USER', {
-          userId: state.me.id,
-          channelId: getters['me/getSelectedChannelId'],
-        });
-
-        commit('me/SET_CHANNEL_ID', null);
-
-        dispatch('me/setDefaultMediaState');
-
-        callWindow.hideAll();
-
-        ipcRenderer.send('tray-animation', false);
+        dispatch('unselectChannelWithoutAPICall', getters['me/getSelectedChannelId']);
       }
 
       // update full workspace state
