@@ -4,7 +4,7 @@ const IS_MAC = process.platform === 'darwin';
 const IS_LINUX = process.platform === 'linux';
 
 // global variables
-if (window) {
+if (typeof window !== 'undefined') {
   window.IS_DEV = IS_DEV;
   window.IS_WIN = IS_WIN;
   window.IS_MAC = IS_MAC;
