@@ -56,13 +56,16 @@ class TrayManager {
     app.on('ready', () => {
       this.set(iconPath);
 
-      // this.attachContextMenu();
+      this.createContextMenu();
 
-      this.tray.on('click', (event) => {
+      this.tray.on('click', () => {
         this.clickTray();
       });
-      this.tray.on('double-click', (event) => {
+      this.tray.on('double-click', () => {
         this.clickTray();
+      });
+      this.tray.on('right-click', () => {
+        this.tray.popUpContextMenu();
       });
       ipcMain.on('tray-animation', (event, state) => {
         if (state) {
@@ -86,7 +89,7 @@ class TrayManager {
   /**
    * Toggle Mainwindow on tray click
    * @returns {void}
- */
+   */
   clickTray() {
     if (this.mainWindow.isMinimized()) {
       this.mainWindow.restore();
@@ -204,84 +207,18 @@ class TrayManager {
   }
 
   /**
-   * Attach context menu to tray
+   * Create tray's context menu
    * @returns {void}
    */
-  attachContextMenu() {
+  createContextMenu() {
     const contextMenu = Menu.buildFromTemplate([
-      // { role: 'appMenu' }
-      ...(IS_MAC ? [ {
-        label: app.name,
-        submenu: [
-          { role: 'about' },
-          { type: 'separator' },
-          { role: 'services' },
-          { type: 'separator' },
-          { role: 'hide' },
-          { role: 'hideothers' },
-          { role: 'unhide' },
-          { type: 'separator' },
-          { role: 'quit' },
-        ],
-      } ] : []),
-
-      // { role: 'viewMenu' }
-      {
-        label: 'View',
-        submenu: [
-          { role: 'reload' },
-          { role: 'forcereload' },
-          { role: 'toggledevtools' },
-          { type: 'separator' },
-          { role: 'resetzoom' },
-          { role: 'zoomin' },
-          { role: 'zoomout' },
-          { type: 'separator' },
-          { role: 'togglefullscreen' },
-        ],
-      },
-      // { role: 'windowMenu' }
-      {
-        label: 'Window',
-        submenu: [
-          { role: 'minimize' },
-          { role: 'zoom' },
-          ...(IS_MAC ? [
-            { type: 'separator' },
-            { role: 'front' },
-            { type: 'separator' },
-            { role: 'window' },
-          ] : [
-            { role: 'close' },
-          ]),
-        ],
-      },
-      { type: 'separator' },
-      {
-        role: 'help',
-        submenu: [
-          {
-            label: 'Learn More',
-            click: async () => {
-              const { shell } = require('electron');
-
-              await shell.openExternal('https://electronjs.org');
-            },
-          },
-        ],
-      },
       ...(IS_MAC ? [ {
         role: 'close',
-        accelerator: 'CommandOrControl+Q',
-        registerAccelerator: true,
       } ] : [ {
         role: 'quit',
-        accelerator: 'CommandOrControl+Q',
-        registerAccelerator: true,
       } ]),
     ]);
 
-    // this.tray.setToolTip('You have 0 notifications');
     this.tray.setContextMenu(contextMenu);
   }
 
