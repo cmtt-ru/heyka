@@ -14,7 +14,7 @@ export default {
     this.loadSvgSprite();
 
     Mousetrap.bind(['command+i', 'ctrl+i'], () => {
-      WindowManager.getCurrentWindow().action('toggleConsole');
+      WindowManager.getCurrentWindow().action('console');
     });
     Mousetrap.bind(['command+r', 'ctrl+r'], () => {
       WindowManager.getCurrentWindow().action('reload');

@@ -57,6 +57,9 @@ class WindowManager {
     };
 
     ipcMain.on('window-manager-event', (event, options) => {
+      if (this.events[options.event] === undefined) {
+        return;
+      }
       this.events[options.event].call(this, options);
       event.returnValue = true;
     });
