@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain, protocol, nativeTheme, powerMonitor } from 'electron';
+import { app, ipcMain, protocol, nativeTheme, powerMonitor, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import Autoupdater from './classes/AutoUpdater';
 import TrayManager from './classes/TrayManager';
@@ -194,4 +194,18 @@ if (isDevelopment) {
       app.quit();
     });
   }
+}
+
+ipcMain.on('open-webrtc-internals', (event) => {
+  event.returnValue = true;
+  createWebrtcInternals();
+});
+
+function createWebrtcInternals() {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+  });
+
+  win.loadURL('chrome://webrtc-internals');
 }
