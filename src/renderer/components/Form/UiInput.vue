@@ -12,12 +12,11 @@
 
     <input
       ref="input"
-      v-model="myValue"
+      v-model="localValue"
       class="input"
       :class="{'input--with-icon': icon}"
       :type="type"
       :placeholder="placeholder"
-      @input="updateText()"
     >
   </div>
 </template>
@@ -85,22 +84,19 @@ export default {
     },
   },
 
-  data() {
-    return {
-      myValue: this.value,
-    };
-  },
-
-  watch: {
-    value(newValue, oldValue) {
-      this.myValue = newValue;
+  computed: {
+    localValue: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit('input', value);
+      },
     },
+
   },
 
   methods: {
-    updateText() {
-      this.$emit('input', this.myValue);
-    },
     focusInput() {
       this.$refs.input.focus();
     },
