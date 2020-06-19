@@ -25,6 +25,7 @@ const Devices = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/S
 const Network = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Network');
 const About = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/About');
 const Support = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Support');
+const TestZone = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/TestZone');
 
 /* Signin link from deep link */
 const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
@@ -142,6 +143,11 @@ const routes = [
             path: 'support',
             name: 'settings-support',
             component: Support,
+          },
+          {
+            path: 'test-zone',
+            name: 'test-zone',
+            component: TestZone,
           },
         ],
       },
