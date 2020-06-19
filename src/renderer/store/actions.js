@@ -136,7 +136,8 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ dispatch }, id) {
+  async unselectChannel({ commit, dispatch }, id) {
+    commit('app/ANIMATION_CHANNEL_ID', null);
     await API.channel.unselect(id);
     dispatch('unselectChannelWithoutAPICall', id);
   },

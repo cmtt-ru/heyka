@@ -148,7 +148,11 @@ export default {
      * @returns {object} – channel
      */
     selectedChannel() {
-      const selectedChannelId = this.$store.getters['me/getSelectedChannelId'];
+      let selectedChannelId = this.$store.getters['me/getSelectedChannelId'];
+
+      if (selectedChannelId === null) {
+        selectedChannelId = this.$store.state.app.animationChannel;
+      }
 
       return this.$store.getters['channels/getChannelById'](selectedChannelId);
     },
@@ -167,7 +171,7 @@ export default {
      * @returns {boolean} false if channel is selected
      */
     notSelected(id) {
-      return !this.selectedChannel || (id !== this.selectedChannel.id);
+      return (this.selectedChannel === undefined) || (id !== this.selectedChannel.id);
     },
 
     /**
@@ -176,7 +180,7 @@ export default {
      * @returns {void}
      */
     async dbclickChannelHandler(channel) {
-      // TODO: добавить коннект к сокетам и всё такое
+      await this.$store.commit('app/ANIMATION_CHANNEL_ID', channel.id);
       await this.$store.dispatch('selectChannel', channel.id);
     },
 

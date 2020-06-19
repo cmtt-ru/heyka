@@ -177,4 +177,17 @@ export default {
     state.socket.id = value.id;
     state.socket.connectedAt = value.connectedAt;
   },
+
+  /* -------- global state for animations --------- */
+
+  /**
+   * Set selected channel for faster animation
+   *
+   * @param {AppState} state – module app state
+   * @param {string} id – channel's id or null
+   * @constructor
+   */
+  ANIMATION_CHANNEL_ID(state, id) {
+    state.animationChannel = id;
+  },
 };

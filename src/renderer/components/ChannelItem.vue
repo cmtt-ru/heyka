@@ -98,16 +98,26 @@ export default {
     myId() {
       return this.$store.getters['me/getMyId'];
     },
+
+    /**
+     * Returns our instance
+     * @returns {object} – user
+     */
+    me() {
+      return this.$store.getters['users/getUserById'](this.myId);
+    },
     /**
      * Get users array
      * @returns {array} array of users
      */
     users() {
-      if (this.excludeMe) {
-        return this.$store.getters.getUsersByChannel(this.channel.id).filter((user) => user.id !== this.myId);
-      }
+      const otherUsers = this.$store.getters.getUsersByChannel(this.channel.id).filter((user) => user.id !== this.myId);
 
-      return this.$store.getters.getUsersByChannel(this.channel.id);
+      if (this.excludeMe) {
+        return otherUsers;
+      } else {
+        return [this.me, ...otherUsers];
+      }
     },
 
     /**
