@@ -46,7 +46,7 @@
           {{ texts.styleguide }}
         </router-link>
         <router-link
-          v-if="dev"
+          v-if="IS_DEV"
           class="link"
           :to="{name: 'test-zone'}"
         >
@@ -92,6 +92,7 @@ export default {
   data() {
     return {
       info: this.$store.getters['app/getGeneralInfo'],
+      IS_DEV,
     };
   },
   computed: {

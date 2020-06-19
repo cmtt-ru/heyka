@@ -334,6 +334,10 @@ export default {
         return;
       }
 
+      if (!janusWrapper.__videoroomPlugin) {
+        return;
+      }
+
       this.setOperationStart('unpublish');
 
       janusWrapper.unpublishVideoStream();

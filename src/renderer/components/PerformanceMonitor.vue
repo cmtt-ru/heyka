@@ -65,4 +65,5 @@ export default {
     padding 2px 6px
     font-size 11px
     font-family monospace
+    z-index 1000
 </style>
