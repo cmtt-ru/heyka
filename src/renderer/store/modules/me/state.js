@@ -1,8 +1,4 @@
-import Store from 'electron-store';
-
-const meStore = new Store({
-  name: 'store-module-me',
-});
+import { meStore } from '@/store/localStore';
 
 /**
  * @typedef {object} MeState

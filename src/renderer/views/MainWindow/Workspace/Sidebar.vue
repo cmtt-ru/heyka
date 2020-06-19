@@ -3,15 +3,17 @@
     id="sidebar_channel_anchor"
     class="l-p-8"
   >
-    <div
-      v-if="selectedChannel"
-      class="connected-channel"
-    >
-      <channel-item
-        :channel="selectedChannel"
-        @more="moreHandler()"
-      />
-    </div>
+    <transition name="connected-channel">
+      <div
+        v-if="selectedChannel"
+        class="connected-channel"
+      >
+        <channel-item
+          :channel="selectedChannel"
+          @more="moreHandler()"
+        />
+      </div>
+    </transition>
 
     <div class="channel-header">
       <a
@@ -40,11 +42,15 @@
         button
         @dblclick.native="dbclickChannelHandler(channel)"
       >
-        <channel-item
-          v-show="notSelected(channel.id)"
-          :channel="channel"
-          @more="moreHandler()"
-        />
+        <transition name="list-channel">
+          <channel-item
+            v-show="notSelected(channel.id)"
+            :channel="channel"
+            exclude-me
+            class="list-channel"
+            @more="moreHandler()"
+          />
+        </transition>
       </list-item>
     </list>
 
@@ -224,5 +230,46 @@ export default {
 
 .user-anchor
   transform translateY(-25px)
+
+$ANIM = 250ms
+
+.connected-channel
+  overflow hidden
+
+.connected-channel-enter
+  height 0
+  opacity 0
+  transform translateY(50px)
+
+.connected-channel-enter-to
+  height 43px
+  transition opacity $ANIM ease, height $ANIM ease, transform $ANIM ease
+
+.connected-channel-leave
+  height 43px
+
+.connected-channel-leave-to
+  opacity 0
+  height 0
+  transform translateY(50px)
+  transition opacity $ANIM ease, height $ANIM ease, transform $ANIM ease
+
+.list-channel-enter
+  opacity 0
+  max-height 0
+  transform translateY(-40px)
+  margin-top -45px
+
+.list-channel-enter-to
+  transition opacity $ANIM ease, transform $ANIM ease, margin-top $ANIM ease
+
+.list-channel-leave
+  margin-top 2px
+
+.list-channel-leave-to
+  opacity 0
+  transform translateY(-40px)
+  margin-top -45px
+  transition opacity $ANIM ease, transform $ANIM ease, margin-top $ANIM ease
 
 </style>

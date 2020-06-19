@@ -117,7 +117,7 @@ export default {
     async showMacScreenSharingPermission() {
       const timeout = 1000;
 
-      if (process.platform === 'darwin') {
+      if (IS_MAC) {
         const screens = await mediaCapturer.getSources('screen', 0);
         const stream = await mediaCapturer.getStream(screens[0].id);
 

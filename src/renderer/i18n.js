@@ -2,11 +2,7 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import { remote } from 'electron';
-import Store from 'electron-store';
-
-const heykaStore = new Store({
-  name: 'app',
-});
+import { heykaStore } from '@/store/localStore';
 
 Vue.use(VueI18n);
 

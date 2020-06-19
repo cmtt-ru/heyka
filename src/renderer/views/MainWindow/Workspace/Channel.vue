@@ -37,7 +37,6 @@
       </ui-button>
       <ui-button
         v-if="isConnected"
-        :disabled="janusInProgress"
         :type="4"
         class="channel-info__connect"
         size="small"
