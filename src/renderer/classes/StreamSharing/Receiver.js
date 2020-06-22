@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
+import mediaCapturer from '../mediaCapturer';
 // import uuid from 'uuid/v4';
 
 /**
@@ -33,12 +34,18 @@ export default class StreamSharingReceiver extends EventEmitter {
       requestId: `${Math.floor(Math.random() * 9999 + 10000)}`,
       userId,
     };
+
+    if (this.__pcs[userId]) {
+      this._streamSharingClosed(userId);
+    }
+
     const pc = new RTCPeerConnection();
 
     const onIceCandidate = e => {
       if (!e.candidate) {
         return;
-      };
+      }
+
       this._debug(`ice-candidate ${data.requestId}`, e.candidate.toJSON());
 
       // send ICE candidate to another window
@@ -50,6 +57,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     const onIceConnectionStateChange = e => {
       this._debug(`ice-state ${data.requestId}`, pc.iceConnectionState);
+
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
         this._streamSharingClosed(userId, data.requestId);
       }
@@ -57,12 +65,14 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     const onTrack = track => {
       console.log(`%c Got track for ${userId}! `, 'background: yellow;');
-      this._debug(`Cought track from RTCPeerConnection ${data.requestId}: `, track);
+      // this._debug(`Cought track from RTCPeerConnection ${data.requestId}: `, track);
       // notify about new received stream
       this.emit(`new-stream-${userId}`, {
         userId,
         stream: track.streams[0],
       });
+
+      this.__pcs[userId].mediaStream = track.streams[0];
     };
 
     this.__pcs[userId] = {
@@ -84,7 +94,7 @@ export default class StreamSharingReceiver extends EventEmitter {
     broadcastEvents.once(`stream-offer-host-${data.requestId}`, async (d) => {
       this._debug(`offer ${data.requestId}`, d);
       await pc.setRemoteDescription(d.sdpOffer);
-      const answer = await pc.createAnswer();
+      let answer = await pc.createAnswer();
 
       await pc.setLocalDescription(answer);
 
@@ -97,6 +107,8 @@ export default class StreamSharingReceiver extends EventEmitter {
           type: 'answer',
         },
       });
+
+      answer = null;
     });
 
     // handle ICE candidates from stream host
@@ -107,6 +119,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // Request stream
     broadcastEvents.dispatch('request-stream', data);
+    console.log('---------', 'request-stream', data);
     broadcastEvents.once(`failed-request-${data.requestId}`, () => {
       this._streamSharingClosed(data.userId, data.requestId);
     });
@@ -119,25 +132,52 @@ export default class StreamSharingReceiver extends EventEmitter {
    * @returns {void}
    */
   _streamSharingClosed(userId, requestId) {
-    const pc = this.__pcs[userId];
+    let pc = this.__pcs[userId];
 
     if (!pc) {
       return;
     }
+
     if (requestId && pc && requestId !== pc.requestId) {
       return;
     }
+
     console.log(`%c Close connection for ${userId} (${requestId})! `, 'background: yellow;');
 
-    this._debug(`close connection for ${pc.requestId}, ${userId}`, pc);
+    // this._debug(`close connection for ${pc.requestId}, ${userId}`, pc);
+
+    if (pc.mediaStream) {
+      mediaCapturer.destroyStream(pc.mediaStream);
+      pc.mediaStream = null;
+    }
 
     pc.pc.close();
     pc.pc.removeEventListener('icecandidate', pc.onIceCandidate);
     pc.pc.removeEventListener('iceconnectionstatechange', pc.onIceConnectionStateChange);
     pc.pc.removeEventListener('track', pc.onTrack);
+
+    broadcastEvents.removeAllListeners(`icecandidate-host-${pc.requestId}`);
+    broadcastEvents.removeAllListeners(`stream-offer-host-${pc.requestId}`);
+    broadcastEvents.removeAllListeners(`failed-request-${pc.requestId}`);
+
+    pc.requestId = null;
+    pc.onIceCandidate = null;
+    pc.onIceConnectionStateChange = null;
+    pc.onTrack = null;
+
+    pc.pc = null;
+
+    pc = null;
+
+    this.__pcs[userId] = null;
+
     delete this.__pcs[userId];
 
+    // console.log('-------------__pcs', this.__pcs);
+
     this.emit('connection-closed', userId);
+
+    // console.log('++++++++', this, broadcastEvents);
   }
 
   /**

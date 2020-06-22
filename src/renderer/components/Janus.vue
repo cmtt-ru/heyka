@@ -23,7 +23,7 @@ import AudioCheck from '@classes/AudioCheck';
 import { mapState } from 'vuex';
 
 const WAIT_PUBLISHER_INVERVAL = 80;
-const WAIT_PUBLISHER_ATTEMPTS = 10;
+const WAIT_PUBLISHER_ATTEMPTS = 20;
 
 /**
  * Video publishers
@@ -520,9 +520,11 @@ export default {
        * Пытаемся сделать несколько попыток с небольшим интервалом
        * в надежде, что паблишер появится
        */
+      console.log('-------- WAITING PUBLISHER');
       while (!publisher) {
         if (tries > WAIT_PUBLISHER_ATTEMPTS) {
           // попытки кончились, сообщаем о неудаче
+          console.log('-------- FAILED REQUEST');
           streamHost.failedRequest(data.requestId);
 
           return;
@@ -571,14 +573,14 @@ export default {
         userId: this.userId,
         stream,
       };
-      await new Promise(resolve => this.$nextTick(resolve));
+      // await new Promise(resolve => this.$nextTick(resolve));
       // Insert stream
-      const el = this.$refs[`video${this.userId}`][0];
-
-      el.srcObject = stream;
-      el.onloadedmetadata = function () {
-        el.play();
-      };
+      // const el = this.$refs[`video${this.userId}`][0];
+      //
+      // el.srcObject = stream;
+      // el.onloadedmetadata = function () {
+      //   el.play();
+      // };
     },
 
     /**
