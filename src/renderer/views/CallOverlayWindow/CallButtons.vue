@@ -1,5 +1,6 @@
 <template>
   <div
+    v-stop-propagation.dblclick
     class="call-buttons"
     :size="size"
   >

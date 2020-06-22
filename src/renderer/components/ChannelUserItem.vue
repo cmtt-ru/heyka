@@ -31,6 +31,7 @@
 
     <ui-button
       v-if="user.screen"
+      v-stop-propagation.mouseup.mousedown
       class="user__sharing"
       :type="7"
       size="small"
@@ -99,6 +100,7 @@ export default {
 
   methods: {
     expandHandler() {
+      console.log('expandHandler');
       broadcastActions.dispatch('openGrid');
       broadcastEvents.dispatch('grid-expand', this.user.id);
     },

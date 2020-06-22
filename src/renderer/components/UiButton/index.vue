@@ -5,10 +5,7 @@
     class="ui-button"
     :class="classList"
     :style="buttonSize"
-    @click="universalClickHandler"
-    @dblclick="universalClickHandler"
-    @mouseup="universalClickHandler"
-    @mousedown="universalClickHandler"
+    @click="$emit('click')"
   >
     <slot />
   </div>
@@ -19,18 +16,11 @@
     class="ui-button"
     :class="classList"
     :style="buttonSize"
-    @click="universalClickHandler"
-    @dblclick="universalClickHandler"
-    @mouseup="universalClickHandler"
-    @mousedown="universalClickHandler"
+    @click="$emit('click')"
   >
     <conditional-wrapper :wrap="needToWrapIcon">
       <div
         class="ui-button__icon-bg"
-        @click="universalClickHandler"
-        @dblclick="universalClickHandler"
-        @mouseup="universalClickHandler"
-        @mousedown="universalClickHandler"
       >
         <svg-icon
           class="ui-button__icon"
@@ -150,14 +140,6 @@ export default {
       type: String,
       default: undefined,
     },
-
-    /**
-     * Event propagation
-     */
-    propagation: {
-      type: Boolean,
-      default: false,
-    },
   },
 
   computed: {
@@ -276,21 +258,6 @@ export default {
       }
 
       return {};
-    },
-  },
-  methods: {
-    /**
-     * Universal click handler
-     * @param {object} event – event
-     * @returns {void}
-     */
-    universalClickHandler(event) {
-      if (!this.propagation) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
-
-      this.$emit(event.type);
     },
   },
 };

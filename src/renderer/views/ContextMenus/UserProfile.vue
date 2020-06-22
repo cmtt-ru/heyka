@@ -6,7 +6,6 @@
           data-popover-close
           :type="11"
           icon="user"
-          propagation
         >
           {{ texts.profile }}
         </ui-button>

@@ -20,12 +20,13 @@
         </div>
         <ui-button
           v-show="isSelected"
+          v-stop-propagation.dblclick
           :type="7"
           class="channel__more"
           size="small"
           height="16"
           icon="more"
-          @click.native="$emit('more')"
+          @click.native="moreHandler"
         />
       </div>
 
@@ -154,6 +155,16 @@ export default {
      */
     isSelected() {
       return this.$route.params.id === this.channel.id;
+    },
+  },
+
+  methods: {
+    /**
+     * Dummy popover creation
+     * @returns {void}
+     */
+    moreHandler() {
+      this._notImplemented();
     },
   },
 

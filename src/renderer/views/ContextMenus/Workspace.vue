@@ -54,7 +54,6 @@
         <ui-button
           :type="11"
           icon="settings"
-          propagation
         >
           {{ texts.settings }}
         </ui-button>

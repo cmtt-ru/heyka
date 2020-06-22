@@ -141,4 +141,60 @@ export default {
     return lastSpeakingUser;
   },
 
+  /**
+   * Get our full info
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {object}
+   */
+  myInfo: (state, getters) => {
+    const myId = getters['me/getMyId'];
+
+    if (myId === undefined) {
+      return null;
+    }
+    const commonInfo = getters['users/getUserById'](myId);
+    const myMedia = getters['me/getMediaState'];
+
+    return {
+      ...commonInfo,
+      ...myMedia,
+    };
+  },
+
+  /**
+   * Get our workspace info
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {object}
+   */
+  myWorkspace: (state, getters) => {
+    const workspaceId = getters['me/getSelectedWorkspaceId'];
+
+    if (!workspaceId) {
+      return null;
+    }
+
+    return getters['workspaces/getWorkspaceById'](workspaceId);
+  },
+
+  /**
+   * Get our channel info
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {object}
+   */
+  myChannel: (state, getters) => {
+    const channelId = getters['me/getSelectedChannelId'];
+
+    if (!channelId) {
+      return null;
+    }
+
+    return getters['channels/getChannelById'](channelId);
+  },
+
 };
