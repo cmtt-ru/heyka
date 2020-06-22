@@ -21,6 +21,7 @@
 <script>
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -46,20 +47,16 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      myId: 'me/getMyId',
+    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
      */
     texts() {
       return this.$t('popover.griduser');
-    },
-
-    /**
-     * Get our ID
-     * @returns {object}
-     */
-    myId() {
-      return this.$store.getters['me/getMyId'];
     },
 
     notMe() {

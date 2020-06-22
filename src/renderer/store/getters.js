@@ -197,4 +197,21 @@ export default {
     return getters['channels/getChannelById'](channelId);
   },
 
+  /**
+   * Get array with users in  our channel
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {object}
+   */
+  usersInMyChannel: (state, getters) => {
+    const channelId = getters['me/getSelectedChannelId'];
+
+    if (channelId === undefined) {
+      return null;
+    }
+
+    return getters.getUsersByChannel(channelId);
+  },
+
 };

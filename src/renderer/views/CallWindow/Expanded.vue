@@ -53,6 +53,7 @@ import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
 import commonStreams from '@classes/commonStreams';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -70,6 +71,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      selectedChannel: 'me/getSelectedChannelId',
+    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -84,14 +89,6 @@ export default {
      */
     sharingUser() {
       return this.$store.getters['users/getUserById'](this.userId);
-    },
-
-    /**
-     * Current selected channel
-     * @returns {string}
-     */
-    selectedChannelId() {
-      return this.$store.state.me.selectedChannelId;
     },
 
     /**

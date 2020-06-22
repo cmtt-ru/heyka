@@ -73,6 +73,7 @@ import UiButton from '@components/UiButton';
 import broadcastActions from '@classes/broadcastActions';
 import broadcastEvents from '@classes/broadcastEvents';
 import Microphone from '@components/Microphone';
+import { mapGetters } from 'vuex';
 
 /**
  * Map media state points to corresponding icons
@@ -138,13 +139,11 @@ export default {
   },
 
   computed: {
-    /**
-     * Get our media state
-     * @returns {object}
-     */
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
-    },
+    ...mapGetters({
+      mediaState: 'me/getMediaState',
+      janusInProgress: 'janus/inProgress',
+      selectedDevices: 'app/getSelectedDevices',
+    }),
 
     /**
      * Determine which icons to show
@@ -156,18 +155,6 @@ export default {
         camera: ICON_MAP.camera[this.mediaState.camera],
         screen: ICON_MAP.screen[this.mediaState.screen],
       };
-    },
-
-    janusInProgress() {
-      return this.$store.getters['janus/inProgress'];
-    },
-
-    /**
-     * Selected devices
-     * @returns {object}
-     */
-    selectedDevices() {
-      return this.$store.getters['app/getSelectedDevices'];
     },
   },
 

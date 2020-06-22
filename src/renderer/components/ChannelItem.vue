@@ -56,6 +56,7 @@
 <script>
 import Avatar from '@components/Avatar';
 import UiButton from '@components/UiButton';
+import { mapGetters } from 'vuex';
 
 const ICON_MAP = {
   public: 'channel',
@@ -92,13 +93,10 @@ export default {
   },
 
   computed: {
-    /**
-     * Get our id
-     * @returns {object}
-     */
-    myId() {
-      return this.$store.getters['me/getMyId'];
-    },
+    ...mapGetters({
+      myId: 'me/getMyId',
+    }),
+
     /**
      * Get users array
      * @returns {array} array of users
