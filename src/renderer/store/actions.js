@@ -75,7 +75,7 @@ export default {
    * @param {object?} janusOptions object
    * @returns {object} selected channel
    */
-  async selectChannel({ dispatch, getters }, id) {
+  async selectChannel({ commit, dispatch, getters }, id) {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
