@@ -1,19 +1,17 @@
 'use strict';
 
-import { app, ipcMain, protocol, nativeTheme, powerMonitor } from 'electron';
+import { app, ipcMain, protocol } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
-import Autoupdater from './classes/AutoUpdater';
-import TrayManager from './classes/TrayManager';
 import './classes/AutoLaunch';
-import DeepLink from '../shared/DeepLink/DeepLinkMain';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { IS_DEV, IS_WIN, IS_MAC } from '../shared/Constants';
+import MainWindowManager from '../shared/MainWindow/Main';
 
 console.time('init');
 console.time('before-load');
 
-let mainWindow,
+let mainWindowId,
     loadingScreenID;
 
 protocol.registerSchemesAsPrivileged([ {
@@ -24,80 +22,6 @@ protocol.registerSchemesAsPrivileged([ {
   },
 } ]);
 app.setAsDefaultProtocolClient('heyka');
-
-/**
- * Create the browser window
- * @returns {void}
- */
-function createWindow() {
-  let params = {};
-
-  if (TrayManager.isInTray()) {
-    params = {
-      position: 'tray',
-      template: 'maintray',
-      preventClose: true,
-    };
-  } else {
-    params = {
-      position: 'center',
-      template: IS_DEV ? 'mainDev' : 'main',
-      preventClose: true,
-    };
-  }
-
-  const mainWindowid = WindowManager.createWindow(params);
-
-  WindowManager.setMainWindowId(mainWindowid);
-
-  mainWindow = WindowManager.getWindow(mainWindowid);
-  DeepLink.bindMainWindow(mainWindow);
-  TrayManager.bindMainWindow(mainWindow);
-
-  if (TrayManager.isInTray()) {
-    const waitTime = 200;
-
-    mainWindow.on('blur', () => {
-      mainWindow.hide();
-      // Reason for this timeout: we want to teleport window after closing animation is complete
-      setTimeout(() => {
-        WindowManager.setPosition(mainWindow, 'tray');
-      }, waitTime);
-      TrayManager.setLastBlurTime();
-    });
-  }
-
-  nativeTheme.on('updated', () => {
-    WindowManager.sendAll('nativetheme-updated');
-  });
-
-  ipcMain.on('start-is-ready', () => {
-    if (DeepLink.getParams()) {
-      mainWindow.webContents.send('deep-link', DeepLink.getParams());
-    }
-  });
-
-  ipcMain.on('page-rendered', (event, args) => {
-    if (loadingScreenID) {
-      console.timeEnd('init');
-      WindowManager.closeWindow({ id: loadingScreenID });
-      loadingScreenID = null;
-    }
-
-    if (IS_DEV) {
-      mainWindow.webContents.openDevTools();
-    } else {
-      Autoupdater.init(mainWindow);
-    }
-
-    /**
-     * Close all windows on main window refresh
-     */
-    mainWindow.webContents.on('did-finish-load', () => {
-      WindowManager.closeAll();
-    });
-  });
-}
 
 /**
  * Create Splash window
@@ -119,18 +43,18 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
+  if (mainWindowId === null) {
+    mainWindowId = MainWindowManager.createWindow();
   } else {
-    mainWindow.show();
+    MainWindowManager.show();
   }
 });
 
 app.on('second-instance', () => {
-  if (mainWindow === null) {
-    createWindow();
+  if (mainWindowId === null) {
+    mainWindowId = MainWindowManager.createWindow();
   } else {
-    mainWindow.show();
+    MainWindowManager.show();
   }
 });
 
@@ -138,7 +62,15 @@ app.on('ready', async () => {
   createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
   createLoadingScreen();
-  createWindow();
+  mainWindowId = MainWindowManager.createWindow();
+
+  ipcMain.on('page-rendered', () => {
+    if (loadingScreenID) {
+      console.timeEnd('init');
+      WindowManager.closeWindow({ id: loadingScreenID });
+      loadingScreenID = null;
+    }
+  });
 
   /**
    * Vue devtools chrome extension
@@ -150,19 +82,10 @@ app.on('ready', async () => {
         console.log('Unable to install `vue-devtools`: \n', err);
       });
   }
-
-  /**
-   * Power monitor events
-   * Handle sleep / awake & lock / unlock screen events
-   */
-  powerMonitor.on('suspend', () => mainWindow.webContents.send('power-monitor-suspend', true));
-  powerMonitor.on('resume', () => mainWindow.webContents.send('power-monitor-suspend', false));
-  powerMonitor.on('lock-screen', () => mainWindow.webContents.send('power-monitor-lock-screen', true));
-  powerMonitor.on('unlock-screen', () => mainWindow.webContents.send('power-monitor-lock-screen', false));
 });
 
+// trigger flag in WindowManager so that windows won't prevent closing
 app.on('before-quit', function (e) {
-  // trigger flag in WindowManager so that windows won't prevent closing
   WindowManager.willQuit();
 });
 
