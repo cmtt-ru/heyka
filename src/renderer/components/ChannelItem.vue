@@ -20,12 +20,13 @@
         </div>
         <ui-button
           v-show="isSelected"
+          v-stop-propagation
           :type="7"
           class="channel__more"
           size="small"
           height="16"
           icon="more"
-          @click.native="$emit('more')"
+          @click="moreHandler"
         />
       </div>
 
@@ -55,6 +56,7 @@
 <script>
 import Avatar from '@components/Avatar';
 import UiButton from '@components/UiButton';
+import { mapGetters } from 'vuex';
 
 const ICON_MAP = {
   public: 'channel',
@@ -91,21 +93,11 @@ export default {
   },
 
   computed: {
-    /**
-     * Get our id
-     * @returns {object}
-     */
-    myId() {
-      return this.$store.getters['me/getMyId'];
-    },
+    ...mapGetters({
+      myId: 'me/getMyId',
+      me: 'myInfo'
+    }),
 
-    /**
-     * Returns our instance
-     * @returns {object} – user
-     */
-    me() {
-      return this.$store.getters['users/getUserById'](this.myId);
-    },
     /**
      * Get users array
      * @returns {array} array of users
@@ -164,6 +156,16 @@ export default {
      */
     isSelected() {
       return this.$route.params.id === this.channel.id;
+    },
+  },
+
+  methods: {
+    /**
+     * Dummy popover creation
+     * @returns {void}
+     */
+    moreHandler() {
+      this._notImplemented();
     },
   },
 

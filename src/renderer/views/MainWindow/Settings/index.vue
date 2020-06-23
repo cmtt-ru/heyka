@@ -61,7 +61,6 @@
             :type="7"
             size="small"
             icon="close"
-            propagation
           />
         </router-link>
 
@@ -85,6 +84,7 @@ export default {
   data() {
     return {
       info: this.$store.getters['app/getGeneralInfo'],
+      IS_DEV,
     };
   },
   computed: {
