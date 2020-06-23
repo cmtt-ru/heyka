@@ -26,7 +26,7 @@
       size="small"
       height="16"
       icon="more"
-      @click.native="$emit('more')"
+      @click="moreHandler"
     />
   </router-link>
 </template>
@@ -80,6 +80,16 @@ export default {
      */
     isSelected() {
       return this.$route.params.id === this.user.id;
+    },
+  },
+
+  methods: {
+    /**
+     * Dummy popover creation
+     * @returns {void}
+     */
+    moreHandler() {
+      this._notImplemented();
     },
   },
 

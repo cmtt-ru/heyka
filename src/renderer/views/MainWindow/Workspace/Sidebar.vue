@@ -10,7 +10,6 @@
       >
         <channel-item
           :channel="selectedChannel"
-          @more="moreHandler()"
         />
       </div>
     </transition>
@@ -32,11 +31,11 @@
     </div>
 
     <list
-      v-if="sortedChannels.length"
+      v-if="channels.length"
       :filter-by="searchText"
     >
       <list-item
-        v-for="channel in sortedChannels"
+        v-for="channel in channels"
         :key="channel.name"
         :filter-key="channel.name"
         button
@@ -48,7 +47,6 @@
             :channel="channel"
             exclude-me
             class="list-channel"
-            @more="moreHandler()"
           />
         </transition>
       </list-item>
@@ -75,18 +73,17 @@
     </div>
 
     <list
-      v-if="sortedUsers.length"
+      v-if="users.length"
       :filter-by="searchText"
     >
       <list-item
-        v-for="user in sortedUsers"
+        v-for="user in users"
         :key="user.name"
         :filter-key="user.name"
         button
       >
         <sidebar-user-item
           :user="user"
-          @more="moreHandler()"
         />
       </list-item>
     </list>
@@ -98,6 +95,7 @@ import ChannelItem from '@components/ChannelItem';
 import { List, ListItem } from '@components/List';
 import UiButton from '@components/UiButton';
 import SidebarUserItem from '@components/SidebarUserItem';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -109,6 +107,13 @@ export default {
   },
 
   computed: {
+
+    ...mapGetters({
+      channels: 'channels/getChannels',
+      users: 'users/getAllUsers',
+      selectedChannel: 'myChannel',
+    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -125,34 +130,6 @@ export default {
       return this.$store.state.app.search;
     },
 
-    /**
-     * Sort channels by name
-     * @returns {array} – array of sorted channels
-     */
-    sortedChannels() {
-      return this.$store.getters['channels/getChannels'];
-    },
-
-    /**
-     * Sort users by online status and name
-     * @returns {array} – array of sorted users
-     */
-    sortedUsers() {
-      const users = this.$store.getters['users/getAllUsers'];
-
-      return users;
-    },
-
-    /**
-     * Returns selected channel
-     * @returns {object} – channel
-     */
-    selectedChannel() {
-      const selectedChannelId = this.$store.getters['me/getSelectedChannelId'];
-
-      return this.$store.getters['channels/getChannelById'](selectedChannelId);
-    },
-
   },
 
   created() {
@@ -167,7 +144,7 @@ export default {
      * @returns {boolean} false if channel is selected
      */
     notSelected(id) {
-      return !this.selectedChannel || (id !== this.selectedChannel.id);
+      return (this.selectedChannel === undefined) || (id !== this.selectedChannel.id);
     },
 
     /**
@@ -176,7 +153,7 @@ export default {
      * @returns {void}
      */
     async dbclickChannelHandler(channel) {
-      // TODO: добавить коннект к сокетам и всё такое
+      await this.$store.commit('app/ANIMATION_CHANNEL_ID', channel.id);
       await this.$store.dispatch('selectChannel', channel.id);
     },
 
@@ -193,14 +170,6 @@ export default {
      * @returns {void}
      */
     addUserHandler() {
-      this._notImplemented();
-    },
-
-    /**
-     * Dummy popover creation
-     * @returns {void}
-     */
-    moreHandler() {
       this._notImplemented();
     },
   },

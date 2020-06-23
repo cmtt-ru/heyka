@@ -98,6 +98,7 @@
 import UiButton from '@components/UiButton';
 import mediaCapturer from '@classes/mediaCapturer';
 import broadcastActions from '@classes/broadcastActions';
+import { mapGetters } from 'vuex';
 
 /**
  * Size of the source thumbnails
@@ -119,6 +120,10 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      mediaState: 'me/getMediaState',
+    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -153,13 +158,6 @@ export default {
       return this.selectedSource === null;
     },
 
-    /**
-     * User media state
-     * @returns {MediaState}
-     */
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
-    },
   },
 
   mounted() {

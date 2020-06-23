@@ -32,7 +32,8 @@
                 "--item-bg-multi-pick": "#F4FBF7",
                 "--shadow-10": "rgba(0,0,0,0.10)",
                 "--shadow-15": "rgba(0,0,0,0.15)",
-                "--shadow-20": "rgba(0,0,0,0.20)"
+                "--shadow-20": "rgba(0,0,0,0.20)",
+                "--shadow-50": "rgba(0,0,0,0.50)"
             },
             "navbar": {
                 "--app-bg": "#EFEFF1",
@@ -90,7 +91,7 @@
                 "--button-bg-1": "#F4FBF7",
                 "--button-bg-2": "#F3F8FE",
                 "--button-bg-3": "#000000",
-                "--button-bg-4": "#333333",
+                "--button-bg-4": "#707070",
                 "--button-bg-5": "transparent",
                 "--button-bg-6": "#555555",
                 "--button-bg-7": "transparent",
@@ -100,7 +101,8 @@
                 "--item-bg-multi-pick": "#222222",
                 "--shadow-10": "rgba(0,0,0,0.10)",
                 "--shadow-15": "rgba(255,255,255,0.15)",
-                "--shadow-20": "rgba(255,255,255,0.20)"
+                "--shadow-20": "rgba(255,255,255,0.20)",
+                "--shadow-50": "rgba(255,255,255,0.50)"
             },
             "navbar": {
                 "--app-bg": "#191919",

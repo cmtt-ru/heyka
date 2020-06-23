@@ -42,7 +42,6 @@
           :to="{name: 'settings'}"
         >
           <ui-button
-            propagation
             :type="7"
             size="small"
             icon="close"

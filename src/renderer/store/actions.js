@@ -75,13 +75,19 @@ export default {
    * @param {object?} janusOptions object
    * @returns {object} selected channel
    */
-  async selectChannel({ dispatch, getters }, id) {
+  async selectChannel({ commit, dispatch, getters }, id) {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
-
-    const response = await API.channel.select(id, getters['me/getMediaState']);
-
+    
+    let response;
+    
+    try {
+      response = await API.channel.select(id, getters['me/getMediaState']);
+    } catch(err){
+      commit('app/ANIMATION_CHANNEL_ID', null);
+    }
+    
     dispatch('selectChannelWithoutAPICall', {
       id,
       connectionOptions: response.connectionOptions,
@@ -136,7 +142,8 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ dispatch }, id) {
+  async unselectChannel({ commit, dispatch }, id) {
+    commit('app/ANIMATION_CHANNEL_ID', null);
     await API.channel.unselect(id);
     dispatch('unselectChannelWithoutAPICall', id);
   },
