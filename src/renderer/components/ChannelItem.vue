@@ -20,13 +20,13 @@
         </div>
         <ui-button
           v-show="isSelected"
-          v-stop-propagation.dblclick
+          v-stop-propagation
           :type="7"
           class="channel__more"
           size="small"
           height="16"
           icon="more"
-          @click.native="moreHandler"
+          @click="moreHandler"
         />
       </div>
 
