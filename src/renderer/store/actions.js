@@ -79,15 +79,15 @@ export default {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
-    
+
     let response;
-    
+
     try {
       response = await API.channel.select(id, getters['me/getMediaState']);
-    } catch(err){
+    } catch (err) {
       commit('app/ANIMATION_CHANNEL_ID', null);
     }
-    
+
     dispatch('selectChannelWithoutAPICall', {
       id,
       connectionOptions: response.connectionOptions,

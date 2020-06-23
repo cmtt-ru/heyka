@@ -144,7 +144,7 @@ export default {
      * @returns {boolean} false if channel is selected
      */
     notSelected(id) {
-      return (this.selectedChannel === undefined) || (id !== this.selectedChannel.id);
+      return id !== this.selectedChannel?.id;
     },
 
     /**

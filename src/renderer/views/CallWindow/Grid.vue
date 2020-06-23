@@ -178,7 +178,7 @@ export default {
      * @return {string}
      */
     selectedChannelName() {
-      return this.selectedChannel.name || 'no channel selected';
+      return this.selectedChannel?.name || 'no channel selected';
     },
 
   },

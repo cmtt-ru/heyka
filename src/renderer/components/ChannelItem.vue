@@ -95,7 +95,7 @@ export default {
   computed: {
     ...mapGetters({
       myId: 'me/getMyId',
-      me: 'myInfo'
+      me: 'myInfo',
     }),
 
     /**

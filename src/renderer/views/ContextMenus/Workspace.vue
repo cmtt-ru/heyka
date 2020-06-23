@@ -75,7 +75,6 @@ import UiButton from '@components/UiButton';
 import electron from 'electron';
 import { mapGetters } from 'vuex';
 
-
 export default {
   components: {
     Popover,
