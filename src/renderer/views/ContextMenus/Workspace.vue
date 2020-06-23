@@ -59,14 +59,6 @@
         </ui-button>
       </router-link>
       <ui-button
-        v-if="IS_DEV"
-        :type="11"
-        icon="disconnect"
-        @click.native="logoutHandler"
-      >
-        Logout
-      </ui-button>
-      <ui-button
         :type="11"
         icon="disconnect"
         @click.native="quitAppHandler"
@@ -81,13 +73,19 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import electron from 'electron';
-import logout from '@api/auth/logout';
 import { mapGetters } from 'vuex';
+
 
 export default {
   components: {
     Popover,
     UiButton,
+  },
+
+  data() {
+    return {
+      IS_DEV,
+    };
   },
 
   computed: {
@@ -113,14 +111,6 @@ export default {
      */
     quitAppHandler() {
       electron.remote.app.quit();
-    },
-
-    /**
-     * Logout handler
-     * @returns {void}
-     */
-    logoutHandler() {
-      logout();
     },
   },
 };

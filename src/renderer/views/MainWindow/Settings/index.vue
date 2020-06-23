@@ -84,6 +84,7 @@ export default {
   data() {
     return {
       info: this.$store.getters['app/getGeneralInfo'],
+      IS_DEV,
     };
   },
   computed: {

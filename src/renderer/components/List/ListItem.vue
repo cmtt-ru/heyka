@@ -155,7 +155,7 @@ export default {
           for (let l = len - error; l <= len + error; l++) {
             const strPiece = str.substring(i, i + l);
 
-            if (levenshtein.get(substr, strPiece) <= error) {
+            if (levenshtein.get(substr, strPiece, { useCollator: true }) <= error) {
               return true;
             }
           }

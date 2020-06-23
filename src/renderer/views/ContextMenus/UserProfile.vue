@@ -39,6 +39,16 @@
       >
         {{ texts.offline }}
       </ui-button>
+
+      <div class="delimiter" />
+
+      <ui-button
+        :type="11"
+        icon="disconnect"
+        @click="logoutHandler"
+      >
+        Logout
+      </ui-button>
     </div>
   </popover>
 </template>
@@ -46,6 +56,7 @@
 <script>
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
+import logout from '@api/auth/logout';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -76,6 +87,14 @@ export default {
      */
     changeStatus(status) {
       this.$store.dispatch('me/setOnlineStatus', status);
+    },
+
+    /**
+     * Logout handler
+     * @returns {void}
+    */
+    logoutHandler() {
+      logout();
     },
   },
 };
