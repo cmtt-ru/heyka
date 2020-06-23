@@ -6,7 +6,6 @@
           data-popover-close
           :type="11"
           icon="user"
-          propagation
         >
           {{ texts.profile }}
         </ui-button>
@@ -47,6 +46,7 @@
 <script>
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -55,6 +55,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      myId: 'me/getMyId',
+    }),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -63,13 +66,6 @@ export default {
       return this.$t('popover.userProfile');
     },
 
-    /**
-     * User id
-     * @returns {string}
-     */
-    myId() {
-      return this.$store.getters['me/getMyId'];
-    },
   },
 
   methods: {

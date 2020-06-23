@@ -140,7 +140,14 @@ export default {
   },
 
   computed: {
-    ...mapGetters([ 'getUsersWhoShareMedia' ]),
+    ...mapGetters({
+      getUsersWhoShareMedia: 'getUsersWhoShareMedia',
+      mediaState: 'me/getMediaState',
+      myId: 'me/getMyId',
+      channelId: 'me/getSelectedChannelId',
+      selectedChannel: 'myChannel',
+      users: 'usersInMyChannel',
+    }),
 
     /**
      * Get needed texts from I18n-locale file
@@ -159,51 +166,6 @@ export default {
     },
 
     /**
-     * Get our media state
-     * @returns {object}
-     */
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
-    },
-
-    /**
-     * Get our ID
-     * @returns {object}
-     */
-    myId() {
-      return this.$store.getters['me/getMyId'];
-    },
-
-    /**
-     * Get channel ID from route param
-     * @returns {string} – channel ID
-     */
-    channelId() {
-      return this.$store.getters['me/getSelectedChannelId'];
-    },
-
-    /**
-     * Selected channel
-     * @return {object}
-     */
-    selectedChannel() {
-      const selectedChannel = this.$store.getters['channels/getChannelById'](this.channelId);
-
-      if (selectedChannel) {
-        return selectedChannel;
-      }
-
-      return false;
-    },
-    /**
-     * Get users' array
-     * @returns {array} array of users
-     */
-    users() {
-      return this.$store.getters.getUsersByChannel(this.channelId);
-    },
-
-    /**
      * Get users' count
      * @returns {array} array of users
      */
@@ -216,11 +178,7 @@ export default {
      * @return {string}
      */
     selectedChannelName() {
-      if (this.selectedChannel) {
-        return this.selectedChannel.name;
-      }
-
-      return 'no channel selected';
+      return this.selectedChannel.name || 'no channel selected';
     },
 
   },

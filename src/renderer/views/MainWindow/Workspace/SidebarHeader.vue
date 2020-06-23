@@ -1,7 +1,7 @@
 <template>
   <div class="l-p-8 l-fw-m">
     <div
-      v-if="workspace"
+      v-if="myWorkspace"
       class="workspace"
     >
       <div
@@ -43,11 +43,10 @@
       >
         <img
           class="workspace__avatar"
-          :src="workspace.avatar"
+          :src="myWorkspace.avatar"
         >
-        <div>{{ workspace.name }}</div>
+        <div>{{ myWorkspace.name }}</div>
         <ui-button
-          propagation
           :type="7"
           class="workspace__expand"
           size="small"
@@ -62,6 +61,7 @@
 <script>
 import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -76,15 +76,8 @@ export default {
   },
 
   computed: {
-    /**
-     * Get current workspace instance
-     * @returns {object}
-     */
-    workspace() {
-      const channelId = this.$store.getters['me/getSelectedWorkspaceId'];
 
-      return this.$store.getters['workspaces/getWorkspaceById'](channelId);
-    },
+    ...mapGetters([ 'myWorkspace' ]),
 
     /**
      * Search string in vuex
