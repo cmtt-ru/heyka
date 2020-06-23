@@ -95,6 +95,7 @@ export default {
   computed: {
     ...mapGetters({
       myId: 'me/getMyId',
+      me: 'myInfo'
     }),
 
     /**
@@ -102,11 +103,13 @@ export default {
      * @returns {array} array of users
      */
     users() {
-      if (this.excludeMe) {
-        return this.$store.getters.getUsersByChannel(this.channel.id).filter((user) => user.id !== this.myId);
-      }
+      const otherUsers = this.$store.getters.getUsersByChannel(this.channel.id).filter((user) => user.id !== this.myId);
 
-      return this.$store.getters.getUsersByChannel(this.channel.id);
+      if (this.excludeMe) {
+        return otherUsers;
+      } else {
+        return [this.me, ...otherUsers];
+      }
     },
 
     /**

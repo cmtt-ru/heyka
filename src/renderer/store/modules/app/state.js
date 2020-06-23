@@ -69,6 +69,7 @@ const state = () => {
     notifications: [],
     pushes: [],
     search: '',
+    animationChannel: null,
     socket: {
       id: '',
       connectedAt: 0,
