@@ -100,7 +100,6 @@ export default {
 
   methods: {
     expandHandler() {
-      console.log('expandHandler');
       broadcastActions.dispatch('openGrid');
       broadcastEvents.dispatch('grid-expand', this.user.id);
     },
