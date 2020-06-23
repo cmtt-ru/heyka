@@ -199,27 +199,6 @@ export default {
     height 100%
     background-color var(--app-bg)
 
-  .svg-border
-    width 100%
-    height 100%
-    position absolute
-    top 0
-    left 0
-    background-color transparent
-
-    .rect-path
-      stroke-width 3px
-      transform translate(2px, 2px)
-      stroke-dasharray 100% 100%
-      animation dash 20s linear infinite
-      width calc(100% - 4px)
-      height calc(100% - 4px)
-
-  @keyframes dash {
-      to {
-        stroke-dashoffset: 200%;
-      }
-  }
   .badge
     position absolute
 
