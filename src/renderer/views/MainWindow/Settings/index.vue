@@ -61,7 +61,6 @@
             :type="7"
             size="small"
             icon="close"
-            propagation
           />
         </router-link>
 

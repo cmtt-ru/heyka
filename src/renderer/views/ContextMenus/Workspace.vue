@@ -54,7 +54,6 @@
         <ui-button
           :type="11"
           icon="settings"
-          propagation
         >
           {{ texts.settings }}
         </ui-button>
@@ -74,6 +73,8 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import electron from 'electron';
+import { mapGetters } from 'vuex';
+
 
 export default {
   components: {
@@ -88,21 +89,10 @@ export default {
   },
 
   computed: {
-    /**
-     * List of available workspaces
-     * @returns {Array<Workspace>}
-     */
-    workspaces() {
-      return this.$store.getters['workspaces/getWorkspaces'];
-    },
-
-    /**
-     * Selected workspace id
-     * @returns {string}
-     */
-    selectedWorkspaceId() {
-      return this.$store.getters['me/getSelectedWorkspaceId'];
-    },
+    ...mapGetters({
+      workspaces: 'workspaces/getWorkspaces',
+      selectedWorkspaceId: 'me/getSelectedWorkspaceId',
+    }),
 
     /**
      * Get needed texts from I18n-locale file

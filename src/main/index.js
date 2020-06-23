@@ -162,7 +162,7 @@ app.on('ready', async () => {
 });
 
 app.on('before-quit', function (e) {
-  // trigger flag in WindpwManager so that windows won't prevent closing
+  // trigger flag in WindowManager so that windows won't prevent closing
   WindowManager.willQuit();
 });
 

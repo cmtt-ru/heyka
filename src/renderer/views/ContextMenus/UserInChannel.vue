@@ -4,7 +4,6 @@
       <router-link :to="{ name: 'user', params: { id: userId }}">
         <ui-button
           :type="11"
-          propagation
         >
           {{ texts.profile }}
         </ui-button>

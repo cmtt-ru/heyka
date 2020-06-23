@@ -1,13 +1,13 @@
 <template>
   <div class="l-p-8">
     <div
-      v-if="user"
+      v-if="myInfo"
       class="user"
     >
       <microphone
         v-tooltip="microphoneTooltip"
         class="user__status"
-        :active="user.microphone"
+        :active="myInfo.microphone"
         @click.native="switchProp('microphone')"
       />
 
@@ -23,8 +23,8 @@
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
-        :image="user.avatar"
-        :status="user.onlineStatus"
+        :image="myInfo.avatar"
+        :status="myInfo.onlineStatus"
         :size="24"
       />
     </div>
@@ -35,6 +35,7 @@
 import UiButton from '@components/UiButton';
 import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
+import { mapGetters } from 'vuex';
 
 /**
  * Map media state points to corresponding icons
@@ -48,10 +49,6 @@ const ICON_MAP = {
     true: 'headphones',
     false: 'headphones-off',
   },
-  screen: {
-    true: 'cast',
-    false: 'video-off', //! поведение будет сложнее, со сменой цвета. поправим, когда будет скриншаринг
-  },
 };
 
 export default {
@@ -63,27 +60,10 @@ export default {
 
   computed: {
 
-    /**
-     * Get our media state
-     * @returns {object}
-     */
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
-    },
-
-    /**
-     * Get our full info
-     * @returns {object}
-     */
-    user() {
-      const myId = this.$store.getters['me/getMyId'];
-      const commonInfo = this.$store.getters['users/getUserById'](myId);
-
-      return {
-        ...commonInfo,
-        ...this.mediaState,
-      };
-    },
+    ...mapGetters({
+      myInfo: 'myInfo',
+      mediaState: 'me/getMediaState',
+    }),
 
     /**
      * Determine which icons to show
@@ -91,9 +71,8 @@ export default {
      */
     icons() {
       return {
-        microphone: ICON_MAP.microphone[this.user.microphone],
-        speakers: ICON_MAP.speakers[this.user.speakers],
-        screen: ICON_MAP.screen[this.user.screen],
+        microphone: ICON_MAP.microphone[this.myInfo.microphone],
+        speakers: ICON_MAP.speakers[this.myInfo.speakers],
       };
     },
 
