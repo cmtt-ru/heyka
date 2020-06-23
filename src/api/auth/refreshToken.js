@@ -15,12 +15,3 @@ import axios from 'axios';
 export default function (params) {
   return axios.post('/refresh-token', params).then(res => res.data);
 }
-
-/**
- * Update client's refresh and access tokens
- * @param {object} params - params
- * @param {string} params.accessToken - old access token
- *
- * @returns {object} result data
- * @returns {string} data.accessToken — new access token
- */
