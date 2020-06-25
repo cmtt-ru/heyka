@@ -44,7 +44,7 @@ import Layout from './../Layout';
 import { UiInput } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { errorMessages } from '@api/errors/types';
-import { remote } from 'electron';
+import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import mapUsers from './mapUsers.json';
@@ -86,7 +86,7 @@ export default {
       }
     },
     useOldAppData() {
-      const appDataPath = remote.app.getPath('appData');
+      const appDataPath = ipcRenderer.sendSync('remote-getPath', 'appData');
       let oldAppData = null;
 
       try {
