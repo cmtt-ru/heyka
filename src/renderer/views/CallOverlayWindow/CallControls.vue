@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="user"
     class="call-controls"
     :class="{'call-controls--row': row}"
   >
