@@ -132,7 +132,7 @@ function bindErrorEvents() {
     // rewrite last socket id
     client.lastSocketId = client.id;
 
-    cnsl.log('reconnected:', data);
+    cnsl.info('reconnected:', data);
     connectionCheck.handleSocketReconnecting(false);
 
     // try to authorize new connection as the old connection

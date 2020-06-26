@@ -266,7 +266,7 @@ class JanusWrapper extends EventEmitter {
 
     this.__videoroomPlugins[janusId] = plugin;
 
-    cnsl.log(`%c videoroomPlugins ADDED ${Object.keys(this.__videoroomPlugins).length}`, 'background: red; color: white;', this.__videoroomPlugins);
+    cnsl.info(`videoroomPlugins ADDED ${Object.keys(this.__videoroomPlugins).length}`, this.__videoroomPlugins);
     let requestTimeout;
     const prom = new Promise((resolve, reject) => {
       requestTimeout = setTimeout(() => {
@@ -297,7 +297,7 @@ class JanusWrapper extends EventEmitter {
 
     delete this.__videoroomPlugins[janusId];
 
-    cnsl.log(`%c videoroomPlugins REMOVED ${Object.keys(this.__videoroomPlugins).length}`, 'background: red; color: white;', this.__videoroomPlugins);
+    cnsl.info(`videoroomPlugins REMOVED ${Object.keys(this.__videoroomPlugins).length}`, this.__videoroomPlugins);
   }
 
   /**

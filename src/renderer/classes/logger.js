@@ -40,7 +40,7 @@ class Logger {
   }
 
   /**
-   * debug log. will appear only in DEV.
+   * debug log. will appear only in DEV and only if VUE_APP_DEBUG is true
    * @returns {void}
    */
   debug() {

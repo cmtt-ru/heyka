@@ -233,7 +233,7 @@ export default {
         ...this.janusOptions,
         microphoneDeviceId: this.selectedMicrophoneDevice,
         userId: this.userId,
-        debug: process.env.VUE_APP_DEBUG || false,
+        debug: process.env.VUE_APP_JANUS_DEBUG === 'true',
       });
 
       this.janusWrapper = janusWrapper;

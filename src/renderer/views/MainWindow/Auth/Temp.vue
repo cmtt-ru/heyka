@@ -97,7 +97,7 @@ export default {
       } catch (e) {
         // do nothing
         // file is not found or there are problems to open and parse it
-        cnsl.log('Error on open old app data: ', e);
+        cnsl.error('Error on open old app data: ', e);
         cnsl.log(path.join(appDataPath, '🖐 Heyka', 'config.json'));
 
         return;
