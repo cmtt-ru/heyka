@@ -26,6 +26,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   show: false,
   icon: icon,
   webPreferences: Object.freeze({
+    affinity: 'heyka',
     nodeIntegration: true,
     webSecurity: true,
     enableRemoteModule: true, // ! remove all remote!

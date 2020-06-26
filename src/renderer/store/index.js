@@ -15,6 +15,8 @@ import broadcastState from '@classes/broadcastState';
 import { ipcRenderer } from 'electron';
 import createPersistedState from 'vuex-persistedstate';
 import { heykaStore } from '@/store/localStore';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Vuex index', '#17A589');
 
 /**
  * Is this window main?
@@ -114,7 +116,7 @@ if (IS_MAIN_WINDOW) {
    * Listen for bluetooth microphone becomes default
    */
   mediaDevices.on('bluetooth-microphone', (microphone) => {
-    console.log('bluetooth microphone detected', microphone);
+    cnsl.log('bluetooth microphone detected', microphone);
   });
 
   /**

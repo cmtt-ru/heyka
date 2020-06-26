@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
-// import uuid from 'uuid/v4';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Reciever.js', '#34495E');
 
 /**
  * StreamSharingReceiver`
@@ -10,13 +11,10 @@ import broadcastEvents from '../broadcastEvents';
 export default class StreamSharingReceiver extends EventEmitter {
   /**
    * Init stream sharing manager
-   * @param {object} options Stream sharing receiver manager options
-   * @param {boolean} [options.debug=false] Is debug enabled
    */
-  constructor(options) {
+  constructor() {
     super();
 
-    this.__debugEnabled = !!options.debug;
     this.__pcs = {};
     broadcastEvents.on('stream-sharing-closed', this._streamSharingClosed.bind(this));
     broadcastEvents.on('clear-all', this._onClearAll.bind(this));
@@ -39,7 +37,7 @@ export default class StreamSharingReceiver extends EventEmitter {
       if (!e.candidate) {
         return;
       };
-      this._debug(`ice-candidate ${data.requestId}`, e.candidate.toJSON());
+      cnsl.debug(`ice-candidate ${data.requestId}`, e.candidate.toJSON());
 
       // send ICE candidate to another window
       broadcastEvents.dispatch(`icecandidate-receiver-${data.requestId}`, {
@@ -49,15 +47,15 @@ export default class StreamSharingReceiver extends EventEmitter {
     };
 
     const onIceConnectionStateChange = e => {
-      this._debug(`ice-state ${data.requestId}`, pc.iceConnectionState);
+      cnsl.debug(`ice-state ${data.requestId}`, pc.iceConnectionState);
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
         this._streamSharingClosed(userId, data.requestId);
       }
     };
 
     const onTrack = track => {
-      console.log(`%c Got track for ${userId}! `, 'background: yellow;');
-      this._debug(`Cought track from RTCPeerConnection ${data.requestId}: `, track);
+      cnsl.info(`Got track for ${userId}! `);
+      cnsl.debug(`Cought track from RTCPeerConnection ${data.requestId}: `, track);
       // notify about new received stream
       this.emit(`new-stream-${userId}`, {
         userId,
@@ -82,7 +80,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // handle offer from main window
     broadcastEvents.once(`stream-offer-host-${data.requestId}`, async (d) => {
-      this._debug(`offer ${data.requestId}`, d);
+      cnsl.debug(`offer ${data.requestId}`, d);
       await pc.setRemoteDescription(d.sdpOffer);
       const answer = await pc.createAnswer();
 
@@ -98,7 +96,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // handle ICE candidates from stream host
     broadcastEvents.on(`icecandidate-host-${data.requestId}`, async (evt) => {
-      this._debug(`add ice candidate ${data.requestId}`, evt);
+      cnsl.debug(`add ice candidate ${data.requestId}`, evt);
       await pc.addIceCandidate(evt.candidate);
     });
 
@@ -124,9 +122,9 @@ export default class StreamSharingReceiver extends EventEmitter {
     if (requestId && pc && requestId !== pc.requestId) {
       return;
     }
-    console.log(`%c Close connection for ${userId} (${requestId})! `, 'background: yellow;');
+    cnsl.log(`Close connection for ${userId} (${requestId})!`);
 
-    this._debug(`close connection for ${pc.requestId}, ${userId}`, pc);
+    cnsl.debug(`close connection for ${pc.requestId}, ${userId}`, pc);
 
     pc.pc.close();
     pc.pc.removeEventListener('icecandidate', pc.onIceCandidate);
@@ -143,15 +141,5 @@ export default class StreamSharingReceiver extends EventEmitter {
    */
   _onClearAll() {
     Object.keys(this.__pcs).forEach(userId => this._streamSharingClosed(userId));
-  }
-
-  /**
-   * Inner debug tool
-   * @returns {void}
-   */
-  _debug() {
-    if (this.__debugEnabled) {
-      console.log('Stream sharing receiver: ', ...arguments);
-    }
   }
 }

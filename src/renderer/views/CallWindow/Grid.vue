@@ -113,6 +113,8 @@ import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
 import commonStreams from '@classes/commonStreams';
 import broadcastEvents from '@classes/broadcastEvents';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Grid.vue', '#138D75');
 
 /**
  * Aspect ratio 124 / 168;
@@ -240,7 +242,7 @@ export default {
       const htmlVideo = this.$refs[`video${userId}`][0];
 
       if (!htmlVideo) {
-        console.log(`!!!!!!!!!!!!!!!!!!!!!!!!! Not found HTML video tag for user ${userId}`);
+        cnsl.error(`Not found HTML video tag for user ${userId}`);
 
         return;
       }
@@ -256,31 +258,31 @@ export default {
     requestStreams() {
       const users = this.getUsersWhoShareMedia;
 
-      // console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
+      // cnsl.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
       // delete streams that were inserted but users have already stopped sharing
       this.users.filter(u => !u.camera && !u.screen && !!this.videoStreams[u.id]).forEach(u => {
-        console.log(`clear stream for ${u.id}`);
+        cnsl.log(`clear stream for ${u.id}`);
         this.$delete(this.videoStreams, u.id);
       });
       Object.keys(this.videoStreams).forEach(uId => {
         if (!this.users.map(u => u.id).includes(uId)) {
-          console.log(`clear stream 2 for ${uId}`);
+          cnsl.log(`clear stream 2 for ${uId}`);
           this.$delete(this.videoStreams, uId);
         }
       });
 
-      // console.log('filter who should be added');
+      // cnsl.log('filter who should be added');
 
       // add streams that were not inserted
       users.filter(id => !this.videoStreams[id]).map(async id => {
         this.$set(this.videoStreams, id, true);
-        console.log(`wait stream for ${id}`);
+        cnsl.log(`wait stream for ${id}`);
         console.time(`request-${id}`);
         const stream = await commonStreams.getStream(id);
 
         console.timeEnd(`request-${id}`);
 
-        console.log(`stream received for ${id}`);
+        cnsl.log(`stream received for ${id}`);
 
         this.insertVideoStreamForUser(id, stream);
       });
@@ -372,7 +374,7 @@ export default {
       }
 
       if (this.getUsersWhoShareMedia.includes(userId)) {
-        console.log('Again request stream', userId);
+        cnsl.log('Again request stream', userId);
 
         const stream = await commonStreams.getStream(userId);
 
