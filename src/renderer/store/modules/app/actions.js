@@ -168,7 +168,7 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  addPush({ commit, state }, { messageId, userId, message }) {
+  addPush({ commit }, { messageId, userId, message }) {
     const push = {
       messageId,
       userId,
@@ -176,7 +176,7 @@ export default {
     };
 
     commit('ADD_PUSH', push);
-    pushWindow.updateCount(state.pushes.length);
+    pushWindow.addPush();
   },
 
   /**
@@ -186,9 +186,9 @@ export default {
    * @param {string} id – push's id
    * @returns {void}
    */
-  removePush({ commit, state }, id) {
+  removePush({ commit }, id) {
     commit('REMOVE_PUSH', id);
-    pushWindow.updateCount(state.pushes.length);
+    pushWindow.removePush();
   },
 
   /**
