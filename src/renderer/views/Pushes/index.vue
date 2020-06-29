@@ -56,7 +56,7 @@ export default {
         response,
         messageId,
       });
-      if (response.action === 'accept') {
+      if (response.action === 'accept-invite') {
         await broadcastActions.dispatch('selectChannel', data.channel);
         await broadcastEvents.dispatch('open-channel', data.channel);
       }
