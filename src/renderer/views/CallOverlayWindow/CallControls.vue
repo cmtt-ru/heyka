@@ -34,6 +34,7 @@
 // import UiButton from '@components/UiButton';
 // import broadcastActions from '@classes/broadcastActions';
 import CallButtons from './CallButtons';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -69,23 +70,11 @@ export default {
   },
 
   computed: {
-    /**
-     * Get our full info
-     * @returns {object}
-     */
-    user() {
-      const myId = this.$store.getters['me/getMyId'];
-
-      return this.$store.getters['users/getUserById'](myId);
-    },
-
-    /**
-     * Speaking user
-     * @return {object}
-     */
-    speakingUser() {
-      return this.$store.getters['getSpeakingUser'];
-    },
+    ...mapGetters({
+      user: 'myInfo',
+      speakingUser: 'getSpeakingUser',
+      selectedChannel: 'myChannel',
+    }),
 
     /**
      * Speaking user name
@@ -109,21 +98,6 @@ export default {
       }
 
       return this.user.avatar || '';
-    },
-
-    /**
-     * Selected channel
-     * @return {object}
-     */
-    selectedChannel() {
-      const selectedChannelId = this.$store.getters['me/getSelectedChannelId'];
-      const selectedChannel = this.$store.getters['channels/getChannelById'](selectedChannelId);
-
-      if (selectedChannel) {
-        return selectedChannel;
-      }
-
-      return false;
     },
 
     /**

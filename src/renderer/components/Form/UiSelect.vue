@@ -84,14 +84,28 @@ export default {
       listNode: {},
       arrowNode: {},
       visible: false,
-      myValue: this.value,
     };
   },
 
   computed: {
+
+    /**
+     * Local copy of selected variant's value
+     * @returns {string} value
+     */
+    localValue: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.hide();
+        this.$emit('input', value);
+      },
+    },
+
     selectedItem() {
       return this.data.find((el) => {
-        if (el.value === this.myValue) {
+        if (el.value === this.localValue) {
           return el;
         }
       }) || null;
@@ -110,12 +124,6 @@ export default {
 
   },
 
-  watch: {
-    value(newValue, oldValue) {
-      this.myValue = newValue;
-    },
-  },
-
   mounted() {
     /* Store locally refs to sropdown and icon elements, we need them on every 'open' event */
     this.listNode = this.$el.querySelector('.dropdown__list');
@@ -132,14 +140,12 @@ export default {
     },
 
     /**
-     * We clicked one of the variants (select new item, close toggle, emit 'input' event)
+     * We clicked one of the variants
      * @param {object} item item which we clicked
      * @returns {void}
      */
     variantClickHandler(item) {
-      this.myValue = item.value;
-      this.hide();
-      this.$emit('input', item.value);
+      this.localValue = item.value;
     },
 
     /**

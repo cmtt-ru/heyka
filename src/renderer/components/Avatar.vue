@@ -3,6 +3,29 @@
     class="avatar"
     :style="containerSize"
   >
+    <div class="avatar__no-image">
+      <svg
+        id="L9"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        x="0px"
+        y="0px"
+        viewBox="0 0 100 100"
+        enable-background="new 0 0 0 0"
+      > <path
+        fill="currentColor"
+        d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+      >       <animateTransform
+        attributeName="transform"
+        attributeType="XML"
+        type="rotate"
+        dur="1s"
+        from="0 50 50"
+        to="360 50 50"
+        repeatCount="indefinite"
+      /></path></svg>
+    </div>
     <img
       loading="lazy"
       class="avatar__image"
@@ -142,14 +165,19 @@ export default {
     .avatar
         position relative
 
+        &__no-image
+            position absolute
+            top -50%
+            left -50%
+            width 200%
+            height 200%
+            color var(--shadow-50)
+
         &__image
+            position relative
             display block
             width 100%
             height 100%
-            background-image: url("data:image/svg+xml;utf8,<svg version='1.1' id='L9' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 100 100' enable-background='new 0 0 0 0' xml:space='preserve'> <path fill='rgba(0,0,0,0.5)' d='M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50'>       <animateTransform attributeName='transform' attributeType='XML' type='rotate' dur='1s' from='0 50 50' to='360 50 50' repeatCount='indefinite'/></path></svg>");
-            background-repeat no-repeat
-            background-size: 200%;
-            background-position center
             border-radius 50%
 
             &--square

@@ -32,7 +32,6 @@
       <ui-button
         class="badge expanded"
         :type="7"
-        propagation
         size="medium"
         icon="grid"
       />
@@ -54,6 +53,7 @@ import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
 import commonStreams from '@classes/commonStreams';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -71,6 +71,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      selectedChannel: 'me/getSelectedChannelId',
+    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -85,14 +89,6 @@ export default {
      */
     sharingUser() {
       return this.$store.getters['users/getUserById'](this.userId);
-    },
-
-    /**
-     * Current selected channel
-     * @returns {string}
-     */
-    selectedChannelId() {
-      return this.$store.state.me.selectedChannelId;
     },
 
     /**
@@ -203,27 +199,6 @@ export default {
     height 100%
     background-color var(--app-bg)
 
-  .svg-border
-    width 100%
-    height 100%
-    position absolute
-    top 0
-    left 0
-    background-color transparent
-
-    .rect-path
-      stroke-width 3px
-      transform translate(2px, 2px)
-      stroke-dasharray 100% 100%
-      animation dash 20s linear infinite
-      width calc(100% - 4px)
-      height calc(100% - 4px)
-
-  @keyframes dash {
-      to {
-        stroke-dashoffset: 200%;
-      }
-  }
   .badge
     position absolute
 
