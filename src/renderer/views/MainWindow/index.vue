@@ -75,6 +75,8 @@ export default {
 
   destroyed() {
     broadcastEvents.removeAllListeners('open-channel');
+    ipcRenderer.removeAllListeners('update-error');
+    ipcRenderer.removeAllListeners('update-downloaded');
   },
 
   methods: {
