@@ -111,8 +111,8 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
-import commonStreams from '@classes/commonStreams';
 import broadcastEvents from '@classes/broadcastEvents';
+import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 
 /**
  * Aspect ratio 124 / 168;
@@ -231,22 +231,8 @@ export default {
       this.resize();
     },
 
-    getUsersWhoShareMedia: {
-      deep: true,
-      handler(users) {
-        this.requestStreams();
-      },
-    },
-
     selectedChannel(channelId) {
-      if (!channelId) {
-        Object.keys(this.videoStreams).forEach(key => {
-          this.$delete(this.videoStreams, key);
-        });
-      }
-      if (channelId) {
-        this.requestStreams();
-      }
+
     },
   },
 
@@ -254,24 +240,58 @@ export default {
     this.mounted = true;
     window.addEventListener('resize', this.resize, false); // TODO: add small debounce for performance
     this.resize();
-    await new Promise(resolve => this.$nextTick(resolve));
-    this.requestStreams();
-
-    // Запрашиваем стрим юзера, если он прекратился
-    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
 
     broadcastEvents.on('grid-expand', (userId) => {
       this.expandedClickHandler(userId);
     });
+
+    // Send command to subscribe for all video publishers
+    this.handleVideoStreams();
+
+    janusVideoroomWrapper.on('publisher-joined', publisher => {
+      janusVideoroomWrapper.subscribeFor(publisher.janusId);
+    });
+
+    janusVideoroomWrapper.on('publisher-left', publisher => {
+      this.videoStreams[publisher.userId] = false;
+    });
+
+    janusVideoroomWrapper.on('new-stream', async publisher => {
+      console.log('new stream for publisher: ', publisher);
+      this.videoStreams[publisher.userId] = true;
+      await new Promise(resolve => this.$nextTick(resolve));
+      this.insertVideoStreamForUser(publisher.userId, publisher.stream);
+    });
+  },
+
+  beforeDestroy() {
+    janusVideoroomWrapper.removeAllListeners('publisher-joined');
+    janusVideoroomWrapper.removeAllListeners('remote-video-stream');
   },
 
   destroyed() {
     window.removeEventListener('resize', this.resize, false);
-    commonStreams.removeAllListeners('stream-canceled');
     broadcastEvents.removeAllListeners('grid-expand');
   },
 
   methods: {
+    /**
+     * Handle video streams in this room
+     * Insert existed videos, request videos that arent receiving now,
+     * insert local video stream
+     * @returns {void}
+     */
+    handleVideoStreams() {
+      // unpause all streams
+      janusVideoroomWrapper.unpauseAllSubscriptions();
+
+      // insert existing videos
+      const existingStreams = janusVideoroomWrapper.getActiveStreams();
+
+      existingStreams.forEach(publisher => {
+        this.insertVideoStreamForUser(publisher.userId, publisher.stream);
+      });
+    },
     /**
      * Insert stream in HTML5 video tag
      * @param {string} userId User id
@@ -290,42 +310,6 @@ export default {
       htmlVideo.onloadedmetadata = () => {
         htmlVideo.play();
       };
-    },
-    /**
-     * Request not loaded streams and insert loaded
-     * @returns {void}
-     */
-    requestStreams() {
-      const users = this.getUsersWhoShareMedia;
-
-      // console.log('filter who should be deleted', users, JSON.stringify(this.videoStreams), JSON.stringify(this.users));
-      // delete streams that were inserted but users have already stopped sharing
-      this.users.filter(u => !u.camera && !u.screen && !!this.videoStreams[u.id]).forEach(u => {
-        console.log(`clear stream for ${u.id}`);
-        this.$delete(this.videoStreams, u.id);
-      });
-      Object.keys(this.videoStreams).forEach(uId => {
-        if (!this.users.map(u => u.id).includes(uId)) {
-          console.log(`clear stream 2 for ${uId}`);
-          this.$delete(this.videoStreams, uId);
-        }
-      });
-
-      // console.log('filter who should be added');
-
-      // add streams that were not inserted
-      users.filter(id => !this.videoStreams[id]).map(async id => {
-        this.$set(this.videoStreams, id, true);
-        console.log(`wait stream for ${id}`);
-        console.time(`request-${id}`);
-        const stream = await commonStreams.getStream(id);
-
-        console.timeEnd(`request-${id}`);
-
-        console.log(`stream received for ${id}`);
-
-        this.insertVideoStreamForUser(id, stream);
-      });
     },
 
     /**
@@ -401,25 +385,6 @@ export default {
         return;
       }
       this.$router.push({ path: `/call-window/expanded/${id}` });
-    },
-
-    /**
-     * Stream canceled handler
-     * @param {string} userId – user id
-     * @returns {Promise<void>}
-     */
-    async streamCanceledHandler(userId) {
-      if (!this.selectedChannel) {
-        return;
-      }
-
-      if (this.getUsersWhoShareMedia.includes(userId)) {
-        console.log('Again request stream', userId);
-
-        const stream = await commonStreams.getStream(userId);
-
-        this.insertVideoStreamForUser(userId, stream);
-      }
     },
   },
 };

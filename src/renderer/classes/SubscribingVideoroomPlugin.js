@@ -153,6 +153,56 @@ class VideoroomPlugin extends EventEmitter {
   }
 
   /**
+   * Set receiving vide stream on pause
+   * @returns {void}
+   */
+  pause() {
+    if (!this.__pluginHandle || this.__detached) {
+      return;
+    }
+
+    this.__pluginHandle.send({
+      message: {
+        request: 'pause',
+      },
+    });
+  }
+
+  /**
+   * Resume receiving video stream
+   * @returns {void}
+   */
+  resume() {
+    if (!this.__pluginHandle || this.__detached) {
+      return;
+    }
+
+    this.__pluginHandle.send({
+      message: {
+        request: 'start',
+      },
+    });
+  }
+
+  /**
+   * Switch plugin subscription to another publisher
+   * @param {number} janusId Switch plugin to another publisher
+   * @returns {void}
+   */
+  switch(janusId) {
+    if (this.__pluginHandle || this.__detached) {
+      return;
+    }
+
+    this.__pluginHandle.send({
+      message: {
+        request: 'switch',
+        feed: typeof janusId === 'number' ? janusId : parseInt(janusId, 10),
+      },
+    });
+  }
+
+  /**
    * Detached videoroom plugin from Janus
    * @returns {undefined}
    */

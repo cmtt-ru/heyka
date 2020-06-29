@@ -25,11 +25,11 @@
 
 <script>
 import CallControls from './CallControls';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import broadcastActions from '@classes/broadcastActions';
-import commonStreams from '@classes/commonStreams';
 import broadcastEvents from '@classes/broadcastEvents';
 import UiButton from '@components/UiButton';
+import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 
 export default {
   components: {
@@ -37,6 +37,10 @@ export default {
     UiButton,
   },
   computed: {
+    ...mapState({
+      janusOptions: 'janus',
+      selectedDevices: 'app/selectedDevices',
+    }),
     ...mapGetters([
       'getUserWhoSharesMedia',
       'getUsersWhoShareMedia',
@@ -44,6 +48,9 @@ export default {
       'isAnybodySharingMedia',
       'getSpeakingUser',
     ]),
+    ...mapGetters({
+      myId: 'me/getMyId',
+    }),
 
     mediaState() {
       return this.$store.getters['me/getMediaState'];
@@ -71,47 +78,42 @@ export default {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     },
 
-    getUserWhoSharesMedia(user) {
-      if (user && this.mediaState.screen === false && this.isMediaSharing) {
-        this.requestStream(user);
+    selectedChannelId(newChannelId, oldChannelId) {
+      if (!newChannelId && oldChannelId) {
+        janusVideoroomWrapper.leave();
+      }
+      if (newChannelId) {
+        janusVideoroomWrapper.join(this.myId, this.janusOptions);
       }
     },
 
-    getSpeakingUserId(userId) {
-      if (userId && this.mediaState.screen === false && this.getUsersWhoShareMedia.includes(userId)) {
-        this.requestStream(userId);
+    'mediaState.screen'(state) {
+      console.log('here');
+      if (state) {
+        janusVideoroomWrapper.publishVideoStream('screen', this.janusOptions.sharingSource.id);
+      } else {
+        janusVideoroomWrapper.unpublishVideoStream();
       }
+    },
+
+    selectedCamera(deviceId) {
+
     },
   },
 
-  created() {
+  async created() {
     if (this.isMediaSharing) {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     }
-    if (this.getUserWhoSharesMedia) {
-      this.requestStream(this.getUserWhoSharesMedia);
+    await janusVideoroomWrapper.init();
+    if (this.selectedChannelId) {
+      await janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
-
-    // Если стрим прекратился, но юзер еще шэрит камеру
-    // то запрашиваем стрим еще раз
-    // самый частый юзкейс - юзер изменил камеру, поэтому стрим обновился
-    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
   },
   destroyed() {
-    commonStreams.removeAllListeners('stream-canceled');
+
   },
   methods: {
-    async requestStream(user) {
-      const stream = await commonStreams.getStream(user);
-      const htmlElement = this.$refs.video;
-
-      if (htmlElement) {
-        htmlElement.srcObject = stream;
-        htmlElement.onloadedmetadata = function () {
-          htmlElement.play();
-        };
-      }
-    },
 
     /**
      * Show grid handler
@@ -120,20 +122,6 @@ export default {
     showGridHandler() {
       broadcastActions.dispatch('openGrid');
       broadcastEvents.dispatch('grid');
-    },
-
-    /**
-     * Stream canceled handler
-     * @param {string} userId – user id
-     * @returns {Promise<void>}
-     */
-    async streamCanceledHandler(userId) {
-      if (!this.selectedChannelId) {
-        return;
-      }
-      if (this.getUserWhoSharesMedia === userId) {
-        this.requestStream(userId);
-      }
     },
 
     /**

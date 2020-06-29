@@ -119,13 +119,15 @@ class JanusWrapper extends EventEmitter {
   }
 
   /**
-   * Connects to the server and join to channels
+   * Connects to the server and join to audio channels
    * @public
-   * @returns {Promise<Stream>} Audio stream from Janus server
+   * @returns {void}
    */
   async join() {
     /** Connect to Janus */
-    await this._connect();
+    if (!this.janus) {
+      await this._connect();
+    }
 
     // connect audiobridge plugin
 
@@ -158,6 +160,18 @@ class JanusWrapper extends EventEmitter {
     audiobridgePlugin.on('audio-slow-link', (uplink) => this.emit(JANUS_WRAPPER_EVENTS.audioSlowLink, uplink));
 
     this.__audiobridgePlugin = audiobridgePlugin;
+  }
+
+  /**
+   * Connects to the server and join to video channels
+   * @public
+   * @returns {void}
+   */
+  async joinVideo() {
+    /** Connect to Janus */
+    if (!this.janus) {
+      await this._connect();
+    }
 
     // connect videoroom plugin
     const videoroomPlugin = new PublishingVideoroomPlugin({
