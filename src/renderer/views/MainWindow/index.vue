@@ -3,7 +3,6 @@
     <janus />
     <notifications />
     <router-view />
-    <performance-monitor></performance-monitor>
   </div>
 </template>
 
@@ -15,7 +14,6 @@ import broadcastEvents from '@classes/broadcastEvents';
 import Notifications from '@components/Notifications';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
-import PerformanceMonitor from '@components/PerformanceMonitor';
 
 export default {
   components: {
@@ -74,6 +72,10 @@ export default {
     ipcRenderer.send('tray-animation', false);
 
     this.showMacScreenSharingPermission();
+  },
+
+  destroyed() {
+    broadcastEvents.removeAllListeners('open-channel');
   },
 
   methods: {
