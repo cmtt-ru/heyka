@@ -13,6 +13,7 @@ export default {
     return {
       processList: [],
       interval: null,
+      enabled: false,
     };
   },
 
@@ -41,11 +42,13 @@ export default {
   },
 
   mounted() {
-    this.interval = setInterval(async () => {
-      const data = await si.processes();
+    if (this.enabled) {
+      this.interval = setInterval(async () => {
+        const data = await si.processes();
 
-      this.processList = data.list;
-    }, parseInt('1000'));
+        this.processList = data.list;
+      }, parseInt('1000'));
+    }
   },
 
   destroyed() {
@@ -57,11 +60,11 @@ export default {
 
 <style lang="stylus" scoped>
   .stat
-    position absolute;
+    position absolute
     bottom 0
     left 0
     background #000
-    color: #50ef39
+    color #50ef39
     padding 2px 6px
     font-size 11px
     font-family monospace

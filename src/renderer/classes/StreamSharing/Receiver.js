@@ -3,6 +3,8 @@ import broadcastEvents from '../broadcastEvents';
 import mediaCapturer from '../mediaCapturer';
 // import uuid from 'uuid/v4';
 
+const VIDEO_BITRATE = 512;
+
 /**
  * StreamSharingReceiver`
  * Manages sharing media streams on receiver side
@@ -98,7 +100,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
       await pc.setLocalDescription(answer);
 
-      const sdp = this._setMediaBitrate(answer.sdp, 'video', parseInt('512'));
+      const sdp = this._setMediaBitrate(answer.sdp, 'video', VIDEO_BITRATE);
 
       // send answer
       broadcastEvents.dispatch(`sdp-answer-receiver-${data.requestId}`, {

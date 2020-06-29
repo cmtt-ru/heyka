@@ -43,6 +43,9 @@ const StyleguideNotifications = () => import(/* webpackChunkName: "main" */ '@vi
  */
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/Pushes');
 
+/* Empty view for memory leak tests */
+const Empty = () => import(/* webpackChunkName: "main" */ '@views/Empty');
+
 /**
  * Call window views
  * @constructor
@@ -241,6 +244,12 @@ const routes = [
         component: CallWindowExpanded,
       },
     ],
+  },
+
+  {
+    path: '/empty',
+    name: 'empty',
+    component: Empty,
   },
 
   /**
