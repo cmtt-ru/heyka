@@ -42,7 +42,7 @@ module.exports = {
       },
     },
     plugins: webpackPlugins,
-    devtool: !IS_DEV ? 'hidden-source-map' : false,
+    devtool: IS_DEV ? 'cheap-source-map' : 'hidden-source-map',
   },
 
   pluginOptions: {
