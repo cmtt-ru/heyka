@@ -45,6 +45,13 @@
         >
           {{ texts.styleguide }}
         </router-link>
+        <router-link
+          v-if="IS_DEV"
+          class="link"
+          :to="{name: 'test-zone'}"
+        >
+          Test Zone
+        </router-link>
         <div class="app-info">
           {{ prettyInfo }}
         </div>

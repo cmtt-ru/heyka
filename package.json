@@ -74,6 +74,7 @@
     "stylus-loader": "^3.0.2",
     "svgo": "^1.1.0",
     "svgo-loader": "^2.1.0",
+    "systeminformation": "^4.26.9",
     "vue-cli-plugin-electron-builder": "^1.4.6",
     "vue-cli-plugin-i18n": "^0.6.1",
     "vue-cli-plugin-svg-sprite": "^1.0.0",

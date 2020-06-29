@@ -7,7 +7,7 @@
 export default {
   bind: function (el, binding, vnode) {
     el.clickOutsideEvent = function (event) {
-      if (!(el == event.target || el.contains(event.target))) {
+      if (!(el === event.target || el.contains(event.target))) {
         vnode.context[binding.expression](event);
       }
     };
@@ -15,5 +15,6 @@ export default {
   },
   unbind: function (el) {
     document.body.removeEventListener('click', el.clickOutsideEvent);
+    el.clickOutsideEvent = null;
   },
 };
