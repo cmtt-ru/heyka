@@ -31,6 +31,7 @@
 
     <ui-button
       v-if="user.screen"
+      v-stop-propagation
       class="user__sharing"
       :type="7"
       size="small"

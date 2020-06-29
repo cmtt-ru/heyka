@@ -41,27 +41,19 @@ export default {
       janusOptions: 'janus',
       selectedDevices: 'app/selectedDevices',
     }),
-    ...mapGetters([
-      'getUserWhoSharesMedia',
-      'getUsersWhoShareMedia',
-      'amISharingMedia',
-      'isAnybodySharingMedia',
-      'getSpeakingUser',
-    ]),
     ...mapGetters({
+      getUserWhoSharesMedia: 'getUserWhoSharesMedia',
+      getUsersWhoShareMedia: 'getUsersWhoShareMedia',
+      amISharingMedia: 'amISharingMedia',
+      isAnybodySharingMedia: 'isAnybodySharingMedia',
+      getSpeakingUser: 'getSpeakingUser',
+      mediaState: 'me/getMediaState',
+      selectedChannelId: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
     }),
 
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
-    },
-
     isMediaSharing() {
       return this.isAnybodySharingMedia && !this.amISharingMedia;
-    },
-
-    selectedChannelId() {
-      return this.$store.state.me.selectedChannelId;
     },
 
     getSpeakingUserId() {

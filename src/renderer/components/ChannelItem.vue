@@ -20,12 +20,13 @@
         </div>
         <ui-button
           v-show="isSelected"
+          v-stop-propagation
           :type="7"
           class="channel__more"
           size="small"
           height="16"
           icon="more"
-          @click.native="$emit('more')"
+          @click="moreHandler"
         />
       </div>
 
@@ -55,6 +56,7 @@
 <script>
 import Avatar from '@components/Avatar';
 import UiButton from '@components/UiButton';
+import { mapGetters } from 'vuex';
 
 const ICON_MAP = {
   public: 'channel',
@@ -91,23 +93,23 @@ export default {
   },
 
   computed: {
-    /**
-     * Get our id
-     * @returns {object}
-     */
-    myId() {
-      return this.$store.getters['me/getMyId'];
-    },
+    ...mapGetters({
+      myId: 'me/getMyId',
+      me: 'myInfo',
+    }),
+
     /**
      * Get users array
      * @returns {array} array of users
      */
     users() {
-      if (this.excludeMe) {
-        return this.$store.getters.getUsersByChannel(this.channel.id).filter((user) => user.id !== this.myId);
-      }
+      const otherUsers = this.$store.getters.getUsersByChannel(this.channel.id).filter((user) => user.id !== this.myId);
 
-      return this.$store.getters.getUsersByChannel(this.channel.id);
+      if (this.excludeMe) {
+        return otherUsers;
+      } else {
+        return [this.me, ...otherUsers];
+      }
     },
 
     /**
@@ -154,6 +156,16 @@ export default {
      */
     isSelected() {
       return this.$route.params.id === this.channel.id;
+    },
+  },
+
+  methods: {
+    /**
+     * Dummy popover creation
+     * @returns {void}
+     */
+    moreHandler() {
+      this._notImplemented();
     },
   },
 
