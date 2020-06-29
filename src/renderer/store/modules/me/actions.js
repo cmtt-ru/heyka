@@ -113,6 +113,7 @@ export default {
   async setDefaultMediaState({ commit, state }) {
     const defaultState = {
       ...state.mediaState,
+      microphone: false,
       camera: false,
       screen: false,
       speakers: true,
