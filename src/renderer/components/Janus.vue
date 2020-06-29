@@ -15,18 +15,6 @@ import AudioCheck from '@classes/AudioCheck';
 import { mapState } from 'vuex';
 
 /**
- * Video publishers
- * @type {object}
- */
-const videoPublishers = {};
-
-/**
- * Stream host instance
- * @type {object}
- */
-const streamHost = null;
-
-/**
  * Janus wrapper instance
  * @type {object}
  */
@@ -49,6 +37,8 @@ export default {
       userId: 'id',
       mediaState: 'mediaState',
       microphone: state => state.mediaState.microphone,
+      camera: state => state.mediaState.camera,
+      screen: state => state.mediaState.screen,
       speakers: state => state.mediaState.speakers,
       speaking: state => state.mediaState.speaking,
     }),
@@ -90,6 +80,43 @@ export default {
       janusWrapper.setMuting(!state);
       if (state) {
         AudioCheck.checkAudio();
+      }
+    },
+
+    /**
+     * Handles change camera state
+     * @param {boolean} state Is camera sharing enabled
+     * @returns {void}
+     */
+    camera(state, ps) {
+      console.log('previous', ps, state);
+      if (state) {
+        this.startSharingCamera();
+      } else {
+        this.stopSharingVideo();
+      }
+    },
+    /**
+     * Handles change screen sharing state
+     * @param {boolean} state Is screen sharing enabled
+     * @returns {void}
+     */
+    screen(state) {
+      if (state) {
+        this.startSharingScreen();
+      } else {
+        this.stopSharingVideo();
+      }
+    },
+
+    /**
+     * Handles change selected camera device
+     * @param {string} deviceId Current camera device id
+     * @returns {void}
+     */
+    selectedCameraDevice(deviceId) {
+      if (janusWrapper && this.camera) {
+        janusWrapper.setCameraDevice(deviceId);
       }
     },
 
@@ -188,6 +215,7 @@ export default {
      */
     async selectChannel() {
       // Set janus "inProgress" status
+      this.setOperationStart('join');
 
       janusWrapper = new JanusWrapper({
         ...this.janusOptions,
@@ -198,6 +226,7 @@ export default {
 
       // common events
       janusWrapper.on(JanusWrapper.events.channelJoined, () => {
+        this.setOperationFinish('join');
         if (this.microphone) {
           AudioCheck.checkAudio();
         }
@@ -211,6 +240,13 @@ export default {
       janusWrapper.on(JanusWrapper.events.volumeChange, this.onVolumeChange.bind(this));
       janusWrapper.on(JanusWrapper.events.audioSlowLink, this.onAudioSlowLink.bind(this));
 
+      // video events
+      janusWrapper.on(JanusWrapper.events.videoSlowLink, this.onVideoSlowLink.bind(this));
+      janusWrapper.on(JanusWrapper.events.webrtcCleanUp, this.onWebrtcCleanUp.bind(this));
+      janusWrapper.on(JanusWrapper.events.successVideoPublishing, () => {
+        this.setOperationFinish('publish');
+      });
+
       await janusWrapper.join();
     },
 
@@ -220,16 +256,60 @@ export default {
      */
     unselectChannel() {
       if (janusWrapper) {
-        janusWrapper.removeAllListeners('connection-error');
-        janusWrapper.removeAllListeners('remote-audio-stream');
-        janusWrapper.removeAllListeners('audio-stream-active');
+        // unsubscribe for audio events
+        janusWrapper.removeAllListeners(JanusWrapper.events.connectionError);
+        janusWrapper.removeAllListeners(JanusWrapper.events.connectionError);
+        janusWrapper.removeAllListeners(JanusWrapper.events.remoteAudioStream);
+        janusWrapper.removeAllListeners(JanusWrapper.events.audioStreamActive);
+        janusWrapper.removeAllListeners(JanusWrapper.events.speaking);
+        janusWrapper.removeAllListeners(JanusWrapper.events.volumeChange);
+        janusWrapper.removeAllListeners(JanusWrapper.events.audioSlowLink);
+
+        // unsubscribe for video events
+        janusWrapper.removeAllListeners(JanusWrapper.events.videoSlowLink);
+        janusWrapper.removeAllListeners(JanusWrapper.events.webrtcCleanUp);
         janusWrapper.disconnect();
         janusWrapper = null;
       }
-      Object.keys(videoPublishers).forEach(key => {
-        this.$delete(videoPublishers, key);
-      });
-      streamHost.clearAll();
+    },
+
+    /**
+     * Start sharing video from a camera device
+     * @returns {void}
+     */
+    startSharingCamera() {
+      if (!janusWrapper) {
+        this.log('Janus wrapper is not existed');
+
+        return;
+      }
+      this.setOperationStart('publish');
+      janusWrapper.publishVideoStream('camera', this.selectedCameraDevice);
+    },
+
+    /**
+     * Start sharing video from the screen
+     * @returns {void}
+     */
+    startSharingScreen() {
+      if (!janusWrapper) {
+        this.log('Janus wrapper is not existed');
+
+        return;
+      }
+      this.setOperationStart('publish');
+      janusWrapper.publishVideoStream('screen', this.janusOptions.sharingSource.id);
+    },
+    /**
+     * Stop sharing any video
+     * @returns {void}
+     */
+    stopSharingVideo() {
+      if (!janusWrapper) {
+        return;
+      }
+      this.setOperationStart('unpublish');
+      janusWrapper.unpublishVideoStream();
     },
 
     /**
@@ -317,27 +397,6 @@ export default {
     },
 
     /**
-     * Handle local video stream
-     * @param {MediaStream} stream Media stream
-     * @returns {void}
-     */
-    async onLocalVideoStream(stream) {
-      streamHost.closeStreamSharing(this.userId);
-      videoPublishers[this.userId] = {
-        userId: this.userId,
-        stream,
-      };
-      // await new Promise(resolve => this.$nextTick(resolve));
-      // Insert stream
-      // const el = this.$refs[`video${this.userId}`][0];
-      //
-      // el.srcObject = stream;
-      // el.onloadedmetadata = function () {
-      //   el.play();
-      // };
-    },
-
-    /**
      * Handle audio slow link
      * @param {boolean} uplink - false when all of our packets is not received by Janus, true – some packets lost
      * @returns {void}
@@ -347,10 +406,20 @@ export default {
     },
 
     /**
+     * Handle video slow link
+     * @param {boolean} uplink - false when all of our packets is not received by Janus, true – some packets lost
+     * @returns {void}
+     */
+    onVideoSlowLink(uplink) {
+      connectionCheck.handleSlowInternet(true);
+    },
+
+    /**
      * Handle webrtc clean up
      * @returns {void}
      */
     onWebrtcCleanUp() {
+      this.setOperationFinish('unpublish');
       this.$store.dispatch('janus/setInProgress', false);
     },
 

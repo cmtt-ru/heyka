@@ -125,7 +125,7 @@ class JanusWrapper extends EventEmitter {
    */
   async join() {
     /** Connect to Janus */
-    if (!this.janus) {
+    if (!this.__janus) {
       await this._connect();
     }
 
@@ -160,18 +160,6 @@ class JanusWrapper extends EventEmitter {
     audiobridgePlugin.on('audio-slow-link', (uplink) => this.emit(JANUS_WRAPPER_EVENTS.audioSlowLink, uplink));
 
     this.__audiobridgePlugin = audiobridgePlugin;
-  }
-
-  /**
-   * Connects to the server and join to video channels
-   * @public
-   * @returns {void}
-   */
-  async joinVideo() {
-    /** Connect to Janus */
-    if (!this.janus) {
-      await this._connect();
-    }
 
     // connect videoroom plugin
     const videoroomPlugin = new PublishingVideoroomPlugin({
@@ -193,9 +181,6 @@ class JanusWrapper extends EventEmitter {
         this.emit(JANUS_WRAPPER_EVENTS.channelJoined);
       }
     });
-    videoroomPlugin.on('publisher-joined', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherJoined, publisher));
-    videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
-    videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
     videoroomPlugin.on('success-publishing', () => this.emit(JANUS_WRAPPER_EVENTS.successVideoPublishing));
     videoroomPlugin.on('video-slow-link', () => this.emit(JANUS_WRAPPER_EVENTS.videoSlowLink));
     videoroomPlugin.on('webrtc-cleanup', () => this.emit(JANUS_WRAPPER_EVENTS.webrtcCleanUp));
@@ -261,6 +246,9 @@ class JanusWrapper extends EventEmitter {
    * @returns {void}
    */
   unpublishVideoStream() {
+    if (!this.__videoroomPlugin) {
+      return;
+    }
     this.__videoroomPlugin.unpublishVideo();
   }
 

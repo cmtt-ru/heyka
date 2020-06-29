@@ -78,19 +78,6 @@ export default {
         janusVideoroomWrapper.join(this.myId, this.janusOptions);
       }
     },
-
-    'mediaState.screen'(state) {
-      console.log('here');
-      if (state) {
-        janusVideoroomWrapper.publishVideoStream('screen', this.janusOptions.sharingSource.id);
-      } else {
-        janusVideoroomWrapper.unpublishVideoStream();
-      }
-    },
-
-    selectedCamera(deviceId) {
-
-    },
   },
 
   async created() {
