@@ -60,11 +60,11 @@ export default {
 
 <style lang="stylus" scoped>
   .stat
-    position absolute;
+    position absolute
     bottom 0
     left 0
     background #000
-    color: #50ef39
+    color #50ef39
     padding 2px 6px
     font-size 11px
     font-family monospace

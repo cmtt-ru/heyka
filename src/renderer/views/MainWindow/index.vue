@@ -19,7 +19,6 @@ export default {
   components: {
     Janus,
     Notifications,
-    PerformanceMonitor,
   },
   data() {
     return {

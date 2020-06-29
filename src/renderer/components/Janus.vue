@@ -465,12 +465,12 @@ export default {
       await new Promise(resolve => this.$nextTick(resolve));
 
       // Insert stream
-      const el = this.$refs[`video${newPublisher.userId}`][0];
-
-      el.srcObject = stream;
-      el.onloadedmetadata = function () {
-        el.play();
-      };
+      // const el = this.$refs[`video${newPublisher.userId}`][0];
+      //
+      // el.srcObject = stream;
+      // el.onloadedmetadata = function () {
+      //   el.play();
+      // };
     },
 
     /**
