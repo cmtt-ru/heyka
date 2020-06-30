@@ -19,9 +19,12 @@ export default {
 
   computed: {
     filteredProcessList() {
-      console.log(this.processList);
-
-      return this.processList.filter(l => l.path.toLowerCase().indexOf('electron/dist') > -1);
+      // console.log(this.processList);
+      if (IS_LINUX) {
+        return this.processList.filter(l => l.path.toLowerCase().indexOf('electron/dist') > -1);
+      } else {
+        return this.processList.filter(l => l.path.toLowerCase().indexOf('electron') > -1);
+      }
     },
 
     totalCpuUsage() {
