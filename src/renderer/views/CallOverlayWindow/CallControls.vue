@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="user"
     class="call-controls"
     :class="{'call-controls--row': row}"
   >
@@ -81,11 +82,7 @@ export default {
      * @return {string}
      */
     speakingUserName() {
-      if (this.speakingUser) {
-        return this.speakingUser.name;
-      }
-
-      return this.user.name || '';
+      return this.speakingUser?.name || this.user?.name || '';
     },
 
     /**
@@ -93,11 +90,7 @@ export default {
      * @return {string}
      */
     speakingUserAvatar() {
-      if (this.speakingUser) {
-        return this.speakingUser.avatar;
-      }
-
-      return this.user.avatar || '';
+      return this.speakingUser?.avatar || this.user?.avatar || '';
     },
 
     /**

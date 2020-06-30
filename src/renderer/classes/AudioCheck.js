@@ -66,7 +66,6 @@ class AudioCheck extends EventEmitter {
     this.destroyMediaStream();
 
     this.__needMediaStream = true;
-    console.log();
 
     if (this._selectedMicrophone() === null) {
       return;

@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
 import mediaCapturer from '../mediaCapturer';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Host.js', '#85929E');
 
 /**
  * StreamSharingHost
@@ -11,14 +13,12 @@ export default class StreamSharingHost extends EventEmitter {
   /**
    * Init stream sharing manager
    * @param {object} options Stream host manager options
-   * @param {boolean} [options.debug=false] Is debug enable
    */
   constructor(options) {
     super();
 
     broadcastEvents.on('request-stream', this._onRequestStream.bind(this));
 
-    this.__debugEnabled = !!options.debug;
     this.__pcs = {};
   }
 
@@ -72,13 +72,13 @@ export default class StreamSharingHost extends EventEmitter {
 
     // subscribe on ICE candidates from another window
     broadcastEvents.on(`icecandidate-receiver-${requestData.requestId}`, async data => {
-      this._debug(`Add candidate for request ${requestData.requestId}`, data);
+      cnsl.debug(`Add candidate for request ${requestData.requestId}`, data);
       await pc.addIceCandidate(data.candidate);
     });
 
     // subscribe for sdp answer from another window
     broadcastEvents.once(`sdp-answer-receiver-${requestData.requestId}`, async (data) => {
-      this._debug(`remote sdp answer: `, data.sdpAnswer);
+      cnsl.debug(`remote sdp answer: `, data.sdpAnswer);
       await pc.setRemoteDescription(data.sdpAnswer);
     });
 
@@ -128,7 +128,7 @@ export default class StreamSharingHost extends EventEmitter {
       }
     }
 
-    this._debug(`Close peer connection for ${userId}`);
+    cnsl.debug(`Close peer connection for ${userId}`);
   }
 
   destroyPc(pc) {
@@ -179,10 +179,15 @@ export default class StreamSharingHost extends EventEmitter {
    * @returns {void}
    */
   _onRequestStream(data) {
-    console.log('Stream is requested', data);
+    cnsl.log('Stream is requested', data);
     this.emit('request-stream', data);
   }
 
+  /**
+   * Add new peer connection
+   * @param {object} data - some data
+   * @returns {void}
+   */
   _addPcs(data) {
     const userId = data.userId;
 
@@ -191,15 +196,5 @@ export default class StreamSharingHost extends EventEmitter {
     }
 
     this.__pcs[userId].push(data);
-  }
-
-  /**
-   * Inner debug tool
-   * @returns {void}
-   */
-  _debug() {
-    if (this.__debugEnabled) {
-      console.log(`Stream sharing manager host: `, ...arguments);
-    }
   }
 }

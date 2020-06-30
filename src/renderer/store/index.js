@@ -15,6 +15,10 @@ import broadcastState from '@classes/broadcastState';
 import { ipcRenderer } from 'electron';
 import createPersistedState from 'vuex-persistedstate';
 import { heykaStore } from '@/store/localStore';
+import cloneDeep from 'clone-deep';
+import { throttle } from 'throttle-debounce';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Vuex index', '#17A589');
 
 /**
  * Is this window main?
@@ -82,11 +86,35 @@ if (IS_MAIN_WINDOW) {
     'workspaces/SET_COLLECTION',
   ];
 
+  const THROTTLE_DELAY = 1000;
+
   plugins.push(createPersistedState({
     paths: persistStorePaths,
     filter: mutation => {
       return allowedMutationsList.includes(mutation.type);
     },
+    reducer: state => {
+      const reducedState = cloneDeep({
+        channels: state.channels,
+        workspaces: state.workspaces,
+        users: state.users,
+      });
+
+      /** Remove users from channel */
+      for (const key in reducedState.channels.collection) {
+        reducedState.channels.collection[key].users = [];
+      }
+
+      /** Offline status for all users */
+      for (const key in reducedState.users.collection) {
+        reducedState.users.collection[key].onlineStatus = 'offline';
+      }
+
+      return reducedState;
+    },
+    setState: throttle(THROTTLE_DELAY, false, (key, state, storage) => {
+      storage.setItem(key, JSON.stringify(state));
+    }),
   }));
 }
 
@@ -114,7 +142,7 @@ if (IS_MAIN_WINDOW) {
    * Listen for bluetooth microphone becomes default
    */
   mediaDevices.on('bluetooth-microphone', (microphone) => {
-    console.log('bluetooth microphone detected', microphone);
+    cnsl.log('bluetooth microphone detected', microphone);
   });
 
   /**
