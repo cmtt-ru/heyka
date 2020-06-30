@@ -3,7 +3,6 @@ import themes from './themes.json';
 import { ipcRenderer } from 'electron';
 import vuex from '@/store';
 import { heykaStore } from '@/store/localStore';
-const { nativeTheme } = require('electron').remote;
 
 ;
 
@@ -55,7 +54,7 @@ class Themes {
    */
   autoSetTheme() {
     this.storeVue.auto = true;
-    if (nativeTheme.shouldUseDarkColors) {
+    if (ipcRenderer.sendSync('remote-shouldUseDarkColors')) {
       this.__setTheme('dark');
     } else {
       this.__setTheme('light');
