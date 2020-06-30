@@ -206,7 +206,7 @@ export default {
     // Send command to subscribe for all video publishers
     this.handleVideoStreams();
 
-    janusVideoroomWrapper.on('publisher-joined', publisher => {
+    janusVideoroomWrapper.on('publisher-joined', async publisher => {
       janusVideoroomWrapper.subscribeFor(publisher.janusId);
     });
 
@@ -216,15 +216,18 @@ export default {
 
     janusVideoroomWrapper.on('new-stream', async publisher => {
       console.log('new stream for publisher: ', publisher);
-      this.$set(this.videoStreams, publisher.userId, true);
-      await new Promise(resolve => this.$nextTick(resolve));
+      if (!this.getUsersWhoShareMedia.includes(publisher.userId)) {
+        console.log('wait for publisher is appear');
+        await this.waitForPublisherWillAppear(publisher.userId);
+      }
       this.insertVideoStreamForUser(publisher.userId, publisher.stream);
     });
   },
 
   beforeDestroy() {
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
-    janusVideoroomWrapper.removeAllListeners('remote-video-stream');
+    janusVideoroomWrapper.removeAllListeners('publisher-left');
+    janusVideoroomWrapper.removeAllListeners('new-stream');
   },
 
   destroyed() {
@@ -249,7 +252,7 @@ export default {
       activePublishers
         .filter(publisher => publisher.stream)
         .forEach(publisher => {
-          console.log('insert video for user ', publisher.userId);
+          console.log('insert video for user ', publisher.userId, publisher.stream);
           this.insertVideoStreamForUser(publisher.userId, publisher.stream);
         });
 
@@ -267,7 +270,12 @@ export default {
      * @param {MediaStream} stream User video stream
      * @returns {void}
      */
-    insertVideoStreamForUser(userId, stream) {
+    async insertVideoStreamForUser(userId, stream) {
+      console.log('Entered here');
+      this.$set(this.videoStreams, userId, true);
+      await new Promise(resolve => this.$nextTick(resolve));
+      console.log(this.getUsersWhoShareMedia.includes(userId));
+
       const htmlVideo = this.$refs[`video${userId}`][0];
 
       if (!htmlVideo) {
@@ -279,6 +287,21 @@ export default {
       htmlVideo.onloadedmetadata = () => {
         htmlVideo.play();
       };
+    },
+
+    async waitForPublisherWillAppear(userId) {
+      const maxAttempts = 5;
+      const interval = 100;
+
+      let i = 0;
+
+      while (i++ < maxAttempts) {
+        if (this.getUsersWhoShareMedia.includes(userId)) {
+          return;
+        }
+        await new Promise(resolve => setInterval(resolve, interval));
+      }
+      throw new Error('WaitPublisherTimeout');
     },
 
     /**

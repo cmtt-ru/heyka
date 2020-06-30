@@ -36,6 +36,11 @@ export default {
     CallControls,
     UiButton,
   },
+  data() {
+    return {
+      watchingUser: null,
+    };
+  },
   computed: {
     ...mapState({
       janusOptions: 'janus',
@@ -78,6 +83,39 @@ export default {
         janusVideoroomWrapper.join(this.myId, this.janusOptions);
       }
     },
+
+    getSpeakingUserId(newUserId) {
+      const activePublishers = janusVideoroomWrapper.getActivePublishers();
+
+      if (activePublishers.find(publisher => publisher.userId === newUserId)) {
+        this.watchingUser = newUserId;
+      }
+    },
+
+    watchingUser(newUser, oldUser) {
+      if (newUser && oldUser) {
+        const publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === newUser);
+
+        if (!publisher) {
+          console.log('switch user but not exist');
+
+          return;
+        }
+        janusVideoroomWrapper.switchSingleSubscription(publisher.janusId);
+      } else if (newUser && !oldUser) {
+        const publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === newUser);
+
+        if (!publisher) {
+          console.log('new user but not exist');
+
+          return;
+        }
+        janusVideoroomWrapper.createSingleSubscription(publisher.janusId);
+      } else if (!newUser && oldUser) {
+        console.log('remove subs');
+        janusVideoroomWrapper.removeSingleSubscription();
+      }
+    },
   },
 
   async created() {
@@ -88,6 +126,24 @@ export default {
     if (this.selectedChannelId) {
       await janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
+  },
+  mounted() {
+    if (this.getUserWhoSharesMedia) {
+      this.watchingUser = this.getUserWhoSharesMedia;
+    }
+    janusVideoroomWrapper.on('single-sub-stream', stream => {
+      this.insertStream(stream);
+    });
+    janusVideoroomWrapper.on('publisher-joined', publisher => {
+      if (publisher.userId === this.watchingUser) {
+        janusVideoroomWrapper.createSingleSubscription(publisher.janusId);
+      }
+    });
+  },
+  beforeDestroy() {
+    this.watchingUser = null;
+    janusVideoroomWrapper.removeAllListeners('single-sub-stream');
+    janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },
   destroyed() {
 
@@ -112,6 +168,20 @@ export default {
         broadcastActions.dispatch('openGrid');
         broadcastEvents.dispatch('grid-expand', this.getSpeakingUserId);
       }
+    },
+
+    /**
+     * Insert video stream in html
+     * @param {MediaStream} stream Video stream
+     * @returns {void}
+     */
+    insertStream(stream) {
+      const el = this.$refs.video;
+
+      el.srcObject = stream;
+      el.onloadedmetadata = () => {
+        el.play();
+      };
     },
   },
 };

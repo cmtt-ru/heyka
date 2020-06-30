@@ -36,10 +36,6 @@ const ERROR_CODES = {
  */
 
 /**
- * @typedef {Array<Publisher>} PublisherList
- */
-
-/**
  * Manage Janus connection for subscribing and publishing video
  * @class
  */
@@ -50,6 +46,9 @@ class JanusVideoroomWrapper extends EventEmitter {
    */
   constructor() {
     super();
+
+    /** @type {Janus} JanusInstance */
+    this.__janus = null;
 
     /** @type {JanusOptions} Current janus options */
     this.__janusOptions = {
@@ -65,8 +64,15 @@ class JanusVideoroomWrapper extends EventEmitter {
     /** @type {MediaStream} Local video stream if publising */
     this.__localVideoStream = null;
 
-    /** @type PublisherList */
+    /** @type {Array<Publisher>} PublisherList */
     this.__publishers = [];
+
+    /** @type {SubscribingVideoroomPlugin} SingleSubscriber */
+    this.__singleSubscriber = null;
+    /** @type {MediaStream} Stream of single subscription */
+    this.__singleRemoteStream = null;
+    /** @type {number} Feed of janus for single subscription*/
+    this.__singleFeed = null;
   }
 
   /**
@@ -98,7 +104,7 @@ class JanusVideoroomWrapper extends EventEmitter {
    */
   async join(userId, options) {
     /** Connect to Janus */
-    if (!this.janus) {
+    if (!this.__janus) {
       await this._connect(options.janusServerUrl, options.janusAuthToken);
     }
 
@@ -329,6 +335,79 @@ class JanusVideoroomWrapper extends EventEmitter {
         this.resumeSubscription(publisher.janusId);
       }
     });
+  }
+
+  /**
+   * Create plugin for single subscription
+   * @param {number} janusId Janus user id (feed)
+   * @returns {void}
+   */
+  createSingleSubscription(janusId) {
+    if (!this.__janus) {
+      return;
+    }
+
+    if (this.__singleFeed) {
+      if (this.__singleFeed !== janusId) {
+        this.switchSingleSubscription(janusId);
+      }
+
+      if (this.__singleFeed === janusId && this.__singleRemoteStream) {
+        this.emit('single-sub-stream', this.__singleRemoteStream);
+      }
+    }
+
+    const plugin = new SubscribingVideoroomPlugin({
+      janus: this.__janus,
+      room: this.__janusOptions.videoRoomId,
+      token: this.__janusOptions.channelAuthToken,
+      userId: this.__janusOptions.userId,
+      janusId,
+      debug: true,
+    });
+
+    plugin.attach();
+
+    plugin.on('remote-video-stream', (stream) => {
+      this.emit('single-sub-stream', stream);
+    });
+
+    this.__singleSubscriber = plugin;
+    this.__singleFeed = janusId;
+  }
+
+  /**
+   * Switch single subscription for another janus feed
+   * @param {number} janusId Janus id (feed)
+   * @returns {void}
+   */
+  switchSingleSubscription(janusId) {
+    if (!this.__singleSubscriber) {
+      return;
+    }
+
+    this.__singleSubscriber.send({
+      message: {
+        request: 'switch',
+        feed: typeof janusId === 'number' ? janusId : parseInt(janusId, 10),
+      },
+    });
+  }
+
+  /**
+   * Remove subscription plugin for single feed
+   * @returns {void}
+   */
+  removeSingleSubscription() {
+    this.__singleRemoteStream.removeAllListeners('remote-video-stream');
+    if (this.__singleSubscriber) {
+      this.__singleSubscriber.detach();
+      this.__singleSubscriber = null;
+    }
+    if (this.__singleRemoteStream) {
+      mediaCapturer.destroyStream(this.__singleRemoteStream);
+      this.__singleRemoteStream = null;
+    }
   }
 
   /**
