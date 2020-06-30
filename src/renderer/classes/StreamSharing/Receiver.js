@@ -2,6 +2,9 @@ import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
 import Logger from '@classes/logger';
 const cnsl = new Logger('Reciever.js', '#34495E');
+import mediaCapturer from '../mediaCapturer';
+
+const VIDEO_BITRATE = 512;
 
 /**
  * StreamSharingReceiver`
@@ -31,12 +34,18 @@ export default class StreamSharingReceiver extends EventEmitter {
       requestId: `${Math.floor(Math.random() * 9999 + 10000)}`,
       userId,
     };
+
+    if (this.__pcs[userId]) {
+      this._streamSharingClosed(userId);
+    }
+
     const pc = new RTCPeerConnection();
 
     const onIceCandidate = e => {
       if (!e.candidate) {
         return;
-      };
+      }
+
       cnsl.debug(`ice-candidate ${data.requestId}`, e.candidate.toJSON());
 
       // send ICE candidate to another window
@@ -61,6 +70,8 @@ export default class StreamSharingReceiver extends EventEmitter {
         userId,
         stream: track.streams[0],
       });
+
+      this.__pcs[userId].mediaStream = track.streams[0];
     };
 
     this.__pcs[userId] = {
@@ -82,16 +93,21 @@ export default class StreamSharingReceiver extends EventEmitter {
     broadcastEvents.once(`stream-offer-host-${data.requestId}`, async (d) => {
       cnsl.debug(`offer ${data.requestId}`, d);
       await pc.setRemoteDescription(d.sdpOffer);
-      const answer = await pc.createAnswer();
+      let answer = await pc.createAnswer();
 
       await pc.setLocalDescription(answer);
+
+      const sdp = this._setMediaBitrate(answer.sdp, 'video', VIDEO_BITRATE);
+
       // send answer
       broadcastEvents.dispatch(`sdp-answer-receiver-${data.requestId}`, {
         sdpAnswer: {
-          sdp: answer.sdp,
+          sdp: sdp,
           type: 'answer',
         },
       });
+
+      answer = null;
     });
 
     // handle ICE candidates from stream host
@@ -102,6 +118,7 @@ export default class StreamSharingReceiver extends EventEmitter {
 
     // Request stream
     broadcastEvents.dispatch('request-stream', data);
+    console.log('---------', 'request-stream', data);
     broadcastEvents.once(`failed-request-${data.requestId}`, () => {
       this._streamSharingClosed(data.userId, data.requestId);
     });
@@ -114,25 +131,52 @@ export default class StreamSharingReceiver extends EventEmitter {
    * @returns {void}
    */
   _streamSharingClosed(userId, requestId) {
-    const pc = this.__pcs[userId];
+    let pc = this.__pcs[userId];
 
     if (!pc) {
       return;
     }
+
     if (requestId && pc && requestId !== pc.requestId) {
       return;
     }
+
     cnsl.log(`Close connection for ${userId} (${requestId})!`);
 
     cnsl.debug(`close connection for ${pc.requestId}, ${userId}`, pc);
+
+    if (pc.mediaStream) {
+      mediaCapturer.destroyStream(pc.mediaStream);
+      pc.mediaStream = null;
+    }
 
     pc.pc.close();
     pc.pc.removeEventListener('icecandidate', pc.onIceCandidate);
     pc.pc.removeEventListener('iceconnectionstatechange', pc.onIceConnectionStateChange);
     pc.pc.removeEventListener('track', pc.onTrack);
+
+    broadcastEvents.removeAllListeners(`icecandidate-host-${pc.requestId}`);
+    broadcastEvents.removeAllListeners(`stream-offer-host-${pc.requestId}`);
+    broadcastEvents.removeAllListeners(`failed-request-${pc.requestId}`);
+
+    pc.requestId = null;
+    pc.onIceCandidate = null;
+    pc.onIceConnectionStateChange = null;
+    pc.onTrack = null;
+
+    pc.pc = null;
+
+    pc = null;
+
+    this.__pcs[userId] = null;
+
     delete this.__pcs[userId];
 
+    // console.log('-------------__pcs', this.__pcs);
+
     this.emit('connection-closed', userId);
+
+    // console.log('++++++++', this, broadcastEvents);
   }
 
   /**
@@ -141,5 +185,56 @@ export default class StreamSharingReceiver extends EventEmitter {
    */
   _onClearAll() {
     Object.keys(this.__pcs).forEach(userId => this._streamSharingClosed(userId));
+  }
+
+  /**
+   * Modify sdp bitrate
+   * @param {string} sdp – sdp
+   * @param {string} media – media type
+   * @param {number} bitrate – bitrate
+   * @returns {string|*}
+   * @private
+   */
+  _setMediaBitrate(sdp, media, bitrate) {
+    var lines = sdp.split('\n');
+    var line = -1;
+
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].indexOf('m=' + media) === 0) {
+        line = i;
+        break;
+      }
+    }
+    if (line === -1) {
+      cnsl.log('Could not find the m line for', media);
+
+      return sdp;
+    }
+    cnsl.log('Found the m line for', media, 'at line', line);
+
+    // Pass the m line
+    line++;
+
+    // Skip i and c lines
+    while (lines[line].indexOf('i=') === 0 || lines[line].indexOf('c=') === 0) {
+      line++;
+    }
+
+    // If we're on a b line, replace it
+    if (lines[line].indexOf('b') === 0) {
+      cnsl.log('Replaced b line at line', line);
+      lines[line] = 'b=AS:' + bitrate;
+
+      return lines.join('\n');
+    }
+
+    // Add a new b line
+    cnsl.log('Adding new b line before line', line);
+    var newLines = lines.slice(0, line);
+
+    newLines.push('b=AS:' + bitrate);
+    newLines = newLines.concat(lines.slice(line, lines.length));
+
+    return newLines.join('\n');
   }
 }

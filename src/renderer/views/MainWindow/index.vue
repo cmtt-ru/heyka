@@ -75,6 +75,12 @@ export default {
     this.showMacScreenSharingPermission();
   },
 
+  destroyed() {
+    broadcastEvents.removeAllListeners('open-channel');
+    ipcRenderer.removeAllListeners('update-error');
+    ipcRenderer.removeAllListeners('update-downloaded');
+  },
+
   methods: {
     /**
      * Show update install notification
