@@ -7,24 +7,24 @@
 
 <script>
 import si from 'systeminformation';
+import sleep from 'es7-sleep';
+
+const INTERVAL_DELAY = 1000;
 
 export default {
   data: () => {
     return {
       processList: [],
-      interval: null,
+      interval: true,
       enabled: true,
     };
   },
 
   computed: {
     filteredProcessList() {
-      // console.log(this.processList);
-      if (IS_LINUX) {
-        return this.processList.filter(l => l.path.toLowerCase().indexOf('electron/dist') > -1);
-      } else {
-        return this.processList.filter(l => l.path.toLowerCase().indexOf('electron') > -1);
-      }
+      const processLabel = IS_LINUX ? 'electron/dist' : 'electron';
+
+      return this.processList.filter(l => l.path.toLowerCase().indexOf(processLabel) > -1);
     },
 
     totalCpuUsage() {
@@ -46,18 +46,19 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
     if (this.enabled) {
-      this.interval = setInterval(async () => {
+      while (this.interval) {
         const data = await si.processes();
 
         this.processList = data.list;
-      }, parseInt('1000'));
+        await sleep(INTERVAL_DELAY);
+      }
     }
   },
 
   destroyed() {
-    clearInterval(this.interval);
+    this.interval = false;
   },
 
 };
