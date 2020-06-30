@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import { ipcRenderer } from 'electron';
 import { heykaStore } from '@/store/localStore';
 
 /**
@@ -44,7 +44,7 @@ const state = () => {
    */
   return {
     appName: 'Heyka Desktop',
-    appVersion: remote.app.getVersion(),
+    appVersion: ipcRenderer.sendSync('remote-getVersion'),
     language: heykaStore.get('language', 'en'),
     runAppFrom: heykaStore.get('runAppFrom', 'window'),
     runAppFromOld: heykaStore.get('runAppFrom', 'window'),

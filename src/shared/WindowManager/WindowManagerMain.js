@@ -28,7 +28,6 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   webPreferences: Object.freeze({
     nodeIntegration: true,
     webSecurity: true,
-    enableRemoteModule: true, // ! remove all remote!
   }),
 });
 
