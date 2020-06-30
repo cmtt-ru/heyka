@@ -150,7 +150,7 @@ export default {
    * @constructor
    */
   SET_MICROPHONE_VOLUME(state, volume) {
-    state.microphoneVolume = volume;
+    // state.microphoneVolume = volume;
   },
 
   /**
