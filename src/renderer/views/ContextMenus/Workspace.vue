@@ -72,7 +72,7 @@
 <script>
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
-import electron from 'electron';
+import { ipcRenderer } from 'electron';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -109,7 +109,7 @@ export default {
      * @returns {void}
      */
     quitAppHandler() {
-      electron.remote.app.quit();
+      ipcRenderer.send('remote-quit');
     },
   },
 };

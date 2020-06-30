@@ -7,7 +7,7 @@ const autoLauncher = new AutoLaunch({
 });
 
 /* Enable autolaunch if not in development mode and if setting is set to "true" */
-if (!IS_DEV && heykaStore.get('autolaunch', true)) {
+if (!IS_DEV && heykaStore.get('autorun', true)) {
   autoLauncher.isEnabled().then(function (isEnabled) {
     if (isEnabled) {
       return;

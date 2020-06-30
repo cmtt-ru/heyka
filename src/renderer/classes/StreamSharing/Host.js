@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
+import mediaCapturer from '../mediaCapturer';
 
 /**
  * StreamSharingHost
@@ -32,33 +33,15 @@ export default class StreamSharingHost extends EventEmitter {
   async sendStream(requestData, stream) {
     const pc = new RTCPeerConnection();
 
-    this.__pcs[requestData.userId] = pc;
+    const onIceConnectionStateChange = e => {
+      this._debug('iceconnectionstate', pc.iceConnectionState);
 
-    // add stream to RTCPeerConnection
-    stream.getTracks().forEach(track => pc.addTrack(track, stream));
-
-    // subscribe for changing iceConnectionState
-    pc.addEventListener('iceconnectionstatechange', () => {
-      const pcnow = this.__pcs[requestData.userId];
-
-      if (!pcnow) {
-        return;
+      if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
+        this.closeStreamSharing(requestData.userId, requestData.requestId);
       }
+    };
 
-      this._debug('iceconnectionstate', pcnow.iceConnectionState);
-      if (pcnow && (pcnow.iceConnectionState === 'failed' || pcnow.iceConnectionState === 'disconnected')) {
-        this._debug('connection-closed for ', requestData);
-        pcnow.close();
-        delete this.__pcs[requestData.userId];
-        if (stream) {
-          stream.getTracks().forEach(track => track.stop());
-          stream = null;
-        }
-      }
-    });
-
-    // handle ICE candidates
-    pc.addEventListener('icecandidate', async e => {
+    const onIceCandidate = e => {
       if (!e.candidate) {
         return;
       }
@@ -67,7 +50,25 @@ export default class StreamSharingHost extends EventEmitter {
         type: 'icecandidate',
         candidate: e.candidate,
       });
+    };
+
+    this._addPcs({
+      userId: requestData.userId,
+      requestId: requestData.requestId,
+      mediaStream: stream,
+      onIceConnectionStateChange,
+      onIceCandidate,
+      pc,
     });
+
+    // add stream to RTCPeerConnection
+    stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+    // subscribe for changing iceConnectionState
+    pc.addEventListener('iceconnectionstatechange', onIceConnectionStateChange);
+
+    // handle ICE candidates
+    pc.addEventListener('icecandidate', onIceCandidate);
 
     // subscribe on ICE candidates from another window
     broadcastEvents.on(`icecandidate-receiver-${requestData.requestId}`, async data => {
@@ -102,15 +103,54 @@ export default class StreamSharingHost extends EventEmitter {
   /**
    * Close stream sharing for user
    * @param {string} userId User id
+   * @param {string} [requestId] – request id
    * @returns {void}
    */
-  async closeStreamSharing(userId) {
-    if (this.__pcs[userId]) {
-      this.__pcs[userId].close();
-      delete this.__pcs[userId];
-    }
-    this._debug(`Close peer connection for ${userId}`);
+  async closeStreamSharing(userId, requestId) {
+    const pcs = this.__pcs[userId];
+
     broadcastEvents.dispatch(`stream-sharing-closed`, userId);
+
+    if (!pcs || pcs.length === 0) {
+      return;
+    }
+
+    if (!requestId) {
+      pcs.forEach(pc => this.destroyPc(pc));
+
+      delete this.__pcs[userId];
+    } else {
+      const pcIndex = pcs.findIndex(pc => pc.requestId === requestId);
+
+      if (pcIndex > -1) {
+        this.destroyPc(pcs[pcIndex]);
+        pcs.splice(pcIndex, 1);
+      }
+    }
+
+    this._debug(`Close peer connection for ${userId}`);
+  }
+
+  destroyPc(pc) {
+    if (pc.mediaStream) {
+      mediaCapturer.destroyStream(pc.mediaStream);
+      pc.mediaStream = null;
+    }
+
+    pc.pc.close();
+    pc.pc.removeEventListener('icecandidate', pc.onIceCandidate);
+    pc.pc.removeEventListener('iceconnectionstatechange', pc.onIceConnectionStateChange);
+
+    broadcastEvents.removeAllListeners(`icecandidate-receiver-${pc.requestId}`);
+    broadcastEvents.removeAllListeners(`sdp-answer-receiver-${pc.requestId}`);
+
+    pc.userId = null;
+    pc.requestId = null;
+    pc.onIceCandidate = null;
+    pc.onIceConnectionStateChange = null;
+    pc.pc = null;
+
+    pc = null;
   }
 
   /**
@@ -119,8 +159,7 @@ export default class StreamSharingHost extends EventEmitter {
    */
   clearAll() {
     Object.keys(this.__pcs).forEach(key => {
-      this.__pcs[key].close();
-      delete this.__pcs[key];
+      this.closeStreamSharing(key.userId);
     });
     broadcastEvents.dispatch(`clear-all`);
   }
@@ -142,6 +181,16 @@ export default class StreamSharingHost extends EventEmitter {
   _onRequestStream(data) {
     console.log('Stream is requested', data);
     this.emit('request-stream', data);
+  }
+
+  _addPcs(data) {
+    const userId = data.userId;
+
+    if (!this.__pcs[userId]) {
+      this.__pcs[userId] = [];
+    }
+
+    this.__pcs[userId].push(data);
   }
 
   /**

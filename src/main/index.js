@@ -1,8 +1,9 @@
 'use strict';
 
-import { app, ipcMain, protocol } from 'electron';
+import { app, ipcMain, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import './classes/AutoLaunch';
+import './classes/RemoteInfo';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { IS_DEV, IS_WIN, IS_MAC } from '../shared/Constants';
@@ -116,4 +117,18 @@ if (IS_DEV) {
       app.quit();
     });
   }
+}
+
+ipcMain.on('open-webrtc-internals', (event) => {
+  event.returnValue = true;
+  createWebrtcInternals();
+});
+
+function createWebrtcInternals() {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+  });
+
+  win.loadURL('chrome://webrtc-internals');
 }
