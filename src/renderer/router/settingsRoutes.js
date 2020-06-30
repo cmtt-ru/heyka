@@ -4,6 +4,7 @@ const Devices = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/S
 const Network = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Network');
 const About = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/About');
 const Support = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Support');
+const TestZone = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/TestZone');
 
 export const settingsRoutes = {
   path: 'settings',
@@ -33,6 +34,11 @@ export const settingsRoutes = {
       path: 'support',
       name: 'settings-support',
       component: Support,
+    },
+    {
+      path: 'test-zone',
+      name: 'test-zone',
+      component: TestZone,
     },
   ],
 };
