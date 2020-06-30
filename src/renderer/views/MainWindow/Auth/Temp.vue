@@ -49,6 +49,8 @@ import fs from 'fs';
 import path from 'path';
 import mapUsers from './mapUsers.json';
 import { codeFileStore } from '@/store/localStore';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Temp.vue', '#138D75');
 
 export default {
   components: {
@@ -95,8 +97,8 @@ export default {
       } catch (e) {
         // do nothing
         // file is not found or there are problems to open and parse it
-        console.log('Error on open old app data: ', e);
-        console.log(path.join(appDataPath, '🖐 Heyka', 'config.json'));
+        cnsl.error('Error on open old app data: ', e);
+        cnsl.log(path.join(appDataPath, '🖐 Heyka', 'config.json'));
 
         return;
       }
@@ -104,7 +106,7 @@ export default {
       const authLink = mapUsers[`${oldAppData.userId}`];
 
       if (authLink) {
-        console.log('Old user id is: ', oldAppData.userId);
+        cnsl.log('Old user id is: ', oldAppData.userId);
         this.code = authLink;
         this.signinHandler();
       }

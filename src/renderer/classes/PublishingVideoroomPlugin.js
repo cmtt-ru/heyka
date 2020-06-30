@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Publishing Videoroom Plugin', '#F8C471');
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 const WAITING_UNPUBLISH_TIMEOUT = 2000;
 /* eslint-disable */
@@ -16,7 +18,6 @@ class PublishingVideoroomPlugin extends EventEmitter {
    * @param {number} options.room Room in videoroom plugin
    * @param {string} options.token Authentication token for room
    * @param {string} options.userId Connected user id
-   * @param {boolean} [options.debug=false] Is debug output enabled
    */
   constructor(options) {
     super();
@@ -26,14 +27,12 @@ class PublishingVideoroomPlugin extends EventEmitter {
       room,
       token,
       userId,
-      debug = false,
     } = options;
 
     this.__janus = janus;
     this.__room = room;
     this.__token = token;
     this.__userId = userId;
-    this.__debugEnabled = debug;
 
     this.__localVideoStream = null;
     this.__detached = false;
@@ -53,7 +52,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('plugin attached');
+        cnsl.debug('plugin attached');
 
         this.__pluginHandle = pluginHandle;
         this._joinAsSubscriber();
@@ -64,7 +63,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('Consent dialog', isAllowed);
+        cnsl.debug('Consent dialog', isAllowed);
       },
 
       // Notifies that WebRTC connection between the computer and Janus is established (or is down)
@@ -73,7 +72,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('webrtcState', state, reason);
+        cnsl.debug('webrtcState', state, reason);
       },
 
       // Presents an ICE state for that moment
@@ -85,7 +84,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('iceState', state);
+        cnsl.debug('iceState', state);
       },
 
       // Triggered when Janus starts or stops receiving client's media
@@ -93,7 +92,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('mediaState', type, isActive);
+        cnsl.debug('mediaState', type, isActive);
         this.emit('media-state', isActive);
       },
 
@@ -104,7 +103,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('slowLink', uplink);
+        cnsl.debug('slowLink', uplink);
         this.emit('video-slow-link', uplink);
       },
 
@@ -117,17 +116,17 @@ class PublishingVideoroomPlugin extends EventEmitter {
 
         switch (true) {
           case event === 'joined':
-            console.log(`%c Already are publishing: `, 'background: yellow;');
-            console.log(message.publishers)
+            cnsl.info(`Already are publishing: `);
+            cnsl.log(message.publishers)
             this._onJoinedChannel(message);
             break;
           case !!message.unpublished:
-            console.log(`%c Unpublished: ${message.unpublished}`, 'background: yellow;');
+            cnsl.info(`Unpublished: ${message.unpublished}`);
             this._onUnpublished(message);
             break;
           case event === 'event' && !!message.id:
-            console.log(`%c new publisher: `, 'background: yellow;');
-            console.log(message)
+            cnsl.info(`new publisher: `);
+            cnsl.log(message)
             this._onPublished(message);
             break;
           case jsep !== undefined && jsep !== null:
@@ -135,7 +134,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
             this._onRemoteJsep(jsep);
             break;
           default:
-            this._debug('message', message, jsep);
+            cnsl.debug('message', message, jsep);
         }
       },
 
@@ -144,7 +143,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('localstream', stream);
+        cnsl.debug('localstream', stream);
         this._onLocalVideoStream(stream);
       },
 
@@ -153,7 +152,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('dataopen');
+        cnsl.debug('dataopen');
       },
 
       // Some data is received through the Data Channel
@@ -161,7 +160,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('data', data);
+        cnsl.debug('data', data);
       },
 
       // WebRTC connection with the plugin was closed
@@ -169,14 +168,14 @@ class PublishingVideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('cleanup');
+        cnsl.debug('cleanup');
         this.emit('webrtc-cleanup');
       },
 
       // Plugin is detached (it can't be used)
       detached: () => {
         this.__detached = true;
-        this._debug('detached');
+        cnsl.debug('detached');
       },
     });
   }
@@ -210,11 +209,11 @@ class PublishingVideoroomPlugin extends EventEmitter {
    * @returns {void}
    */
   unpublishVideo() {
-    this._debug('Stop local video stream');
+    cnsl.debug('Stop local video stream');
     if (this.__localVideoStream) {
       mediaCapturer.destroyStream(this.__localVideoStream);
     }
-    this._debug('Unpublish');
+    cnsl.debug('Unpublish');
     if (this.__pluginHandle) {
       this.__pluginHandle.send({
         message: {
@@ -278,23 +277,12 @@ class PublishingVideoroomPlugin extends EventEmitter {
   }
 
   /**
-   * Internal debug console output
-   * @private
-   * @returns {undefined}
-   */
-  _debug() {
-    if (this.__debugEnabled) {
-      console.log('Videoroom plugin: ', ...arguments);
-    }
-  }
-
-  /**
    * Handles client joined the channel
    * @param {object} message Janus event message object
    * @returns {undefined}
    */
   _onJoinedChannel(message) {
-    this._debug('room joined', message);
+    cnsl.debug('room joined', message);
 
     this.emit('active-publishers', message.publishers);
   }
@@ -305,7 +293,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
    * @returns {void}
    */
   _onPublished(message) {
-    this._debug('new publisher', message);
+    cnsl.debug('new publisher', message);
 
     this.emit('publisher-joined', message);
   }
@@ -316,7 +304,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
    * @returns {void}
    */
   _onUnpublished(message) {
-    this._debug('remove publisher', message);
+    cnsl.debug('remove publisher', message);
 
     this.emit('publisher-left', message);
   }
@@ -327,7 +315,7 @@ class PublishingVideoroomPlugin extends EventEmitter {
    * @returns {undefined}
    */
   _onRemoteJsep(jsep) {
-    this._debug('handle remote jsep', jsep);
+    cnsl.debug('handle remote jsep', jsep);
     this.__pluginHandle.handleRemoteJsep({ jsep });
   }
 

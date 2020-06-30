@@ -21,7 +21,9 @@ import mediaCapturer from '@classes/mediaCapturer';
 import connectionCheck from '@classes/connectionCheck';
 import AudioCheck from '@classes/AudioCheck';
 import { mapState } from 'vuex';
+import Logger from '@classes/logger';
 
+const cnsl = new Logger('Janus.vue', '#AF7AC5 ');
 const WAIT_PUBLISHER_INVERVAL = 80;
 const WAIT_PUBLISHER_ATTEMPTS = 20;
 
@@ -83,11 +85,11 @@ export default {
      */
     selectedChannelId(id, oldId) {
       if (oldId !== null) {
-        this.log('Channel unselect');
+        cnsl.log('Channel unselect');
         this.unselectChannel();
       }
       if (id !== null) {
-        this.log('Channel select');
+        cnsl.log('Channel select');
         this.selectChannel();
       }
     },
@@ -113,7 +115,7 @@ export default {
      * @returns {void}
      */
     speakers(state) {
-      console.log(`Set muting of speakers ${!state}`);
+      cnsl.log(`Set muting of speakers ${!state}`);
       this.$refs.audio.muted = !state;
     },
 
@@ -203,9 +205,9 @@ export default {
   },
   async created() {
     await JanusWrapper.init();
-    streamHost = new StreamHost({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
+    streamHost = new StreamHost();
     streamHost.on('request-stream', this.onRequestStream.bind(this));
-    this.log('JanusWrapper was initialized');
+    cnsl.log('JanusWrapper was initialized');
   },
   beforeDestroy() {
     if (janusWrapper) {
@@ -219,13 +221,13 @@ export default {
     setOperationStart(operation) {
       this.$store.dispatch('janus/setInProgress', true);
       this.currentOperation = operation;
-      console.log('%c setOperationStart', 'background: #C9EAD7; color: black', operation);
+      cnsl.info('setOperationStart', operation);
     },
     setOperationFinish(operation) {
-      console.log('%c setOperationFinish', 'background: #C9EAD7; color: black', operation);
+      cnsl.info('setOperationFinish', operation);
       if (operation === this.currentOperation) {
         this.$store.dispatch('janus/setInProgress', false);
-        console.log(this.$store.state.janus);
+        cnsl.log(this.$store.state.janus);
         this.currentOperation = '';
       }
     },
@@ -299,7 +301,7 @@ export default {
      */
     startSharingCamera() {
       if (!janusWrapper) {
-        this.log('Janus wrapper is not existed');
+        cnsl.error('Janus wrapper does not exist');
 
         return;
       }
@@ -315,7 +317,7 @@ export default {
      */
     startSharingScreen() {
       if (!janusWrapper) {
-        this.log('Janus wrapper is not existed');
+        cnsl.error('Janus wrapper does not exist');
 
         return;
       }
@@ -342,7 +344,7 @@ export default {
 
       janusWrapper.unpublishVideoStream();
       this.$delete(videoPublishers, this.userId);
-      this.log('Notify about closing connection for current user', this.userId);
+      cnsl.log('Notify about closing connection for current user', this.userId);
       streamHost.closeStreamSharing(this.userId);
     },
 
@@ -352,7 +354,7 @@ export default {
      * @returns {void}
      */
     onRemoteAudioStream(stream) {
-      this.log('Attach audio stream to the audio element');
+      cnsl.log('Attach audio stream to the audio element');
       JanusWrapper.attachMediaStream(this.$refs.audio, stream);
       this.$refs.audio.muted = !this.speakers;
       this.$refs.audio.setSinkId(this.selectedSpeakerDevice);
@@ -366,13 +368,13 @@ export default {
     onConnectionError(errorCode) {
       switch (errorCode) {
         case JanusWrapper.errors.SERVER_DOWN:
-          this.log('Janus server is down');
+          cnsl.error('Janus server is down');
           break;
         case JanusWrapper.errors.AUTHENTICATION_ERROR:
-          this.log('Janus authentication error');
+          cnsl.error('Janus authentication error');
           break;
         case JanusWrapper.errors.UNKNOW:
-          this.log('An unknow error');
+          cnsl.error('An unknow error');
           break;
       }
     },
@@ -383,11 +385,11 @@ export default {
      * @returns {void}
      */
     onAudioStreamActive(isActive) {
-      console.log('------ onAudioStreamActive');
+      cnsl.log('onAudioStreamActive');
       if (isActive) {
         if (this.microphone) {
           janusWrapper.setMuting(false);
-          console.log('------ setMuting false');
+          cnsl.log('setMuting false');
         }
         if (this.speakers) {
           this.$refs.audio.muted = false;
@@ -439,7 +441,7 @@ export default {
       //     janusId: publisher.id,
       //   };
       // });
-      // this.log('Publishers collection is updated', videoPublishers);
+      // cnsl.log('Publishers collection is updated', videoPublishers);
     },
 
     /**
@@ -453,7 +455,7 @@ export default {
         janusId: publisher.id,
       };
 
-      this.log('New publisher is added', newPublisher);
+      cnsl.log('New publisher is added', newPublisher);
       await new Promise(resolve => setTimeout(resolve, parseInt('500')));
       const stream = await janusWrapper.requestVideoStream(publisher.id);
 
@@ -461,7 +463,7 @@ export default {
         ...newPublisher,
         stream,
       };
-      console.log('=================================', videoPublishers);
+      cnsl.log('=================================', videoPublishers);
       await new Promise(resolve => this.$nextTick(resolve));
 
       // Insert stream
@@ -499,7 +501,7 @@ export default {
       delete videoPublishers[key];
       // delete videoPublishers[key];
 
-      this.log(`Publisher ${key} is deleted`);
+      cnsl.log(`Publisher ${key} is deleted`);
     },
 
     /**
@@ -533,14 +535,14 @@ export default {
         tries += 1;
         publisher = videoPublishers[data.userId];
       }
-      this.log(`Stream of ${data.userId} is requested`, data);
+      cnsl.log(`Stream of ${data.userId} is requested`, data);
 
       // может стрим уже есть у этого паблишера?
       let stream = publisher.stream;
 
       // значит запрашиваем стрим у JanusWrapper
       if (!stream) {
-        this.log(`Stream for ${data.userId} is not prepared, prepare now`);
+        cnsl.log(`Stream for ${data.userId} is not prepared, prepare now`);
         stream = await janusWrapper.requestVideoStream(publisher.janusId);
         publisher.stream = stream;
       }
@@ -615,7 +617,7 @@ export default {
      * @returns {void}
      */
     log() {
-      console.log('JANUS.VUE: ', ...arguments);
+      cnsl.log('JANUS.VUE: ', ...arguments);
     },
   },
 };

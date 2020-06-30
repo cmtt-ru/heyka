@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events';
 import hark from 'hark';
 import mediaCapturer from '@classes/mediaCapturer';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Audiobridge plugin', '#2980B9');
 const JANUS_PLUGIN = 'janus.plugin.audiobridge';
 const HARK_UPDATE_INTERVAL_MS = 75;
 
@@ -17,7 +19,6 @@ class AudiobridgePlugin extends EventEmitter {
    * @param {string} options.token Authentication token for room
    * @param {string} options.userId Connected user id
    * @param {string} options.microphoneDeviceId Unique id for selected microphone device
-   * @param {boolean} [options.debug=false] Is debug output enabled
    */
   constructor(options) {
     super();
@@ -28,7 +29,6 @@ class AudiobridgePlugin extends EventEmitter {
       token,
       userId,
       microphoneDeviceId,
-      debug = false,
     } = options;
 
     this.__janus = janus;
@@ -37,7 +37,6 @@ class AudiobridgePlugin extends EventEmitter {
     this.__token = token;
     this.__userId = userId;
     this.__maxBitrate = 48;
-    this.__debugEnabled = debug;
 
     // hark stream
     this.__harkStream = null;
@@ -59,7 +58,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('plugin attached');
+        cnsl.debug('plugin attached');
 
         this.__pluginHandle = pluginHandle;
         this._joinChannel();
@@ -70,7 +69,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('Consent dialog', isAllowed);
+        cnsl.debug('Consent dialog', isAllowed);
       },
 
       // Notifies that WebRTC connection between the computer and Janus is established (or is down)
@@ -79,7 +78,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('webrtcState', state, reason);
+        cnsl.debug('webrtcState', state, reason);
       },
 
       // Presents an ICE state for that moment
@@ -91,7 +90,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('iceState', state);
+        cnsl.debug('iceState', state);
       },
 
       // Triggered when Janus starts or stops receiving client's media
@@ -99,7 +98,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('mediaState', type, isActive);
+        cnsl.debug('mediaState', type, isActive);
         this.emit('media-state', isActive);
       },
 
@@ -110,7 +109,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('slowLink', uplink);
+        cnsl.debug('slowLink', uplink);
         this.emit('audio-slow-link', uplink);
       },
 
@@ -129,7 +128,7 @@ class AudiobridgePlugin extends EventEmitter {
             this._onRemoteJsep(jsep);
             break;
           default:
-            this._debug('message', message, jsep);
+            cnsl.debug('message', message, jsep);
         }
       },
 
@@ -138,7 +137,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('localstream', stream);
+        cnsl.debug('localstream', stream);
         this._onLocalAudioStream(stream);
       },
 
@@ -147,7 +146,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('remotestream', stream);
+        cnsl.debug('remotestream', stream);
         this.emit('remote-audio-stream', stream);
       },
 
@@ -156,7 +155,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('dataopen');
+        cnsl.debug('dataopen');
       },
 
       // Some data is received through the Data Channel
@@ -164,7 +163,7 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('data', data);
+        cnsl.debug('data', data);
       },
 
       // WebRTC connection with the plugin was closed
@@ -172,13 +171,13 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('cleanup');
+        cnsl.debug('cleanup');
       },
 
       // Plugin is detached (it can't be used)
       detached: () => {
         this.__detached = true;
-        this._debug('detached');
+        cnsl.debug('detached');
       },
     });
   }
@@ -246,10 +245,10 @@ class AudiobridgePlugin extends EventEmitter {
           message: { request: 'configure' },
           jsep: jsep,
         });
-        this._debug(`Microphone was sucessfully changed!')`);
+        cnsl.debug(`Microphone was sucessfully changed!')`);
       },
       error: (error) => {
-        this._debug(`WebRTC error on change microphone: ${error}`, error);
+        cnsl.debug(`WebRTC error on change microphone: ${error}`, error);
       },
     });
   }
@@ -270,23 +269,12 @@ class AudiobridgePlugin extends EventEmitter {
   }
 
   /**
-   * Internal debug console output
-   * @private
-   * @returns {undefined}
-   */
-  _debug() {
-    if (this.__debugEnabled) {
-      console.log('Audiobridge plugin: ', ...arguments);
-    }
-  }
-
-  /**
    * Handles client joined the channel
    * @param {object} message Janus event message object
    * @returns {undefined}
    */
   _onJoinedChannel(message) {
-    this._debug('room joined', message);
+    cnsl.debug('room joined', message);
 
     this.__pluginHandle.createOffer({
       media: {
@@ -307,7 +295,7 @@ class AudiobridgePlugin extends EventEmitter {
         });
       },
       error: error => {
-        this._debug('create offer error', error);
+        cnsl.debug('create offer error', error);
       },
     });
   }
@@ -318,7 +306,7 @@ class AudiobridgePlugin extends EventEmitter {
    * @returns {undefined}
    */
   _onRemoteJsep(jsep) {
-    this._debug('handle remote jsep', jsep);
+    cnsl.debug('handle remote jsep', jsep);
     this.__pluginHandle.handleRemoteJsep({ jsep });
   }
 
