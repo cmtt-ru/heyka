@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
+import mediaCapturer from '../mediaCapturer';
 import Logger from '@classes/logger';
 const cnsl = new Logger('Host.js', '#85929E');
-import mediaCapturer from '../mediaCapturer';
 
 /**
  * StreamSharingHost

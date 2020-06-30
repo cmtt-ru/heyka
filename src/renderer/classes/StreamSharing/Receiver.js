@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
+import mediaCapturer from '../mediaCapturer';
 import Logger from '@classes/logger';
 const cnsl = new Logger('Reciever.js', '#34495E');
-import mediaCapturer from '../mediaCapturer';
 
 const VIDEO_BITRATE = 512;
 
