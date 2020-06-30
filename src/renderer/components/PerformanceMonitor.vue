@@ -1,6 +1,7 @@
 <template>
   <div class="stat">
     <p>CPU: {{ totalCpuUsage }}%</p>
+    <p>AVG: {{ avgCpuUsage }}%</p>
     <p>MEM: {{ totalMemUsage }} MB</p>
   </div>
 </template>
@@ -10,6 +11,7 @@ import si from 'systeminformation';
 import sleep from 'es7-sleep';
 
 const INTERVAL_DELAY = 1000;
+const AVG_LENGTH = 10;
 
 export default {
   data: () => {
@@ -17,6 +19,7 @@ export default {
       processList: [],
       interval: true,
       enabled: true,
+      avgCpuValues: [],
     };
   },
 
@@ -44,6 +47,14 @@ export default {
 
       return (memSum / b).toFixed(2);
     },
+
+    avgCpuUsage() {
+      if (this.avgCpuValues.length > 0) {
+        return this.avgCpuValues.reduce((a, v, i) => (a * i + v) / (i + 1)).toFixed(2);
+      }
+
+      return '–';
+    },
   },
 
   async mounted() {
@@ -52,6 +63,9 @@ export default {
         const data = await si.processes();
 
         this.processList = data.list;
+
+        this.calcAvgCpu();
+
         await sleep(INTERVAL_DELAY);
       }
     }
@@ -59,6 +73,13 @@ export default {
 
   destroyed() {
     this.interval = false;
+  },
+
+  methods: {
+    calcAvgCpu() {
+      this.avgCpuValues.push(parseFloat(this.totalCpuUsage));
+      this.avgCpuValues = this.avgCpuValues.splice(-AVG_LENGTH);
+    },
   },
 
 };
