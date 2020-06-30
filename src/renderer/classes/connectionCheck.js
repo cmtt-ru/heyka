@@ -1,6 +1,7 @@
 import store from '@/store';
 import i18n from '@/i18n';
 import isOnline from 'is-online';
+import sleep from 'es7-sleep';
 
 /**
  * Used for make some debounce for slow internet event
@@ -31,14 +32,20 @@ class ConnectionCheck {
 
     this.slowInternetLastCallTime = null;
 
-    /**
-     * Check internet connection status
-     */
-    setInterval(async () => {
+    this.startInternetConnectionChecker();
+  }
+
+  /**
+   * Connection checker
+   * @returns {Promise<void>}
+   */
+  async startInternetConnectionChecker() {
+    while (true) {
       const state = await isOnline();
 
       this.handleOnlineStatus.bind(state);
-    }, INTERNET_CONNECTION_CHECK_INTERVAL);
+      await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
+    }
   }
 
   /**
