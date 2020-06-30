@@ -3,7 +3,10 @@
     class="avatar"
     :style="containerSize"
   >
-    <div class="avatar__no-image">
+    <div
+      v-if="!avatarImage"
+      class="avatar__no-image"
+    >
       <svg
         id="L9"
         version="1.1"

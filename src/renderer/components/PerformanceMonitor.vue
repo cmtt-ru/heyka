@@ -13,7 +13,7 @@ export default {
     return {
       processList: [],
       interval: null,
-      enabled: false,
+      enabled: true,
     };
   },
 
