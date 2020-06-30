@@ -25,6 +25,10 @@ class RemoteInfo {
     ipcMain.on('remote-quit', () => {
       app.quit();
     });
+    ipcMain.on('remote-restart', () => {
+      app.relaunch();
+      app.exit();
+    });
   }
 }
 

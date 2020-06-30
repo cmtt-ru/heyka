@@ -48,7 +48,7 @@
         :type="1"
         @click="restartHandler"
       >
-        Restart now
+        {{ texts.restartNow }}
       </ui-button>
     </div>
   </div>

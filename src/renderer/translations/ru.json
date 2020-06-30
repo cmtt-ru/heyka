@@ -42,7 +42,8 @@
         "light": "Светлая тема",
         "dark": "Темная тема"
       },
-      "automaticallySwitch": "Автоматически"
+      "automaticallySwitch": "Автоматически",
+      "restartNow": "Перезагрузить"
     },
     "devices": {
       "speakersLabel": "Вывод аудио",
