@@ -39,18 +39,33 @@
       v-model="themeAuto"
       :text="texts.automaticallySwitch"
     />
+    <br>
+    <div
+      v-if="modeWillChange"
+      class="restart-container"
+    >
+      <ui-button
+        :type="1"
+        @click="restartHandler"
+      >
+        Restart now
+      </ui-button>
+    </div>
   </div>
 </template>
 
 <script>
 
 import { UiSelect, UiSwitch } from '@components/Form';
+import UiButton from '@components/UiButton';
 import broadcastEvents from '@classes/broadcastEvents';
+import { ipcRenderer } from 'electron';
 
 export default {
   components: {
     UiSwitch,
     UiSelect,
+    UiButton,
   },
 
   data() {
@@ -201,15 +216,33 @@ export default {
     },
   },
 
+  methods: {
+    restartHandler() {
+      ipcRenderer.send('remote-restart');
+    },
+  },
+
 };
 </script>
 
 <style scoped lang="stylus">
 @import './styles'
 
+.settings-page
+  min-height calc(100vh - 52px)
+  display flex
+  flex-direction column
+
 .extra-info
   font-size 10px
   line-height 10px
   color var(--text-1)
+
+.restart-container
+  flex-grow 2
+  display flex
+  flex-direction column
+  justify-content flex-end
+  align-items flex-start
 
 </style>
