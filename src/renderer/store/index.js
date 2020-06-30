@@ -111,7 +111,6 @@ if (IS_MAIN_WINDOW) {
       return reducedState;
     },
     setState: throttle(THROTTLE_DELAY, false, (key, state, storage) => {
-      console.log(state);
       storage.setItem(key, JSON.stringify(state));
     }),
   }));
