@@ -23,12 +23,12 @@ export default {
     }),
   },
   watch: {
-    selectedChannelId(newChannelId, oldChannelId) {
+    async selectedChannelId(newChannelId, oldChannelId) {
       if (!newChannelId && oldChannelId) {
-        janusVideoroomWrapper.leave();
+        await janusVideoroomWrapper.leave();
       }
       if (newChannelId) {
-        janusVideoroomWrapper.join(this.myId, this.this.janusOptions);
+        janusVideoroomWrapper.join(this.myId, this.janusOptions);
       }
     },
   },

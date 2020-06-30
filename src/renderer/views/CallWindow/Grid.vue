@@ -211,12 +211,12 @@ export default {
     });
 
     janusVideoroomWrapper.on('publisher-left', publisher => {
-      this.videoStreams[publisher.userId] = false;
+      this.$delete(this.videoStreams, publisher.userId);
     });
 
     janusVideoroomWrapper.on('new-stream', async publisher => {
       console.log('new stream for publisher: ', publisher);
-      this.videoStreams[publisher.userId] = true;
+      this.$set(this.videoStreams, publisher.userId, true);
       await new Promise(resolve => this.$nextTick(resolve));
       this.insertVideoStreamForUser(publisher.userId, publisher.stream);
     });
@@ -244,11 +244,22 @@ export default {
       janusVideoroomWrapper.unpauseAllSubscriptions();
 
       // insert existing videos
-      const existingStreams = janusVideoroomWrapper.getActiveStreams();
+      const activePublishers = janusVideoroomWrapper.getActivePublishers();
 
-      existingStreams.forEach(publisher => {
-        this.insertVideoStreamForUser(publisher.userId, publisher.stream);
-      });
+      activePublishers
+        .filter(publisher => publisher.stream)
+        .forEach(publisher => {
+          console.log('insert video for user ', publisher.userId);
+          this.insertVideoStreamForUser(publisher.userId, publisher.stream);
+        });
+
+      // start publishers without streams
+      activePublishers
+        .filter(publisher => !publisher.stream)
+        .forEach(publisher => {
+          console.log('subscribe for video from user', publisher.userId);
+          janusVideoroomWrapper.subscribeFor(publisher.janusId);
+        });
     },
     /**
      * Insert stream in HTML5 video tag

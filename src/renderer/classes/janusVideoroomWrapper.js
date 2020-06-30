@@ -303,16 +303,15 @@ class JanusVideoroomWrapper extends EventEmitter {
   /**
    * Return all streams that are active
    *
-   * @typedef {object} ActiveStream
+   * @typedef {object} ActivePublishers
    * @property {MediaStream} stream active stream
    * @property {string} userId heyka user id
    * @property {number} janusId janus user id (feed)
    *
-   * @returns {Array<ActiveStream>} Array of active streams
+   * @returns {Array<ActivePublishers>} Array of active streams
    */
-  getActiveStreams() {
+  getActivePublishers() {
     return this.__publishers
-      .filter(publisher => publisher.plugin && publisher.stream)
       .map(publisher => ({
         stream: publisher.stream,
         userId: publisher.userId,
