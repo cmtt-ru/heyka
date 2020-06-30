@@ -100,12 +100,18 @@ class CallWindow {
 
   /**
    * Show grid (main) window
+   * @param {number} userId - if found, open expanded view with this user
    * @returns {void}
    */
-  showGrid() {
+  showGrid(userId) {
     if (this.gridWindow === null) {
+      let route = '/call-window';
+
+      if (userId) {
+        route = `/call-window/expanded/${userId}`;
+      }
       this.gridWindow = WindowManager.create({
-        route: '/call-window',
+        route: route,
         position: 'center',
         template: 'call',
         openDevTools: true,

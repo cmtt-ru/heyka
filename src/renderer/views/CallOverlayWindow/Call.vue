@@ -136,8 +136,7 @@ export default {
      */
     expandHandler() {
       if (this.getUserWhoSharesMedia) {
-        broadcastActions.dispatch('openGrid');
-        broadcastEvents.dispatch('grid-expand', this.getSpeakingUserId);
+        broadcastActions.dispatch('openGrid', this.getSpeakingUserId);
       }
     },
   },
