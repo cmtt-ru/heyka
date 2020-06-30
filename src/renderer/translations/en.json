@@ -42,7 +42,8 @@
         "light": "Light",
         "dark": "Dark"
       },
-      "automaticallySwitch": "Automatically"
+      "automaticallySwitch": "Automatically",
+      "restartNow": "Restart now"
     },
     "devices": {
       "speakersLabel": "Speakers",

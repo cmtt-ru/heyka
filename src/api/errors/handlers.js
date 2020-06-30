@@ -1,6 +1,8 @@
 import { errorMessages } from './types';
 import logout from '@api/auth/logout';
 import connectionCheck from '@classes/connectionCheck';
+import Logger from '@classes/logger';
+const cnsl = new Logger('api errors', '#CD5C5C');
 
 export const errorHandlers = {};
 
@@ -55,7 +57,7 @@ defineErrorHandler(errorMessages.invalidRequestPayloadInput, error => {
 defineErrorHandler(errorMessages.internalServerError, error => {
   /** Show fancy error */
   alert('500\nInternal server error');
-  console.log(error);
+  cnsl.log(error);
 
   throw error;
 });
@@ -66,7 +68,7 @@ defineErrorHandler(errorMessages.internalServerError, error => {
 defineErrorHandler(errorMessages.socketNotFound, error => {
   /** Show fancy error */
   alert('Huh, socket not found');
-  console.log(error);
+  cnsl.log(error);
 
   throw error;
 });
@@ -77,7 +79,7 @@ defineErrorHandler(errorMessages.socketNotFound, error => {
 defineErrorHandler(errorMessages.accessDenied, error => {
   /** Show fancy error */
   alert('It seems you don\'t have access');
-  console.log(error);
+  cnsl.log(error);
 
   throw error;
 });
