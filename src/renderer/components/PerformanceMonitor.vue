@@ -13,13 +13,15 @@ export default {
     return {
       processList: [],
       interval: null,
-      enabled: false,
+      enabled: true,
     };
   },
 
   computed: {
     filteredProcessList() {
-      return this.processList.filter(l => l.name.indexOf('Electron') > -1);
+      console.log(this.processList);
+
+      return this.processList.filter(l => l.path.toLowerCase().indexOf('electron/dist') > -1);
     },
 
     totalCpuUsage() {

@@ -371,6 +371,9 @@ class JanusVideoroomWrapper extends EventEmitter {
     plugin.on('remote-video-stream', (stream) => {
       this.emit('single-sub-stream', stream);
     });
+    plugin.on('switched', () => this.emit('switched'));
+    plugin.on('started', () => this.emit('started'));
+    plugin.on('paused', () => this.emit('paused'));
 
     this.__singleSubscriber = plugin;
     this.__singleFeed = janusId;
@@ -386,6 +389,8 @@ class JanusVideoroomWrapper extends EventEmitter {
       return;
     }
 
+    this.__singleFeed = janusId;
+
     this.__singleSubscriber.send({
       message: {
         request: 'switch',
@@ -395,11 +400,22 @@ class JanusVideoroomWrapper extends EventEmitter {
   }
 
   /**
+   * Get current feed for single subscription
+   * @returns {number} Janus feed
+   */
+  currentSingleSubscriptionFeed() {
+    return this.__singleFeed;
+  }
+
+  /**
    * Remove subscription plugin for single feed
    * @returns {void}
    */
   removeSingleSubscription() {
-    this.__singleRemoteStream.removeAllListeners('remote-video-stream');
+    this.__singleSubscriber.removeAllListeners('remote-video-stream');
+    this.__singleSubscriber.removeAllListeners('switched');
+    this.__singleSubscriber.removeAllListeners('paused');
+    this.__singleSubscriber.removeAllListeners('started');
     if (this.__singleSubscriber) {
       this.__singleSubscriber.detach();
       this.__singleSubscriber = null;
@@ -420,6 +436,7 @@ class JanusVideoroomWrapper extends EventEmitter {
     if (publishers.length) {
       publishers.forEach(this._onPublisherJoined.bind(this));
     }
+    this.emit('joined');
   }
 
   /**

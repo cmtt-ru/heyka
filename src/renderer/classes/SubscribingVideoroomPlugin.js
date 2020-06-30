@@ -118,6 +118,16 @@ class VideoroomPlugin extends EventEmitter {
         }
         this._debug('message', message, jsep);
 
+        if (message.videoroom === 'event') {
+          if (message.switched === 'ok') {
+            this.emit('switched');
+          } else if (message.paused === 'ok') {
+            this.emit('paused');
+          } else if (message.started === 'ok') {
+            this.emit('started');
+          }
+        }
+
         if (jsep !== undefined && jsep !== null) {
           console.log(`%c New message with jsep for ${this.__janusId}, ${this.__userId}! `, 'background: yellow;');
           this._startStreamReceiving(jsep);
