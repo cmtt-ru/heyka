@@ -19,8 +19,6 @@ export default {
 
   computed: {
     filteredProcessList() {
-      console.log(this.processList);
-
       return this.processList.filter(l => l.path.toLowerCase().indexOf('electron/dist') > -1);
     },
 

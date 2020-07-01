@@ -152,6 +152,7 @@ class VideoroomPlugin extends EventEmitter {
           return;
         }
         this._debug('cleanup');
+        this.emit('webrtc-cleanup');
       },
 
       // Plugin is detached (it can't be used)
@@ -200,10 +201,11 @@ class VideoroomPlugin extends EventEmitter {
    * @returns {void}
    */
   switch(janusId) {
-    if (this.__pluginHandle || this.__detached) {
+    if (!this.__pluginHandle || this.__detached) {
       return;
     }
 
+    console.log('Subscription plugin handle switching: ', janusId);
     this.__pluginHandle.send({
       message: {
         request: 'switch',

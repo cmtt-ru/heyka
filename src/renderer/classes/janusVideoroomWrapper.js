@@ -349,10 +349,12 @@ class JanusVideoroomWrapper extends EventEmitter {
 
     if (this.__singleFeed) {
       if (this.__singleFeed !== janusId) {
+        console.log('Subscription is already created, just switch');
         this.switchSingleSubscription(janusId);
       }
 
       if (this.__singleFeed === janusId && this.__singleRemoteStream) {
+        console.log('Subscription is already created and stream exists, return stream');
         this.emit('single-sub-stream', this.__singleRemoteStream);
       }
     }
@@ -375,6 +377,11 @@ class JanusVideoroomWrapper extends EventEmitter {
     plugin.on('started', () => this.emit('started'));
     plugin.on('paused', () => this.emit('paused'));
 
+    plugin.on('webrtc-cleanup', () => {
+      this.__singleFeed = null;
+      this.emit('cleanup');
+    });
+
     this.__singleSubscriber = plugin;
     this.__singleFeed = janusId;
   }
@@ -391,12 +398,8 @@ class JanusVideoroomWrapper extends EventEmitter {
 
     this.__singleFeed = janusId;
 
-    this.__singleSubscriber.send({
-      message: {
-        request: 'switch',
-        feed: typeof janusId === 'number' ? janusId : parseInt(janusId, 10),
-      },
-    });
+    console.log('Switch to ', janusId);
+    this.__singleSubscriber.switch(janusId);
   }
 
   /**
@@ -416,6 +419,7 @@ class JanusVideoroomWrapper extends EventEmitter {
     this.__singleSubscriber.removeAllListeners('switched');
     this.__singleSubscriber.removeAllListeners('paused');
     this.__singleSubscriber.removeAllListeners('started');
+    this.__singleSubscriber.removeAllListeners('webrtc-cleanup');
     if (this.__singleSubscriber) {
       this.__singleSubscriber.detach();
       this.__singleSubscriber = null;

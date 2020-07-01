@@ -53,6 +53,12 @@ export default {
         return usersWhoSharesScreen[0].userId;
       }
 
+      const speakingUserWithCamera = usersWhoSharesCamera.filter(user => user.speaking);
+
+      if (speakingUserWithCamera.length > 0) {
+        return speakingUserWithCamera[0].userId;
+      }
+
       if (usersWhoSharesCamera.length > 0) {
         return usersWhoSharesCamera[0].userId;
       }

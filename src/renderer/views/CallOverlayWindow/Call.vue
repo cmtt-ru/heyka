@@ -38,7 +38,6 @@ export default {
   },
   data() {
     return {
-      watchingUser: null,
       videoRoomState: 'closed',
     };
   },
@@ -85,49 +84,30 @@ export default {
       }
     },
 
-    getSpeakingUserId(newUserId) {
-      const activePublishers = janusVideoroomWrapper.getActivePublishers();
-
-      if (activePublishers.find(publisher => publisher.userId === newUserId)) {
-        this.watchingUser = newUserId;
-      }
+    getUserWhoSharesMedia(userId) {
+      this.loadCurrentVideo();
     },
 
-    watchingUser(newUser, oldUser) {
-      const publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === newUser);
-
-      if (!publisher) {
-        console.log('Publisher doesnt exists for that user');
-
-        return;
-      }
-
-      if (this.videoRoomState === 'closed') {
-        this.videoRoomState = 'joining';
-        janusVideoroomWrapper.createSingleSubscription(publisher.janusId);
-      } else if (this.videoRoomState === 'ready') {
-        this.videoRoomState = 'switching';
-        janusVideoroomWrapper.switchSingleSubscription(publisher.janusId);
-      }
+    videoRoomState(info) {
+      console.log('videoroom state: ', info);
     },
   },
 
   async created() {
+    console.log('created');
     if (this.isMediaSharing) {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     }
 
-    janusVideoroomWrapper.on('joined', () => {
-      this.videoRoomState = 'ready';
-    });
-    janusVideoroomWrapper.on('switched', () => {
-      this.videoRoomState = 'ready';
-    });
-    janusVideoroomWrapper.on('paused', () => {
-      this.videoRoomState = 'ready';
-    });
-    janusVideoroomWrapper.on('started', () => {
-      this.videoRoomState = 'ready';
+    janusVideoroomWrapper.on('joined', this.onSingleSubscriptionReady.bind(this));
+    janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
+    janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
+    janusVideoroomWrapper.on('started', this.onSingleSubscriptionReady.bind(this));
+
+    janusVideoroomWrapper.on('cleanup', () => {
+      this.videoRoomState = 'closed';
+
+      this.loadCurrentVideo();
     });
 
     await janusVideoroomWrapper.init();
@@ -137,18 +117,15 @@ export default {
     }
   },
   mounted() {
+    console.log('mounted');
     if (this.getUserWhoSharesMedia) {
       this.watchingUser = this.getUserWhoSharesMedia;
     }
     janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
-    janusVideoroomWrapper.on('publisher-joined', publisher => {
-      if (publisher.userId === this.watchingUser) {
-        janusVideoroomWrapper.createSingleSubscription(publisher.janusId);
-      }
-    });
+    janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
   },
   beforeDestroy() {
-    this.watchingUser = null;
+    console.log('beforeDestroy');
     janusVideoroomWrapper.removeAllListeners('single-sub-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },
@@ -156,6 +133,42 @@ export default {
 
   },
   methods: {
+    /**
+     * Loads user video of current user if it possible
+     * @param {string} userId User id
+     * @returns {void}
+     */
+    loadCurrentVideo() {
+      const userId = this.getUserWhoSharesMedia;
+      const publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === userId);
+
+      if (!publisher) {
+        return;
+      }
+
+      const currentFeed = janusVideoroomWrapper.currentSingleSubscriptionFeed();
+
+      if (currentFeed === publisher.janusId) {
+        return;
+      }
+
+      this.switchToFeed(publisher.userId);
+    },
+
+    /**
+     * Switch single subscription to specific feed
+     * @param {number} janusId Janus user id (feed)
+     * @returns {void}
+     */
+    switchToFeed(janusId) {
+      if (this.videoRoomState === 'closed') {
+        this.videoRoomState = 'starting';
+        janusVideoroomWrapper.createSingleSubscription(janusId);
+      } else if (this.videoRoomState === 'ready') {
+        this.videoRoomState = 'switching';
+        janusVideoroomWrapper.switchSingleSubscription(janusId);
+      }
+    },
 
     /**
      * Show grid handler
@@ -185,15 +198,7 @@ export default {
      * @returns {void}
      */
     onNewPublisher(publisher) {
-      if (publisher.userId === this.watchingUser) {
-        if (this.videoRoomState === 'closed') {
-          this.videoRoomState = 'joining';
-          janusVideoroomWrapper.createSingleSubscription(publisher.janusId);
-        } else if (this.videoRoomState === 'ready') {
-          this.videoRoomState = 'switching';
-          janusVideoroomWrapper.switchSingleSubscription(publisher.janusId);
-        }
-      }
+      this.loadCurrentVideo();
     },
 
     /**
@@ -202,13 +207,7 @@ export default {
      */
     onSingleSubscriptionReady() {
       this.videoRoomState = 'ready';
-      const currentFeed = janusVideoroomWrapper.currentSingleSubscriptionFeed();
-      const currentPublisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === this.watchingUser);
-
-      if (!currentPublisher.janusId !== currentFeed) {
-        this.videoRoomState = 'switching';
-        janusVideoroomWrapper.switchSingleSubscription(currentPublisher.janusId);
-      }
+      this.loadCurrentVideo();
     },
 
     /**
