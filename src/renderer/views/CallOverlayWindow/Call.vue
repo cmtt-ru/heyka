@@ -140,7 +140,11 @@ export default {
      */
     loadCurrentVideo() {
       const userId = this.getUserWhoSharesMedia;
-      const publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === userId);
+      let publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === userId);
+
+      if (!publisher) {
+        publisher = janusVideoroomWrapper.getActivePublishers()[0];
+      }
 
       if (!publisher) {
         return;
