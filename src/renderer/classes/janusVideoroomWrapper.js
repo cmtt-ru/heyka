@@ -182,7 +182,6 @@ class JanusVideoroomWrapper extends EventEmitter {
       return;
     }
 
-    console.log('Leave the room');
 
     this.__videoroomPlugin.removeAllListeners('active-publishers');
     this.__videoroomPlugin.removeAllListeners('publisher-joined');
