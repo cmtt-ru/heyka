@@ -182,6 +182,8 @@ class JanusVideoroomWrapper extends EventEmitter {
       return;
     }
 
+    console.log('Leave the room');
+
     this.__videoroomPlugin.removeAllListeners('active-publishers');
     this.__videoroomPlugin.removeAllListeners('publisher-joined');
     this.__videoroomPlugin.removeAllListeners('publisher-left');
@@ -204,8 +206,14 @@ class JanusVideoroomWrapper extends EventEmitter {
     });
     this.__publishers.splice(0, this.__publishers.length);
 
+    if (this.__singleSubscriber) {
+      this.removeSingleSubscription();
+    }
+
     return new Promise((resolve, reject) => {
+      console.log('return promise');
       if (this.__videoroomPlugin && this.__localVideoStream) {
+        console.log('and promise working');
         // wait for reject
         let rejectTimeout = setTimeout(() => {
           reject(new Error('CantUnpublish'));
@@ -213,6 +221,7 @@ class JanusVideoroomWrapper extends EventEmitter {
 
         // wait for success resolving
         this.__videoroomPlugin.once('webrtc-cleanup', () => {
+          console.log('Leaved!');
           clearTimeout(rejectTimeout);
           rejectTimeout = null;
           resolve();
@@ -228,6 +237,7 @@ class JanusVideoroomWrapper extends EventEmitter {
       }
       this.__localVideoStream = null;
       this.__videoroomPlugin = null;
+      this.__janusOptions = {};
     });
   }
 
@@ -428,6 +438,7 @@ class JanusVideoroomWrapper extends EventEmitter {
       mediaCapturer.destroyStream(this.__singleRemoteStream);
       this.__singleRemoteStream = null;
     }
+    this.__singleFeed = null;
   }
 
   /**

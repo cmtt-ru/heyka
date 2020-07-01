@@ -24,6 +24,7 @@ export default {
   },
   watch: {
     async selectedChannelId(newChannelId, oldChannelId) {
+      console.log('channel changed', newChannelId, oldChannelId);
       if (!newChannelId && oldChannelId) {
         await janusVideoroomWrapper.leave();
       }
@@ -40,7 +41,11 @@ export default {
     }
   },
   mounted() {
+    console.log('mounted');
     ipcRenderer.send('page-rendered', 'Hello from Login!');
+  },
+  beforeDestroy() {
+    console.log('before destroy');
   },
 };
 </script>

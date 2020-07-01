@@ -1,7 +1,7 @@
 <template>
   <div class="call-window">
     <div
-      v-if="isMediaSharing"
+      v-show="isMediaSharing"
       class="call-window__media"
       @dblclick="expandHandler"
     >
@@ -217,7 +217,7 @@ export default {
      * @param {MediaStream} stream Video stream
      * @returns {void}
      */
-    insertStream(stream) {
+    async insertStream(stream) {
       const el = this.$refs.video;
 
       el.srcObject = stream;
