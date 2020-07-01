@@ -82,6 +82,12 @@ export default {
 
     let response;
 
+    commit('me/SET_MEDIA_STATE', {
+      ...getters['me/getMediaState'],
+      camera: false,
+      screen: false,
+    });
+
     try {
       response = await API.channel.select(id, getters['me/getMediaState']);
     } catch (err) {
@@ -124,7 +130,11 @@ export default {
     commit('channels/ADD_USER', {
       userId: state.me.id,
       channelId: id,
-      userMediaState: getters['me/getMediaState'],
+      userMediaState: {
+        ...getters['me/getMediaState'],
+        camera: false,
+        screen: false,
+      },
     });
 
     commit('me/SET_CHANNEL_ID', id);

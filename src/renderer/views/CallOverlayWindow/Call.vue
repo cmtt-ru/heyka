@@ -161,7 +161,9 @@ export default {
      * @returns {void}
      */
     switchToFeed(janusId) {
-      if (this.videoRoomState === 'closed') {
+      const currentFeed = janusVideoroomWrapper.currentSingleSubscriptionFeed();
+
+      if (this.videoRoomState === 'closed' || (this.videoRoomState === 'ready' && !currentFeed)) {
         this.videoRoomState = 'starting';
         janusVideoroomWrapper.createSingleSubscription(janusId);
       } else if (this.videoRoomState === 'ready') {
