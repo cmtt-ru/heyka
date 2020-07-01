@@ -114,6 +114,8 @@ import { mapGetters } from 'vuex';
 import broadcastEvents from '@classes/broadcastEvents';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 import mediaCapturer from '../../classes/mediaCapturer';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Grid.vue', '#138D75');
 
 /**
  * Aspect ratio 124 / 168;
@@ -224,9 +226,9 @@ export default {
     });
 
     janusVideoroomWrapper.on('new-stream', async publisher => {
-      console.log('new stream for publisher: ', publisher);
+      cnsl.log('new stream for publisher: ', publisher);
       if (!this.getUsersWhoShareMedia.includes(publisher.userId)) {
-        console.log('wait for publisher is appear');
+        cnsl.log('wait for publisher is appear');
         await this.waitForPublisherWillAppear(publisher.userId);
       }
       this.insertVideoStreamForUser(publisher.userId, publisher.stream);
@@ -261,7 +263,7 @@ export default {
       activePublishers
         .filter(publisher => publisher.stream)
         .forEach(publisher => {
-          console.log('insert video for user ', publisher.userId, publisher.stream);
+          cnsl.log('insert video for user ', publisher.userId, publisher.stream);
           this.insertVideoStreamForUser(publisher.userId, publisher.stream);
         });
 
@@ -269,7 +271,7 @@ export default {
       activePublishers
         .filter(publisher => !publisher.stream)
         .forEach(publisher => {
-          console.log('subscribe for video from user', publisher.userId);
+          cnsl.log('subscribe for video from user', publisher.userId);
           janusVideoroomWrapper.subscribeFor(publisher.janusId);
         });
     },
@@ -286,7 +288,7 @@ export default {
       const htmlVideo = this.$refs[`video${userId}`][0];
 
       if (!htmlVideo) {
-        console.log(`!!!!!!!!!!!!!!!!!!!!!!!!! Not found HTML video tag for user ${userId}`);
+        cnsl.error(`Not found HTML video tag for user ${userId}`);
 
         return;
       }

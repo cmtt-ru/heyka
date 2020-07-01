@@ -13,6 +13,8 @@ import JanusWrapper from '@classes/JanusWrapper.js';
 import connectionCheck from '@classes/connectionCheck';
 import AudioCheck from '@classes/AudioCheck';
 import { mapState } from 'vuex';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Janus.vue', '#AF7AC5 ');
 
 /**
  * Janus wrapper instance
@@ -60,11 +62,11 @@ export default {
      */
     selectedChannelId(id, oldId) {
       if (oldId !== null) {
-        this.log('Channel unselect');
+        cnsl.log('Channel unselect');
         this.unselectChannel();
       }
       if (id !== null) {
-        this.log('Channel select');
+        cnsl.log('Channel select');
         this.selectChannel();
       }
     },
@@ -85,12 +87,22 @@ export default {
     },
 
     /**
+     * Reacts on speakers state is changed
+     * @param {boolean} state Is speakers enabled
+     * @returns {void}
+     */
+    speakers(state) {
+      cnsl.log(`Set muting of speakers ${!state}`);
+      this.$refs.audio.muted = !state;
+    },
+
+    /**
      * Handles change camera state
      * @param {boolean} state Is camera sharing enabled
      * @returns {void}
      */
     camera(state, ps) {
-      console.log('previous', ps, state);
+      cnsl.log('previous', ps, state);
       if (state) {
         this.startSharingCamera();
       } else {
@@ -116,20 +128,9 @@ export default {
      * @returns {void}
      */
     selectedCameraDevice(deviceId) {
-      console.log(janusWrapper, this.camera);
       if (janusWrapper && this.camera) {
         janusWrapper.setCameraDevice(deviceId);
       }
-    },
-
-    /**
-     * Reacts on speakers state is changed
-     * @param {boolean} state Is speakers enabled
-     * @returns {void}
-     */
-    speakers(state) {
-      console.log(`Set muting of speakers ${!state}`);
-      this.$refs.audio.muted = !state;
     },
 
     isSocketConnected(value) {
@@ -186,7 +187,7 @@ export default {
   },
   async created() {
     await JanusWrapper.init();
-    this.log('JanusWrapper was initialized');
+    cnsl.log('JanusWrapper was initialized');
   },
   beforeDestroy() {
     if (janusWrapper) {
@@ -200,13 +201,13 @@ export default {
     setOperationStart(operation) {
       this.$store.dispatch('janus/setInProgress', true);
       this.currentOperation = operation;
-      console.log('%c setOperationStart', 'background: #C9EAD7; color: black', operation);
+      cnsl.info('setOperationStart', operation);
     },
     setOperationFinish(operation) {
-      console.log('%c setOperationFinish', 'background: #C9EAD7; color: black', operation);
+      cnsl.info('setOperationFinish', operation);
       if (operation === this.currentOperation) {
         this.$store.dispatch('janus/setInProgress', false);
-        console.log(this.$store.state.janus);
+        cnsl.log(this.$store.state.janus);
         this.currentOperation = '';
       }
     },
@@ -281,7 +282,7 @@ export default {
      */
     startSharingCamera() {
       if (!janusWrapper) {
-        this.log('Janus wrapper is not existed');
+        cnsl.error('Janus wrapper does not exist');
 
         return;
       }
@@ -295,7 +296,7 @@ export default {
      */
     startSharingScreen() {
       if (!janusWrapper) {
-        this.log('Janus wrapper is not existed');
+        cnsl.error('Janus wrapper does not exist');
 
         return;
       }
@@ -320,7 +321,7 @@ export default {
      * @returns {void}
      */
     onRemoteAudioStream(stream) {
-      this.log('Attach audio stream to the audio element');
+      cnsl.log('Attach audio stream to the audio element');
       JanusWrapper.attachMediaStream(this.$refs.audio, stream);
       this.$refs.audio.muted = !this.speakers;
       this.$refs.audio.setSinkId(this.selectedSpeakerDevice);
@@ -334,13 +335,13 @@ export default {
     onConnectionError(errorCode) {
       switch (errorCode) {
         case JanusWrapper.errors.SERVER_DOWN:
-          this.log('Janus server is down');
+          cnsl.error('Janus server is down');
           break;
         case JanusWrapper.errors.AUTHENTICATION_ERROR:
-          this.log('Janus authentication error');
+          cnsl.error('Janus authentication error');
           break;
         case JanusWrapper.errors.UNKNOW:
-          this.log('An unknow error');
+          cnsl.error('An unknow error');
           break;
       }
     },
@@ -351,11 +352,11 @@ export default {
      * @returns {void}
      */
     onAudioStreamActive(isActive) {
-      console.log('------ onAudioStreamActive');
+      cnsl.log('onAudioStreamActive');
       if (isActive) {
         if (this.microphone) {
           janusWrapper.setMuting(false);
-          console.log('------ setMuting false');
+          cnsl.log('setMuting false');
         }
         if (this.speakers) {
           this.$refs.audio.muted = false;
@@ -430,7 +431,7 @@ export default {
      * @returns {void}
      */
     log() {
-      console.log('JANUS.VUE: ', ...arguments);
+      cnsl.log('JANUS.VUE: ', ...arguments);
     },
   },
 };

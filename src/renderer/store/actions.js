@@ -181,11 +181,13 @@ export default {
 
   /**
    * Open Grid (main call window)
+   * @param {object} context – store context
+   * @param {number} userId - if found, open expanded view with this user
    * @returns {void}
    */
-  async openGrid() {
+  async openGrid({ state }, userId) {
     callWindow.hideOverlay();
-    callWindow.showGrid();
+    callWindow.showGrid(userId);
   },
 
   /**

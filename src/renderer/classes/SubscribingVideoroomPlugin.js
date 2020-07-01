@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 import mediaCapturer from './mediaCapturer';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Subscribing Videoroom Plugin', '#F1C40F');
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 
 /**
@@ -15,7 +17,6 @@ class VideoroomPlugin extends EventEmitter {
    * @param {string} options.token Authentication token for room
    * @param {string} options.userId Connected user id
    * @param {string} options.janusId Janus user subscribe for
-   * @param {boolean} [options.debug=false] Is debug output enabled
    */
   constructor(options) {
     super();
@@ -26,7 +27,6 @@ class VideoroomPlugin extends EventEmitter {
       token,
       userId,
       janusId,
-      debug = false,
     } = options;
 
     this.__janus = janus;
@@ -34,7 +34,6 @@ class VideoroomPlugin extends EventEmitter {
     this.__token = token;
     this.__userId = userId;
     this.__janusId = janusId;
-    this.__debugEnabled = debug;
 
     this.__detached = false;
     this.__pluginHandle = null;
@@ -54,7 +53,7 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('plugin attached');
+        cnsl.debug('plugin attached');
 
         this.__pluginHandle = pluginHandle;
         this._joinAsSubscriber();
@@ -65,7 +64,7 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('Consent dialog', isAllowed);
+        cnsl.debug('Consent dialog', isAllowed);
       },
 
       // Notifies that WebRTC connection between the computer and Janus is established (or is down)
@@ -74,7 +73,7 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('webrtcState', state, reason);
+        cnsl.debug('webrtcState', state, reason);
       },
 
       // Presents an ICE state for that moment
@@ -86,7 +85,7 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('iceState', state);
+        cnsl.debug('iceState', state);
       },
 
       // Triggered when Janus starts or stops receiving client's media
@@ -94,7 +93,7 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('mediaState', type, isActive);
+        cnsl.debug('mediaState', type, isActive);
         this.emit('media-state', isActive);
       },
 
@@ -105,18 +104,18 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('slowLink', uplink);
+        cnsl.debug('slowLink', uplink);
         this.emit('video-slow-link', uplink);
       },
 
       // Handle a message from plugin
       onmessage: (message, jsep) => {
         if (this.__detached) {
-          this._debug('Plugin detached and can\'t reveive any messages');
+          cnsl.debug('Plugin detached and can\'t reveive any messages');
 
           return;
         }
-        this._debug('message', message, jsep);
+        cnsl.debug('message', message, jsep);
 
         if (message.videoroom === 'event') {
           if (message.switched === 'ok') {
@@ -129,7 +128,7 @@ class VideoroomPlugin extends EventEmitter {
         }
 
         if (jsep !== undefined && jsep !== null) {
-          console.log(`%c New message with jsep for ${this.__janusId}, ${this.__userId}! `, 'background: yellow;');
+          cnsl.info(`New message with jsep for ${this.__janusId}, ${this.__userId}! `);
           this._startStreamReceiving(jsep);
         }
       },
@@ -139,9 +138,9 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        console.log(`%c Remote stream for ${this.__janusId}, ${this.__userId}! `, 'background: yellow;');
+        cnsl.info(`Remote stream for ${this.__janusId}, ${this.__userId}! `);
 
-        this._debug('remotestream', stream);
+        cnsl.debug('remotestream', stream);
         this.__remoteVideoStream = stream;
         this.emit('remote-video-stream', stream);
       },
@@ -153,12 +152,13 @@ class VideoroomPlugin extends EventEmitter {
         }
         this._debug('cleanup');
         this.emit('webrtc-cleanup');
+        cnsl.debug('cleanup');
       },
 
       // Plugin is detached (it can't be used)
       detached: () => {
         this.__detached = true;
-        this._debug('detached');
+        cnsl.debug('detached');
       },
     });
   }
@@ -205,7 +205,7 @@ class VideoroomPlugin extends EventEmitter {
       return;
     }
 
-    console.log('Subscription plugin handle switching: ', janusId);
+    cnsl.log('Subscription plugin handle switching: ', janusId);
     this.__pluginHandle.send({
       message: {
         request: 'switch',
@@ -243,8 +243,8 @@ class VideoroomPlugin extends EventEmitter {
       token: this.__token,
     };
 
-    console.log(`%c Join to videoroom for subscribing! `, 'background: yellow;');
-    console.log(msg);
+    cnsl.info(`Join to videoroom for subscribing! `);
+    cnsl.log(msg);
     this.__pluginHandle.send({
       message: msg,
     });
@@ -271,23 +271,12 @@ class VideoroomPlugin extends EventEmitter {
           },
           jsep: ourjsep,
         });
-        this._debug('Start receiving video');
+        cnsl.debug('Start receiving video');
       },
       error: err => {
-        this._debug(`Create answer for subscription ${this.__janusId} error: `, err);
+        cnsl.debug(`Create answer for subscription ${this.__janusId} error: `, err);
       },
     });
-  }
-
-  /**
-   * Internal debug console output
-   * @private
-   * @returns {undefined}
-   */
-  _debug() {
-    if (this.__debugEnabled) {
-      console.log(`Subcription ${this.__userId} plugin`, ...arguments);
-    }
   }
 };
 

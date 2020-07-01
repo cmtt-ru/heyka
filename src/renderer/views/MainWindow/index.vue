@@ -3,7 +3,7 @@
     <janus />
     <notifications />
     <router-view />
-    <performance-monitor></performance-monitor>
+    <performance-monitor />
   </div>
 </template>
 
@@ -16,6 +16,8 @@ import Notifications from '@components/Notifications';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
 import PerformanceMonitor from '@components/PerformanceMonitor';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
 export default {
   components: {
@@ -46,7 +48,7 @@ export default {
 
       await this.$store.dispatch('initial');
     } catch (e) {
-      console.log('redirecting to login');
+      cnsl.log('redirecting to login');
     }
 
     broadcastEvents.on('open-channel', id => {
@@ -60,7 +62,7 @@ export default {
      * Auto update stuff
      */
     ipcRenderer.on('update-error', (event, error) => {
-      console.log('update-error', error);
+      cnsl.error('update-error', error);
     });
 
     ipcRenderer.on('update-downloaded', () => {
