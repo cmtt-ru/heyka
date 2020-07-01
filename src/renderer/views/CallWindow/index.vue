@@ -24,7 +24,6 @@ export default {
   },
   watch: {
     async selectedChannelId(newChannelId, oldChannelId) {
-      console.log('channel changed', newChannelId, oldChannelId);
       if (!newChannelId && oldChannelId) {
         await janusVideoroomWrapper.leave();
       }
@@ -36,16 +35,11 @@ export default {
   async created() {
     await janusVideoroomWrapper.init();
     if (this.selectedChannelId) {
-      console.log('CURRENT JANUS OPTIONS: ', this.$store.state.janus);
       janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
   },
   mounted() {
-    console.log('mounted');
     ipcRenderer.send('page-rendered', 'Hello from Login!');
-  },
-  beforeDestroy() {
-    console.log('before destroy');
   },
 };
 </script>

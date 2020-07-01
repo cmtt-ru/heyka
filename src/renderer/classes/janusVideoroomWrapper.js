@@ -122,7 +122,6 @@ class JanusVideoroomWrapper extends EventEmitter {
     this.__janusOptions = { ...options };
 
     // connect videoroom plugin
-    console.log('connecting as userId: ', userId);
     const videoroomPlugin = new PublishingVideoroomPlugin({
       janus: this.__janus,
       room: options.videoRoomId,
@@ -158,7 +157,6 @@ class JanusVideoroomWrapper extends EventEmitter {
     if (type === 'camera') {
       stream = await mediaCapturer.getCameraStream(source);
     } else {
-      console.log('source', source);
       stream = await mediaCapturer.getStream(source);
     }
 
@@ -181,7 +179,6 @@ class JanusVideoroomWrapper extends EventEmitter {
     if (!this.__videoroomPlugin) {
       return;
     }
-
 
     this.__videoroomPlugin.removeAllListeners('active-publishers');
     this.__videoroomPlugin.removeAllListeners('publisher-joined');
@@ -211,7 +208,6 @@ class JanusVideoroomWrapper extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       if (this.__videoroomPlugin && this.__localVideoStream) {
-        console.log('and promise working');
         // wait for reject
         let rejectTimeout = setTimeout(() => {
           reject(new Error('CantUnpublish'));
@@ -219,7 +215,6 @@ class JanusVideoroomWrapper extends EventEmitter {
 
         // wait for success resolving
         this.__videoroomPlugin.once('webrtc-cleanup', () => {
-          console.log('Leaved!');
           clearTimeout(rejectTimeout);
           rejectTimeout = null;
           resolve();
@@ -357,12 +352,10 @@ class JanusVideoroomWrapper extends EventEmitter {
 
     if (this.__singleFeed) {
       if (this.__singleFeed !== janusId) {
-        console.log('Subscription is already created, just switch');
         this.switchSingleSubscription(janusId);
       }
 
       if (this.__singleFeed === janusId && this.__singleRemoteStream) {
-        console.log('Subscription is already created and stream exists, return stream');
         this.emit('single-sub-stream', this.__singleRemoteStream);
       }
     }
@@ -406,7 +399,6 @@ class JanusVideoroomWrapper extends EventEmitter {
 
     this.__singleFeed = janusId;
 
-    console.log('Switch to ', janusId);
     this.__singleSubscriber.switch(janusId);
   }
 

@@ -94,7 +94,6 @@ export default {
   },
 
   async created() {
-    console.log('created');
     if (this.isMediaSharing) {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     }
@@ -117,7 +116,6 @@ export default {
     }
   },
   mounted() {
-    console.log('mounted');
     if (this.getUserWhoSharesMedia) {
       this.watchingUser = this.getUserWhoSharesMedia;
     }
@@ -125,7 +123,6 @@ export default {
     janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
   },
   beforeDestroy() {
-    console.log('beforeDestroy');
     janusVideoroomWrapper.removeAllListeners('single-sub-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },

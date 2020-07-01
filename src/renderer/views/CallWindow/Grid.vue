@@ -280,10 +280,8 @@ export default {
      * @returns {void}
      */
     async insertVideoStreamForUser(userId, stream) {
-      console.log('Entered here');
       this.$set(this.videoStreams, userId, true);
       await new Promise(resolve => this.$nextTick(resolve));
-      console.log(this.getUsersWhoShareMedia.includes(userId));
 
       const htmlVideo = this.$refs[`video${userId}`][0];
 
