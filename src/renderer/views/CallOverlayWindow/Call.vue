@@ -152,7 +152,7 @@ export default {
         return;
       }
 
-      this.switchToFeed(publisher.userId);
+      this.switchToFeed(publisher.janusId);
     },
 
     /**
