@@ -192,6 +192,10 @@ export default {
         transform translateY(1px)
 
     &__volume
+        will-change transform
+        transform translateZ(0)
+        backface-visibility hidden
+        perspective 1000
         background-color var(--color-1)
         width 24%
         position absolute
