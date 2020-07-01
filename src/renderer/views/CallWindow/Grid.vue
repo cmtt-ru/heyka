@@ -113,6 +113,7 @@ import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
 import broadcastEvents from '@classes/broadcastEvents';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
+import mediaCapturer from '../../classes/mediaCapturer';
 
 /**
  * Aspect ratio 124 / 168;
@@ -188,9 +189,17 @@ export default {
     usersCount: function () {
       this.resize();
     },
-
     selectedChannel(channelId) {
+      if (!channelId) {
+        const videoEls = this.$el.querySelectorAll('video');
 
+        videoEls.forEach(el => {
+          if (el.srcObject) {
+            mediaCapturer.destroyStream(el.srcObject);
+          }
+          el.srcObject = null;
+        });
+      }
     },
   },
 
