@@ -211,7 +211,6 @@ class JanusVideoroomWrapper extends EventEmitter {
     }
 
     return new Promise((resolve, reject) => {
-      console.log('return promise');
       if (this.__videoroomPlugin && this.__localVideoStream) {
         console.log('and promise working');
         // wait for reject
