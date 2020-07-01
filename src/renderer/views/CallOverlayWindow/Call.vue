@@ -58,7 +58,7 @@ export default {
     }),
 
     isMediaSharing() {
-      return this.isAnybodySharingMedia && !this.amISharingMedia;
+      return this.isAnybodySharingMedia && !this.mediaState.screen;
     },
 
     getSpeakingUserId() {

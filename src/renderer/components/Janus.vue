@@ -46,6 +46,7 @@ export default {
     ...mapState('app', {
       selectedMicrophoneDevice: state => state.selectedDevices.microphone,
       selectedSpeakerDevice: state => state.selectedDevices.speaker,
+      selectedCameraDevice: state => state.selectedDevices.camera,
       microphonesDeviceList: state => state.devices.microphones,
       speakersDeviceList: state => state.devices.speakers,
     }),
@@ -115,6 +116,7 @@ export default {
      * @returns {void}
      */
     selectedCameraDevice(deviceId) {
+      console.log(janusWrapper, this.camera);
       if (janusWrapper && this.camera) {
         janusWrapper.setCameraDevice(deviceId);
       }

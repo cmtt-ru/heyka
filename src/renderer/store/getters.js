@@ -5,6 +5,11 @@ import { sortAny } from '@libs/arrays';
  * @type {null}
  */
 let lastSpeakingUser = null;
+/**
+ * Last user who shares media
+ * @type {null}
+ */
+let lastUserWhoSharesMedia = null;
 
 export default {
 
@@ -50,16 +55,26 @@ export default {
       const usersWhoSharesCamera = selectedChannel.users.filter(user => user.camera);
 
       if (usersWhoSharesScreen.length > 0) {
+        lastUserWhoSharesMedia = usersWhoSharesScreen[0].userId;
+
         return usersWhoSharesScreen[0].userId;
       }
 
       const speakingUserWithCamera = usersWhoSharesCamera.filter(user => user.speaking);
 
       if (speakingUserWithCamera.length > 0) {
+        lastUserWhoSharesMedia = speakingUserWithCamera[0].userId;
+
         return speakingUserWithCamera[0].userId;
       }
 
+      if (lastUserWhoSharesMedia) {
+        return lastUserWhoSharesMedia;
+      }
+
       if (usersWhoSharesCamera.length > 0) {
+        lastUserWhoSharesMedia = usersWhoSharesCamera[0].userId;
+
         return usersWhoSharesCamera[0].userId;
       }
     }
