@@ -34,7 +34,7 @@ export default class StreamSharingHost extends EventEmitter {
     const pc = new RTCPeerConnection();
 
     const onIceConnectionStateChange = e => {
-      this._debug('iceconnectionstate', pc.iceConnectionState);
+      cnsl.debug('iceconnectionstate', pc.iceConnectionState);
 
       if (pc && (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected')) {
         this.closeStreamSharing(requestData.userId, requestData.requestId);

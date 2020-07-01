@@ -135,10 +135,16 @@ export default {
         this.insertVideo(publisher.stream);
       }
     });
+    janusVideoroomPlugin.on('publisher-joined', publisher => {
+      if (publisher.userId === this.userId) {
+        this.handleVideoStream();
+      }
+    });
   },
 
   beforeDestroy() {
     janusVideoroomPlugin.removeAllListeners('new-stream');
+    janusVideoroomPlugin.removeAllListeners('publisher-joined');
   },
 
   destroyed() {
