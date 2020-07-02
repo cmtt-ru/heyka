@@ -15,7 +15,8 @@
       "localTime": "Local time",
       "email": "Email"
     },
-    "empty": "So far you've been disconnected\nfrom all channels"
+    "empty": "So far you've been disconnected\nfrom all channels",
+    "new": "What's new?"
   },
   "settings": {
     "labels": {
