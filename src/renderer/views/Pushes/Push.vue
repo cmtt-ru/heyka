@@ -83,32 +83,6 @@ export default {
     };
   },
 
-  computed: {
-    /**
-     * Get needed texts from I18n-locale file
-     * @returns {object}
-     */
-    texts() {
-      return this.$t('push');
-    },
-
-    /**
-     * Get user's info
-     * @returns {object}
-     */
-    user() {
-      return this.$store.getters['users/getUserById'](this.data.userId);
-    },
-
-    /**
-     * Get user's channel
-     * @return {object}
-     */
-    channel() {
-      return this.$store.getters['channels/getChannelById'](this.data.channel) || { name: 'no channel' };
-    },
-  },
-
   /**
    * 1. flag "mounted" to true (so we can show push)
    * 2. emit "mounted" event (for future use)
@@ -140,7 +114,6 @@ export default {
      * @returns {void}
     */
     clickHandler(response) {
-      console.log(response);
       if (response) {
         this.$emit('response', {
           response,
