@@ -250,7 +250,7 @@ export default {
      */
     handleVideoStreams() {
       // unpause all streams
-      janusVideoroomWrapper.unpauseAllSubscriptions();
+      janusVideoroomWrapper.resumeAllSubscriptions();
 
       // insert existing videos
       const activePublishers = janusVideoroomWrapper.getActivePublishers();

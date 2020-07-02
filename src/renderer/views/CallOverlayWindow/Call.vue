@@ -116,9 +116,6 @@ export default {
     }
   },
   mounted() {
-    if (this.getUserWhoSharesMedia) {
-      this.watchingUser = this.getUserWhoSharesMedia;
-    }
     janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
     janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
   },

@@ -6,10 +6,6 @@ import mediaCapturer from './mediaCapturer';
 
 /** @type {number} How much time I should wait for 'webrtc-cleanup' event before throw an error */
 const WAIT_UNTIL_UNPUBLISH_TIMEOUT = 1000;
-/** @type {number} Default bitrate for sharing video from camera device */
-const DEFAULT_BITRATE_CAMERA_ = 256000;
-/** @type {number} Default bitrate for sharing video from screen */
-const DEFAULT_BITRATE_SCREEN = 512000;
 
 const ERROR_CODES = {
   SERVER_DOWN: 'Server is down',
@@ -136,39 +132,8 @@ class JanusVideoroomWrapper extends EventEmitter {
     videoroomPlugin.on('publisher-joined', this._onPublisherJoined.bind(this));
     videoroomPlugin.on('publisher-left', this._onPublisherLeft.bind(this));
     videoroomPlugin.on('local-video-stream', this._onLocalStream.bind(this));
-    // videoroomPlugin.on('success-publishing', () => this.emit(JANUS_WRAPPER_EVENTS.successVideoPublishing));
-    // videoroomPlugin.on('video-slow-link', () => this.emit(JANUS_WRAPPER_EVENTS.videoSlowLink));
-    // videoroomPlugin.on('webrtc-cleanup', () => this.emit(JANUS_WRAPPER_EVENTS.webrtcCleanUp));
 
     this.__videoroomPlugin = videoroomPlugin;
-  }
-
-  /**
-   * Publish video stream
-   * @param {("camera"|"screen")} type Source type
-   * @param {string} source Source id (camera device id or screen source id)
-   * @returns {void}
-   */
-  async publishVideoStream(type = 'camera', source) {
-    let stream = null;
-
-    console.log('Start sharing video', type, source);
-
-    if (type === 'camera') {
-      stream = await mediaCapturer.getCameraStream(source);
-    } else {
-      stream = await mediaCapturer.getStream(source);
-    }
-
-    this.__videoroomPlugin.publishVideo(stream, type === 'camera' ? DEFAULT_BITRATE_CAMERA_ : DEFAULT_BITRATE_SCREEN);
-  }
-
-  /**
-   * Unpublish video stream
-   * @returns {void}
-   */
-  unpublishVideoStream() {
-    this.__videoroomPlugin.unpublishVideo();
   }
 
   /**
@@ -183,7 +148,6 @@ class JanusVideoroomWrapper extends EventEmitter {
     this.__videoroomPlugin.removeAllListeners('active-publishers');
     this.__videoroomPlugin.removeAllListeners('publisher-joined');
     this.__videoroomPlugin.removeAllListeners('publisher-left');
-    this.__videoroomPlugin.removeAllListeners('local-video-stream');
 
     this.__publishers.forEach(publisherObject => {
       if (publisherObject.plugin) {
@@ -332,7 +296,7 @@ class JanusVideoroomWrapper extends EventEmitter {
    * Unpause all subscriptions that are in pause
    * @returns {void}
    */
-  unpauseAllSubscriptions() {
+  resumeAllSubscriptions() {
     this.__publishers.forEach(publisher => {
       if (publisher.plugin && publisher.paused) {
         this.resumeSubscription(publisher.janusId);
