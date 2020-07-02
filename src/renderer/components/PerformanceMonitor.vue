@@ -1,5 +1,8 @@
 <template>
-  <div class="stat">
+  <div
+    v-if="IS_DEV"
+    class="stat"
+  >
     <p>CPU: {{ totalCpuUsage }}%</p>
     <p>AVG: {{ avgCpuUsage }}%</p>
     <p>MEM: {{ totalMemUsage }} MB</p>
@@ -17,6 +20,7 @@ const AVG_LENGTH = 10;
 export default {
   data: () => {
     return {
+      IS_DEV,
       processList: [],
       interval: true,
       enabled: true,
