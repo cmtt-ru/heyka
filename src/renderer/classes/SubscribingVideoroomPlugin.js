@@ -150,7 +150,6 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
-        this._debug('cleanup');
         this.emit('webrtc-cleanup');
         cnsl.debug('cleanup');
       },
