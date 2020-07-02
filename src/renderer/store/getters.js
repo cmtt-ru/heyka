@@ -69,7 +69,11 @@ export default {
       }
 
       if (lastUserWhoSharesMedia) {
-        return lastUserWhoSharesMedia;
+        if (usersWhoSharesCamera.map(u => u.userId).includes(lastUserWhoSharesMedia)) {
+          return lastUserWhoSharesMedia;
+        } else {
+          lastUserWhoSharesMedia = null;
+        }
       }
 
       if (usersWhoSharesCamera.length > 0) {
