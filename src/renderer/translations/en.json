@@ -126,6 +126,8 @@
   },
   "push": {
     "invitesto": "Invite to",
+    "join": "Join",
+    "busy": "Busy",
     "isbusy": "Is busy"
   },
   "autoUpdate": {

@@ -25,7 +25,7 @@ class PushWindow {
   constructor() {
     this.window = null;
     this.closewWindowTimeout = null;
-    this.notifications = 0;
+    this.amount = 0;
   }
 
   /**
@@ -66,32 +66,39 @@ class PushWindow {
   }
 
   /**
-   * Resize push window depending on number of pushes
-   * @param {number} amount number of pushes
+   * Manage push window because of push add
    * @returns {void}
    */
-  updateCount(amount) {
-    if (amount === 0) {
+  addPush() {
+    this.amount++;
+    this._newPushSupport();
+    if (this.window === null) {
+      this.show();
+    } else {
+      // resize to fit one extra notification in case some old notification is still in move-out transition
+      this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(this.amount + 1, MAX_AMOUNT), 0);
+
+      this.closewWindowTimeout = setTimeout(() => {
+        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(this.amount, MAX_AMOUNT), 0);
+      }, PUSH_MOVEOUT_TIMER);
+    }
+  }
+
+  /**
+   * Manage push window because of push removal
+   * @returns {void}
+   */
+  removePush() {
+    this.amount--;
+    if (this.amount === 0) {
       this.closewWindowTimeout = setTimeout(() => {
         this.window.action('close');
       }, PUSH_MOVEOUT_TIMER);
-    } else if (this.window === null) {
-      this.show();
-      this._newPushSupport();
     } else {
-      if (this.notifications < amount) {
-        this._newPushSupport();
-        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount + 1, MAX_AMOUNT), 0);
-        this.closewWindowTimeout = setTimeout(() => {
-          this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount, MAX_AMOUNT), 0);
-        }, PUSH_MOVEOUT_TIMER);
-      } else {
-        this.closewWindowTimeout = setTimeout(() => {
-          this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(amount, MAX_AMOUNT), 0);
-        }, PUSH_MOVEOUT_TIMER);
-      }
+      this.closewWindowTimeout = setTimeout(() => {
+        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(this.amount, MAX_AMOUNT), 0);
+      }, PUSH_MOVEOUT_TIMER);
     }
-    this.notifications = amount;
   }
 
   /**
