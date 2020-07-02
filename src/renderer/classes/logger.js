@@ -15,7 +15,7 @@ class Logger {
     this.module = module.toUpperCase();
     this.background = background;
     this.color = this._contrastColor(background);
-    this.style = `background: ${this.background}; color: ${this.color}; ${DEFAULT_STYLE}`;
+    this.style = `border: 1px solid ${this.background}; color: ${this.background}; ${DEFAULT_STYLE}`;
   }
 
   /**

@@ -5,7 +5,7 @@ import { getAccessToken } from '../tokens';
 import connectionCheck from '@classes/connectionCheck';
 import { handleError } from '@api/errors';
 import Logger from '@classes/logger';
-const cnsl = new Logger('SOCKETS', '#d43c00');
+const cnsl = new Logger('SOCKETS', '#d67a24');
 
 const DISCONNECT_TIMEOUT = 2000;
 
