@@ -3,7 +3,7 @@
     <janus />
     <notifications />
     <router-view />
-    <performance-monitor v-if="isDev" />
+    <!-- <performance-monitor /> -->
   </div>
 </template>
 
@@ -30,12 +30,6 @@ export default {
       deepLink: {},
       updateNotificationShown: false,
     };
-  },
-
-  computed: {
-    isDev() {
-      return IS_DEV;
-    },
   },
 
   async created() {
