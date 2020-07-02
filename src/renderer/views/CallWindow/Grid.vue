@@ -216,8 +216,8 @@ export default {
       janusVideoroomWrapper.subscribeFor(publisher.janusId);
     });
 
-    janusVideoroomWrapper.on('publisher-left', publisher => {
-      this.$delete(this.videoStreams, publisher.userId);
+    janusVideoroomWrapper.on('publisher-left', userId => {
+      this.$delete(this.videoStreams, userId);
     });
 
     janusVideoroomWrapper.on('new-stream', async publisher => {
