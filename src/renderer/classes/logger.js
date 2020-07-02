@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 
-const DEFAULT_STYLE = 'font-size: 0.7rem; font-weight: 700; font-family: Helvetica; padding: 3px 5px 2px; border-radius: 5px; margin: 4px 2px';
+const DEFAULT_STYLE = 'font-size: 0.65rem; font-weight: 700; font-family: Helvetica; padding: 3px 5px 2px; border-radius: 5px; margin: 0 2px';
 
 /**
  * A class that handles all windows
