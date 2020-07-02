@@ -31,7 +31,7 @@ class Logger {
    * @returns {void}
    */
   info() {
-    console.log(`⚠️ %c${this.module}`, this.style, ...arguments);
+    console.log(`%ci%c${this.module}`, 'font-family: Helvetica; font-size: 0.8rem; border: 1px solid #2bc3ff; color: #2bc3ff; padding: 1px 6.25px 0px;  margin-right: 5px; border-radius: 20px', this.style, ...arguments);
   }
 
   /**
