@@ -44,7 +44,6 @@ export default {
   computed: {
     ...mapState({
       janusOptions: 'janus',
-      selectedDevices: 'app/selectedDevices',
     }),
     ...mapGetters({
       getUserWhoSharesMedia: 'getUserWhoSharesMedia',
