@@ -221,8 +221,16 @@ function bindChannelEvents() {
       return;
     }
 
+    const myUserId = store.getters['me/getMyId'];
     const userId = data.userId;
     const unselectData = dataBuffer.get(userId);
+
+    /** Same user is trying to join from another device */
+    if (data.socketId !== client.id && myUserId === userId) {
+      const selectedChannelId = store.getters['me/getSelectedChannelId'];
+
+      store.dispatch('unselectChannelWithoutAPICall', selectedChannelId);
+    }
 
     if (unselectData) {
       store.commit('channels/REMOVE_USER', unselectData);
