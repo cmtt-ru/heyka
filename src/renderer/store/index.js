@@ -44,6 +44,8 @@ const plugins = [
       'app/ADD_PUSH',
       'app/REMOVE_PUSH',
       'app/SET_DEVICES',
+      'janus/SET_OPTIONS',
+      'janus/SET_SHARING_SOURCE',
     ],
   }),
 ];

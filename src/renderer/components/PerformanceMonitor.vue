@@ -1,25 +1,36 @@
 <template>
   <div class="stat">
     <p>CPU: {{ totalCpuUsage }}%</p>
+    <p>AVG: {{ avgCpuUsage }}%</p>
     <p>MEM: {{ totalMemUsage }} MB</p>
   </div>
 </template>
 
 <script>
 import si from 'systeminformation';
+import sleep from 'es7-sleep';
+import cloneDeep from 'clone-deep';
+
+const INTERVAL_DELAY = 1000;
+const AVG_LENGTH = 10;
 
 export default {
   data: () => {
     return {
       processList: [],
-      interval: null,
-      enabled: false,
+      interval: true,
+      enabled: true,
+      avgCpuValues: [],
     };
   },
 
   computed: {
     filteredProcessList() {
-      return this.processList.filter(l => l.name.indexOf('Electron') > -1);
+      if (IS_LINUX) {
+        return this.processList.filter(l => l.path.toLowerCase().indexOf('electron/dist') > -1);
+      } else {
+        return this.processList.filter(l => l.name.toLowerCase().indexOf('electron') > -1);
+      }
     },
 
     totalCpuUsage() {
@@ -39,20 +50,41 @@ export default {
 
       return (memSum / b).toFixed(2);
     },
+
+    avgCpuUsage() {
+      if (this.avgCpuValues.length > 0) {
+        return this.avgCpuValues.reduce((a, v, i) => (a * i + v) / (i + 1)).toFixed(2);
+      }
+
+      return '–';
+    },
   },
 
-  mounted() {
+  async mounted() {
     if (this.enabled) {
-      this.interval = setInterval(async () => {
-        const data = await si.processes();
+      while (this.interval) {
+        let data = await si.processes();
 
-        this.processList = data.list;
-      }, parseInt('1000'));
+        this.processList = cloneDeep(data.list);
+
+        this.calcAvgCpu();
+
+        data = null;
+
+        await sleep(INTERVAL_DELAY);
+      }
     }
   },
 
   destroyed() {
-    clearInterval(this.interval);
+    this.interval = false;
+  },
+
+  methods: {
+    calcAvgCpu() {
+      this.avgCpuValues.push(parseFloat(this.totalCpuUsage));
+      this.avgCpuValues = this.avgCpuValues.splice(-AVG_LENGTH);
+    },
   },
 
 };

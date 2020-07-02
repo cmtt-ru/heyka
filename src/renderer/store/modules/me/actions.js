@@ -234,7 +234,7 @@ export default {
 
     /** Screen unlocked */
     if (!value && state.previousOnlineStatus === 'online') {
-      await dispatch('me/setOnlineStatus', statusByState);
+      await dispatch('setOnlineStatus', statusByState);
     }
 
     commit('SET_LOCK_SCREEN_STATE', value);

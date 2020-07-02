@@ -7,6 +7,39 @@
   </div>
 </template>
 
+<script>
+import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
+import { mapGetters, mapState } from 'vuex';
+
+export default {
+  computed: {
+    ...mapGetters({
+      selectedChannelId: 'me/getSelectedChannelId',
+      myId: 'me/getMyId',
+    }),
+    ...mapState({
+      janusOptions: 'janus',
+    }),
+  },
+  watch: {
+    async selectedChannelId(newChannelId, oldChannelId) {
+      if (!newChannelId && oldChannelId) {
+        await janusVideoroomWrapper.leave();
+      }
+      if (newChannelId) {
+        janusVideoroomWrapper.join(this.myId, this.janusOptions);
+      }
+    },
+  },
+  async created() {
+    await janusVideoroomWrapper.init();
+    if (this.selectedChannelId) {
+      janusVideoroomWrapper.join(this.myId, this.janusOptions);
+    }
+  },
+};
+</script>
+
 <style scoped lang="stylus">
     .layout__popover
         width 100vw

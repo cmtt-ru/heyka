@@ -52,8 +52,8 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
-import commonStreams from '@classes/commonStreams';
 import { mapGetters } from 'vuex';
+import janusVideoroomPlugin from '../../classes/janusVideoroomWrapper';
 
 export default {
   components: {
@@ -128,11 +128,23 @@ export default {
       this.$router.replace('/call-window');
     });
 
-    this.requestStream();
+    this.handleVideoStream();
 
-    // Запрашиваем стрим шэрящего юзера, если он
-    // по каким-то причинам прекратился
-    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
+    janusVideoroomPlugin.on('new-stream', publisher => {
+      if (publisher.userId === this.userId) {
+        this.insertVideo(publisher.stream);
+      }
+    });
+    janusVideoroomPlugin.on('publisher-joined', publisher => {
+      if (publisher.userId === this.userId) {
+        this.handleVideoStream();
+      }
+    });
+  },
+
+  beforeDestroy() {
+    janusVideoroomPlugin.removeAllListeners('new-stream');
+    janusVideoroomPlugin.removeAllListeners('publisher-joined');
   },
 
   destroyed() {
@@ -142,23 +154,8 @@ export default {
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
-
-    commonStreams.removeAllListeners('stream-canceled');
   },
   methods: {
-    /**
-     * Request stream and insert it
-     * @returns {void}
-     */
-    async requestStream() {
-      const id = this.userId;
-      const stream = await commonStreams.getStream(id);
-
-      this.$refs.video.srcObject = stream;
-      this.$refs.video.onloadedmetadata = () => {
-        this.$refs.video.play();
-      };
-    },
 
     /**
      * Show grid handler
@@ -168,21 +165,39 @@ export default {
       this.$router.push('/call-window');
     },
 
-    /**
-     * Stream canceled handler
-     * @param {string} userId – user id
-     * @returns {Promise<void>}
-     */
-    async streamCanceledHandler(userId) {
-      if (!this.selectedChannelId) {
-        return;
+    handleVideoStream() {
+      // try to get working video stream
+      const activePublishers = janusVideoroomPlugin.getActivePublishers();
+      const ourPublisher = activePublishers.find(publishers => publishers.userId === this.userId);
+
+      if (ourPublisher) {
+        if (ourPublisher.stream) {
+          this.insertVideo(ourPublisher.stream);
+
+          return;
+        }
+        janusVideoroomPlugin.subscribeFor(ourPublisher.janusId);
       }
 
-      if (this.isUserSharingMedia) {
-        this.requestStream();
-      }
+      // set on pause all videos except this one
+      activePublishers
+        .filter(publisher => publisher.userId !== this.userId)
+        .forEach(publisher => janusVideoroomPlugin.pauseSubscription(publisher.janusId));
     },
 
+    /**
+     * Insert video in html
+     * @param {MediaStream} stream Media stream
+     * @returns {void}
+     */
+    insertVideo(stream) {
+      const htmlElement = this.$refs.video;
+
+      htmlElement.srcObject = stream;
+      htmlElement.onloadedmetadata = () => {
+        htmlElement.play();
+      };
+    },
   },
 
 };

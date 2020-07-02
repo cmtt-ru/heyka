@@ -144,6 +144,9 @@ class CallWindow {
       });
     } else {
       this.gridWindow.action('show');
+      if (userId) {
+        this.gridWindow.openUrl(`/call-window/expanded/${userId}`);
+      }
     }
   }
 

@@ -52,7 +52,7 @@ export async function saveSocketParams() {
     id: client.lastSocketId,
     connectedAt: Date.now(),
   });
-};
+}
 
 /**
  * Destroy socket connection and unbind events

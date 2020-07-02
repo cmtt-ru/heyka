@@ -117,6 +117,16 @@ class VideoroomPlugin extends EventEmitter {
         }
         cnsl.debug('message', message, jsep);
 
+        if (message.videoroom === 'event') {
+          if (message.switched === 'ok') {
+            this.emit('switched');
+          } else if (message.paused === 'ok') {
+            this.emit('paused');
+          } else if (message.started === 'ok') {
+            this.emit('started');
+          }
+        }
+
         if (jsep !== undefined && jsep !== null) {
           cnsl.info(`New message with jsep for ${this.__janusId}, ${this.__userId}! `);
           this._startStreamReceiving(jsep);
@@ -140,6 +150,7 @@ class VideoroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
+        this.emit('webrtc-cleanup');
         cnsl.debug('cleanup');
       },
 
@@ -147,6 +158,57 @@ class VideoroomPlugin extends EventEmitter {
       detached: () => {
         this.__detached = true;
         cnsl.debug('detached');
+      },
+    });
+  }
+
+  /**
+   * Set receiving vide stream on pause
+   * @returns {void}
+   */
+  pause() {
+    if (!this.__pluginHandle || this.__detached) {
+      return;
+    }
+
+    this.__pluginHandle.send({
+      message: {
+        request: 'pause',
+      },
+    });
+  }
+
+  /**
+   * Resume receiving video stream
+   * @returns {void}
+   */
+  resume() {
+    if (!this.__pluginHandle || this.__detached) {
+      return;
+    }
+
+    this.__pluginHandle.send({
+      message: {
+        request: 'start',
+      },
+    });
+  }
+
+  /**
+   * Switch plugin subscription to another publisher
+   * @param {number} janusId Switch plugin to another publisher
+   * @returns {void}
+   */
+  switch(janusId) {
+    if (!this.__pluginHandle || this.__detached) {
+      return;
+    }
+
+    cnsl.log('Subscription plugin handle switching: ', janusId);
+    this.__pluginHandle.send({
+      message: {
+        request: 'switch',
+        feed: typeof janusId === 'number' ? janusId : parseInt(janusId, 10),
       },
     });
   }
