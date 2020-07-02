@@ -15,7 +15,7 @@ import broadcastEvents from '@classes/broadcastEvents';
 import Notifications from '@components/Notifications';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
-import PerformanceMonitor from '@components/PerformanceMonitor';
+// import PerformanceMonitor from '@components/PerformanceMonitor';
 import Logger from '@classes/logger';
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
@@ -23,7 +23,7 @@ export default {
   components: {
     Janus,
     Notifications,
-    PerformanceMonitor,
+    // PerformanceMonitor,
   },
   data() {
     return {
