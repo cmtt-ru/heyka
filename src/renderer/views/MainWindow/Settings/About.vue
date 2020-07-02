@@ -21,7 +21,7 @@
         :key="change.version"
       >
         <div class="changelog__version">
-          v{{ change.version }}
+          {{ change.version }}
         </div>
 
         <div class="changelog__text">
