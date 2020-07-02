@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
 import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
 import { mapGetters, mapState } from 'vuex';
 
