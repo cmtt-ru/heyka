@@ -44,13 +44,7 @@ import Layout from './../Layout';
 import { UiInput } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { errorMessages } from '@api/errors/types';
-import { ipcRenderer } from 'electron';
-import fs from 'fs';
-import path from 'path';
-import mapUsers from './mapUsers.json';
 import { codeFileStore } from '@/store/localStore';
-import Logger from '@classes/logger';
-const cnsl = new Logger('Temp.vue', '#138D75');
 
 export default {
   components: {
@@ -63,9 +57,6 @@ export default {
       code: codeFileStore.get('code'),
       invalidCode: false,
     };
-  },
-  mounted() {
-    this.useOldAppData();
   },
   methods: {
     async signinHandler() {
@@ -85,30 +76,6 @@ export default {
         if (err.response.data.message === errorMessages.badRequest) {
           this.invalidCode = true;
         }
-      }
-    },
-    useOldAppData() {
-      const appDataPath = ipcRenderer.sendSync('remote-getPath', 'appData');
-      let oldAppData = null;
-
-      try {
-        oldAppData = fs.readFileSync(path.join(appDataPath, '🖐 Heyka', 'config.json'), 'utf8');
-        oldAppData = JSON.parse(oldAppData);
-      } catch (e) {
-        // do nothing
-        // file is not found or there are problems to open and parse it
-        cnsl.error('Error on open old app data: ', e);
-        cnsl.log(path.join(appDataPath, '🖐 Heyka', 'config.json'));
-
-        return;
-      }
-
-      const authLink = mapUsers[`${oldAppData.userId}`];
-
-      if (authLink) {
-        cnsl.log('Old user id is: ', oldAppData.userId);
-        this.code = authLink;
-        this.signinHandler();
       }
     },
   },
