@@ -11,24 +11,28 @@
         <router-link
           class="link"
           :to="{name: 'styleguide-buttons'}"
+          replace
         >
           Buttons
         </router-link>
         <router-link
           class="link"
           :to="{name: 'styleguide-lists'}"
+          replace
         >
           Lists
         </router-link>
         <router-link
           class="link"
           :to="{name: 'styleguide-forms'}"
+          replace
         >
           Forms
         </router-link>
         <router-link
           class="link"
           :to="{name: 'styleguide-notifications'}"
+          replace
         >
           Notifications
         </router-link>
@@ -40,6 +44,7 @@
         <router-link
           class="close-strip"
           :to="{name: 'settings'}"
+          replace
         >
           <ui-button
             :type="7"
