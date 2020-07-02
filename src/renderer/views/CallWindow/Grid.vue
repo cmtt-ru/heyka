@@ -41,6 +41,7 @@
             v-show="videoStreams[user.id]"
             :ref="`video${user.id}`"
             class="cell__feed"
+            :class="{ 'cell__feed--flip': user.camera && user.id === myId }"
           />
           <div
             v-show="user.speaking && user.microphone"
@@ -113,7 +114,6 @@ import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
 import broadcastEvents from '@classes/broadcastEvents';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
-import mediaCapturer from '../../classes/mediaCapturer';
 import Logger from '@classes/logger';
 const cnsl = new Logger('Grid.vue', '#138D75');
 
@@ -193,13 +193,8 @@ export default {
     },
     selectedChannel(channelId) {
       if (!channelId) {
-        const videoEls = this.$el.querySelectorAll('video');
-
-        videoEls.forEach(el => {
-          if (el.srcObject) {
-            mediaCapturer.destroyStream(el.srcObject);
-          }
-          el.srcObject = null;
+        Object.keys(this.videoStreams).forEach(key => {
+          this.$delete(this.videoStreams, key);
         });
       }
     },
@@ -459,6 +454,9 @@ export default {
       width 100%
       height 100%
       border-radius 4px
+
+      &--flip
+        transform: scaleX(-1)
 
     &__talking
       position absolute
