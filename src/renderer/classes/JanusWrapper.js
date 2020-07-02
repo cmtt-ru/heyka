@@ -228,7 +228,6 @@ class JanusWrapper extends EventEmitter {
    * @returns {void}
    */
   async publishVideoStream(type = 'camera', source) {
-    console.log('SOURCE: ', source);
     let stream = null;
 
     cnsl.debug('Start sharing video', type, source);

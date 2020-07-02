@@ -131,7 +131,6 @@ class JanusVideoroomWrapper extends EventEmitter {
     videoroomPlugin.on('active-publishers', this._onPublisherList.bind(this));
     videoroomPlugin.on('publisher-joined', this._onPublisherJoined.bind(this));
     videoroomPlugin.on('publisher-left', this._onPublisherLeft.bind(this));
-    videoroomPlugin.on('local-video-stream', this._onLocalStream.bind(this));
 
     this.__videoroomPlugin = videoroomPlugin;
   }

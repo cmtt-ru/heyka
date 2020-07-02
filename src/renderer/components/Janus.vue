@@ -102,7 +102,6 @@ export default {
      * @returns {void}
      */
     camera(state, ps) {
-      cnsl.log('previous', ps, state);
       if (state) {
         this.startSharingCamera();
       } else {

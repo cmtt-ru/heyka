@@ -38,9 +38,6 @@ export default {
       janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
   },
-  mounted() {
-    ipcRenderer.send('page-rendered', 'Hello from Login!');
-  },
 };
 </script>
 
