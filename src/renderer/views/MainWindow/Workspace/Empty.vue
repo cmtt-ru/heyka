@@ -48,7 +48,7 @@ export default {
   .empty-message
     display flex
     flex-direction column
-    text-align left
+    text-align center
     width 100%
     height 100%
     position relative
