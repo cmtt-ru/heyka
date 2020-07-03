@@ -1,7 +1,7 @@
 <template>
   <div
     class="drawing"
-    @mousemove="mouseMoveHandler"
+    @mousemove="throttleSavePosition"
   >
     <div
       v-for="dot in dots"
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { throttle } from 'throttle-debounce';
+const DELAY = 50;
 
 export default {
   data() {
@@ -20,7 +22,18 @@ export default {
       dots: [],
     };
   },
+  computed: {
+
+  },
   methods: {
+    throttleSavePosition:
+      throttle(DELAY, false, function ($event) {
+        this.dots.push({
+          x: $event.offsetX,
+          y: $event.offsetY,
+          time: $event.timeStamp,
+        });
+      }),
     dotPosition(dot) {
       // console.log(dot);
 
@@ -28,14 +41,6 @@ export default {
         top: `${dot.y}px`,
         left: `${dot.x}px`,
       };
-    },
-    mouseMoveHandler($event) {
-      // console.log($event);
-      this.dots.push({
-        x: $event.offsetX,
-        y: $event.offsetY,
-        time: $event.timeStamp,
-      });
     },
   },
 };
