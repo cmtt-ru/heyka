@@ -2,6 +2,9 @@
   <div class="doggy">
     <div class="doggy__inner">
       <p>{{ texts.empty }}</p>
+      <router-link :to="{name: 'drawing'}">
+        Рисование
+      </router-link>
     </div>
   </div>
 </template>

@@ -16,7 +16,7 @@ const Workspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow
 const Channel = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Channel');
 const User = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/User');
 const WorkspaceEmpty = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Empty');
-// const TestWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Workspace');
+const DrawingTest = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/DrawingTest');
 
 /* Settings layout */
 const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings');
@@ -107,6 +107,11 @@ const routes = [
             path: 'user/:id',
             name: 'user',
             component: User,
+          },
+          {
+            path: 'drawing',
+            name: 'drawing',
+            component: DrawingTest,
           },
         ],
       },
