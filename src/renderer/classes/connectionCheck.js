@@ -1,11 +1,19 @@
 import store from '@/store';
 import i18n from '@/i18n';
+import isOnline from 'is-online';
+import sleep from 'es7-sleep';
 
 /**
- * User for make some debounce for slow internet event
+ * Used for make some debounce for slow internet event
  * @type {number}
  */
 const SLOW_INTERNET_INTERVAL = 2000;
+
+/**
+ * Used for internet connection check
+ * @type {number}
+ */
+const INTERNET_CONNECTION_CHECK_INTERVAL = 5000;
 
 /**
  * Connection checking class
@@ -15,9 +23,6 @@ class ConnectionCheck {
    * Connection check contructor
    */
   constructor() {
-    window.addEventListener('online', this.handleOnlineStatus.bind(this));
-    window.addEventListener('offline', this.handleOnlineStatus.bind(this));
-
     this.notificationsIds = {
       onlineStatus: null,
       slowInternet: null,
@@ -26,17 +31,31 @@ class ConnectionCheck {
     };
 
     this.slowInternetLastCallTime = null;
+
+    this.startInternetConnectionChecker();
+  }
+
+  /**
+   * Connection checker
+   * @returns {Promise<void>}
+   */
+  async startInternetConnectionChecker() {
+    while (true) {
+      const state = await isOnline();
+
+      this.handleOnlineStatus.bind(state);
+      await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
+    }
   }
 
   /**
    * Online/offline handler
    *
-   * @param {object} event – event
+   * @param {object} state – state
    * @returns {void}
    */
-  async handleOnlineStatus(event) {
+  async handleOnlineStatus(state) {
     const name = 'onlineStatus';
-    const state = event.type === 'online';
 
     if (state) {
       this.showNotification(name, false);

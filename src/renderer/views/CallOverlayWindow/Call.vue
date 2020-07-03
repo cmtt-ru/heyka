@@ -1,7 +1,7 @@
 <template>
   <div class="call-window">
     <div
-      v-if="isMediaSharing"
+      v-show="isMediaSharing"
       class="call-window__media"
       @dblclick="expandHandler"
     >
@@ -25,36 +25,39 @@
 
 <script>
 import CallControls from './CallControls';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import broadcastActions from '@classes/broadcastActions';
-import commonStreams from '@classes/commonStreams';
 import broadcastEvents from '@classes/broadcastEvents';
 import UiButton from '@components/UiButton';
+import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 
 export default {
   components: {
     CallControls,
     UiButton,
   },
+  data() {
+    return {
+      videoRoomState: 'closed',
+    };
+  },
   computed: {
-    ...mapGetters([
-      'getUserWhoSharesMedia',
-      'getUsersWhoShareMedia',
-      'amISharingMedia',
-      'isAnybodySharingMedia',
-      'getSpeakingUser',
-    ]),
-
-    mediaState() {
-      return this.$store.getters['me/getMediaState'];
-    },
+    ...mapState({
+      janusOptions: 'janus',
+    }),
+    ...mapGetters({
+      getUserWhoSharesMedia: 'getUserWhoSharesMedia',
+      getUsersWhoShareMedia: 'getUsersWhoShareMedia',
+      amISharingMedia: 'amISharingMedia',
+      isAnybodySharingMedia: 'isAnybodySharingMedia',
+      getSpeakingUser: 'getSpeakingUser',
+      mediaState: 'me/getMediaState',
+      selectedChannelId: 'me/getSelectedChannelId',
+      myId: 'me/getMyId',
+    }),
 
     isMediaSharing() {
-      return this.isAnybodySharingMedia && !this.amISharingMedia;
-    },
-
-    selectedChannelId() {
-      return this.$store.state.me.selectedChannelId;
+      return this.isAnybodySharingMedia && !this.mediaState.screen;
     },
 
     getSpeakingUserId() {
@@ -71,45 +74,98 @@ export default {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     },
 
-    getUserWhoSharesMedia(user) {
-      if (user && this.mediaState.screen === false && this.isMediaSharing) {
-        this.requestStream(user);
+    selectedChannelId(newChannelId, oldChannelId) {
+      if (!newChannelId && oldChannelId) {
+        janusVideoroomWrapper.leave();
+      }
+      if (newChannelId) {
+        janusVideoroomWrapper.join(this.myId, this.janusOptions);
       }
     },
 
-    getSpeakingUserId(userId) {
-      if (userId && this.mediaState.screen === false && this.getUsersWhoShareMedia.includes(userId)) {
-        this.requestStream(userId);
-      }
+    getUserWhoSharesMedia(userId) {
+      this.loadCurrentVideo();
+    },
+
+    videoRoomState(info) {
+      console.log('videoroom state: ', info);
     },
   },
 
-  created() {
+  async created() {
     if (this.isMediaSharing) {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
     }
-    if (this.getUserWhoSharesMedia) {
-      this.requestStream(this.getUserWhoSharesMedia);
-    }
 
-    // Если стрим прекратился, но юзер еще шэрит камеру
-    // то запрашиваем стрим еще раз
-    // самый частый юзкейс - юзер изменил камеру, поэтому стрим обновился
-    commonStreams.on('stream-canceled', this.streamCanceledHandler.bind(this));
+    janusVideoroomWrapper.on('joined', this.onSingleSubscriptionReady.bind(this));
+    janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
+    janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
+    janusVideoroomWrapper.on('started', this.onSingleSubscriptionReady.bind(this));
+
+    janusVideoroomWrapper.on('cleanup', () => {
+      this.videoRoomState = 'closed';
+
+      this.loadCurrentVideo();
+    });
+
+    await janusVideoroomWrapper.init();
+    if (this.selectedChannelId) {
+      this.videoRoomState = 'joining';
+      await janusVideoroomWrapper.join(this.myId, this.janusOptions);
+    }
+  },
+  mounted() {
+    janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
+    janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
+  },
+  beforeDestroy() {
+    janusVideoroomWrapper.removeAllListeners('single-sub-stream');
+    janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },
   destroyed() {
-    commonStreams.removeAllListeners('stream-canceled');
+
   },
   methods: {
-    async requestStream(user) {
-      const stream = await commonStreams.getStream(user);
-      const htmlElement = this.$refs.video;
+    /**
+     * Loads user video of current user if it possible
+     * @param {string} userId User id
+     * @returns {void}
+     */
+    loadCurrentVideo() {
+      const userId = this.getUserWhoSharesMedia;
+      let publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === userId);
 
-      if (htmlElement) {
-        htmlElement.srcObject = stream;
-        htmlElement.onloadedmetadata = function () {
-          htmlElement.play();
-        };
+      if (!publisher) {
+        publisher = janusVideoroomWrapper.getActivePublishers()[0];
+      }
+
+      if (!publisher) {
+        return;
+      }
+
+      const currentFeed = janusVideoroomWrapper.currentSingleSubscriptionFeed();
+
+      if (currentFeed === publisher.janusId) {
+        return;
+      }
+
+      this.switchToFeed(publisher.janusId);
+    },
+
+    /**
+     * Switch single subscription to specific feed
+     * @param {number} janusId Janus user id (feed)
+     * @returns {void}
+     */
+    switchToFeed(janusId) {
+      const currentFeed = janusVideoroomWrapper.currentSingleSubscriptionFeed();
+
+      if (this.videoRoomState === 'closed' || (this.videoRoomState === 'ready' && !currentFeed)) {
+        this.videoRoomState = 'starting';
+        janusVideoroomWrapper.createSingleSubscription(janusId);
+      } else if (this.videoRoomState === 'ready') {
+        this.videoRoomState = 'switching';
+        janusVideoroomWrapper.switchSingleSubscription(janusId);
       }
     },
 
@@ -123,28 +179,47 @@ export default {
     },
 
     /**
-     * Stream canceled handler
-     * @param {string} userId – user id
-     * @returns {Promise<void>}
-     */
-    async streamCanceledHandler(userId) {
-      if (!this.selectedChannelId) {
-        return;
-      }
-      if (this.getUserWhoSharesMedia === userId) {
-        this.requestStream(userId);
-      }
-    },
-
-    /**
      * Expand click handler
      * @returns {void}
      */
     expandHandler() {
       if (this.getUserWhoSharesMedia) {
-        broadcastActions.dispatch('openGrid');
-        broadcastEvents.dispatch('grid-expand', this.getSpeakingUserId);
+        broadcastActions.dispatch('openGrid', this.getUserWhoSharesMedia);
       }
+    },
+
+    /**
+     * Handles new publisher
+     * @param {object} publisher Publisher object
+     * @param {number} publisher.janusId Publisher janus id
+     * @param {string} publisher.userId Publisher user id (heyka)
+     * @returns {void}
+     */
+    onNewPublisher(publisher) {
+      this.loadCurrentVideo();
+    },
+
+    /**
+     * Handles when single subscription is ready for working
+     * @returns {void}
+     */
+    onSingleSubscriptionReady() {
+      this.videoRoomState = 'ready';
+      this.loadCurrentVideo();
+    },
+
+    /**
+     * Insert video stream in html
+     * @param {MediaStream} stream Video stream
+     * @returns {void}
+     */
+    async insertStream(stream) {
+      const el = this.$refs.video;
+
+      el.srcObject = stream;
+      el.onloadedmetadata = () => {
+        el.play();
+      };
     },
   },
 };

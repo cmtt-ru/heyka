@@ -488,7 +488,7 @@ function Janus(gatewayCallbacks) {
 	var that = this;
 	var retries = 0;
 	var transactions = {};
-	that.maxAudioBitrate = 8
+	that.maxAudioBitrate = 48;
 	createSession(gatewayCallbacks);
 
 	// Public methods

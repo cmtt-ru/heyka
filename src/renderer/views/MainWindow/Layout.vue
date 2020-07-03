@@ -36,18 +36,6 @@
   </div>
 </template>
 
-<script>
-
-export default {
-  data() {
-    return {};
-  },
-  created() {
-
-  },
-};
-</script>
-
 <style lang="stylus">
   .layout
     display flex

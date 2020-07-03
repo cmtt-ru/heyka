@@ -6,6 +6,8 @@ import SubscribingVideoroomPlugin from './SubscribingVideoroomPlugin';
 import mediaCapturer from './mediaCapturer';
 // eslint-disable-next-line no-unused-vars
 import adapter from 'webrtc-adapter';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Janus wrapper', '#5DADE2');
 
 const ERROR_CODES = {
   SERVER_DOWN: 'Server is down',
@@ -14,7 +16,7 @@ const ERROR_CODES = {
 };
 const REQUEST_VIDEOSTREAM_TIMEOUT = 5000;
 const DEFAULT_BITRATE_CAMERA_ = 256000;
-const DEFAULT_BITRATE_SCREEN = 1400000;
+const DEFAULT_BITRATE_SCREEN = 512000;
 
 // Possible events for subscribing
 const JANUS_WRAPPER_EVENTS = {
@@ -119,13 +121,15 @@ class JanusWrapper extends EventEmitter {
   }
 
   /**
-   * Connects to the server and join to channels
+   * Connects to the server and join to audio channels
    * @public
-   * @returns {Promise<Stream>} Audio stream from Janus server
+   * @returns {void}
    */
   async join() {
     /** Connect to Janus */
-    await this._connect();
+    if (!this.__janus) {
+      await this._connect();
+    }
 
     // connect audiobridge plugin
 
@@ -135,7 +139,6 @@ class JanusWrapper extends EventEmitter {
       token: this.__channelToken,
       userId: this.__userId,
       microphoneDeviceId: this.__microphoneDeviceId,
-      debug: this.__debug,
     });
 
     audiobridgePlugin.attach();
@@ -165,7 +168,6 @@ class JanusWrapper extends EventEmitter {
       room: this.__videoRoomId,
       token: this.__channelToken,
       userId: this.__userId,
-      debug: this.__debug,
     });
 
     videoroomPlugin.attach();
@@ -179,9 +181,6 @@ class JanusWrapper extends EventEmitter {
         this.emit(JANUS_WRAPPER_EVENTS.channelJoined);
       }
     });
-    videoroomPlugin.on('publisher-joined', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherJoined, publisher));
-    videoroomPlugin.on('publisher-left', publisher => this.emit(JANUS_WRAPPER_EVENTS.videoPublisherLeft, publisher));
-    videoroomPlugin.on('local-video-stream', stream => this.emit(JANUS_WRAPPER_EVENTS.localVideoStream, stream));
     videoroomPlugin.on('success-publishing', () => this.emit(JANUS_WRAPPER_EVENTS.successVideoPublishing));
     videoroomPlugin.on('video-slow-link', () => this.emit(JANUS_WRAPPER_EVENTS.videoSlowLink));
     videoroomPlugin.on('webrtc-cleanup', () => this.emit(JANUS_WRAPPER_EVENTS.webrtcCleanUp));
@@ -231,7 +230,7 @@ class JanusWrapper extends EventEmitter {
   async publishVideoStream(type = 'camera', source) {
     let stream = null;
 
-    this._debug('Start sharing video', type, source);
+    cnsl.debug('Start sharing video', type, source);
 
     if (type === 'camera') {
       stream = await mediaCapturer.getCameraStream(source);
@@ -247,6 +246,9 @@ class JanusWrapper extends EventEmitter {
    * @returns {void}
    */
   unpublishVideoStream() {
+    if (!this.__videoroomPlugin) {
+      return;
+    }
     this.__videoroomPlugin.unpublishVideo();
   }
 
@@ -261,13 +263,12 @@ class JanusWrapper extends EventEmitter {
       userId: this.__userId,
       room: this.__videoRoomId,
       janusId,
-      debug: this.__debug,
       token: this.__channelToken,
     });
 
     this.__videoroomPlugins[janusId] = plugin;
 
-    console.log(`%c videoroomPlugins ADDED ${Object.keys(this.__videoroomPlugins).length}`, 'background: red; color: white;', this.__videoroomPlugins);
+    cnsl.info(`videoroomPlugins ADDED ${Object.keys(this.__videoroomPlugins).length}`, this.__videoroomPlugins);
     let requestTimeout;
     const prom = new Promise((resolve, reject) => {
       requestTimeout = setTimeout(() => {
@@ -298,7 +299,7 @@ class JanusWrapper extends EventEmitter {
 
     delete this.__videoroomPlugins[janusId];
 
-    console.log(`%c videoroomPlugins REMOVED ${Object.keys(this.__videoroomPlugins).length}`, 'background: red; color: white;', this.__videoroomPlugins);
+    cnsl.info(`videoroomPlugins REMOVED ${Object.keys(this.__videoroomPlugins).length}`, this.__videoroomPlugins);
   }
 
   /**
@@ -323,7 +324,7 @@ class JanusWrapper extends EventEmitter {
           .replace('8089', '8189')
           .replace('/janus', '');
       }
-      this._debug(`Connect to janus. rest-api: ${this.__url}, ws-api: ${wsurl}`);
+      cnsl.debug(`Connect to janus. rest-api: ${this.__url}, ws-api: ${wsurl}`);
 
       this.__janus = new Janus({
         server: [wsurl, this.__url],
@@ -343,7 +344,7 @@ class JanusWrapper extends EventEmitter {
             internalError = ERROR_CODES.UNKNOW;
           }
 
-          this._debug('Janus connection error', cause);
+          cnsl.debug('Janus connection error', cause);
           if (isFullfilled) {
             this.emit('connection-error', internalError);
 
@@ -385,17 +386,6 @@ class JanusWrapper extends EventEmitter {
     });
     this.__janus.destroy();
     this.__janus = null;
-  }
-
-  /**
-   * Inner debug tool
-   * @private
-   * @returns {undefined}
-   */
-  _debug() {
-    if (this.__debug) {
-      console.log('JANUS WRAPPER: ', ...arguments);
-    }
   }
 };
 

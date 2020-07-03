@@ -51,7 +51,7 @@
         <div>{{ texts.privateTalkButton }}</div>
       </ui-button>
       <ui-button
-        v-if="selectedChannelName"
+        v-if="selectedChannel"
         :type="3"
         :wide="true"
         class="user-action"
@@ -67,7 +67,7 @@
             name="channelOnAir"
             size="medium"
           />
-          <div>{{ selectedChannelName }}</div>
+          <div>{{ selectedChannel.name }}</div>
         </div>
       </ui-button>
     </div>
@@ -95,6 +95,7 @@
 <script>
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
+import { mapGetters } from 'vuex';
 
 /**
  * status-to-color map (small circle to the right of username)
@@ -121,6 +122,10 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      selectedChannel: 'myChannel',
+    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -171,32 +176,6 @@ export default {
      */
     statusStyle() {
       return STATUS_COLORS[this.user.onlineStatus] || null;
-    },
-
-    /**
-     * Returns selected channel
-     * @returns {object} – channel
-     */
-    selectedChannel() {
-      const selectedChannelId = this.$store.getters['me/getSelectedChannelId'];
-
-      if (!selectedChannelId) {
-        return false;
-      }
-
-      return this.$store.getters['channels/getChannelById'](selectedChannelId);
-    },
-
-    /**
-     * Returns selected channel's name
-     * @returns {string} – channel's name
-     */
-    selectedChannelName() {
-      if (!this.selectedChannel) {
-        return null;
-      }
-
-      return this.selectedChannel.name;
     },
 
   },

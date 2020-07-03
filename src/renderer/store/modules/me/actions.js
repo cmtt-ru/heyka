@@ -3,6 +3,8 @@ import callWindow from '@classes/callWindow';
 import * as sockets from '@api/socket';
 import { ipcRenderer } from 'electron';
 import { meStore } from '@/store/localStore';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Vuex actions /me', '#17A589');
 
 export default {
   /**
@@ -89,7 +91,7 @@ export default {
     try {
       meStore.set('mediaState', mediaState);
     } catch (err) {
-      console.log(err);
+      cnsl.error(err);
     }
 
     if (selectedChannelId) {
@@ -113,6 +115,7 @@ export default {
   async setDefaultMediaState({ commit, state }) {
     const defaultState = {
       ...state.mediaState,
+      microphone: false,
       camera: false,
       screen: false,
       speakers: true,
@@ -172,9 +175,9 @@ export default {
    */
   async setSuspendState({ commit, dispatch, getters, state }, value) {
     if (value) {
-      console.log('%c Sleep', 'background: #8d96a2');
+      cnsl.log('Sleep');
     } else {
-      console.log('%c Awake', 'background: #8d96a2');
+      cnsl.log('Awake');
     }
 
     /** Sleep */
@@ -212,9 +215,9 @@ export default {
     }
 
     if (value) {
-      console.log('%c Lock', 'background: #7e99bb');
+      cnsl.log('Lock');
     } else {
-      console.log('%c Unlock', 'background: #7e99bb');
+      cnsl.log('Unlock');
     }
 
     /** Screen locked */
@@ -231,7 +234,7 @@ export default {
 
     /** Screen unlocked */
     if (!value && state.previousOnlineStatus === 'online') {
-      await dispatch('me/setOnlineStatus', statusByState);
+      await dispatch('setOnlineStatus', statusByState);
     }
 
     commit('SET_LOCK_SCREEN_STATE', value);

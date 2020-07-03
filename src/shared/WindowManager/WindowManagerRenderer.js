@@ -12,9 +12,12 @@ class WindowManager {
    * @returns {Window}
    */
   create(options) {
+    const onClose = options.onClose;
+
+    delete options.onClose;
     const windowData = ipcRenderer.sendSync('window-manager-create', options);
 
-    return new Window(windowData.id, options.onClose);
+    return new Window(windowData.id, onClose);
   }
 
   /**

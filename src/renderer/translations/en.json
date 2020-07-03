@@ -15,7 +15,8 @@
       "localTime": "Local time",
       "email": "Email"
     },
-    "empty": "So far you've been disconnected\nfrom all channels"
+    "empty": "So far you've been disconnected\nfrom all channels",
+    "new": "What's new?"
   },
   "settings": {
     "labels": {
@@ -42,7 +43,8 @@
         "light": "Light",
         "dark": "Dark"
       },
-      "automaticallySwitch": "Automatically"
+      "automaticallySwitch": "Automatically",
+      "restartNow": "Restart now"
     },
     "devices": {
       "speakersLabel": "Speakers",
@@ -125,6 +127,8 @@
   },
   "push": {
     "invitesto": "Invite to",
+    "join": "Join",
+    "busy": "Busy",
     "isbusy": "Is busy"
   },
   "autoUpdate": {
