@@ -154,7 +154,12 @@ export default {
    */
   async unselectChannel({ commit, dispatch }, id) {
     commit('app/ANIMATION_CHANNEL_ID', null);
-    await API.channel.unselect(id);
+    try {
+      await API.channel.unselect(id);
+    } catch (err) {
+      commit('app/ANIMATION_CHANNEL_ID', id);
+    }
+
     dispatch('unselectChannelWithoutAPICall', id);
   },
 
