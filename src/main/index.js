@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, ipcMain, protocol, BrowserWindow } from 'electron';
+import { app, ipcMain, protocol, BrowserWindow, globalShortcut } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import './classes/AutoLaunch';
 import './classes/RemoteInfo';
