@@ -69,7 +69,7 @@ export default {
       if (newIndex === -1) {
         this.recieveDots = [ ...incomeDots ];
       } else {
-        this.recieveDots = [...this.recieveDots, ...[ ...incomeDots ].splice(newIndex)];
+        this.recieveDots = [...this.recieveDots, ...incomeDots.slice(newIndex)];
       }
 
       setTimeout(() => {
