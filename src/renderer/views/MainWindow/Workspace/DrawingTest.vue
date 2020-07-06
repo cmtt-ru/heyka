@@ -1,47 +1,59 @@
 <template>
-  <div
+  <canvas
+    id="myCanvas"
     class="drawing"
     @mousemove="throttleSavePosition"
-  >
-    <div
-      v-for="dot in dots"
-      :key="dot.timeStamp"
-      :style="dotPosition(dot)"
-      class="dot"
-    />
-  </div>
+  />
 </template>
 
 <script>
 import { throttle } from 'throttle-debounce';
-const DELAY = 50;
+const DELAY = 20;
 
 export default {
   data() {
     return {
-      dots: [],
+      ctx: {},
+      lastDot: null,
     };
   },
   computed: {
 
   },
+  mounted() {
+    const canvas = document.getElementById('myCanvas');
+    const cs = getComputedStyle(canvas);
+
+    const width = parseInt(cs.getPropertyValue('width'), 10);
+    const height = parseInt(cs.getPropertyValue('height'), 10);
+
+    canvas.width = width;
+    canvas.height = height;
+    this.ctx = canvas.getContext('2d');
+  },
   methods: {
     throttleSavePosition:
       throttle(DELAY, false, function ($event) {
-        this.dots.push({
+        const dot = {
           x: $event.offsetX,
           y: $event.offsetY,
-          time: $event.timeStamp,
-        });
-      }),
-    dotPosition(dot) {
-      // console.log(dot);
+        };
 
-      return {
-        top: `${dot.y}px`,
-        left: `${dot.x}px`,
-      };
-    },
+        if (this.lastDot) {
+          this.ctx.moveTo(this.lastDot.x, this.lastDot.y);
+          this.ctx.lineTo(dot.x, dot.y);
+          this.ctx.stroke();
+        }
+        this.lastDot = dot;
+      }),
+    // dotPosition(dot) {
+    //   // console.log(dot);
+
+    //   return {
+    //     top: `${dot.y}px`,
+    //     left: `${dot.x}px`,
+    //   };
+    // },
   },
 };
 </script>
