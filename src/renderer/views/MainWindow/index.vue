@@ -3,6 +3,7 @@
     <janus />
     <notifications />
     <router-view />
+<!--    <performance-monitor />-->
   </div>
 </template>
 
@@ -14,11 +15,15 @@ import broadcastEvents from '@classes/broadcastEvents';
 import Notifications from '@components/Notifications';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
+// import PerformanceMonitor from '@components/PerformanceMonitor';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
 export default {
   components: {
     Janus,
     Notifications,
+    // PerformanceMonitor,
   },
   data() {
     return {
@@ -43,7 +48,7 @@ export default {
 
       await this.$store.dispatch('initial');
     } catch (e) {
-      console.log('redirecting to login');
+      cnsl.log('redirecting to login');
     }
 
     broadcastEvents.on('open-channel', id => {
@@ -57,7 +62,7 @@ export default {
      * Auto update stuff
      */
     ipcRenderer.on('update-error', (event, error) => {
-      console.log('update-error', error);
+      cnsl.error('update-error', error);
     });
 
     ipcRenderer.on('update-downloaded', () => {
@@ -71,6 +76,12 @@ export default {
     ipcRenderer.send('tray-animation', false);
 
     this.showMacScreenSharingPermission();
+  },
+
+  destroyed() {
+    broadcastEvents.removeAllListeners('open-channel');
+    ipcRenderer.removeAllListeners('update-error');
+    ipcRenderer.removeAllListeners('update-downloaded');
   },
 
   methods: {

@@ -5,34 +5,28 @@
       autoplay
       muted
     />
-    <!-- <video
-      v-for="publisher in videoPublishers"
-      :key="publisher.userId"
-      :ref="`video${publisher.userId}`"
-      style="width: 100px; height: 80px"
-    /> -->
   </div>
 </template>
 
 <script>
 import JanusWrapper from '@classes/JanusWrapper.js';
-import StreamHost from '@classes/StreamSharing/Host';
-import mediaCapturer from '@classes/mediaCapturer';
 import connectionCheck from '@classes/connectionCheck';
 import AudioCheck from '@classes/AudioCheck';
 import { mapState } from 'vuex';
+import Logger from '@classes/logger';
+const cnsl = new Logger('Janus.vue', '#AF7AC5 ');
 
-const WAIT_PUBLISHER_INVERVAL = 80;
-const WAIT_PUBLISHER_ATTEMPTS = 10;
+/**
+ * Janus wrapper instance
+ * @type {object}
+ */
+let janusWrapper = null;
 
 export default {
   name: 'Janus',
   data() {
     return {
-      streamHost: null,
-      janusWrapper: null,
       socketDisconnectedDelay: null,
-      videoPublishers: {},
       currentOperation: '',
     };
   },
@@ -45,16 +39,16 @@ export default {
       userId: 'id',
       mediaState: 'mediaState',
       microphone: state => state.mediaState.microphone,
+      camera: state => state.mediaState.camera,
+      screen: state => state.mediaState.screen,
       speakers: state => state.mediaState.speakers,
       speaking: state => state.mediaState.speaking,
-      screen: state => state.mediaState.screen,
-      camera: state => state.mediaState.camera,
     }),
     ...mapState([ 'isSocketConnected' ]),
     ...mapState('app', {
-      selectedCameraDevice: state => state.selectedDevices.camera,
       selectedMicrophoneDevice: state => state.selectedDevices.microphone,
       selectedSpeakerDevice: state => state.selectedDevices.speaker,
+      selectedCameraDevice: state => state.selectedDevices.camera,
       microphonesDeviceList: state => state.devices.microphones,
       speakersDeviceList: state => state.devices.speakers,
     }),
@@ -68,11 +62,11 @@ export default {
      */
     selectedChannelId(id, oldId) {
       if (oldId !== null) {
-        this.log('Channel unselect');
+        cnsl.log('Channel unselect');
         this.unselectChannel();
       }
       if (id !== null) {
-        this.log('Channel select');
+        cnsl.log('Channel select');
         this.selectChannel();
       }
     },
@@ -83,10 +77,10 @@ export default {
      * @returns {void}
      */
     microphone(state) {
-      if (!this.janusWrapper) {
+      if (!janusWrapper) {
         return;
       }
-      this.janusWrapper.setMuting(!state);
+      janusWrapper.setMuting(!state);
       if (state) {
         AudioCheck.checkAudio();
       }
@@ -98,7 +92,7 @@ export default {
      * @returns {void}
      */
     speakers(state) {
-      console.log(`Set muting of speakers ${!state}`);
+      cnsl.log(`Set muting of speakers ${!state}`);
       this.$refs.audio.muted = !state;
     },
 
@@ -107,14 +101,13 @@ export default {
      * @param {boolean} state Is camera sharing enabled
      * @returns {void}
      */
-    camera(state) {
+    camera(state, ps) {
       if (state) {
         this.startSharingCamera();
       } else {
         this.stopSharingVideo();
       }
     },
-
     /**
      * Handles change screen sharing state
      * @param {boolean} state Is screen sharing enabled
@@ -125,6 +118,17 @@ export default {
         this.startSharingScreen();
       } else {
         this.stopSharingVideo();
+      }
+    },
+
+    /**
+     * Handles change selected camera device
+     * @param {string} deviceId Current camera device id
+     * @returns {void}
+     */
+    selectedCameraDevice(deviceId) {
+      if (janusWrapper && this.camera) {
+        janusWrapper.setCameraDevice(deviceId);
       }
     },
 
@@ -150,14 +154,10 @@ export default {
           this.socketDisconnectedDelay = null;
         }
 
-        if (!this.janusWrapper) {
+        if (!janusWrapper) {
           this.selectChannel();
         }
       }
-    },
-
-    videoPublishers(val) {
-      console.log('%c videoPublishers:', 'background: green;', Object.keys(val).length, val);
     },
 
     selectedSpeakerDevice(deviceId) {
@@ -165,21 +165,15 @@ export default {
     },
 
     selectedMicrophoneDevice(deviceId) {
-      if (this.janusWrapper) {
-        this.janusWrapper.setMicrophoneDevice(deviceId);
-      }
-    },
-
-    selectedCameraDevice(deviceId) {
-      if (this.janusWrapper && this.camera) {
-        this.janusWrapper.setCameraDevice(deviceId);
+      if (janusWrapper) {
+        janusWrapper.setMicrophoneDevice(deviceId);
       }
     },
 
     microphonesDeviceList() {
       if (this.selectedMicrophoneDevice === 'default') {
-        if (this.janusWrapper) {
-          this.janusWrapper.setMicrophoneDevice(this.selectedMicrophoneDevice);
+        if (janusWrapper) {
+          janusWrapper.setMicrophoneDevice(this.selectedMicrophoneDevice);
         }
       }
     },
@@ -192,13 +186,11 @@ export default {
   },
   async created() {
     await JanusWrapper.init();
-    this.streamHost = new StreamHost({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
-    this.streamHost.on('request-stream', this.onRequestStream.bind(this));
-    this.log('JanusWrapper was initialized');
+    cnsl.log('JanusWrapper was initialized');
   },
   beforeDestroy() {
-    if (this.janusWrapper) {
-      this.janusWrapper.disconnect();
+    if (janusWrapper) {
+      janusWrapper.disconnect();
     }
   },
   destroyed() {
@@ -208,13 +200,13 @@ export default {
     setOperationStart(operation) {
       this.$store.dispatch('janus/setInProgress', true);
       this.currentOperation = operation;
-      console.log('%c setOperationStart', 'background: #C9EAD7; color: black', operation);
+      cnsl.info('setOperationStart', operation);
     },
     setOperationFinish(operation) {
-      console.log('%c setOperationFinish', 'background: #C9EAD7; color: black', operation);
+      cnsl.info('setOperationFinish', operation);
       if (operation === this.currentOperation) {
         this.$store.dispatch('janus/setInProgress', false);
-        console.log(this.$store.state.janus);
+        cnsl.log(this.$store.state.janus);
         this.currentOperation = '';
       }
     },
@@ -227,14 +219,12 @@ export default {
       // Set janus "inProgress" status
       this.setOperationStart('join');
 
-      const janusWrapper = new JanusWrapper({
+      janusWrapper = new JanusWrapper({
         ...this.janusOptions,
         microphoneDeviceId: this.selectedMicrophoneDevice,
         userId: this.userId,
         debug: process.env.VUE_APP_JANUS_DEBUG === 'true',
       });
-
-      this.janusWrapper = janusWrapper;
 
       // common events
       janusWrapper.on(JanusWrapper.events.channelJoined, () => {
@@ -253,10 +243,6 @@ export default {
       janusWrapper.on(JanusWrapper.events.audioSlowLink, this.onAudioSlowLink.bind(this));
 
       // video events
-      janusWrapper.on(JanusWrapper.events.videoPublishersList, this.onVideoPublishersList.bind(this));
-      janusWrapper.on(JanusWrapper.events.videoPublisherJoined, this.onVideoPublisherJoined.bind(this));
-      janusWrapper.on(JanusWrapper.events.videoPublisherLeft, this.onVideoPublisherLeft.bind(this));
-      janusWrapper.on(JanusWrapper.events.localVideoStream, this.onLocalVideoStream.bind(this));
       janusWrapper.on(JanusWrapper.events.videoSlowLink, this.onVideoSlowLink.bind(this));
       janusWrapper.on(JanusWrapper.events.webrtcCleanUp, this.onWebrtcCleanUp.bind(this));
       janusWrapper.on(JanusWrapper.events.successVideoPublishing, () => {
@@ -271,17 +257,22 @@ export default {
      * @returns {void}
      */
     unselectChannel() {
-      if (this.janusWrapper) {
-        this.janusWrapper.removeAllListeners('connection-error');
-        this.janusWrapper.removeAllListeners('remote-audio-stream');
-        this.janusWrapper.removeAllListeners('audio-stream-active');
-        this.janusWrapper.disconnect();
-        this.janusWrapper = null;
+      if (janusWrapper) {
+        // unsubscribe for audio events
+        janusWrapper.removeAllListeners(JanusWrapper.events.connectionError);
+        janusWrapper.removeAllListeners(JanusWrapper.events.connectionError);
+        janusWrapper.removeAllListeners(JanusWrapper.events.remoteAudioStream);
+        janusWrapper.removeAllListeners(JanusWrapper.events.audioStreamActive);
+        janusWrapper.removeAllListeners(JanusWrapper.events.speaking);
+        janusWrapper.removeAllListeners(JanusWrapper.events.volumeChange);
+        janusWrapper.removeAllListeners(JanusWrapper.events.audioSlowLink);
+
+        // unsubscribe for video events
+        janusWrapper.removeAllListeners(JanusWrapper.events.videoSlowLink);
+        janusWrapper.removeAllListeners(JanusWrapper.events.webrtcCleanUp);
+        janusWrapper.disconnect();
+        janusWrapper = null;
       }
-      Object.keys(this.videoPublishers).forEach(key => {
-        this.$delete(this.videoPublishers, key);
-      });
-      this.streamHost.clearAll();
     },
 
     /**
@@ -289,15 +280,13 @@ export default {
      * @returns {void}
      */
     startSharingCamera() {
-      if (!this.janusWrapper) {
-        this.log('Janus wrapper is not existed');
+      if (!janusWrapper) {
+        cnsl.error('Janus wrapper does not exist');
 
         return;
       }
-
       this.setOperationStart('publish');
-
-      this.janusWrapper.publishVideoStream('camera', this.selectedCameraDevice);
+      janusWrapper.publishVideoStream('camera', this.selectedCameraDevice);
     },
 
     /**
@@ -305,32 +294,24 @@ export default {
      * @returns {void}
      */
     startSharingScreen() {
-      if (!this.janusWrapper) {
-        this.log('Janus wrapper is not existed');
+      if (!janusWrapper) {
+        cnsl.error('Janus wrapper does not exist');
 
         return;
       }
-
       this.setOperationStart('publish');
-
-      this.janusWrapper.publishVideoStream('screen', this.janusOptions.sharingSource.id);
+      janusWrapper.publishVideoStream('screen', this.janusOptions.sharingSource.id);
     },
-
     /**
      * Stop sharing any video
      * @returns {void}
      */
     stopSharingVideo() {
-      if (!this.janusWrapper) {
+      if (!janusWrapper) {
         return;
       }
-
       this.setOperationStart('unpublish');
-
-      this.janusWrapper.unpublishVideoStream();
-      this.$delete(this.videoPublishers, this.userId);
-      this.log('Notify about closing connection for current user', this.userId);
-      this.streamHost.closeStreamSharing(this.userId);
+      janusWrapper.unpublishVideoStream();
     },
 
     /**
@@ -339,7 +320,7 @@ export default {
      * @returns {void}
      */
     onRemoteAudioStream(stream) {
-      this.log('Attach audio stream to the audio element');
+      cnsl.log('Attach audio stream to the audio element');
       JanusWrapper.attachMediaStream(this.$refs.audio, stream);
       this.$refs.audio.muted = !this.speakers;
       this.$refs.audio.setSinkId(this.selectedSpeakerDevice);
@@ -353,13 +334,13 @@ export default {
     onConnectionError(errorCode) {
       switch (errorCode) {
         case JanusWrapper.errors.SERVER_DOWN:
-          this.log('Janus server is down');
+          cnsl.error('Janus server is down');
           break;
         case JanusWrapper.errors.AUTHENTICATION_ERROR:
-          this.log('Janus authentication error');
+          cnsl.error('Janus authentication error');
           break;
         case JanusWrapper.errors.UNKNOW:
-          this.log('An unknow error');
+          cnsl.error('An unknow error');
           break;
       }
     },
@@ -370,11 +351,11 @@ export default {
      * @returns {void}
      */
     onAudioStreamActive(isActive) {
-      console.log('------ onAudioStreamActive');
+      cnsl.log('onAudioStreamActive');
       if (isActive) {
         if (this.microphone) {
-          this.janusWrapper.setMuting(false);
-          console.log('------ setMuting false');
+          janusWrapper.setMuting(false);
+          cnsl.log('setMuting false');
         }
         if (this.speakers) {
           this.$refs.audio.muted = false;
@@ -410,162 +391,11 @@ export default {
     },
 
     /**
-     * Handle new publisher list, set new object of publishers
-     * @param {array} publishers List of publishers
-     * @returns {void}
-     */
-    onVideoPublishersList(publishers) {
-      publishers.forEach(publ => this.onVideoPublisherJoined(publ));
-
-      // this.videoPublishers = {};
-      // publishers.forEach(publisher => {
-      //   // publisher.display - heyka user id
-      //   // publisher.id - janus publisher id
-      //   this.videoPublishers[publisher.display] = {
-      //     userId: publisher.display,
-      //     janusId: publisher.id,
-      //   };
-      // });
-      // this.log('Publishers collection is updated', this.videoPublishers);
-    },
-
-    /**
-     * Handle new publisher, add new publisher to publisher list
-     * @param {object} publisher Publicher object
-     * @returns {void}
-     */
-    async onVideoPublisherJoined(publisher) {
-      const newPublisher = {
-        userId: publisher.display,
-        janusId: publisher.id,
-      };
-
-      this.log('New publisher is added', newPublisher);
-      await new Promise(resolve => setTimeout(resolve, parseInt('500')));
-      const stream = await this.janusWrapper.requestVideoStream(publisher.id);
-
-      this.$set(this.videoPublishers, publisher.display, {
-        ...newPublisher,
-        stream,
-      });
-      console.log('=================================', this.videoPublishers);
-      // await new Promise(resolve => this.$nextTick(resolve));
-
-      // Insert stream
-      // const el = this.$refs[`video${newPublisher.userId}`][0];
-
-      // el.srcObject = stream;
-      // el.onloadedmetadata = function () {
-      //   el.play();
-      // };
-    },
-
-    /**
-     * Handle publisher left, remove publisher from publisher list
-     * @param {object} publisher Publicher object
-     * @returns {void}
-     */
-    onVideoPublisherLeft(publisher) {
-      // if current user unpublished video
-      if (publisher.unpublished === 'ok') {
-        return;
-      }
-
-      const key = Object.keys(this.videoPublishers).find(k => this.videoPublishers[k].janusId === publisher.unpublished);
-
-      if (!key) {
-        return;
-      }
-      this.janusWrapper.stopReceivingVideoStream(publisher.unpublished);
-      if (this.videoPublishers[key].stream) {
-        mediaCapturer.destroyStream(this.videoPublishers[key].stream);
-      }
-      // Notify StreamSharingHost manager about publisher is left
-      this.streamHost.closeStreamSharing(this.videoPublishers[key].userId);
-
-      this.$delete(this.videoPublishers, key);
-      // delete this.videoPublishers[key];
-
-      this.log(`Publisher ${key} is deleted`);
-    },
-
-    /**
-     * Handles requests for publishers stream
-     * @param {object} data Request data
-     * @param {string} data.userId Which userId are you interested in?
-     * @param {string} data.requestId Unique request identifier
-     * @returns {void}
-     */
-    async onRequestStream(data) {
-      let publisher = this.videoPublishers[data.userId];
-      let tries = 0;
-
-      /**
-       * Если паблишер не определён, то скорее всего Янус
-       * еще не успел сообщить о начале стрима конкретного пользователя.
-       *
-       * Пытаемся сделать несколько попыток с небольшим интервалом
-       * в надежде, что паблишер появится
-       */
-      while (!publisher) {
-        if (tries > WAIT_PUBLISHER_ATTEMPTS) {
-          // попытки кончились, сообщаем о неудаче
-          this.streamHost.failedRequest(data.requestId);
-
-          return;
-        }
-        await new Promise(resolve => setTimeout(resolve, WAIT_PUBLISHER_INVERVAL));
-        tries += 1;
-        publisher = this.videoPublishers[data.userId];
-      }
-      this.log(`Stream of ${data.userId} is requested`, data);
-
-      // может стрим уже есть у этого паблишера?
-      let stream = publisher.stream;
-
-      // значит запрашиваем стрим у JanusWrapper
-      if (!stream) {
-        this.log(`Stream for ${data.userId} is not prepared, prepare now`);
-        stream = await this.janusWrapper.requestVideoStream(publisher.janusId);
-        publisher.stream = stream;
-      }
-
-      publisher.requestId = data.requestId;
-
-      this.streamHost.sendStream({
-        requestId: publisher.requestId,
-        janusId: publisher.janusId,
-        userId: data.userId,
-      }, stream);
-    },
-
-    /**
      * Handles socket is disconnected
      * @returns {void}
      */
     onSocketDisconnected() {
       this.unselectChannel();
-    },
-
-    /**
-     * Handle local video stream
-     * @param {MediaStream} stream Media stream
-     * @returns {void}
-     */
-    async onLocalVideoStream(stream) {
-      this.streamHost.closeStreamSharing(this.userId);
-      this.$set(this.videoPublishers, this.userId, {
-        userId: this.userId,
-        stream,
-      });
-      // await new Promise(resolve => this.$nextTick(resolve));
-      // // Insert stream
-      // const el = this.$refs[`video${this.userId}`][0];
-
-      // el.srcObject = stream;
-      // el.onloadedmetadata = function () {
-      //   el.play();
-      // };
     },
 
     /**
@@ -600,7 +430,7 @@ export default {
      * @returns {void}
      */
     log() {
-      console.log('JANUS.VUE: ', ...arguments);
+      cnsl.log('JANUS.VUE: ', ...arguments);
     },
   },
 };

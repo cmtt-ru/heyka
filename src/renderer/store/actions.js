@@ -75,12 +75,24 @@ export default {
    * @param {object?} janusOptions object
    * @returns {object} selected channel
    */
-  async selectChannel({ dispatch, getters }, id) {
+  async selectChannel({ commit, dispatch, getters }, id) {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
 
-    const response = await API.channel.select(id, getters['me/getMediaState']);
+    let response;
+
+    commit('me/SET_MEDIA_STATE', {
+      ...getters['me/getMediaState'],
+      camera: false,
+      screen: false,
+    });
+
+    try {
+      response = await API.channel.select(id, getters['me/getMediaState']);
+    } catch (err) {
+      commit('app/ANIMATION_CHANNEL_ID', null);
+    }
 
     dispatch('selectChannelWithoutAPICall', {
       id,
@@ -118,7 +130,11 @@ export default {
     commit('channels/ADD_USER', {
       userId: state.me.id,
       channelId: id,
-      userMediaState: getters['me/getMediaState'],
+      userMediaState: {
+        ...getters['me/getMediaState'],
+        camera: false,
+        screen: false,
+      },
     });
 
     commit('me/SET_CHANNEL_ID', id);
@@ -136,7 +152,8 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ dispatch }, id) {
+  async unselectChannel({ commit, dispatch }, id) {
+    commit('app/ANIMATION_CHANNEL_ID', null);
     await API.channel.unselect(id);
     dispatch('unselectChannelWithoutAPICall', id);
   },
@@ -164,11 +181,13 @@ export default {
 
   /**
    * Open Grid (main call window)
+   * @param {object} context – store context
+   * @param {number} userId - if found, open expanded view with this user
    * @returns {void}
    */
-  async openGrid() {
+  async openGrid({ state }, userId) {
     callWindow.hideOverlay();
-    callWindow.showGrid();
+    callWindow.showGrid(userId);
   },
 
   /**

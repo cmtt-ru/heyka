@@ -95,7 +95,13 @@ export function sortAny(options = [ {
           secondValue = b[field.key] ? 1 : 0;
         }
 
-        return firstValue > secondValue ? direction : firstValue < secondValue ? -(direction) : 0;
+        if (firstValue > secondValue) {
+          return direction;
+        } else if (firstValue < secondValue) {
+          return -(direction);
+        } else {
+          return 0;
+        }
       }).reduce((pos, neg) => pos || neg, 0);
 }
 

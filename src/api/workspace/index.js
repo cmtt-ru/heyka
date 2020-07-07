@@ -1,5 +1,5 @@
 import checkCode from './checkCode';
-import create from './create';
+import createChannel from './createChannel';
 import createWorkspace from './createWorkspace';
 import getWorkspaceByID from './getWorkspaceByID';
 import getWorkspaces from './getWorkspaces';
@@ -11,7 +11,7 @@ import leaveWorkspace from './leaveWorkspace';
 
 export default {
   checkCode,
-  create,
+  createChannel,
   createWorkspace,
   getWorkspaceByID,
   getWorkspaces,

@@ -11,30 +11,35 @@
         <router-link
           class="link"
           :to="{name: 'settings'}"
+          replace
         >
           {{ texts.general }}
         </router-link>
         <router-link
           class="link"
           :to="{name: 'settings-devices'}"
+          replace
         >
           {{ texts.devices }}
         </router-link>
         <router-link
           class="link"
           :to="{name: 'settings-network'}"
+          replace
         >
           {{ texts.network }}
         </router-link>
         <router-link
           class="link"
           :to="{name: 'settings-about'}"
+          replace
         >
           {{ texts.about }}
         </router-link>
         <router-link
           class="link"
           :to="{name: 'settings-support'}"
+          replace
         >
           {{ texts.support }}
         </router-link>
@@ -42,8 +47,17 @@
           v-if="IS_DEV"
           class="link"
           :to="{name: 'styleguide'}"
+          replace
         >
           {{ texts.styleguide }}
+        </router-link>
+        <router-link
+          v-if="IS_DEV"
+          class="link"
+          :to="{name: 'test-zone'}"
+          replace
+        >
+          Test Zone
         </router-link>
         <div class="app-info">
           {{ prettyInfo }}
@@ -53,17 +67,14 @@
 
     <template #content-body>
       <div>
-        <router-link
-          class="close-strip"
-          :to="{name: 'workspace'}"
-        >
+        <div class="close-strip">
           <ui-button
             :type="7"
             size="small"
             icon="close"
-            propagation
+            @click="closeHandler"
           />
-        </router-link>
+        </div>
 
         <div>
           <router-view />
@@ -85,6 +96,7 @@ export default {
   data() {
     return {
       info: this.$store.getters['app/getGeneralInfo'],
+      IS_DEV,
     };
   },
   computed: {
@@ -105,6 +117,15 @@ export default {
       }
 
       return `${this.info.name}\nver. ${this.info.version}\n${this.info.system} ${this.info.systemVer}`;
+    },
+  },
+  methods: {
+    /**
+     * Close handler
+     * @returns {void}
+     */
+    closeHandler() {
+      this.$router.back();
     },
   },
 };

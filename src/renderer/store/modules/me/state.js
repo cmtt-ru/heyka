@@ -36,7 +36,7 @@ const state = () => {
    * @namespace MeState
    */
   return {
-    id: '',
+    id: null,
     selectedWorkspaceId: meStore.get('selectedWorkspaceId'),
     selectedChannelId: null,
     mediaState: initialMediaState,

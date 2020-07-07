@@ -1,6 +1,8 @@
 import StreamReceiver from '@classes/StreamSharing/Receiver';
 import mediaCapturer from './mediaCapturer';
 import { EventEmitter } from 'events';
+import Logger from '@classes/logger';
+const cnsl = new Logger('commonStreams', '#1A5276');
 
 /**
  * Manage video streams for CallWindow (Grid and Expanded view)
@@ -14,7 +16,7 @@ class CommonStreams extends EventEmitter {
     super();
 
     this.streams = {};
-    this.streamReceiver = new StreamReceiver({ debug: process.env.VUE_APP_JANUS_DEBUG === 'true' });
+    this.streamReceiver = new StreamReceiver();
     this.streamReceiver.on('connection-closed', this.onConnectionClosed.bind(this));
     this.streamReceiver.on('clear-all', this.onClearAll.bind(this));
   }
@@ -27,12 +29,12 @@ class CommonStreams extends EventEmitter {
   async getStream(userId) {
     if (this.streams[userId]) {
       if (this.streams[userId].stream) {
-        this._debug(`Return prepared stream for ${userId}`);
+        cnsl.log(`Return prepared stream for ${userId}`);
 
         return this.streams[userId].stream;
       }
       if (this.streams[userId].waitStream) {
-        this._debug(`Return promise which resolves with stream ${userId}`);
+        cnsl.log(`Return promise which resolves with stream ${userId}`);
 
         return this.getWaitStreamPromise(userId);
       }
@@ -40,7 +42,7 @@ class CommonStreams extends EventEmitter {
       this.streams[userId] = {
         waitStream: true,
       };
-      this._debug(`Prepare promise and return it ${userId}`);
+      cnsl.log(`Prepare promise and return it ${userId}`);
 
       this.streamReceiver.requestStream(userId);
 
@@ -68,7 +70,7 @@ class CommonStreams extends EventEmitter {
   getWaitStreamPromise(userId) {
     return new Promise((resolve) => {
       this.streamReceiver.once(`new-stream-${userId}`, data => {
-        this._debug(`New stream for ${userId}`);
+        cnsl.log(`New stream for ${userId}`);
         resolve(data.stream);
         if (!this.streams[userId]) {
           this.streams[userId] = {};
@@ -85,7 +87,7 @@ class CommonStreams extends EventEmitter {
    * @returns {void}
    */
   onConnectionClosed(userId) {
-    console.log(`Connection closed for ${userId}`);
+    cnsl.log(`Connection closed for ${userId}`);
     if (this.streams[userId] && this.streams[userId].stream) {
       mediaCapturer.destroyStream(this.streams[userId].stream);
     }
@@ -98,21 +100,13 @@ class CommonStreams extends EventEmitter {
    * @returns {void}
    */
   onClearAll() {
-    this._debug('clean up all streams');
+    cnsl.log('clean up all streams');
     Object.keys(this.streams).forEach(key => {
       if (this.streams[key].stream) {
         mediaCapturer.destroyStream(this.streams[key].stream);
       }
       delete this.streams[key];
     });
-  }
-
-  /**
-   * Inner debug tool
-   * @returns {void}
-   */
-  _debug() {
-    console.log(`commonStreams: `, ...arguments);
   }
 }
 

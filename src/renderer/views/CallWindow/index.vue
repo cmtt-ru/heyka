@@ -8,10 +8,34 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
+import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
+import { mapGetters, mapState } from 'vuex';
+
 export default {
-  mounted() {
-    ipcRenderer.send('page-rendered', 'Hello from Login!');
+  computed: {
+    ...mapGetters({
+      selectedChannelId: 'me/getSelectedChannelId',
+      myId: 'me/getMyId',
+    }),
+    ...mapState({
+      janusOptions: 'janus',
+    }),
+  },
+  watch: {
+    async selectedChannelId(newChannelId, oldChannelId) {
+      if (!newChannelId && oldChannelId) {
+        await janusVideoroomWrapper.leave();
+      }
+      if (newChannelId) {
+        janusVideoroomWrapper.join(this.myId, this.janusOptions);
+      }
+    },
+  },
+  async created() {
+    await janusVideoroomWrapper.init();
+    if (this.selectedChannelId) {
+      janusVideoroomWrapper.join(this.myId, this.janusOptions);
+    }
   },
 };
 </script>
