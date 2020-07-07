@@ -3,7 +3,9 @@
     <canvas
       id="myCanvas"
       class="drawing"
-      @mousemove="throttleSavePosition"
+      @mousemove="mouseMoveHandler"
+      @mousedown="mouseDownHandler"
+      @mouseup="mouseUpHandler"
     />
     <div
       class="dot"
@@ -21,7 +23,7 @@ export default {
   data() {
     return {
       ctx: {},
-
+      isMouseDown: false,
       sendDots: [],
       lastDrawDot: null,
       recieveDots: [],
@@ -30,6 +32,12 @@ export default {
   },
   computed: {
     cursorCoords() {
+      if (this.lastDrawDot === null) {
+        return {
+          visibility: 'hidden',
+        };
+      }
+
       return {
         top: `${this.lastDrawDot?.y}px`,
         left: `${this.lastDrawDot?.x}px`,
@@ -48,7 +56,33 @@ export default {
     this.ctx = canvas.getContext('2d');
   },
   methods: {
-    throttleSavePosition: throttle(DELAY, false, function ($event) {
+    mouseDownHandler($event) {
+      this.isMouseDown = true;
+      const dot = {
+        x: $event.offsetX,
+        y: $event.offsetY,
+        time: Math.round($event.timeStamp),
+        start: true,
+      };
+
+      this.sendDots.push(dot);
+    },
+    mouseUpHandler($event) {
+      this.isMouseDown = false;
+      const dot = {
+        x: $event.offsetX,
+        y: $event.offsetY,
+        time: Math.round($event.timeStamp),
+        end: true,
+      };
+
+      this.sendDots.push(dot);
+      this.throttleSendDots();
+    },
+    mouseMoveHandler: throttle(DELAY, false, function ($event) {
+      if (this.isMouseDown === false) {
+        return;
+      }
       const dot = {
         x: $event.offsetX,
         y: $event.offsetY,
@@ -60,16 +94,21 @@ export default {
     }),
 
     throttleSendDots: throttle(SEND_DELAY, false, function () {
-      this.addDots(this.sendDots);
+      this.addDots([ ...this.sendDots ]);
     }),
 
     addDots(incomeDots) {
-      const newIndex = incomeDots.findIndex(el => el.time === this.recieveDots[this.recieveDots.length - 1]?.time);
+      if (this.recieveDots.length === 0) {
+        this.recieveDots = [ ...incomeDots.reverse() ];
+
+        return;
+      }
+      const newIndex = incomeDots.findIndex(el => el.time === this.recieveDots[0].time);
 
       if (newIndex === -1) {
-        this.recieveDots = [ ...incomeDots ];
+        this.recieveDots = [ ...incomeDots.reverse() ];
       } else {
-        this.recieveDots = [...this.recieveDots, ...incomeDots.slice(newIndex)];
+        this.recieveDots = [...incomeDots.slice(newIndex).reverse(), ...this.recieveDots];
       }
 
       setTimeout(() => {
@@ -91,15 +130,24 @@ export default {
         clearInterval(this.recieveDrawInterval);
         this.recieveDrawInterval = null;
 
+        if (this.recieveDots[0].end === true) {
+          this.lastDrawDot = null;
+          console.log(this.recieveDots[0]);
+        }
+
         return;
       }
-      const dot = { ...this.recieveDots.shift() };
+      const dot = { ...this.recieveDots.pop() };
+
+      if (dot.end === true) {
+        return;
+      }
 
       if (this.lastDrawDot) {
         this.ctx.moveTo(this.lastDrawDot.x, this.lastDrawDot.y);
         this.ctx.lineTo(dot.x, dot.y);
         this.ctx.stroke();
-      };
+      }
       this.lastDrawDot = { ...dot };
     },
   },
@@ -107,19 +155,24 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-.drawing
+.canvas-holder
+    position relative
     width calc(100% - 16px)
     height calc(100% - 16px)
     margin 8px
     border 1px solid var(--color-1)
     box-sizing border-box
+  .drawing
     position relative
-.canvas-holder
-    position relative
+    width 100%
+    height 100%
 .dot
     position absolute
-    width 5px
-    height 5px
-    border-radius 50%
-    background-color blue
+    width 0
+    height 0
+    border-left 20px solid blue
+    border-left 20px solid blue
+    border-right 20px solid transparent
+    border-bottom 20px solid transparent
+
 </style>
