@@ -4,6 +4,8 @@ import { client, connect } from './client';
 import { getAccessToken } from '../tokens';
 import connectionCheck from '@classes/connectionCheck';
 import { handleError } from '@api/errors';
+import Logger from '@classes/logger';
+const cnsl = new Logger('SOCKETS', '#d67a24');
 
 const DISCONNECT_TIMEOUT = 2000;
 
@@ -50,7 +52,7 @@ export async function saveSocketParams() {
     id: client.lastSocketId,
     connectedAt: Date.now(),
   });
-};
+}
 
 /**
  * Destroy socket connection and unbind events
@@ -77,7 +79,7 @@ async function authorize(prevSocketId) {
 
   return new Promise((resolve, reject) => {
     client.once(eventNames.authSuccess, data => {
-      console.log('socket auth success', data);
+      cnsl.log('socket auth success:', data);
       store.dispatch('setSocketConnected', {
         connected: true,
         ...data,
@@ -115,7 +117,7 @@ async function authorize(prevSocketId) {
  */
 function bindErrorEvents() {
   client.on(eventNames.disconnect, data => {
-    console.log('disconnect', data);
+    cnsl.log('disconnect', data);
     store.dispatch('setSocketConnected', false);
 
     // remember latest socket id
@@ -130,7 +132,7 @@ function bindErrorEvents() {
     // rewrite last socket id
     client.lastSocketId = client.id;
 
-    console.log('%c reconnected:', 'background: maroon; color: white', data);
+    cnsl.info('reconnected:', data);
     connectionCheck.handleSocketReconnecting(false);
 
     // try to authorize new connection as the old connection
@@ -219,8 +221,16 @@ function bindChannelEvents() {
       return;
     }
 
+    const myUserId = store.getters['me/getMyId'];
     const userId = data.userId;
     const unselectData = dataBuffer.get(userId);
+
+    /** Same user is trying to join from another device */
+    if (data.socketId !== client.id && myUserId === userId) {
+      const selectedChannelId = store.getters['me/getSelectedChannelId'];
+
+      store.dispatch('unselectChannelWithoutAPICall', selectedChannelId);
+    }
 
     if (unselectData) {
       store.commit('channels/REMOVE_USER', unselectData);
@@ -261,13 +271,7 @@ function bindPushEvents() {
 
   /** Get response to push notification */
   client.on(eventNames.messageResponse, ({ messageId, userId, response }) => {
-    if (response.showResponse) {
-      store.dispatch('app/addPush', {
-        messageId,
-        userId,
-        message: response,
-      });
-    } else if (response === 'no-response') {
+    if (response.showResponse || response === 'no-response') {
       store.dispatch('app/addPush', {
         messageId: `response-${messageId}`,
         userId,

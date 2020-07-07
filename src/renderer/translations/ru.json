@@ -15,7 +15,8 @@
       "localTime": "Локальное время",
       "email": "Email"
     },
-    "empty": "Вы отключены от всех каналов"
+    "empty": "Вы отключены от всех каналов",
+    "new": "Что нового?"
   },
   "settings": {
     "labels": {
@@ -42,7 +43,8 @@
         "light": "Светлая тема",
         "dark": "Темная тема"
       },
-      "automaticallySwitch": "Автоматически"
+      "automaticallySwitch": "Автоматически",
+      "restartNow": "Перезагрузить"
     },
     "devices": {
       "speakersLabel": "Вывод аудио",
@@ -124,7 +126,9 @@
     "notImplemented": "Этой функции пока нет, но есть другие, тоже хорошие ✨"
   },
   "push": {
-    "invitesto": "Пригласить в",
+    "invitesto": "Зовёт в",
+    "join": "Войти",
+    "busy": "Занят",
     "isbusy": "Недоступен"
   },
   "autoUpdate": {

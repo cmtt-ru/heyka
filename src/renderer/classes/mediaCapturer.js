@@ -46,6 +46,7 @@ class MediaCapturer extends EventEmitter {
           minHeight: 0,
           maxWidth: 1920,
           maxHeight: 1920,
+          maxFrameRate: 15,
         },
       },
     });
@@ -79,10 +80,17 @@ class MediaCapturer extends EventEmitter {
   destroyStream(stream) {
     stream.getVideoTracks().forEach(track => {
       track.stop();
+
+      track = null;
     });
+
     stream.getAudioTracks().forEach(track => {
       track.stop();
+
+      track = null;
     });
+
+    stream = null;
   }
 }
 

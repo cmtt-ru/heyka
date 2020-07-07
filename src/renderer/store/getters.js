@@ -5,6 +5,11 @@ import { sortAny } from '@libs/arrays';
  * @type {null}
  */
 let lastSpeakingUser = null;
+/**
+ * Last user who shares media
+ * @type {null}
+ */
+let lastUserWhoSharesMedia = null;
 
 export default {
 
@@ -50,10 +55,30 @@ export default {
       const usersWhoSharesCamera = selectedChannel.users.filter(user => user.camera);
 
       if (usersWhoSharesScreen.length > 0) {
+        lastUserWhoSharesMedia = usersWhoSharesScreen[0].userId;
+
         return usersWhoSharesScreen[0].userId;
       }
 
+      const speakingUserWithCamera = usersWhoSharesCamera.filter(user => user.speaking);
+
+      if (speakingUserWithCamera.length > 0) {
+        lastUserWhoSharesMedia = speakingUserWithCamera[0].userId;
+
+        return speakingUserWithCamera[0].userId;
+      }
+
+      if (lastUserWhoSharesMedia) {
+        if (usersWhoSharesCamera.map(u => u.userId).includes(lastUserWhoSharesMedia)) {
+          return lastUserWhoSharesMedia;
+        } else {
+          lastUserWhoSharesMedia = null;
+        }
+      }
+
       if (usersWhoSharesCamera.length > 0) {
+        lastUserWhoSharesMedia = usersWhoSharesCamera[0].userId;
+
         return usersWhoSharesCamera[0].userId;
       }
     }
@@ -139,6 +164,79 @@ export default {
     }
 
     return lastSpeakingUser;
+  },
+
+  /**
+   * Get our full info
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {object}
+   */
+  myInfo: (state, getters) => {
+    const myId = getters['me/getMyId'];
+
+    if (myId === undefined) {
+      return null;
+    }
+    const commonInfo = getters['users/getUserById'](myId);
+    const myMedia = getters['me/getMediaState'];
+
+    return {
+      ...commonInfo,
+      ...myMedia,
+    };
+  },
+
+  /**
+   * Get our workspace info
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {object}
+   */
+  myWorkspace: (state, getters) => {
+    const workspaceId = getters['me/getSelectedWorkspaceId'];
+
+    if (!workspaceId) {
+      return null;
+    }
+
+    return getters['workspaces/getWorkspaceById'](workspaceId);
+  },
+
+  /**
+   * Get our channel info
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {object}
+   */
+  myChannel: (state, getters) => {
+    const channelId = getters['me/getSelectedChannelId'];
+
+    if (!channelId) {
+      return null;
+    }
+
+    return getters['channels/getChannelById'](channelId);
+  },
+
+  /**
+   * Get array with users in  our channel
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {object}
+   */
+  usersInMyChannel: (state, getters) => {
+    const channelId = getters['me/getSelectedChannelId'];
+
+    if (channelId === undefined) {
+      return null;
+    }
+
+    return getters.getUsersByChannel(channelId);
   },
 
 };

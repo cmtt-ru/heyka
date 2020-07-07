@@ -47,10 +47,19 @@ export default {
     },
   },
 
-  data() {
-    return {
-      state: this.value,
-    };
+  computed: {
+    /**
+     * Local copy of toggle's state
+     * @returns {string} value
+     */
+    localValue: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit('input', value);
+      },
+    },
   },
 
   methods: {
@@ -59,8 +68,7 @@ export default {
      * @returns {void}
      */
     ClickHandler() {
-      this.state = !this.state;
-      this.$emit('input', this.state);
+      this.localValue = !this.localValue;
     },
   },
 

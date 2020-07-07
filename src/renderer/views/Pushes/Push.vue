@@ -1,67 +1,23 @@
 <template>
   <transition name="push">
-    <div
+    <component
+      :is="data.action"
       v-if="mounted"
       v-hammer:pan.horizontal="pan"
       v-hammer:panstart="onPanStart"
       v-hammer:panend="onPanEnd"
       :style="styles"
       class="push"
-    >
-      <div class="push__content">
-        <avatar
-          class="push__avatar"
-          :size="40"
-          :image="user.avatar"
-        />
-
-        <div class="push__col">
-          <p class="push__user-name">
-            {{ user.name }}
-          </p>
-
-          <div
-            v-if="data.channel"
-            class="push__channel"
-          >
-            <span>{{ texts.invitesto }}</span>
-            <svg-icon
-              name="channelOnAir"
-              size="medium"
-              class="push__channel__icon"
-            />
-            <span v-textfade>{{ channel.name }}</span>
-          </div>
-          <div
-            v-if="!data.channel"
-            class="push__channel"
-          >
-            {{ texts.isbusy }}
-          </div>
-        </div>
-      </div>
-      <div class="push__button-wrapper">
-        <ui-button
-          v-for="button in buttons"
-          :key="button.text"
-          :type="button.type || 3"
-          size="medium"
-          class="push__button"
-          @click="clickHandler(button)"
-        >
-          {{ button.text }}
-        </ui-button>
-      </div>
-    </div>
+      :data="data"
+      @buttonClick="clickHandler"
+      @defaultCloseResponse="saveCloseResponse"
+    />
   </transition>
 </template>
 
 <script>
-import UiButton from '@components/UiButton';
-import Avatar from '@components/Avatar';
 import Vue from 'vue';
 import { VueHammer } from 'vue2-hammer';
-import { buttonTemplates } from './buttons';
 Vue.use(VueHammer);
 VueHammer.config.pan = {
   threshold: 10,
@@ -76,8 +32,8 @@ const SIDETRAVEL = 100;
 export default {
 
   components: {
-    UiButton,
-    Avatar,
+    invite: () => import('./Templates/Invite'),
+    busy: () => import('./Templates/Busy'),
   },
 
   props: {
@@ -111,6 +67,7 @@ export default {
 
   data() {
     return {
+      closeResponse: null,
       mounted: false,
       holding: false,
       timeoutEnded: false,
@@ -124,36 +81,6 @@ export default {
         margin: null,
       },
     };
-  },
-
-  computed: {
-    /**
-     * Get needed texts from I18n-locale file
-     * @returns {object}
-     */
-    texts() {
-      return this.$t('push');
-    },
-
-    buttons() {
-      return buttonTemplates[this.data.action] || null;
-    },
-
-    /**
-     * Get user's info
-     * @returns {object}
-     */
-    user() {
-      return this.$store.getters['users/getUserById'](this.data.userId);
-    },
-
-    /**
-     * Get user's channel
-     * @return {object}
-     */
-    channel() {
-      return this.$store.getters['channels/getChannelById'](this.data.channel) || { name: 'no channel' };
-    },
   },
 
   /**
@@ -183,13 +110,13 @@ export default {
     /**
      * Handle clicked button: strart closing sequence and trigger button action if found one
      *
-     * @param {object} button – clicked button
+     * @param {object} response – response
      * @returns {void}
     */
-    clickHandler(button) {
-      if (button.response) {
+    clickHandler(response) {
+      if (response) {
         this.$emit('response', {
-          response: button.response,
+          response,
           messageId: this.data.messageId,
           data: this.data,
         });
@@ -198,21 +125,27 @@ export default {
     },
 
     /**
-     * Find and trigger default-close-button action
+     * Save default-close-button response
+     *
+     * @param {object} response – default-close-button response
+     * @returns {void}
+    */
+    saveCloseResponse(response) {
+      this.closeResponse = response;
+    },
+
+    /**
+     * Trigger default-close-button response
      *
      * @returns {void}
     */
     closeButtonAction() {
-      if (this.buttons) {
-        const cancelbutton = this.buttons.find(el => el.close);
-
-        if (cancelbutton && cancelbutton.response) {
-          this.$emit('response', {
-            response: cancelbutton.response,
-            messageId: this.data.messageId,
-            data: this.data,
-          });
-        }
+      if (this.closeResponse) {
+        this.$emit('response', {
+          response: this.closeResponse,
+          messageId: this.data.messageId,
+          data: this.data,
+        });
       }
     },
 
@@ -328,47 +261,6 @@ $ANIM_DELAY = 200ms
   pointer-events auto
   transition all $ANIM ease
   opacity 1
-
-  &__content
-    display flex
-
-  &__col
-      margin-left 8px
-
-  &__avatar
-    display block
-    width 40px
-    height 40px
-    border-radius 4px
-    flex-shrink 0
-
-  &__user-name
-    margin-top 3px
-    overflow hidden
-    text-overflow ellipsis
-    white-space nowrap
-
-  &__channel
-    display flex
-    align-items center
-    color var(--text-1)
-    align-items center
-    font-size 12px
-    line-height 14px
-    margin-top 1px
-    flex-shrink 0
-    white-space nowrap
-
-    &__icon
-      margin-left 4px
-
-  &__button-wrapper
-    flex-shrink 0
-    flex-grow 0
-    margin-left 8px
-
-  &__button
-    margin 0 4px
 
 .push-enter
   height 0

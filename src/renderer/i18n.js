@@ -1,10 +1,12 @@
 /* eslint no-magic-numbers: 0 */
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import { remote } from 'electron';
+import { ipcRenderer } from 'electron';
 import { heykaStore } from '@/store/localStore';
 
 Vue.use(VueI18n);
+
+const SYSTEM_LOCALE = ipcRenderer.sendSync('remote-getLocale');
 
 const supportedLocales = [];
 
@@ -40,10 +42,10 @@ function loadLocaleMessages() {
 function determineLocale() {
   if (heykaStore.has('language')) {
     return heykaStore.get('language');
-  } else if (supportedLocales.includes(remote.app.getLocale())) {
-    heykaStore.set('language', remote.app.getLocale());
+  } else if (supportedLocales.includes(SYSTEM_LOCALE)) {
+    heykaStore.set('language', SYSTEM_LOCALE);
 
-    return remote.app.getLocale();
+    return SYSTEM_LOCALE;
   } else {
     heykaStore.set('language', 'en');
 
