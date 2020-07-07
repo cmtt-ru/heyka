@@ -9,9 +9,8 @@ class Sounds {
     this.sounds = {
       'me-joined': new Audio(require('@assets/audio/me-joined.mp3')),
       'user-joined': new Audio(require('@assets/audio/user-joined.mp3')),
+      'microphone-toggle': new Audio(require('@assets/audio/mute.mp3')),
       push: new Audio(require('@assets/audio/push.mp3')),
-      mute: new Audio(require('@assets/audio/mute.mp3')),
-      unmute: new Audio(require('@assets/audio/unmute.mp3')),
     };
   }
 

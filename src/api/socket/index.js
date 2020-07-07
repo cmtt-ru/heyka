@@ -5,6 +5,7 @@ import { getAccessToken } from '../tokens';
 import connectionCheck from '@classes/connectionCheck';
 import { handleError } from '@api/errors';
 import Logger from '@classes/logger';
+import sounds from '@classes/sounds';
 const cnsl = new Logger('SOCKETS', '#d67a24');
 
 const DISCONNECT_TIMEOUT = 2000;
@@ -224,11 +225,10 @@ function bindChannelEvents() {
     const myUserId = store.getters['me/getMyId'];
     const userId = data.userId;
     const unselectData = dataBuffer.get(userId);
+    const selectedChannelId = store.getters['me/getSelectedChannelId'];
 
     /** Same user is trying to join from another device */
     if (data.socketId !== client.id && myUserId === userId) {
-      const selectedChannelId = store.getters['me/getSelectedChannelId'];
-
       store.dispatch('unselectChannelWithoutAPICall', selectedChannelId);
     }
 
@@ -238,6 +238,10 @@ function bindChannelEvents() {
     }
 
     store.commit('channels/ADD_USER', data);
+
+    if (userId !== myUserId && data.channelId === selectedChannelId) {
+      sounds.play('user-joined');
+    }
   });
 }
 
