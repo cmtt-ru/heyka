@@ -46,7 +46,7 @@
         :type="1"
         :wide="true"
         class="user-action"
-        @click="_notImplemented()"
+        @click="startPrivateTalk(user.id)"
       >
         <div>{{ texts.privateTalkButton }}</div>
       </ui-button>
@@ -191,6 +191,10 @@ export default {
           channel: this.$store.getters['me/getSelectedChannelId'],
         },
       });
+    },
+
+    async startPrivateTalk(userId) {
+      this.$store.dispatch('createPrivateChannel');
     },
   },
 

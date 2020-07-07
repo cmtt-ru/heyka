@@ -253,4 +253,23 @@ export default {
   async closeSharingWindow() {
     callWindow.closeSharing();
   },
+
+  /**
+   * Create private channel
+   *
+   * @param {function} commit – store commit
+   * @param {string} id – workspace id
+   * @returns {void}
+   */
+  async createPrivateChannel({ state, commit, getters, dispatch }, id) {
+    const selectedWorkspaceId = getters['me/getSelectedWorkspaceId'];
+
+    const response = await API.workspace.createChannel(selectedWorkspaceId, {
+      name: 'test-private-2',
+      isPrivate: true,
+      lifespan: 2000,
+    });
+
+    console.log(response);
+  },
 };
