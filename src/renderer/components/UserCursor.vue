@@ -78,6 +78,8 @@ export default {
     transform translate(-8px, 18px)
 
     &__avatar
+        border-radius 2px
+        overflow hidden
 
     &__name
         font-size 10px

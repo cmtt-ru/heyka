@@ -13,6 +13,11 @@
       />
     </div>
 
+    <ui-switch
+      v-model="drawingMode"
+      text="Режим рисования"
+    />
+
     <div
       id="mySVG"
       class="canvas-holder aspect-ratio"
@@ -51,23 +56,26 @@
 </template>
 
 <script>
+import { UiSwitch } from '@components/Form';
 import UserCursor from '@components/UserCursor';
 import { mapGetters } from 'vuex';
 import { throttle } from 'throttle-debounce';
 // import Logger from '@classes/logger';
 // const cnsl = new Logger('DRAWING', '#fd1');
-const DELAY = 70;
+const DELAY = 10;
 const SEND_DELAY = 250;
-const FULL_PERCENT = 100;
 const SMOOTHING = 0.15;
+const NEIGHBOUR_DISTANCE = 0.025;
 
 export default {
   components: {
+    UiSwitch,
     UserCursor,
   },
   data() {
     return {
-      svgCanvas: null,
+      drawingMode: true,
+      lastPoint: null,
       ctx: {},
       drawDimensions: {},
       isMouseDown: false,
@@ -75,6 +83,7 @@ export default {
 
       canvasDimensions: {},
       cursorCoords: null,
+      lastDrawDot: null,
       recieveDots: [],
       recieveDrawInterval: null,
       visibleDots: [],
@@ -86,16 +95,14 @@ export default {
       me: 'myInfo',
     }),
     cursorCoordsStyle() {
-      if (this.cursorCoords === null) {
+      if (this.cursorCoords === null || this.canvasDimensions === null) {
         return {
-          // visibility: 'hidden',
+          visibility: 'hidden',
         };
       }
 
       return {
-        // translate: //! do it
-        top: `${this.cursorCoords?.y * FULL_PERCENT}%`,
-        left: `${this.cursorCoords?.x * FULL_PERCENT}%`,
+        transform: `translate(${this.cursorCoords.x * this.canvasDimensions.width}px, ${this.cursorCoords.y * this.canvasDimensions.height}px)`,
       };
     },
     viewBox() {
@@ -103,7 +110,6 @@ export default {
     },
   },
   mounted() {
-    this.svgCanvas = document.getElementById('mySVG');
     const canvas = document.getElementById('myCanvas');
     const cs = getComputedStyle(canvas);
 
@@ -126,41 +132,63 @@ export default {
   methods: {
     mouseDownHandler($event) {
       this.isMouseDown = true;
+      const dot = {
+        x: $event.offsetX / this.drawDimensions.width,
+        y: $event.offsetY / this.drawDimensions.height,
+        time: $event.timeStamp,
+        start: true,
+      };
+
+      this.sendDots.push(dot);
+      this.throttleSendDots();
     },
     mouseUpHandler($event) {
       this.isMouseDown = false;
       const dot = {
-        x: $event.offsetX,
-        y: $event.offsetY,
+        x: $event.offsetX / this.drawDimensions.width,
+        y: $event.offsetY / this.drawDimensions.height,
         time: $event.timeStamp,
         end: true,
       };
 
-      this.pushDot(dot);
+      this.sendDots.push(dot);
       this.addDots([ ...this.sendDots ]);
       this.sendDots = [];
+      this.lastPoint = null;
     },
     mouseMoveHandler: throttle(DELAY, false, function ($event) {
-      if (this.isMouseDown === false) {
+      if (this.isMouseDown === false && this.drawingMode === true) {
         return;
       }
       const dot = {
-        x: $event.offsetX,
-        y: $event.offsetY,
+        x: $event.offsetX / this.drawDimensions.width,
+        y: $event.offsetY / this.drawDimensions.height,
         time: $event.timeStamp,
       };
 
-      this.pushDot(dot);
+      this.sendDots.push(dot);
       this.throttleSendDots();
     }),
-    pushDot(dot) {
-      dot.x = (dot.x / this.drawDimensions.width);
-      dot.y = (dot.y / this.drawDimensions.height);
-      this.sendDots.push(dot);
+    checkNoNeighbour(dot) {
+      if (this.lastPoint === null) {
+        this.lastPoint = dot;
+
+        return true;
+      }
+      const distance = Math.sqrt((dot.x - this.lastPoint.x) ** 2 + (dot.y - this.lastPoint.y) ** 2);
+
+      // console.log(distance);
+      if (distance > NEIGHBOUR_DISTANCE) {
+        this.lastPoint = dot;
+
+        return true;
+      }
+
+      return false;
     },
 
     throttleSendDots: throttle(SEND_DELAY, false, function () {
-      if (this.sendDots.length > 1) {
+      if (this.sendDots.length > 0) {
         this.addDots([ ...this.sendDots ]);
         this.sendDots = [];
       }
@@ -184,13 +212,26 @@ export default {
       if (this.recieveDots.length === 0 || this.recieveDrawInterval !== null) {
         return;
       }
-      // cnsl.log('initiate drawing');
-      this.recieveDrawInterval = setInterval(() => {
-        this.draw();
-      }, DELAY);
+      if (this.drawingMode) {
+        this.recieveDrawInterval = setInterval(() => {
+          this.updateLine();
+        }, DELAY);
+      } else {
+        this.recieveDrawInterval = setInterval(() => {
+          this.updateCursor();
+        }, DELAY);
+      }
     },
+    updateCursor() {
+      if (this.recieveDots.length === 0) {
+        clearInterval(this.recieveDrawInterval);
+        this.recieveDrawInterval = null;
 
-    draw() {
+        return;
+      }
+      this.cursorCoords = { ...this.recieveDots.pop() };
+    },
+    updateLine() {
       if (this.recieveDots.length === 0) {
         clearInterval(this.recieveDrawInterval);
         this.recieveDrawInterval = null;
@@ -199,11 +240,17 @@ export default {
       }
       const dot = { ...this.recieveDots.pop() };
 
+      if (this.checkNoNeighbour(dot) === false && this.visibleDots.length > 1) {
+        this.visibleDots.pop();
+      } else {
+        this.lastDrawDot = dot;
+      }
       this.visibleDots.push([dot.x * this.canvasDimensions.width, dot.y * this.canvasDimensions.height]);
 
       if (dot.end === true) {
         this.completedPaths.push(this.currentPath());
         this.cursorCoords = null;
+        this.lastDrawDot = null;
         this.visibleDots = [];
       } else {
         this.cursorCoords = dot;
