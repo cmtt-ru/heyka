@@ -62,9 +62,8 @@ const ICON_MAP = {
   public: 'channel',
   publicOnline: 'channelOnAir',
   private: 'lock',
-  temp: 'clock',
+  temp: 'time',
   default: 'channel',
-  time: 'time',
 };
 const MAX_USERS = 8;
 
@@ -135,7 +134,7 @@ export default {
         };
       } else if (this.channel.isPrivate && this.channel.isTemporary) {
         return {
-          name: ICON_MAP['time'],
+          name: ICON_MAP['temp'],
           color: this.isChannelActive ? 'var(--color-1)' : undefined,
         };
       } else {

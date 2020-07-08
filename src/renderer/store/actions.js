@@ -3,7 +3,6 @@ import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
-// eslint-disable-next-line no-unused-vars
 import router from '@/router';
 
 export default {

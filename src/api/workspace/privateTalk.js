@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 /**
- * Create channel in a certain workspace
+ * Create private temporary channel in a certain workspace
  * @param {string} id - id of workspace
  * @param {object} params - private talk params
  * @param {array} params.users - user ids
