@@ -240,10 +240,12 @@ function bindChannelEvents() {
     store.commit('channels/ADD_USER', data);
   });
 
-  client.on(eventNames.channelCreated, ({ channelId }) => {
-    store.dispatch('channels/addChannel', channelId);
+  /** Channel created */
+  client.on(eventNames.channelCreated, async (data) => {
+    store.dispatch('channels/addChannel', data.channelId);
   });
 
+  /** Channel deleted */
   client.on(eventNames.channelDeleted, ({ channelId }) => {
     store.commit('channels/REMOVE_CHANNEL', channelId);
   });

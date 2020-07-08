@@ -124,7 +124,6 @@ export default {
     display flex
     align-items center
     color var(--text-1)
-    align-items center
     font-size 12px
     line-height 14px
     margin-top 1px

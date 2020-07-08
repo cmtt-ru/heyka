@@ -15,6 +15,18 @@ import axios from 'axios';
  * @returns {date} channelInfo.updatedAt
  * @returns {date} channelInfo.creatorId
  */
-export default function (id) {
-  return axios.get(`/channels/${id}`).then(res => res.data);
+export default async function (id) {
+  try {
+    const { data } = await axios.get(`/channels/${id}`);
+
+    if (data) {
+      data.channel.users = data.users;
+
+      return data.channel;
+    }
+
+    return false;
+  } catch (e) {
+    return false;
+  }
 }

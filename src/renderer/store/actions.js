@@ -3,6 +3,7 @@ import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
+// eslint-disable-next-line no-unused-vars
 import router from '@/router';
 
 export default {
@@ -271,12 +272,21 @@ export default {
 
     if (response.channel) {
       commit('channels/ADD_CHANNEL', response.channel);
-      dispatch('selectChannel', response.channel.id);
+      await dispatch('selectChannel', response.channel.id);
 
       router.push({
         name: 'channel',
         params: {
           id: response.channel.id,
+        },
+      });
+
+      await dispatch('app/sendPush', {
+        userId: userId,
+        isResponseNeeded: true,
+        message: {
+          action: 'invite',
+          channel: response.channel.id,
         },
       });
     }
