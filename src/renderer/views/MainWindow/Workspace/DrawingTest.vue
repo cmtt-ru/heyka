@@ -13,56 +13,97 @@
       />
     </div>
 
-    <div class="canvas-holder aspect-ratio">
-      <canvas
+    <div
+      id="mySVG"
+      class="canvas-holder aspect-ratio"
+    >
+      <div
         id="myCanvas"
         class="drawing"
-      />
-      <div
-        class="dot"
-        :style="cursorCoords"
+      >
+        <svg
+          :viewBox="viewBox"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g>
+            <path
+              v-for="(stroke, index) in completedPaths"
+              :key="index"
+              class="svg-path"
+              :d="stroke"
+            />
+            <path
+              class="svg-path"
+              :d="currentPath()"
+            />
+          </g>
+        </svg>
+      </div>
+      <user-cursor
+        class="cursor"
+        :style="cursorCoordsStyle"
+        color="#DE4B39"
+        :user="me"
       />
     </div>
   </div>
 </template>
 
 <script>
+import UserCursor from '@components/UserCursor';
+import { mapGetters } from 'vuex';
 import { throttle } from 'throttle-debounce';
-import Logger from '@classes/logger';
-const cnsl = new Logger('DRAWING', '#fd1');
-const DELAY = 20;
+// import Logger from '@classes/logger';
+// const cnsl = new Logger('DRAWING', '#fd1');
+const DELAY = 70;
 const SEND_DELAY = 250;
 const FULL_PERCENT = 100;
+const SMOOTHING = 0.15;
 
 export default {
+  components: {
+    UserCursor,
+  },
   data() {
     return {
+      svgCanvas: null,
       ctx: {},
       drawDimensions: {},
       isMouseDown: false,
       sendDots: [],
 
       canvasDimensions: {},
-      lastDrawDot: null,
+      cursorCoords: null,
       recieveDots: [],
       recieveDrawInterval: null,
+      visibleDots: [],
+      completedPaths: [],
     };
   },
   computed: {
-    cursorCoords() {
-      if (this.lastDrawDot === null) {
+    ...mapGetters({
+      me: 'myInfo',
+    }),
+    cursorCoordsStyle() {
+      if (this.cursorCoords === null) {
         return {
-          visibility: 'hidden',
+          // visibility: 'hidden',
         };
       }
 
       return {
-        top: `${this.lastDrawDot?.y * FULL_PERCENT}%`,
-        left: `${this.lastDrawDot?.x * FULL_PERCENT}%`,
+        // translate: //! do it
+        top: `${this.cursorCoords?.y * FULL_PERCENT}%`,
+        left: `${this.cursorCoords?.x * FULL_PERCENT}%`,
       };
+    },
+    viewBox() {
+      return `0 0 ${this.canvasDimensions.width || 0} ${this.canvasDimensions.height || 0}`;
     },
   },
   mounted() {
+    this.svgCanvas = document.getElementById('mySVG');
     const canvas = document.getElementById('myCanvas');
     const cs = getComputedStyle(canvas);
 
@@ -73,12 +114,6 @@ export default {
       width,
       height,
     };
-
-    cnsl.log(this.canvasDimensions);
-
-    canvas.width = width;
-    canvas.height = height;
-    this.ctx = canvas.getContext('2d');
 
     const drawingPad = document.getElementById('drawingPad');
     const dps = getComputedStyle(drawingPad);
@@ -149,7 +184,7 @@ export default {
       if (this.recieveDots.length === 0 || this.recieveDrawInterval !== null) {
         return;
       }
-      cnsl.log('initiate drawing');
+      // cnsl.log('initiate drawing');
       this.recieveDrawInterval = setInterval(() => {
         this.draw();
       }, DELAY);
@@ -157,7 +192,6 @@ export default {
 
     draw() {
       if (this.recieveDots.length === 0) {
-        cnsl.log('drawing complete');
         clearInterval(this.recieveDrawInterval);
         this.recieveDrawInterval = null;
 
@@ -165,26 +199,74 @@ export default {
       }
       const dot = { ...this.recieveDots.pop() };
 
-      if (this.lastDrawDot) {
-        this.ctx.moveTo(this.lastDrawDot.x * this.canvasDimensions.width, this.lastDrawDot.y * this.canvasDimensions.height);
-        this.ctx.lineTo(dot.x * this.canvasDimensions.width, dot.y * this.canvasDimensions.height);
-        this.ctx.stroke();
-      }
+      this.visibleDots.push([dot.x * this.canvasDimensions.width, dot.y * this.canvasDimensions.height]);
+
       if (dot.end === true) {
-        this.lastDrawDot = null;
+        this.completedPaths.push(this.currentPath());
+        this.cursorCoords = null;
+        this.visibleDots = [];
       } else {
-        this.lastDrawDot = { ...dot };
+        this.cursorCoords = dot;
       }
     },
+
+    line: (pointA, pointB) => {
+      const lengthX = pointB[0] - pointA[0];
+      const lengthY = pointB[1] - pointA[1];
+
+      return {
+        length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
+        angle: Math.atan2(lengthY, lengthX),
+      };
+    },
+    controlPoint: (line, smooth) => (current, previous, next, reverse) => {
+      const p = previous || current;
+      const n = next || current;
+      const l = line(p, n);
+
+      const angle = l.angle + (reverse ? Math.PI : 0);
+      const length = l.length * smooth;
+      const x = current[0] + Math.cos(angle) * length;
+      const y = current[1] + Math.sin(angle) * length;
+
+      return [x, y];
+    },
+    bezierCommand: (controlPoint) => (point, i, a) => {
+      const cps = controlPoint(a[i - 1], a[i - 2], point);
+      const cpe = controlPoint(point, a[i - 1], a[i + 1], true);
+
+      return `C ${cps[0]},${cps[1]} ${cpe[0]},${cpe[1]} ${point[0]},${point[1]}`;
+    },
+    svgPath: (pointsArr, command) => {
+      const d = pointsArr.reduce((acc, e, i, a) => i === 0
+        ? `M ${e[0]},${e[1]}`
+        : `${acc} ${command(e, i, a)}`
+      , '');
+
+      return d;
+    },
+    currentPath() {
+      const bezierCommandCalc = this.bezierCommand(this.controlPoint(this.line, SMOOTHING));
+      const path = this.svgPath(this.visibleDots, bezierCommandCalc);
+
+      return path;
+    },
+
   },
 };
 </script>
-
 <style scoped lang="stylus">
+.svg-path
+    fill transparent
+    stroke white
+    stroke-width 4px
+    stroke-opacity 1
+    stroke-linecap round
+
 .drawing-pad-container
     position relative
     margin 8px
-    width 300px
+    width 600px
     border 1px solid var(--color-1)
     box-sizing border-box
 .aspect-ratio
@@ -197,20 +279,16 @@ export default {
     margin 8px
     border 1px solid var(--color-1)
     box-sizing border-box
+    background-color #222
   .drawing
     position absolute
     top 0
     left 0
     width 100%
     height 100%
-.dot
+.cursor
     position absolute
-    width 0
-    height 0
-    border-left 20px solid blue
-    border-left 20px solid blue
-    border-right 20px solid transparent
-    border-bottom 20px solid transparent
-    pointer-events none
+    top 0
+    left 0
 
 </style>
