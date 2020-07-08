@@ -75,4 +75,31 @@ export default {
       });
     }
   },
+
+  /**
+   * Add channel
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {object} channelData – channel data
+   * @constructor
+   */
+  ADD_CHANNEL(state, channelData) {
+    if (state.collection[channelData.id] === undefined) {
+      Vue.set(state.collection, channelData.id, channelData);
+    }
+  },
+
+  /**
+   * Remove channel
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {string} channelId – channel id
+   * @constructor
+   */
+  REMOVE_CHANNEL(state, channelId) {
+    if (state.collection[channelId]) {
+      Vue.delete(state.collection, channelId);
+    }
+  },
+
 };
