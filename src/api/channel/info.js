@@ -16,5 +16,5 @@ import axios from 'axios';
  * @returns {date} channelInfo.creatorId
  */
 export default function (id) {
-  return axios.post(`/channels/${id}`).then(res => res.data);
+  return axios.get(`/channels/${id}`).then(res => res.data);
 }
