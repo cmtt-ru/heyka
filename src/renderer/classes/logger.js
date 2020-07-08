@@ -47,10 +47,10 @@ class Logger {
    * @returns {void}
    */
   debug() {
-    if (!IS_DEV || process.env.VUE_APP_DEBUG !== false) {
+    if (!IS_DEV || process.env.VUE_APP_DEBUG === false) {
       return;
     }
-    this.log(arguments);
+    this.log(...arguments);
   }
 
   /**

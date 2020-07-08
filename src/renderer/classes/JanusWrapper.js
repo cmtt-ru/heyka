@@ -3,6 +3,7 @@ import Janus from './janus';
 import AudiobridgePlugin from './AudiobridgePlugin';
 import PublishingVideoroomPlugin from './PublishingVideoroomPlugin';
 import SubscribingVideoroomPlugin from './SubscribingVideoroomPlugin';
+import TextroomPlugin from './TextroomPlugin';
 import mediaCapturer from './mediaCapturer';
 // eslint-disable-next-line no-unused-vars
 import adapter from 'webrtc-adapter';
@@ -186,6 +187,16 @@ class JanusWrapper extends EventEmitter {
     videoroomPlugin.on('webrtc-cleanup', () => this.emit(JANUS_WRAPPER_EVENTS.webrtcCleanUp));
 
     this.__videoroomPlugin = videoroomPlugin;
+
+    // attach textroom
+    const textroomPlugin = new TextroomPlugin({
+      janus: this.__janus,
+      room: this.__videoRoomId,
+      token: this.__channelToken,
+      userId: this.__userId,
+    });
+
+    textroomPlugin.attach();
   }
 
   /**
