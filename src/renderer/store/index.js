@@ -83,6 +83,8 @@ if (IS_MAIN_WINDOW) {
 
   const allowedMutationsList = [
     'channels/SET_COLLECTION',
+    'channels/ADD_CHANNEL',
+    'channels/REMOVE_CHANNEL',
     'users/SET_COLLECTION',
     'users/SET_ONLINE_STATUS',
     'workspaces/SET_COLLECTION',
