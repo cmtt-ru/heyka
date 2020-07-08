@@ -257,17 +257,15 @@ export default {
   /**
    * Create private channel
    *
-   * @param {function} commit – store commit
-   * @param {string} id – workspace id
+   * @param {object} vuex functions
+   * @param {string} userId – user id
    * @returns {void}
    */
-  async createPrivateChannel({ state, commit, getters, dispatch }, id) {
+  async createPrivateChannel({ state, commit, getters, dispatch }, userId) {
     const selectedWorkspaceId = getters['me/getSelectedWorkspaceId'];
 
-    const response = await API.workspace.createChannel(selectedWorkspaceId, {
-      name: 'test-private-2',
-      isPrivate: true,
-      lifespan: 2000,
+    const response = await API.workspace.privateTalk(selectedWorkspaceId, {
+      users: [ userId ],
     });
 
     console.log(response);

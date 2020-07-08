@@ -17,7 +17,6 @@ export default {
 
     const channelInfo = await API.channel.info(channelId);
 
-    console.log('channelInfo', channelInfo);
-    // commit('ADD_CHANNEL', channelInfo);
+    commit('ADD_CHANNEL', channelInfo);
   },
 };

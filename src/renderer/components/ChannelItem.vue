@@ -64,6 +64,7 @@ const ICON_MAP = {
   private: 'lock',
   temp: 'clock',
   default: 'channel',
+  time: 'time',
 };
 const MAX_USERS = 8;
 
@@ -127,8 +128,10 @@ export default {
      * @returns {string} name of correct icon
      */
     dynamicIcon() {
-      if (this.channel.isPrivate) { // TODO: lifespan
+      if (this.channel.isPrivate && !this.channel.isTemporary) { // TODO: lifespan
         return ICON_MAP['private'];
+      } else if (this.channel.isPrivate && this.channel.isTemporary) {
+        return ICON_MAP['time'];
       } else {
         if (this.isChannelActive) {
           return ICON_MAP['publicOnline'];

@@ -43,6 +43,7 @@
 
     <div v-else>
       <ui-button
+        v-if="!isMe"
         :type="1"
         :wide="true"
         class="user-action"
@@ -124,6 +125,7 @@ export default {
   computed: {
     ...mapGetters({
       selectedChannel: 'myChannel',
+      myUserID: 'me/getMyId',
     }),
 
     /**
@@ -178,6 +180,13 @@ export default {
       return STATUS_COLORS[this.user.onlineStatus] || null;
     },
 
+    /**
+     * Is me
+     * @returns {boolean}
+     */
+    isMe() {
+      return this.myUserID === this.userId;
+    },
   },
 
   methods: {
@@ -194,7 +203,7 @@ export default {
     },
 
     async startPrivateTalk(userId) {
-      this.$store.dispatch('createPrivateChannel');
+      this.$store.dispatch('createPrivateChannel', userId);
     },
   },
 
