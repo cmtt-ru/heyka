@@ -3,6 +3,7 @@ import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
+import router from '@/router';
 
 export default {
 
@@ -268,6 +269,16 @@ export default {
       users: [ userId ],
     });
 
-    console.log(response);
+    if (response.channel) {
+      commit('channels/ADD_CHANNEL', response.channel);
+      dispatch('selectChannel', response.channel.id);
+
+      router.push({
+        name: 'channel',
+        params: {
+          id: response.channel.id,
+        },
+      });
+    }
   },
 };

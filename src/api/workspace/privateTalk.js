@@ -5,10 +5,10 @@ import axios from 'axios';
  * @param {string} id - id of workspace
  * @param {object} params - private talk params
  * @param {array} params.users - user ids
- * @returns {string} 'ok'
+ * @returns {object} channel
  */
-export default function (id, params) {
-  const res = axios.post(`/workspaces/${id}/private-talk`, params);
+export default async function (id, params) {
+  const res = await axios.post(`/workspaces/${id}/private-talk`, params);
 
   return res.data;
 }
