@@ -5,9 +5,9 @@
   >
     <svg-icon
       class="channel__type"
-      :name="dynamicIcon"
+      :name="dynamicIcon.name"
+      :stroke="dynamicIcon.color"
       size="medium"
-      stroke="var(--icon-1)"
     />
 
     <div class="channel__content">
@@ -129,14 +129,24 @@ export default {
      */
     dynamicIcon() {
       if (this.channel.isPrivate && !this.channel.isTemporary) { // TODO: lifespan
-        return ICON_MAP['private'];
+        return {
+          name: ICON_MAP['private'],
+          color: this.isChannelActive ? 'var(--color-1)' : undefined,
+        };
       } else if (this.channel.isPrivate && this.channel.isTemporary) {
-        return ICON_MAP['time'];
+        return {
+          name: ICON_MAP['time'],
+          color: this.isChannelActive ? 'var(--color-1)' : undefined,
+        };
       } else {
         if (this.isChannelActive) {
-          return ICON_MAP['publicOnline'];
+          return {
+            name: ICON_MAP['publicOnline'],
+          };
         } else {
-          return ICON_MAP['public'];
+          return {
+            name: ICON_MAP['public'],
+          };
         }
       }
     },
