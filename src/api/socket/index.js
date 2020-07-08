@@ -289,4 +289,9 @@ function bindPushEvents() {
       });
     }
   });
+
+  /** Remove push notification */
+  client.on(eventNames.messageCancelled, data => {
+    store.dispatch('app/removePush', data.id);
+  });
 }

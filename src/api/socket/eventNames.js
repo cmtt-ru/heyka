@@ -26,4 +26,5 @@ export default Object.freeze({
   socketApiError: 'socket-api-error',
   message: 'message',
   messageResponse: 'message-response',
+  messageCancelled: 'message-cancelled',
 });
