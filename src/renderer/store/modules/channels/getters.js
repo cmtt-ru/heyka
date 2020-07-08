@@ -10,6 +10,11 @@ export default {
   getChannels: state => {
     return Object.values(state.collection).sort(sortAny([
       {
+        key: 'isTemporary',
+        type: 'boolean',
+        order: 'desc',
+      },
+      {
         key: 'name',
         type: 'string',
         order: 'asc',

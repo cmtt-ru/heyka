@@ -234,7 +234,7 @@ export default {
     flex-shrink 1
 
   &__status
-    right 0px
+    right 0
     width 8px
     height 8px
     box-sizing border-box
