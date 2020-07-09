@@ -279,15 +279,6 @@ export default {
           id: response.channel.id,
         },
       });
-
-      await dispatch('app/sendPush', {
-        userId: userId,
-        isResponseNeeded: true,
-        message: {
-          action: 'invite',
-          channelId: response.channel.id,
-        },
-      });
     }
   },
 };
