@@ -71,6 +71,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-strict-vue": "^1.0.0",
     "eslint-plugin-vue": "^7.0.0-alpha.1",
+    "requestanimationframe-timer": "^3.0.3",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "svgo": "^1.1.0",

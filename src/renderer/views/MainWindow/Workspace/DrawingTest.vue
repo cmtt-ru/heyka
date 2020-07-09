@@ -6,6 +6,7 @@
       @mousemove="mouseMoveHandler"
       @mousedown="mouseDownHandler"
       @mouseup="mouseUpHandler"
+      @mouseleave="mouseUpHandler"
     >
       <div
 
@@ -27,6 +28,7 @@
         class="drawing"
       >
         <svg
+          ref="svgPaths"
           :viewBox="viewBox"
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
@@ -42,9 +44,18 @@
               class="svg-path"
               :d="currentPath()"
             />
+            <path
+              class="svg-path"
+              :d="currentRect()"
+            />
           </g>
         </svg>
       </div>
+      <div
+        ref="hightlight"
+        class="click-highlight"
+        :style="clickHighlightStyle"
+      />
       <user-cursor
         class="cursor"
         :style="cursorCoordsStyle"
@@ -60,12 +71,15 @@ import { UiSwitch } from '@components/Form';
 import UserCursor from '@components/UserCursor';
 import { mapGetters } from 'vuex';
 import { throttle } from 'throttle-debounce';
+import { setInterval, clearInterval } from 'requestanimationframe-timer';
 // import Logger from '@classes/logger';
 // const cnsl = new Logger('DRAWING', '#fd1');
-const DELAY = 10;
+const DELAY = 33;
 const SEND_DELAY = 250;
+const RECIEVE_DELAY = 150;
 const SMOOTHING = 0.15;
 const NEIGHBOUR_DISTANCE = 0.025;
+const TIME_BEFORE_CLEAR = 10000;
 
 export default {
   components: {
@@ -74,7 +88,7 @@ export default {
   },
   data() {
     return {
-      drawingMode: true,
+      drawingMode: false,
       lastPoint: null,
       ctx: {},
       drawDimensions: {},
@@ -83,11 +97,14 @@ export default {
 
       canvasDimensions: {},
       cursorCoords: null,
+      highlightCoords: null,
       lastDrawDot: null,
       recieveDots: [],
       recieveDrawInterval: null,
+      clearWhiteBoardTimeout: null,
       visibleDots: [],
       completedPaths: [],
+      startRectPosition: null,
     };
   },
   computed: {
@@ -103,6 +120,18 @@ export default {
 
       return {
         transform: `translate(${this.cursorCoords.x * this.canvasDimensions.width}px, ${this.cursorCoords.y * this.canvasDimensions.height}px)`,
+      };
+    },
+    clickHighlightStyle() {
+      if (this.highlightCoords === null || this.canvasDimensions === null) {
+        return {
+          visibility: 'hidden',
+        };
+      }
+
+      return {
+        top: `${this.highlightCoords.y * this.canvasDimensions.height}px`,
+        left: `${this.highlightCoords.x * this.canvasDimensions.width}px`,
       };
     },
     viewBox() {
@@ -137,12 +166,16 @@ export default {
         y: $event.offsetY / this.drawDimensions.height,
         time: $event.timeStamp,
         start: true,
+        rect: $event.ctrlKey,
       };
 
       this.sendDots.push(dot);
       this.throttleSendDots();
     },
     mouseUpHandler($event) {
+      if (this.isMouseDown === false) {
+        return;
+      }
       this.isMouseDown = false;
       const dot = {
         x: $event.offsetX / this.drawDimensions.width,
@@ -177,7 +210,6 @@ export default {
       }
       const distance = Math.sqrt((dot.x - this.lastPoint.x) ** 2 + (dot.y - this.lastPoint.y) ** 2);
 
-      // console.log(distance);
       if (distance > NEIGHBOUR_DISTANCE) {
         this.lastPoint = dot;
 
@@ -188,7 +220,7 @@ export default {
     },
 
     throttleSendDots: throttle(SEND_DELAY, false, function () {
-      if (this.sendDots.length > 0) {
+      if (this.sendDots.length > 1 || this.drawingMode === true) {
         this.addDots([ ...this.sendDots ]);
         this.sendDots = [];
       }
@@ -199,12 +231,12 @@ export default {
         this.recieveDots = [ ...incomeDots.reverse() ];
         setTimeout(() => {
           this.parseRecievedDots();
-        }, SEND_DELAY / 2);
+        }, RECIEVE_DELAY);
       } else {
         this.recieveDots = [...incomeDots.reverse(), ...this.recieveDots];
         setTimeout(() => {
           this.parseRecievedDots();
-        }, SEND_DELAY / 2);
+        }, RECIEVE_DELAY);
       }
     },
 
@@ -213,8 +245,10 @@ export default {
         return;
       }
       if (this.drawingMode) {
+        clearTimeout(this.clearWhiteBoardTimeout);
+        this.$refs.svgPaths.classList.remove('svg--hiding');
         this.recieveDrawInterval = setInterval(() => {
-          this.updateLine();
+          this.updatePath();
         }, DELAY);
       } else {
         this.recieveDrawInterval = setInterval(() => {
@@ -230,31 +264,70 @@ export default {
         return;
       }
       this.cursorCoords = { ...this.recieveDots.pop() };
+      if (this.cursorCoords.start === true) {
+        this.highLightClick(this.cursorCoords);
+      }
     },
-    updateLine() {
+    highLightClick(dot) {
+      this.highlightCoords = dot;
+      this.reflow(this.$refs.hightlight, 'click-highlight--visible');
+    },
+    updatePath() {
       if (this.recieveDots.length === 0) {
-        clearInterval(this.recieveDrawInterval);
-        this.recieveDrawInterval = null;
+        if (this.recieveDrawInterval !== null) {
+          clearInterval(this.recieveDrawInterval);
+          this.recieveDrawInterval = null;
+        }
 
         return;
       }
       const dot = { ...this.recieveDots.pop() };
 
-      if (this.checkNoNeighbour(dot) === false && this.visibleDots.length > 1) {
-        this.visibleDots.pop();
-      } else {
-        this.lastDrawDot = dot;
+      if (dot.rect) {
+        this.startRectPosition = {
+          x: dot.x * this.canvasDimensions.width,
+          y: dot.y * this.canvasDimensions.height,
+        };
+
+        return;
       }
-      this.visibleDots.push([dot.x * this.canvasDimensions.width, dot.y * this.canvasDimensions.height]);
+
+      if (this.startRectPosition === null) {
+        if (this.checkNoNeighbour(dot) === false && this.visibleDots.length > 1) {
+          this.visibleDots.pop();
+        } else {
+          this.lastDrawDot = dot;
+        }
+        this.visibleDots.push([dot.x * this.canvasDimensions.width, dot.y * this.canvasDimensions.height]);
+      }
 
       if (dot.end === true) {
-        this.completedPaths.push(this.currentPath());
+        if (this.startRectPosition) {
+          this.completedPaths.push(this.currentRect());
+          this.startRectPosition = null;
+        } else {
+          this.completedPaths.push(this.currentPath());
+          this.lastDrawDot = null;
+          this.visibleDots = [];
+        }
+
         this.cursorCoords = null;
-        this.lastDrawDot = null;
-        this.visibleDots = [];
+
+        this.$refs.svgPaths.classList.add('svg--hiding');
+        this.clearWhiteBoardTimeout = setTimeout(() => {
+          this.completedPaths = [];
+        }, TIME_BEFORE_CLEAR);
       } else {
         this.cursorCoords = dot;
       }
+    },
+
+    reflow(el, className) {
+      el.classList.add(className);
+      el.style.animation = 'none';
+      // eslint-disable-next-line no-unused-expressions
+      el.offsetHeight; /* trigger reflow */
+      el.style.animation = null;
     },
 
     line: (pointA, pointB) => {
@@ -299,6 +372,14 @@ export default {
       return path;
     },
 
+    currentRect() {
+      if (this.startRectPosition === null || this.cursorCoords === null) {
+        return '';
+      }
+
+      return `M${this.startRectPosition.x},${this.startRectPosition.y} ${this.cursorCoords.x * this.canvasDimensions.width},${this.startRectPosition.y} ${this.cursorCoords.x * this.canvasDimensions.width},${this.cursorCoords.y * this.canvasDimensions.height} ${this.startRectPosition.x},${this.cursorCoords.y * this.canvasDimensions.height} z`;
+    },
+
   },
 };
 </script>
@@ -309,6 +390,22 @@ export default {
     stroke-width 4px
     stroke-opacity 1
     stroke-linecap round
+
+.svg--hiding
+    animation 10s 1 forwards svgClear
+
+@keyframes svgClear {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+
+}
 
 .drawing-pad-container
     position relative
@@ -337,5 +434,36 @@ export default {
     position absolute
     top 0
     left 0
+
+.click-highlight
+    position absolute
+    top 0
+    left 0
+    width 60px
+    height 60px
+    margin -30px 0 0 -30px
+    background-color transparent
+    border 4px solid #DE4B39
+    border-radius 50%
+    opacity 0
+
+    &--visible
+        animation 1s 1 forwards click; //! поправить центровку
+
+@keyframes click {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+
+}
 
 </style>
