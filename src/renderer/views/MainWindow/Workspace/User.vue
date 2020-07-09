@@ -197,7 +197,7 @@ export default {
         isResponseNeeded: true,
         message: {
           action: 'invite',
-          channel: this.$store.getters['me/getSelectedChannelId'],
+          channelId: this.$store.getters['me/getSelectedChannelId'],
         },
       });
     },

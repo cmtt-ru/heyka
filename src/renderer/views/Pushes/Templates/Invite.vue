@@ -85,7 +85,7 @@ export default {
      * @return {object}
      */
     channel() {
-      return this.$store.getters['channels/getChannelById'](this.data.channel) || { name: 'no channel' };
+      return this.$store.getters['channels/getChannelById'](this.data.channelId) || { name: 'no channel' };
     },
   },
   mounted() {

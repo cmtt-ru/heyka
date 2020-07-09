@@ -138,8 +138,13 @@ export default {
     if (rootGetters['me/getMyId'] === userId) {
       return;
     }
+
+    const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
+
     const { messageId } = await API.user.sendMessage({
       userId,
+      workspaceId,
+      channelId: message.channelId,
       isResponseNeeded,
       message,
     });

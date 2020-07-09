@@ -285,7 +285,7 @@ export default {
         isResponseNeeded: true,
         message: {
           action: 'invite',
-          channel: response.channel.id,
+          channelId: response.channel.id,
         },
       });
     }

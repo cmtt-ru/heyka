@@ -281,11 +281,19 @@ function bindPushEvents() {
 
   /** Get response to push notification */
   client.on(eventNames.messageResponse, ({ messageId, userId, response }) => {
-    if (response.showResponse || response === 'no-response') {
+    if (response.showResponse) {
       store.dispatch('app/addPush', {
         messageId: `response-${messageId}`,
         userId,
         message: response,
+      });
+    } else if (response === 'no-response') {
+      store.dispatch('app/addPush', {
+        messageId: `response-${messageId}`,
+        userId,
+        message: {
+          action: 'busy',
+        },
       });
     }
   });
