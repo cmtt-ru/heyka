@@ -16,11 +16,22 @@
         </p>
 
         <div class="call-controls__channel">
-          <svg-icon
-            name="channel"
-            size="small"
-          />
-          <span>{{ selectedChannelName }}</span>
+          <transition
+            name="fade"
+            mode="out-in"
+          >
+            <svg-icon
+              :key="channelIcon"
+              :name="channelIcon"
+              size="small"
+            />
+          </transition>
+          <transition
+            name="fade"
+            mode="out-in"
+          >
+            <span :key="channelName">{{ channelName }}</span>
+          </transition>
         </div>
       </div>
     </div>
@@ -32,14 +43,15 @@
 </template>
 
 <script>
-// import UiButton from '@components/UiButton';
-// import broadcastActions from '@classes/broadcastActions';
 import CallButtons from './CallButtons';
 import { mapGetters } from 'vuex';
 
+const LAST_USER_INTERVAL = 2000;
+
+let lastUserTimer = null;
+
 export default {
   components: {
-    // UiButton,
     CallButtons,
   },
 
@@ -67,6 +79,8 @@ export default {
   data() {
     return {
       lastSpeakingUser: null,
+      channelIcon: 'channel',
+      channelName: 'no channel',
     };
   },
 
@@ -75,6 +89,7 @@ export default {
       user: 'myInfo',
       speakingUser: 'getSpeakingUser',
       selectedChannel: 'myChannel',
+      userById: 'users/getUserById',
     }),
 
     /**
@@ -104,6 +119,42 @@ export default {
 
       return 'no channel selected';
     },
+
+    lastUserInChannel() {
+      if (this.selectedChannel) {
+        return this.selectedChannel.users[this.selectedChannel.users.length - 1];
+      }
+
+      return false;
+    },
+  },
+
+  watch: {
+    lastUserInChannel() {
+      if (!this.lastUserInChannel) {
+        return;
+      }
+
+      if (this.user.id !== this.lastUserInChannel.userId) {
+        this.channelName = this.userById(this.lastUserInChannel.userId).name;
+        this.channelIcon = 'connect';
+
+        clearTimeout(lastUserTimer);
+
+        lastUserTimer = setTimeout(() => {
+          this.channelName = this.selectedChannel.name;
+          this.channelIcon = 'channel';
+        }, LAST_USER_INTERVAL);
+      }
+    },
+
+    selectedChannelName() {
+      this.channelName = this.selectedChannelName;
+    },
+  },
+
+  mounted() {
+    this.channelName = this.selectedChannelName;
   },
 
   methods: {
@@ -180,5 +231,13 @@ export default {
 
       .call-controls__row--controls
         margin-left auto
+
+  .fade-enter-active,
+  .fade-leave-active
+    transition all 0.25s
+
+  .fade-enter,
+  .fade-leave-to
+    opacity 0
 
 </style>
