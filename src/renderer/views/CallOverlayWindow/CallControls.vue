@@ -17,7 +17,7 @@
 
         <div class="call-controls__channel">
           <transition
-            name="fade"
+            :name="transitionName"
             mode="out-in"
           >
             <svg-icon
@@ -27,7 +27,7 @@
             />
           </transition>
           <transition
-            name="fade"
+            :name="transitionName"
             mode="out-in"
           >
             <span :key="channelName">{{ channelName }}</span>
@@ -80,7 +80,8 @@ export default {
     return {
       lastSpeakingUser: null,
       channelIcon: 'channel',
-      channelName: 'no channel',
+      channelName: '',
+      transitionName: 'none',
     };
   },
 
@@ -117,9 +118,13 @@ export default {
         return this.selectedChannel.name;
       }
 
-      return 'no channel selected';
+      return '';
     },
 
+    /**
+     * Last user in channel
+     * @returns {object|boolean}
+     */
     lastUserInChannel() {
       if (this.selectedChannel) {
         return this.selectedChannel.users[this.selectedChannel.users.length - 1];
@@ -155,10 +160,20 @@ export default {
 
   mounted() {
     this.channelName = this.selectedChannelName;
+
+    setTimeout(() => {
+      this.enableTransitions();
+    }, LAST_USER_INTERVAL);
   },
 
   methods: {
-
+    /**
+     * Enable transitions
+     * @returns {void}
+     */
+    enableTransitions() {
+      this.transitionName = 'fade';
+    },
   },
 };
 </script>
@@ -206,6 +221,7 @@ export default {
 
       svg
         flex-shrink 0
+        margin-top -1px
 
       span
         min-width 0
@@ -232,7 +248,9 @@ export default {
       .call-controls__row--controls
         margin-left auto
 
-  .fade-enter-active,
+  .fade-enter-active
+    transition all 0.25s
+
   .fade-leave-active
     transition all 0.25s
 
