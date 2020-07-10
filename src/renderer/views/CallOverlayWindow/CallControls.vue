@@ -248,9 +248,7 @@ export default {
       .call-controls__row--controls
         margin-left auto
 
-  .fade-enter-active
-    transition all 0.25s
-
+  .fade-enter-active,
   .fade-leave-active
     transition all 0.25s
 
