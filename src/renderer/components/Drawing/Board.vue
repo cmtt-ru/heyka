@@ -8,7 +8,7 @@
     >
       <svg
         ref="svgPaths"
-        :viewBox="viewBox"
+        :viewBox="svgViewBox"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -50,9 +50,12 @@ import { setInterval, clearInterval } from 'requestanimationframe-timer';
 
 const DELAY = 33;
 const RECIEVE_DELAY = 150;
-const SMOOTHING = 0.15;
-const NEIGHBOUR_DISTANCE = 0.02;
+const SMOOTHING = 0.2;
+const NEIGHBOUR_DISTANCE = 0.05;
 const TIME_BEFORE_CLEAR = 10000;
+
+let __savedCurrentPath = '';
+let __savedCurrentLength = 0;
 
 export default {
   components: {
@@ -75,8 +78,7 @@ export default {
       cursorCoords: null,
       highlightCoords: null,
       lastPoint: null,
-      lastDrawDot: null,
-      recieveDots: [],
+      dotsQueue: [],
       recieveDrawInterval: null,
       clearWhiteBoardTimeout: null,
       visibleDots: [],
@@ -109,7 +111,7 @@ export default {
         left: `${this.highlightCoords.x * this.boardDimensions.width}px`,
       };
     },
-    viewBox() {
+    svgViewBox() {
       return `0 0 ${this.boardDimensions.width || 0} ${this.boardDimensions.height || 0}`;
     },
     drawingMode() {
@@ -128,6 +130,7 @@ export default {
       return this.$store.getters['users/getUserById'](this.userId) || {};
     },
   },
+
   watch: {
     newDots(val) {
       this.addDots([ ...val ]);
@@ -146,14 +149,14 @@ export default {
     };
   },
   methods: {
-    addDots(incomeData) {
-      if (this.recieveDots.length === 0) {
-        this.recieveDots = [ ...incomeData.reverse() ];
+    addDots(incomeDots) {
+      if (this.dotsQueue.length === 0) {
+        this.dotsQueue = incomeDots.reverse();
         setTimeout(() => {
           this.parseRecievedDots();
         }, RECIEVE_DELAY);
       } else {
-        this.recieveDots = [...incomeData.reverse(), ...this.recieveDots];
+        this.dotsQueue = [...incomeDots.reverse(), ...this.dotsQueue];
         setTimeout(() => {
           this.parseRecievedDots();
         }, RECIEVE_DELAY);
@@ -161,7 +164,7 @@ export default {
     },
 
     parseRecievedDots() {
-      if (this.recieveDots.length === 0 || this.recieveDrawInterval !== null) {
+      if (this.dotsQueue.length === 0 || this.recieveDrawInterval !== null) {
         return;
       }
       if (this.drawingMode) {
@@ -176,6 +179,32 @@ export default {
         }, DELAY);
       }
     },
+    updateCursor() {
+      if (this.dotsQueue.length === 0) {
+        clearInterval(this.recieveDrawInterval);
+        this.recieveDrawInterval = null;
+
+        return;
+      }
+      this.cursorCoords = { ...this.dotsQueue.pop() };
+      if (this.cursorCoords.start === true) {
+        this.highLightClick(this.cursorCoords);
+      }
+    },
+
+    reflow(el, className) {
+      el.classList.add(className);
+      el.style.animation = 'none';
+      // eslint-disable-next-line no-unused-expressions
+      el.offsetHeight; /* trigger reflow */
+      el.style.animation = null;
+    },
+
+    highLightClick(dot) {
+      this.highlightCoords = dot;
+      this.reflow(this.$refs.hightlight, 'click-highlight--visible');
+    },
+
     checkNoNeighbour(dot) {
       if (this.lastPoint === null) {
         this.lastPoint = dot;
@@ -192,24 +221,9 @@ export default {
 
       return false;
     },
-    updateCursor() {
-      if (this.recieveDots.length === 0) {
-        clearInterval(this.recieveDrawInterval);
-        this.recieveDrawInterval = null;
 
-        return;
-      }
-      this.cursorCoords = { ...this.recieveDots.pop() };
-      if (this.cursorCoords.start === true) {
-        this.highLightClick(this.cursorCoords);
-      }
-    },
-    highLightClick(dot) {
-      this.highlightCoords = dot;
-      this.reflow(this.$refs.hightlight, 'click-highlight--visible');
-    },
     updatePath() {
-      if (this.recieveDots.length === 0) {
+      if (this.dotsQueue.length === 0) {
         if (this.recieveDrawInterval !== null) {
           clearInterval(this.recieveDrawInterval);
           this.recieveDrawInterval = null;
@@ -217,7 +231,7 @@ export default {
 
         return;
       }
-      const dot = { ...this.recieveDots.pop() };
+      const dot = { ...this.dotsQueue.pop() };
 
       if (dot.rect) {
         this.startRectPosition = {
@@ -231,8 +245,6 @@ export default {
       if (this.startRectPosition === null) {
         if (this.checkNoNeighbour(dot) === false && this.visibleDots.length > 1) {
           this.visibleDots.pop();
-        } else {
-          this.lastDrawDot = dot;
         }
         this.visibleDots.push([dot.x * this.boardDimensions.width, dot.y * this.boardDimensions.height]);
       }
@@ -243,8 +255,8 @@ export default {
           this.startRectPosition = null;
         } else {
           this.completedPaths.push(this.currentPath());
-          this.lastDrawDot = null;
           this.visibleDots = [];
+          __savedCurrentPath = '';
         }
 
         this.cursorCoords = null;
@@ -256,14 +268,6 @@ export default {
       } else {
         this.cursorCoords = dot;
       }
-    },
-
-    reflow(el, className) {
-      el.classList.add(className);
-      el.style.animation = 'none';
-      // eslint-disable-next-line no-unused-expressions
-      el.offsetHeight; /* trigger reflow */
-      el.style.animation = null;
     },
 
     line: (pointA, pointB) => {
@@ -291,17 +295,41 @@ export default {
       const cps = controlPoint(a[i - 1], a[i - 2], point);
       const cpe = controlPoint(point, a[i - 1], a[i + 1], true);
 
-      return `C ${cps[0]},${cps[1]} ${cpe[0]},${cpe[1]} ${point[0]},${point[1]}`;
+      return `C ${cps[0]},${cps[1]} ${cpe[0]},${cpe[1]} ${point[0]},${point[1]} `;
     },
-    svgPath: (pointsArr, command) => {
-      const d = pointsArr.reduce((acc, e, i, a) => i === 0
-        ? `M ${e[0]},${e[1]}`
-        : `${acc} ${command(e, i, a)}`
-      , '');
+    svgPath(pointsArr, command) {
+      const length = pointsArr.length;
+      const minSaveLength = 4;
 
-      return d;
+      if (length < minSaveLength) {
+        return pointsArr.reduce((acc, e, i, a) => i === 0
+          ? `M ${e[0]},${e[1]}`
+          : `${acc} ${command(e, i, a)}`
+        , '');
+      } else if (length === minSaveLength) {
+        __savedCurrentLength = minSaveLength;
+        __savedCurrentPath = `M ${pointsArr[0][0]},${pointsArr[0][1]} ${command(pointsArr[1], 1, pointsArr)}`;
+
+        return pointsArr.reduce((acc, e, i, a) => i === 0
+          ? `M ${e[0]},${e[1]}`
+          : `${acc} ${command(e, i, a)}`
+        , ''); ;
+      }
+      // eslint-disable-next-line no-magic-numbers
+      const fiveLastDots = pointsArr.slice(-5);
+
+      if (__savedCurrentLength !== length) {
+        __savedCurrentPath += command(fiveLastDots[2], 2, fiveLastDots);
+        __savedCurrentLength = length;
+      }
+
+      // eslint-disable-next-line no-magic-numbers
+      return __savedCurrentPath + command(fiveLastDots[3], 3, fiveLastDots) + command(fiveLastDots[4], 4, fiveLastDots);
     },
     currentPath() {
+      if (this.visibleDots.length === 0) {
+        return;
+      }
       const bezierCommandCalc = this.bezierCommand(this.controlPoint(this.line, SMOOTHING));
       const path = this.svgPath(this.visibleDots, bezierCommandCalc);
 
