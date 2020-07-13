@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import Logger from '@classes/logger';
+import { v4 as uuid4 } from 'uuid';
 const cnsl = new Logger('Textroom Plugin', '#F1C40F');
 const JANUS_PLUGIN = 'janus.plugin.textroom';
 
@@ -54,7 +55,15 @@ class TextroomPlugin extends EventEmitter {
         cnsl.debug('plugin attached');
 
         this.__pluginHandle = pluginHandle;
-        this._join();
+
+        // setup DataChannel connection
+        const setupMsg = {
+          request: 'setup',
+        };
+
+        this.__pluginHandle.send({
+          message: setupMsg,
+        });
       },
 
       // Triggered after `getUserMedia` is called (isAllowed=true means that request for user media is accepted)
@@ -71,6 +80,12 @@ class TextroomPlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
+
+        // Join the room only when connection is negotiated
+        if (state) {
+          this._join();
+        }
+
         cnsl.debug('webrtcState', state, reason);
       },
 
@@ -103,7 +118,6 @@ class TextroomPlugin extends EventEmitter {
           return;
         }
         cnsl.debug('slowLink', uplink);
-        this.emit('video-slow-link', uplink);
       },
 
       // Handle a message from plugin
@@ -115,18 +129,7 @@ class TextroomPlugin extends EventEmitter {
         }
         cnsl.debug('message', message, jsep);
 
-        if (message.videoroom === 'event') {
-          if (message.switched === 'ok') {
-            this.emit('switched');
-          } else if (message.paused === 'ok') {
-            this.emit('paused');
-          } else if (message.started === 'ok') {
-            this.emit('started');
-          }
-        }
-
         if (jsep !== undefined && jsep !== null) {
-          cnsl.info(`New message with jsep for ${this.__janusId}, ${this.__userId}! `);
           this.__pluginHandle.createAnswer({
             jsep,
             media: {
@@ -144,18 +147,6 @@ class TextroomPlugin extends EventEmitter {
             },
           });
         }
-      },
-
-      // Remote audio stream is available
-      onremotestream: stream => {
-        if (this.__detached) {
-          return;
-        }
-        cnsl.info(`Remote stream for ${this.__janusId}, ${this.__userId}! `);
-
-        cnsl.debug('remotestream', stream);
-        this.__remoteVideoStream = stream;
-        this.emit('remote-video-stream', stream);
       },
 
       // WebRTC connection with the plugin was closed
@@ -184,6 +175,28 @@ class TextroomPlugin extends EventEmitter {
   }
 
   /**
+   * Sends data via DataChannel
+   * @param {object} data Free-form JSON object
+   * @returns {void}
+   */
+  sendData(data) {
+    if (!this.__pluginHandle) {
+      return;
+    }
+
+    const message = {
+      textroom: 'message',
+      room: this.__room,
+      text: JSON.stringify(data),
+      transaction: uuid4(),
+    };
+
+    this.__pluginHandle.data({
+      text: JSON.stringify(message),
+    });
+  }
+
+  /**
    * Detached videoroom plugin from Janus
    * @returns {undefined}
    */
@@ -199,18 +212,22 @@ class TextroomPlugin extends EventEmitter {
    * @returns {undefined}
    */
   _join() {
-    const msg = {
-      request: 'setup',
+    const joinMsg = {
+      transaction: uuid4(),
+      textroom: 'join',
       room: this.__room,
       username: this.__userId,
       token: this.__token,
     };
 
-    cnsl.info(`Join to textroom!`);
-    cnsl.log(msg);
-    this.__pluginHandle.send({
-      message: msg,
+    this.__pluginHandle.data({
+      text: JSON.stringify(joinMsg),
+      error: reason => {
+        cnsl.error(reason);
+      },
     });
+
+    cnsl.info(`Join to textroom!`, joinMsg);
   }
 };
 
