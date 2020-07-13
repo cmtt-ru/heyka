@@ -22,13 +22,13 @@ const state = () => {
   /**
    * @type MediaState
    */
-  const initialMediaState = meStore.get('mediaState', {
+  const initialMediaState = {
     microphone: false,
     speakers: true,
     screen: false,
     camera: false,
     speaking: false,
-  });
+  };
 
   const onlineStatus = meStore.get('onlineStatus', 'online');
 

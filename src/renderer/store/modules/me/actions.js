@@ -88,12 +88,6 @@ export default {
 
     commit('SET_MEDIA_STATE', mediaState);
 
-    try {
-      meStore.set('mediaState', mediaState);
-    } catch (err) {
-      cnsl.error(err);
-    }
-
     if (selectedChannelId) {
       await API.user.setMediaState(mediaState);
 
