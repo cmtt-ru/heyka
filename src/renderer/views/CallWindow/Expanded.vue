@@ -128,6 +128,10 @@ export default {
       this.$router.replace('/call-window');
     });
 
+    broadcastEvents.dispatch('grid-expanded-ready');
+
+    broadcastEvents.on('grid-expanded-set-video-frame', this.setVideoFrame.bind(this));
+
     this.handleVideoStream();
 
     janusVideoroomPlugin.on('new-stream', publisher => {
@@ -149,12 +153,14 @@ export default {
 
   destroyed() {
     broadcastEvents.removeAllListeners('grid');
+    broadcastEvents.removeAllListeners('grid-expanded-set-video-frame');
 
     const w = WindowManager.getCurrentWindow();
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
   },
+
   methods: {
 
     /**
@@ -197,6 +203,15 @@ export default {
       htmlElement.onloadedmetadata = () => {
         htmlElement.play();
       };
+    },
+
+    /**
+     * Set video frame
+     * @param {string} base64Image – video frame
+     * @returns {void}
+     */
+    setVideoFrame(base64Image) {
+      this.$refs.video.poster = base64Image;
     },
   },
 

@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import captureFrame from 'capture-frame';
 import CallControls from './CallControls';
 import { mapGetters, mapState } from 'vuex';
 import broadcastActions from '@classes/broadcastActions';
@@ -184,6 +185,11 @@ export default {
      */
     expandHandler() {
       if (this.getUserWhoSharesMedia) {
+        /** Wait until expanded grid appears and send video frame */
+        broadcastEvents.once('grid-expanded-ready', () => {
+          broadcastEvents.dispatch('grid-expanded-set-video-frame', this.getFrameFromVideo());
+        });
+
         broadcastActions.dispatch('openGrid', this.getUserWhoSharesMedia);
       }
     },
@@ -220,6 +226,16 @@ export default {
       el.onloadedmetadata = () => {
         el.play();
       };
+    },
+
+    /**
+     * Get frame from video
+     * @returns {string}
+     */
+    getFrameFromVideo() {
+      const frameBuffer = captureFrame(this.$refs.video, 'jpeg');
+
+      return 'data:image/jpeg;base64,' + frameBuffer.toString('base64');
     },
   },
 };
