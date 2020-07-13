@@ -16,6 +16,16 @@
         {{ texts.new }}
       </router-link>
     </div>
+
+    <div class="changelog">
+      <div>{{ CHANGELOG[0].version }}.</div>
+      <router-link
+        :to="{name: 'settings-about'}"
+        class="changelog__link"
+      >
+        {{ texts.new }}
+      </router-link>
+    </div>
   </div>
 </template>
 

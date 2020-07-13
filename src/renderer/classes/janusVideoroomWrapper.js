@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import Janus from './janus';
 import PublishingVideoroomPlugin from './PublishingVideoroomPlugin';
 import SubscribingVideoroomPlugin from './SubscribingVideoroomPlugin';
+import TextroomPlugin from './TextroomPlugin';
 import mediaCapturer from './mediaCapturer';
 
 /** @type {number} How much time I should wait for 'webrtc-cleanup' event before throw an error */
@@ -69,6 +70,9 @@ class JanusVideoroomWrapper extends EventEmitter {
     this.__singleRemoteStream = null;
     /** @type {number} Feed of janus for single subscription*/
     this.__singleFeed = null;
+
+    /** @type {TextroomPlugin} Textroom plugin handler */
+    this.__textroomPlugin = null;
   }
 
   /**
@@ -392,6 +396,61 @@ class JanusVideoroomWrapper extends EventEmitter {
       this.__singleRemoteStream = null;
     }
     this.__singleFeed = null;
+  }
+
+  /**
+   * Connects to the textroom plugin
+   * Connects to the janus if connection doesnt exist
+   * @param {?string} userId User id
+   * @param {?JanusOptions} options Janus options
+   * @returns {void}
+   */
+  async connectTextroom(userId, options) {
+    if (!this.__janus) {
+      await this._connect(options.janusServerUrl, options.janusAuthToken);
+    }
+
+    if (this.__textroomPlugin) {
+      this.disconnectTextroom();
+    }
+
+    this.__textroomPlugin = new TextroomPlugin({
+      janus: this.__janus,
+      room: this.__janusOptions.videoRoomId,
+      token: this.__janusOptions.channelAuthToken,
+      userId: this.__janusOptions.userId,
+    });
+
+    this.__textroomPlugin.on('data', () => {
+      this.emit('textroom-data');
+    });
+  }
+
+  /**
+   * Send message to textroom via DataChannel
+   * @param {object} data Any JSON object
+   * @returns {void}
+   */
+  async sendData(data) {
+    if (!this.__textroomPlugin) {
+      return;
+    }
+    this.__textroomPlugin.sendData(data);
+  }
+
+  /**
+   * Disconnects textroom from the channel
+   * @returns {void}
+   */
+  disconnectTextroom() {
+    if (!this.__textroomPlugin) {
+      return;
+    }
+
+    this.__textroomPlugin.removeAllListeners('data');
+
+    this.__textroomPlugin.detach();
+    this.__textroomPlugin = null;
   }
 
   /**
