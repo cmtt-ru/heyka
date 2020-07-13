@@ -8,6 +8,11 @@
       ref="video"
       class="sharing"
     />
+    <img
+      v-show="showPreview"
+      ref="preview"
+      class="video-preview"
+    />
 
     <div class="badge user">
       <avatar
@@ -68,6 +73,7 @@ export default {
       controlsOptions: {
         boundingElement: document.documentElement,
       },
+      showPreview: false,
     };
   },
   computed: {
@@ -159,6 +165,9 @@ export default {
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
+
+    this.$refs.video.onerror = null;
+    this.$refs.video.onloadedmetadata = null;
   },
 
   methods: {
@@ -197,11 +206,17 @@ export default {
      * @returns {void}
      */
     insertVideo(stream) {
-      const htmlElement = this.$refs.video;
+      const video = this.$refs.video;
 
-      htmlElement.srcObject = stream;
-      htmlElement.onloadedmetadata = () => {
-        htmlElement.play();
+      video.srcObject = stream;
+
+      video.onloadedmetadata = () => {
+        video.play();
+        this.showPreview = false;
+      };
+
+      video.onerror = () => {
+        this.showPreview = false;
       };
     },
 
@@ -211,7 +226,8 @@ export default {
      * @returns {void}
      */
     setVideoFrame(base64Image) {
-      this.$refs.video.poster = base64Image;
+      this.$refs.preview.src = base64Image;
+      this.showPreview = true;
     },
   },
 
@@ -228,6 +244,16 @@ export default {
     width 100%
     height 100%
     background-color var(--app-bg)
+
+  .video-preview
+    background-color var(--app-bg)
+    position absolute
+    left 0
+    top 0
+    width 100%
+    height 100%
+    object-fit contain
+    filter blur(5px) grayscale(1)
 
   .badge
     position absolute
