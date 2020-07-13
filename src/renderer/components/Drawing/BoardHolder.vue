@@ -33,6 +33,7 @@ export default {
   watch: {
     data(val) {
       this.$set(this.boards, val.userId, val);
+      // console.log(this.boards);
     },
   },
 };
@@ -41,11 +42,9 @@ export default {
 <style lang="stylus" scoped>
 .boards-holder
     position relative
-    width calc(100% - 16px)
-    margin 8px
-    border 1px solid var(--color-1)
+    width 100%
     background-color #222
     overflow hidden
-    height 0
-    padding-bottom 56.25%
+    height 0 // ! will be "height 100%"
+    padding-bottom 56.25% // ! will be removed
 </style>
