@@ -1,9 +1,13 @@
 <template>
-  <div class="boards-holder">
+  <div
+    ref="whiteBoard"
+    class="boards-holder"
+  >
     <board
       v-for="(board, userId) in boards"
       :key="userId"
       :income-data="board"
+      :board-dimensions="boardDimensions"
     />
   </div>
 </template>
@@ -28,6 +32,7 @@ export default {
   data() {
     return {
       boards: {},
+      boardDimensions: {},
     };
   },
   watch: {
@@ -35,6 +40,23 @@ export default {
       this.$set(this.boards, val.userId, val);
       // console.log(this.boards);
     },
+  },
+  /**
+   * Save screen dimensions
+   *
+   * @returns {object}
+   */
+  mounted() {
+    const whiteBoard = this.$refs.whiteBoard;
+    const cs = getComputedStyle(whiteBoard);
+
+    const width = parseInt(cs.getPropertyValue('width'), 10);
+    const height = parseInt(cs.getPropertyValue('height'), 10);
+
+    this.boardDimensions = {
+      width,
+      height,
+    };
   },
 };
 </script>
@@ -45,6 +67,5 @@ export default {
     width 100%
     background-color #222
     overflow hidden
-    height 0 // ! will be "height 100%"
-    padding-bottom 56.25% // ! will be removed
+    height 100%
 </style>

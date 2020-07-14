@@ -7,14 +7,16 @@
       @data="sendData"
     />
     <tablet
-      color="green"
+      color="#1ebf1b"
       :aspect-ratio="0.5625"
       my-id="03bce5c6-6871-45e2-93c0-ed6f7213cbb4"
       @data="sendData"
     />
-    <board-holder
-      :data="newDots"
-    />
+    <div class="screen-imitation">
+      <board-holder
+        :data="newDots"
+      />
+    </div>
   </div>
 </template>
 
@@ -36,12 +38,14 @@ export default {
     // console.log(this.$store.getters['users/getAllUsers']);
   },
   methods: {
-    sendData(val) {
+    sendData(val) { // TODO: toggle API here
       this.newDots = val;
     },
   },
 };
 </script>
 <style scoped lang="stylus">
-
+.screen-imitation
+  width 600px
+  height 337.5px
 </style>

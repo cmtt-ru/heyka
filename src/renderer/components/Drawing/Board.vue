@@ -3,7 +3,6 @@
     class="canvas-holder"
   >
     <div
-      ref="svgBoard"
       class="drawing"
     >
       <svg
@@ -14,10 +13,10 @@
       >
         <g :stroke="color">
           <path
-            v-for="(stroke, index) in completedPaths"
+            v-for="(path, index) in completedPaths"
             :key="index"
             class="svg-path"
-            :d="stroke"
+            :d="path"
           />
           <path
             class="svg-path"
@@ -36,6 +35,7 @@
       :style="clickHighlightStyle"
     />
     <user-cursor
+      ref="cursor"
       class="cursor"
       :style="cursorCoordsStyle"
       :color="color"
@@ -55,21 +55,13 @@ const RECIEVE_DELAY = 150;
 /* smoothing for svg lines */
 const SMOOTHING = 0.2;
 /* smallest distance between dots in svg line */
-const NEIGHBOUR_DISTANCE = 0.05;
+const NEIGHBOUR_DISTANCE = 0.02;
 /* after this time of idling lines will dissappear (they'll start dissapearing at 70% of this time)*/
 const TIME_BEFORE_CLEAR = 10000;
 
 /* variables for complex caching current svg line */
-let __savedCurrentPath = '';
-let __savedCurrentLength = 0;
-
-let __boardDimensions = {};
-let __lastPoint = null;
-let __dotsQueue = [];
-let __recieveDrawInterval = null;
-let __clearWhiteBoardTimeout = null;
-let __startRectPosition = null;
-let __visibleDots = [];
+let savedCurrentPath = '';
+let savedCurrentLength = 0;
 
 export default {
   components: {
@@ -85,12 +77,34 @@ export default {
         return {};
       },
     },
+
+    /**
+     * drawing dimensions
+     */
+    boardDimensions: {
+      type: Object,
+      default: function () {
+        return {
+          width: 500,
+          height: 400,
+        };
+      },
+    },
   },
   data() {
     return {
+
+      isMouseDown: false,
       cursorCoords: null,
       highlightCoords: null,
       completedPaths: [],
+
+      lastPoint: null,
+      dotsQueue: [],
+      recieveDrawInterval: null,
+      clearWhiteBoardTimeout: null,
+      startRectPosition: null,
+      visibleDots: [],
 
     };
   },
@@ -100,14 +114,14 @@ export default {
      * @returns {object}
      */
     cursorCoordsStyle() {
-      if (this.cursorCoords === null || __boardDimensions === null) {
+      if (this.cursorCoords === null || this.boardDimensions === null) {
         return {
           visibility: 'hidden',
         };
       }
 
       return {
-        transform: `translate(${this.cursorCoords.x * __boardDimensions.width}px, ${this.cursorCoords.y * __boardDimensions.height}px)`,
+        transform: `translate(${this.cursorCoords.x * this.boardDimensions.width}px, ${this.cursorCoords.y * this.boardDimensions.height}px)`,
       };
     },
     /**
@@ -115,7 +129,7 @@ export default {
      * @returns {object}
      */
     clickHighlightStyle() {
-      if (this.highlightCoords === null || __boardDimensions === null) {
+      if (this.highlightCoords === null || this.boardDimensions === null) {
         return {
           visibility: 'hidden',
         };
@@ -123,8 +137,8 @@ export default {
 
       return {
         'border-color': this.color,
-        top: `${this.highlightCoords.y * __boardDimensions.height}px`,
-        left: `${this.highlightCoords.x * __boardDimensions.width}px`,
+        top: `${this.highlightCoords.y * this.boardDimensions.height}px`,
+        left: `${this.highlightCoords.x * this.boardDimensions.width}px`,
       };
     },
     /**
@@ -132,14 +146,7 @@ export default {
      * @returns {string}
      */
     svgViewBox() {
-      return `0 0 ${__boardDimensions.width || 0} ${__boardDimensions.height || 0}`;
-    },
-    /**
-     * drawing mode (move cursor or dral lines)
-     * @returns {boolean}
-     */
-    drawingMode() {
-      return this.incomeData.drawing || false;
+      return `0 0 ${this.boardDimensions.width || 0} ${this.boardDimensions.height || 0}`;
     },
     /**
      * new income dots array
@@ -174,6 +181,7 @@ export default {
   watch: {
     /**
      * Add all incoming dots to local queue
+     *
      * @param {array} val - array with dots
      * @returns {void}
      */
@@ -181,33 +189,19 @@ export default {
       this.addDots([ ...val ]);
     },
   },
-  /**
-   * save screen dimensions
-   * @returns {object}
-   */
-  mounted() {
-    const svgBoard = this.$refs.svgBoard;
-    const cs = getComputedStyle(svgBoard);
 
-    const width = parseInt(cs.getPropertyValue('width'), 10);
-    const height = parseInt(cs.getPropertyValue('height'), 10);
-
-    __boardDimensions = {
-      width,
-      height,
-    };
-  },
   methods: {
     /**
      * Add new dots to local queue and trigger 'parseRecievedDots' after RECIEVE_DELAY
+     *
      * @param {array} incomeDots - array with dots
      * @returns {void}
      */
     addDots(incomeDots) {
-      if (__dotsQueue.length === 0) {
-        __dotsQueue = incomeDots.reverse();
+      if (this.dotsQueue.length === 0) {
+        this.dotsQueue = incomeDots.reverse();
       } else {
-        __dotsQueue = [...incomeDots.reverse(), ...__dotsQueue];
+        this.dotsQueue = [...incomeDots.reverse(), ...this.dotsQueue];
       }
       setTimeout(() => {
         this.parseRecievedDots();
@@ -215,45 +209,23 @@ export default {
     },
 
     /**
-     * Parse new dots: start drawing line or moving cursor if no drawing is currently taking place
+     * Parse new dots: start drawing line or moving cursor
+     *
      * @returns {void}
      */
     parseRecievedDots() {
-      if (__dotsQueue.length === 0 || __recieveDrawInterval !== null) {
+      if (this.dotsQueue.length === 0 || this.recieveDrawInterval !== null) {
         return;
       }
-      if (this.drawingMode) {
-        clearTimeout(__clearWhiteBoardTimeout);
-        this.$refs.svgPaths.classList.remove('svg--hiding');
-        __recieveDrawInterval = setInterval(() => {
-          this.updatePath();
-        }, DELAY);
-      } else {
-        __recieveDrawInterval = setInterval(() => {
-          this.updateCursor();
-        }, DELAY);
-      }
-    },
-
-    /**
-     * update cursor coords (if drawingMode === false) and trigger click animation on click
-     * @returns {void}
-     */
-    updateCursor() {
-      if (__dotsQueue.length === 0) {
-        clearInterval(__recieveDrawInterval);
-        __recieveDrawInterval = null;
-
-        return;
-      }
-      this.cursorCoords = { ...__dotsQueue.pop() };
-      if (this.cursorCoords.start === true) {
-        this.highLightClick(this.cursorCoords);
-      }
+      this.$refs.cursor.$el.classList.remove('cursor--hiding');
+      this.recieveDrawInterval = setInterval(() => {
+        this.updatePath();
+      }, DELAY);
     },
 
     /**
      * HACK (sorry!) to make element reflow (and re-trigger its css animation)
+     *
      * @param {object} el - element to reflow
      * @returns {void}
      */
@@ -266,6 +238,7 @@ export default {
 
     /**
      * move highlight animation to current coordinates and re-trigger animation (with the help of reflow)
+     *
      * @param {object} dot - coords to move animation to
      * @returns {void}
      */
@@ -275,20 +248,54 @@ export default {
     },
 
     /**
+     * update svg line:
+     * 1. Stop drawing if no dots
+     * 2. Add dot to svg if not dot.end
+     * 3. Gracefully end svg line if dot.end
+     * 4. move cursor around
+     *
+     * @returns {void}
+     */
+    updatePath() {
+      if (this.dotsQueue.length === 0) {
+        this.$refs.cursor.$el.classList.add('cursor--hiding');
+        clearInterval(this.recieveDrawInterval);
+        this.recieveDrawInterval = null;
+
+        return;
+      }
+      const dot = { ...this.dotsQueue.pop() };
+
+      if (dot.start === true) {
+        clearTimeout(this.clearWhiteBoardTimeout);
+        this.$refs.svgPaths.classList.remove('svg--hiding');
+        this.isMouseDown = true;
+      }
+      this.addDotToSvg(dot);
+      this.cursorCoords = dot;
+
+      if (dot.end === true) {
+        this.isMouseDown = false;
+        this.finishSvg(dot);
+      }
+    },
+
+    /**
      * check if distance between two last dots is bigger than NEIGHBOUR_DISTANCE
+     *
      * @param {object} dot - current dot position
      * @returns {boolean} true if no nearby dots
      */
     checkNoNeighbour(dot) {
-      if (__lastPoint === null) {
-        __lastPoint = dot;
+      if (this.lastPoint === null) {
+        this.lastPoint = dot;
 
         return true;
       }
-      const distance = Math.sqrt((dot.x - __lastPoint.x) ** 2 + (dot.y - __lastPoint.y) ** 2);
+      const distance = Math.sqrt((dot.x - this.lastPoint.x) ** 2 + (dot.y - this.lastPoint.y) ** 2);
 
       if (distance > NEIGHBOUR_DISTANCE) {
-        __lastPoint = dot;
+        this.lastPoint = dot;
 
         return true;
       }
@@ -297,60 +304,149 @@ export default {
     },
 
     /**
-     * update svg line. Lots of
+     * Add dot to svg:
+     * 1. start rectangle if dot.rect
+     * 2. pop last dot if we are still too close to last dot
+     * 3. push dot to svg line dots' array
+     *
+     * @param {object} dot - current dot
      * @returns {void}
      */
-    updatePath() {
-      if (__dotsQueue.length === 0) {
-        if (__recieveDrawInterval !== null) {
-          clearInterval(__recieveDrawInterval);
-          __recieveDrawInterval = null;
-        }
-
+    addDotToSvg(dot) {
+      if (this.isMouseDown == false) {
         return;
       }
-      const dot = { ...__dotsQueue.pop() };
-
       if (dot.rect) {
-        __startRectPosition = {
-          x: dot.x * __boardDimensions.width,
-          y: dot.y * __boardDimensions.height,
+        this.startRectPosition = {
+          x: dot.x * this.boardDimensions.width,
+          y: dot.y * this.boardDimensions.height,
         };
 
         return;
       }
 
-      if (__startRectPosition === null) {
-        if (this.checkNoNeighbour(dot) === false && __visibleDots.length > 1) {
-          __visibleDots.pop();
+      if (this.startRectPosition === null) {
+        if (this.checkNoNeighbour(dot) === false && this.visibleDots.length > 1) {
+          this.visibleDots.pop();
         }
-        __visibleDots.push([dot.x * __boardDimensions.width, dot.y * __boardDimensions.height]);
-      }
-
-      if (dot.end === true) {
-        if (__startRectPosition) {
-          this.completedPaths.push(this.currentRect());
-          __startRectPosition = null;
-        } else {
-          this.completedPaths.push(this.currentPath());
-          __visibleDots = [];
-          __savedCurrentPath = '';
-        }
-
-        this.cursorCoords = null;
-        this.startHidingSequence();
-      } else {
-        this.cursorCoords = dot;
+        this.visibleDots.push([dot.x * this.boardDimensions.width, dot.y * this.boardDimensions.height]);
       }
     },
 
+    /**
+     * Finish svg, rect or line
+     *
+     * @param {object} dot - last dot
+     * @returns {void}
+     */
+    finishSvg(dot) {
+      if (this.startRectPosition) {
+        this.completedPaths.push(this.currentRect());
+        this.startRectPosition = null;
+      } else {
+        if (this.visibleDots.length > 2) {
+          this.completedPaths.push(this.currentPath());
+        } else { // consider this a click
+          this.highLightClick(dot);
+        }
+
+        this.visibleDots = [];
+        savedCurrentPath = '';
+      }
+
+      // this.cursorCoords = null;
+      this.startHidingSequence();
+    },
+
+    /**
+     * Start timeout for hiding and deleting all svg lines
+     *
+     * @returns {void}
+     */
     startHidingSequence() {
       this.$refs.svgPaths.classList.add('svg--hiding');
-      __clearWhiteBoardTimeout = setTimeout(() => {
+      this.clearWhiteBoardTimeout = setTimeout(() => {
         this.completedPaths = [];
       }, TIME_BEFORE_CLEAR);
     },
 
+    /**
+     * Get current svg path
+     *
+     * @returns {string}
+     */
+    currentPath() {
+      if (this.visibleDots.length === 0) {
+        return;
+      }
+      const bezierCommandCalc = this.bezierCommand(this.controlPoint(this.line, SMOOTHING));
+      const path = this.svgPath(this.visibleDots, bezierCommandCalc);
+
+      return path;
+    },
+
+    /**
+     * Get current svg rect (also path)
+     *
+     * @returns {string}
+     */
+    currentRect() {
+      if (this.startRectPosition === null || this.cursorCoords === null) {
+        return;
+      }
+
+      return `M${this.startRectPosition.x},${this.startRectPosition.y} ${this.cursorCoords.x * this.boardDimensions.width},${this.startRectPosition.y} ${this.cursorCoords.x * this.boardDimensions.width},${this.cursorCoords.y * this.boardDimensions.height} ${this.startRectPosition.x},${this.cursorCoords.y * this.boardDimensions.height} z`;
+    },
+
+    // !
+    // BEZIER CALCULATIONS. MATHS AHEAD!
+    // !
+
+    /**
+     * Get a bezier curve before passed point.
+     *
+     * @param {function} pointsArr - array with dots in svg path
+     * @param {function} command - command that calculates bezier curve before specific dot
+     *
+     * @returns {string} full svg path
+     */
+    svgPath(pointsArr, command) {
+      const length = pointsArr.length;
+      const minSaveLength = 4;
+
+      if (length < minSaveLength) {
+        return pointsArr.reduce((acc, e, i, a) => i === 0
+          ? `M ${e[0]},${e[1]}`
+          : `${acc} ${command(e, i, a)}`
+        , '');
+      } else if (length === minSaveLength) {
+        savedCurrentLength = minSaveLength;
+        savedCurrentPath = `M ${pointsArr[0][0]},${pointsArr[0][1]} ${command(pointsArr[1], 1, pointsArr)}`;
+
+        return pointsArr.reduce((acc, e, i, a) => i === 0
+          ? `M ${e[0]},${e[1]}`
+          : `${acc} ${command(e, i, a)}`
+        , ''); ;
+      }
+      // eslint-disable-next-line no-magic-numbers
+      const fiveLastDots = pointsArr.slice(-5);
+
+      if (savedCurrentLength !== length) {
+        savedCurrentPath += command(fiveLastDots[2], 2, fiveLastDots);
+        savedCurrentLength = length;
+      }
+
+      // eslint-disable-next-line no-magic-numbers
+      return savedCurrentPath + command(fiveLastDots[3], 3, fiveLastDots) + command(fiveLastDots[4], 4, fiveLastDots);
+    },
+
+    /**
+     * Get distance between two dots, and slope
+     *
+     * @param {array} pointA - first dot, [x, y]
+     * @param {array} pointB - second dot, [x, y]
+     * @returns {object} {length, angle}
+     */
     line: (pointA, pointB) => {
       const lengthX = pointB[0] - pointA[0];
       const lengthY = pointB[1] - pointA[1];
@@ -360,6 +456,19 @@ export default {
         angle: Math.atan2(lengthY, lengthX),
       };
     },
+
+    /**
+     * Get a control point for one side of bezier curve. Need neigbour dots for smooth curving
+     *
+     * @param {function} line - function to get slope and distance between two dots
+     * @param {number} smooth - how smooth must bezier curve be. best between 0.1 and 0.25
+     *
+     * @param {array} current - [x,y] current dot
+     * @param {array} previous - [x,y] previous dot
+     * @param {array} next - [x,y] next dot
+     * @param {boolean} reverse - true if control point is on the end point of curve
+     * @returns {array} [x,y] for control point
+     */
     controlPoint: (line, smooth) => (current, previous, next, reverse) => {
       const p = previous || current;
       const n = next || current;
@@ -372,64 +481,35 @@ export default {
 
       return [x, y];
     },
-    bezierCommand: (controlPoint) => (point, i, a) => {
-      const cps = controlPoint(a[i - 1], a[i - 2], point);
-      const cpe = controlPoint(point, a[i - 1], a[i + 1], true);
+
+    /**
+     * Get a bezier curve before passed point.
+     *
+     * @param {function} controlPoint - function to get control points
+     *
+     * @param {array} point - [x,y] current dot
+     * @param {number} index - index of passed point in array
+     * @param {array} arr - array of doys in svg
+     * @returns {string} bezier curve: 'C p1x p1y p2x p2y x y'
+     */
+    bezierCommand: (controlPoint) => (point, index, arr) => {
+      const cps = controlPoint(arr[index - 1], arr[index - 2], point);
+      const cpe = controlPoint(point, arr[index - 1], arr[index + 1], true);
 
       return `C ${cps[0]},${cps[1]} ${cpe[0]},${cpe[1]} ${point[0]},${point[1]} `;
     },
-    svgPath(pointsArr, command) {
-      const length = pointsArr.length;
-      const minSaveLength = 4;
 
-      if (length < minSaveLength) {
-        return pointsArr.reduce((acc, e, i, a) => i === 0
-          ? `M ${e[0]},${e[1]}`
-          : `${acc} ${command(e, i, a)}`
-        , '');
-      } else if (length === minSaveLength) {
-        __savedCurrentLength = minSaveLength;
-        __savedCurrentPath = `M ${pointsArr[0][0]},${pointsArr[0][1]} ${command(pointsArr[1], 1, pointsArr)}`;
-
-        return pointsArr.reduce((acc, e, i, a) => i === 0
-          ? `M ${e[0]},${e[1]}`
-          : `${acc} ${command(e, i, a)}`
-        , ''); ;
-      }
-      // eslint-disable-next-line no-magic-numbers
-      const fiveLastDots = pointsArr.slice(-5);
-
-      if (__savedCurrentLength !== length) {
-        __savedCurrentPath += command(fiveLastDots[2], 2, fiveLastDots);
-        __savedCurrentLength = length;
-      }
-
-      // eslint-disable-next-line no-magic-numbers
-      return __savedCurrentPath + command(fiveLastDots[3], 3, fiveLastDots) + command(fiveLastDots[4], 4, fiveLastDots);
-    },
-    currentPath() {
-      if (__visibleDots.length === 0) {
-        return;
-      }
-      const bezierCommandCalc = this.bezierCommand(this.controlPoint(this.line, SMOOTHING));
-      const path = this.svgPath(__visibleDots, bezierCommandCalc);
-
-      return path;
-    },
-
-    currentRect() {
-      if (__startRectPosition === null || this.cursorCoords === null) {
-        return '';
-      }
-
-      return `M${__startRectPosition.x},${__startRectPosition.y} ${this.cursorCoords.x * __boardDimensions.width},${__startRectPosition.y} ${this.cursorCoords.x * __boardDimensions.width},${this.cursorCoords.y * __boardDimensions.height} ${__startRectPosition.x},${this.cursorCoords.y * __boardDimensions.height} z`;
-    },
   },
 
 };
 </script>
 
 <style lang="stylus" scoped>
+
+$SVG_HIDE_TIME = 10s
+$CURSOR_HIDE_TIME = 2s
+$CLICK_ANIM_TIME = 0.7s
+
 .svg-path
     fill transparent
     stroke-width 4px
@@ -437,7 +517,7 @@ export default {
     stroke-linecap round
 
 .svg--hiding
-    animation 10s 1 forwards svgClear
+    animation $SVG_HIDE_TIME 1 forwards svgClear
 
 @keyframes svgClear {
   0% {
@@ -470,6 +550,21 @@ export default {
     top 0
     left 0
 
+    &--hiding
+      animation $CURSOR_HIDE_TIME 1 forwards svgClear
+
+@keyframes HideCursor {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+
+}
 .click-highlight
     position absolute
     top 0
@@ -482,7 +577,7 @@ export default {
     border 4px solid
     border-radius 50%
     opacity 0
-    animation 0.7s 1 forwards click;
+    animation CLICK_ANIM_TIME 1 forwards click;
 
 @keyframes click {
   0% {

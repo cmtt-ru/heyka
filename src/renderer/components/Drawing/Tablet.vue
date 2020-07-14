@@ -13,16 +13,10 @@
         :style="aspectRatioSize"
       />
     </div>
-
-    <ui-switch
-      v-model="drawingMode"
-      text="Режим рисования"
-    />
   </div>
 </template>
 
 <script>
-import { UiSwitch } from '@components/Form';
 import { throttle } from 'throttle-debounce';
 
 /* throttle delay between saving dots */
@@ -36,9 +30,6 @@ let __drawDimensions = {};
 let __resizeObserver = {};
 
 export default {
-  components: {
-    UiSwitch,
-  },
   props: {
     /**
      * sender's Id (ours)
@@ -72,8 +63,6 @@ export default {
 
   data() {
     return {
-      // false if just cursor, true if srawing lines
-      drawingMode: false,
       // detect if mouse is clicked down
       isMouseDown: false,
       // stack of dots to push
@@ -174,9 +163,9 @@ export default {
      * @returns {void}
      */
     mouseMoveHandler: throttle(DELAY, false, function ($event) {
-      if (this.isMouseDown === false && this.drawingMode === true) {
-        return;
-      }
+      // if (this.isMouseDown === false && this.drawingMode === true) {
+      //   return;
+      // }
       const dot = {
         x: $event.offsetX / __drawDimensions.width,
         y: $event.offsetY / __drawDimensions.height,
@@ -202,17 +191,18 @@ export default {
      * @returns {void}
      */
     emitDots(dots) {
-      if (dots.length > 1 || this.drawingMode === true) {
-        const newDots = {
-          color: this.color,
-          drawing: this.drawingMode,
-          dots: [ ...dots ],
-          userId: this.myId,
-        };
-
-        this.sendDots = [];
-        this.$emit('data', newDots); // TODO: toggle API here
+      if (dots.length < 2) {
+        return;
       }
+      const newDots = {
+        color: this.color,
+        drawing: this.drawingMode,
+        dots: [ ...dots ],
+        userId: this.myId,
+      };
+
+      this.sendDots = [];
+      this.$emit('data', newDots);
     },
   },
 };
