@@ -1,6 +1,7 @@
 import callWindow from '@classes/callWindow';
 import boardHolderWindow from '@classes/boardHolderWindow';
 import sleep from 'es7-sleep';
+import { IS_LINUX } from '../../../../shared/Constants';
 
 export default {
   /**
@@ -12,15 +13,16 @@ export default {
    */
   setSharingSource({ commit }, source) {
     commit('SET_SHARING_SOURCE', source);
-    console.log(IS_LINUX, source);
     /**
      * If source has `display_id`, than show call frame window
      * else – hide frame
      */
-    if (source && source.display_id) {
-      callWindow.showFrame(source.display_id);
+    const sourceId = IS_LINUX ? source.id : source.display_id;
+
+    if (source && sourceId) {
+      callWindow.showFrame(sourceId);
       console.log('Create boardHolderWindow');
-      boardHolderWindow.show(source.display_id);
+      boardHolderWindow.show(sourceId);
     } else {
       callWindow.closeFrame();
       boardHolderWindow.close();
