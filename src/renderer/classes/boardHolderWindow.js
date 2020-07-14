@@ -26,6 +26,7 @@ class BoardHolderWindow {
         displayId,
         maximize: true,
         visibleOnAllWorkspaces: true,
+        alwaysOnTop: true,
         onClose: () => {
           this.window = null;
         },
