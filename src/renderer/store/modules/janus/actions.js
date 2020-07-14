@@ -22,10 +22,10 @@ export default {
     if (source && sourceId) {
       callWindow.showFrame(sourceId);
       console.log('Create boardHolderWindow');
-      boardHolderWindow.show(sourceId);
+      // boardHolderWindow.show(sourceId);
     } else {
       callWindow.closeFrame();
-      boardHolderWindow.close();
+      // boardHolderWindow.close();
     }
   },
 
