@@ -1,5 +1,5 @@
 import callWindow from '@classes/callWindow';
-import boardHolderWindow from '@classes/boardHolderWindow';
+// import boardHolderWindow from '@classes/boardHolderWindow';
 import sleep from 'es7-sleep';
 import { IS_LINUX } from '../../../../shared/Constants';
 
