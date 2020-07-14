@@ -20,7 +20,7 @@ class BoardHolderWindow {
     if (this.window === null) {
       this.window = WindowManager.create({
         template: 'frame',
-        url: '/board-holder',
+        route: '/board-holder',
         ignoreMouseEvents: true,
         showInactive: true,
         displayId,
