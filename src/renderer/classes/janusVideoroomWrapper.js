@@ -401,7 +401,7 @@ class JanusVideoroomWrapper extends EventEmitter {
   /**
    * Connects to the textroom plugin
    * Connects to the janus if connection doesnt exist
-   * @param {?string} userId User id
+   * @param {string} userId User id
    * @param {?JanusOptions} options Janus options
    * @returns {void}
    */

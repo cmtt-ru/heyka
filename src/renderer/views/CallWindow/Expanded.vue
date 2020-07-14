@@ -86,6 +86,7 @@ export default {
   computed: {
     ...mapGetters({
       selectedChannel: 'me/getSelectedChannelId',
+      myId: 'me/getMyId',
     }),
     ...mapState({
       janusOptions: 'janus',
@@ -183,7 +184,7 @@ export default {
 
     handleVideoStream() {
       // connect to textroom
-      janusVideoroomWrapper.connectTextroom(this.userId, this.janusOptions);
+      janusVideoroomWrapper.connectTextroom(this.myId, this.janusOptions);
 
       // try to get working video stream
       const activePublishers = janusVideoroomWrapper.getActivePublishers();
