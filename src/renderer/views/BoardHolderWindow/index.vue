@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      drawingData: null,
+      drawingData: {},
     };
   },
   computed: {
@@ -57,7 +57,7 @@ export default {
      */
     onTextroomData(data) {
       console.log('Received drawing data');
-      this.$set(this, 'drawingData', data);
+      this.drawingData = data;
     },
   },
 };
