@@ -92,6 +92,15 @@ class MediaCapturer extends EventEmitter {
 
     stream = null;
   }
+
+  /**
+   * Get aspect ratio of all video streams
+   * @param {MediaStream} stream Media stream
+   * @returns {Array<number>}
+   */
+  getRatioList(stream) {
+    return stream.getVideoTracks().map(track => track.getSettings().aspectRatio);
+  }
 }
 
 export default new MediaCapturer();

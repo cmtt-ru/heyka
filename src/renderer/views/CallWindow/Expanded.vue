@@ -4,10 +4,17 @@
     :style="$themes.getColors('popover')"
     @dblclick="showGridHandler"
   >
-    <video
-      ref="video"
-      class="sharing"
-    />
+    <div class="video-wrapper">
+      <video
+        ref="video"
+        class="sharing"
+      />
+      <tablet
+        :aspect-ratio="videoAspectRatio"
+        class="drawing-tablet"
+        @data="onDrawingData"
+      />
+    </div>
 
     <div class="badge user">
       <avatar
@@ -52,17 +59,23 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
-import { mapGetters } from 'vuex';
-import janusVideoroomPlugin from '../../classes/janusVideoroomWrapper';
+import { mapGetters, mapState } from 'vuex';
+import Tablet from '@components/Drawing/Tablet';
+import Logger from '@classes/logger';
+import mediaCapturer from '@classes/mediaCapturer';
+import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
+const cnsl = new Logger('Expanded.vue', 'red');
 
 export default {
   components: {
     CallControls,
     UiButton,
     Avatar,
+    Tablet,
   },
   data() {
     return {
+      videoAspectRatio: undefined,
       userId: this.$route.params.id,
       showControls: true,
       controlsOptions: {
@@ -73,6 +86,9 @@ export default {
   computed: {
     ...mapGetters({
       selectedChannel: 'me/getSelectedChannelId',
+    }),
+    ...mapState({
+      janusOptions: 'janus',
     }),
 
     /**
@@ -130,12 +146,12 @@ export default {
 
     this.handleVideoStream();
 
-    janusVideoroomPlugin.on('new-stream', publisher => {
+    janusVideoroomWrapper.on('new-stream', publisher => {
       if (publisher.userId === this.userId) {
         this.insertVideo(publisher.stream);
       }
     });
-    janusVideoroomPlugin.on('publisher-joined', publisher => {
+    janusVideoroomWrapper.on('publisher-joined', publisher => {
       if (publisher.userId === this.userId) {
         this.handleVideoStream();
       }
@@ -143,8 +159,8 @@ export default {
   },
 
   beforeDestroy() {
-    janusVideoroomPlugin.removeAllListeners('new-stream');
-    janusVideoroomPlugin.removeAllListeners('publisher-joined');
+    janusVideoroomWrapper.removeAllListeners('new-stream');
+    janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },
 
   destroyed() {
@@ -166,8 +182,11 @@ export default {
     },
 
     handleVideoStream() {
+      // connect to textroom
+      janusVideoroomWrapper.connectTextroom(this.userId, this.janusOptions);
+
       // try to get working video stream
-      const activePublishers = janusVideoroomPlugin.getActivePublishers();
+      const activePublishers = janusVideoroomWrapper.getActivePublishers();
       const ourPublisher = activePublishers.find(publishers => publishers.userId === this.userId);
 
       if (ourPublisher) {
@@ -176,13 +195,13 @@ export default {
 
           return;
         }
-        janusVideoroomPlugin.subscribeFor(ourPublisher.janusId);
+        janusVideoroomWrapper.subscribeFor(ourPublisher.janusId);
       }
 
       // set on pause all videos except this one
       activePublishers
         .filter(publisher => publisher.userId !== this.userId)
-        .forEach(publisher => janusVideoroomPlugin.pauseSubscription(publisher.janusId));
+        .forEach(publisher => janusVideoroomWrapper.pauseSubscription(publisher.janusId));
     },
 
     /**
@@ -194,9 +213,22 @@ export default {
       const htmlElement = this.$refs.video;
 
       htmlElement.srcObject = stream;
+
       htmlElement.onloadedmetadata = () => {
+        this.videoAspectRatio = mediaCapturer.getRatioList(stream)[0];
+        cnsl.log(`Ratio for video is: ${this.videoAspectRatio}`);
         htmlElement.play();
       };
+    },
+
+    /**
+     * Handles new drawing data from Tablet
+     * @param {object} data Drawing data
+     * @param {object} data.userId User id
+     * @returns {void}
+     */
+    onDrawingData(data) {
+      janusVideoroomWrapper.sendData(data, data.userId);
     },
   },
 
@@ -204,15 +236,28 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
   .expanded-window
     display flex
     flex-direction column
     height 100vh
 
-  .sharing
+  .video-wrapper
     width 100%
     height 100%
-    background-color var(--app-bg)
+    position relative
+
+    .sharing
+      width 100%
+      height 100%
+      background-color var(--app-bg)
+
+    .drawing-tablet
+      position absolute
+      top 0px
+      left 0px
+      width 100%
+      height 100%
 
   .badge
     position absolute

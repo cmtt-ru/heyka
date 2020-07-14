@@ -177,9 +177,10 @@ class TextroomPlugin extends EventEmitter {
   /**
    * Sends data via DataChannel
    * @param {object} data Free-form JSON object
+   * @param {string?} userId Send data to a particular user
    * @returns {void}
    */
-  sendData(data) {
+  sendData(data, userId) {
     if (!this.__pluginHandle) {
       return;
     }
@@ -190,6 +191,10 @@ class TextroomPlugin extends EventEmitter {
       text: JSON.stringify(data),
       transaction: uuid4(),
     };
+
+    if (userId) {
+      message.to = userId;
+    }
 
     this.__pluginHandle.data({
       text: JSON.stringify(message),

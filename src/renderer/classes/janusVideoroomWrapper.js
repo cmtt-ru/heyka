@@ -406,11 +406,14 @@ class JanusVideoroomWrapper extends EventEmitter {
    * @returns {void}
    */
   async connectTextroom(userId, options) {
+    console.log('Connect textroom');
     if (!this.__janus) {
+      console.log('connect janus');
       await this._connect(options.janusServerUrl, options.janusAuthToken);
     }
 
     if (this.__textroomPlugin) {
+      console.log('disconnect textroom');
       this.disconnectTextroom();
     }
 
@@ -418,24 +421,27 @@ class JanusVideoroomWrapper extends EventEmitter {
       janus: this.__janus,
       room: this.__janusOptions.videoRoomId,
       token: this.__janusOptions.channelAuthToken,
-      userId: this.__janusOptions.userId,
+      userId: userId,
     });
 
     this.__textroomPlugin.on('data', () => {
       this.emit('textroom-data');
     });
+
+    this.__textroomPlugin.attach();
   }
 
   /**
    * Send message to textroom via DataChannel
    * @param {object} data Any JSON object
+   * @param {string?} userId Send data to a particular user
    * @returns {void}
    */
-  async sendData(data) {
+  async sendData(data, userId) {
     if (!this.__textroomPlugin) {
       return;
     }
-    this.__textroomPlugin.sendData(data);
+    this.__textroomPlugin.sendData(data, userId);
   }
 
   /**
