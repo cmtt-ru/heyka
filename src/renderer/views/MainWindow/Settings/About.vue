@@ -73,6 +73,31 @@ export default {
   methods: {
     checkforUpdatesHandler() {
       ipcRenderer.send('update-check');
+      const noUpdateTimer = 1000;
+      const noUpdateTimeout = setTimeout(() => {
+        this.noUpdate();
+      }, noUpdateTimer);
+
+      ipcRenderer.on('update-available', () => {
+        clearTimeout(noUpdateTimeout);
+      });
+    },
+
+    /**
+     * Show update install notification
+     * @returns {void}
+     */
+    async noUpdate() {
+      const texts = this.$t('autoUpdate');
+
+      const notification = {
+        lifespan: 5000,
+        data: {
+          text: texts.noUpdate,
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
     },
   },
 };
