@@ -39,7 +39,6 @@ export default {
   },
   async mounted() {
     cnsl.info('Hello from board holder window');
-    WindowManager.getCurrentWindow().action('console');
     await janusVideoroomWrapper.init();
     janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
     cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store, this.$store.state.me.id);
