@@ -81,11 +81,6 @@ class TextroomPlugin extends EventEmitter {
           return;
         }
 
-        // Join the room only when connection is negotiated
-        if (state) {
-          this._join();
-        }
-
         cnsl.debug('webrtcState', state, reason);
       },
 
@@ -160,6 +155,9 @@ class TextroomPlugin extends EventEmitter {
 
       ondataopen: () => {
         cnsl.log('Data channel is open');
+
+        // join the room when datachannel is open
+        this._join();
       },
 
       ondata: (msg) => {
