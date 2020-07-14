@@ -2,11 +2,13 @@
   <div>
     <tablet
       color="#DE4B39"
+      :aspect-ratio="0.5625"
       my-id="dce5e5d0-4f9f-4262-8df4-c982cd057ad8"
       @data="sendData"
     />
     <tablet
       color="green"
+      :aspect-ratio="0.5625"
       my-id="03bce5c6-6871-45e2-93c0-ed6f7213cbb4"
       @data="sendData"
     />
