@@ -5,7 +5,7 @@ import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
-import { IS_WIN, IS_DEV } from '../../shared/Constants';
+import { IS_WIN, IS_DEV, IS_LINUX } from '../../shared/Constants';
 
 let icon;
 
@@ -114,6 +114,24 @@ class WindowManager {
     // add global argument so we can identify window by its id
     windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
 
+    if (IS_LINUX && options.displayId) {
+      let display = null;
+
+      console.log('source index', options.sourceIndex);
+
+      if (options.displayId && typeof options.sourceIndex !== 'number') {
+        display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+      } else {
+        display = screen.getAllDisplays()[options.sourceIndex];
+      }
+
+      console.log(display);
+      windowOptions.x = display.bounds.x;
+      windowOptions.y = display.bounds.y;
+      windowOptions.width = display.bounds.width;
+      windowOptions.height = display.bounds.height;
+    }
+
     // create BrowserWindow!
     const browserWindow = new BrowserWindow(windowOptions);
 
@@ -168,12 +186,28 @@ class WindowManager {
 
       browserWindow.setPosition(position.x, position.y);
 
-      if (options.displayId) {
-        const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+      if (options.displayId || options.sourceIndex) {
+        let display = null;
+
+        console.log('source index', options.sourceIndex);
+
+        if (options.displayId && typeof options.sourceIndex !== 'number') {
+          display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
+        } else {
+          display = screen.getAllDisplays()[options.sourceIndex];
+        }
+
+        console.log(display);
 
         if (display) {
-          browserWindow.setPosition(display.bounds.x, display.bounds.y);
-
+          console.log('set position on ', display.bounds.x, display.bounds.y);
+          if (!templates[options.template].movable) {
+            browserWindow.setMovable(true);
+          }
+          browserWindow.setPosition(parseInt('200'), parseInt('200'));
+          if (!templates[options.template].movable) {
+            browserWindow.setMovable(false);
+          }
           if (options.maximize) {
             browserWindow.setSize(display.bounds.width, display.bounds.height);
             browserWindow.setAlwaysOnTop(true, 'pop-up-menu');

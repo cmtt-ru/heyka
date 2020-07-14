@@ -1,5 +1,4 @@
 import callWindow from '@classes/callWindow';
-// import boardHolderWindow from '@classes/boardHolderWindow';
 import sleep from 'es7-sleep';
 import { IS_LINUX } from '../../../../shared/Constants';
 
@@ -20,12 +19,10 @@ export default {
     const sourceId = IS_LINUX ? source.id : source.display_id;
 
     if (source && sourceId) {
-      callWindow.showFrame(sourceId);
-      console.log('Create boardHolderWindow');
-      // boardHolderWindow.show(sourceId);
+      // source.index is needed for OS where display_id is not defined
+      callWindow.showFrame(sourceId, source.index);
     } else {
       callWindow.closeFrame();
-      // boardHolderWindow.close();
     }
   },
 

@@ -14,9 +14,10 @@ class BoardHolderWindow {
   /**
    * Show board holder window
    * @param {string} displayId – display id
+   * @param {number} sourceIndex Source index
    * @returns {void}
    */
-  show(displayId) {
+  show(displayId, sourceIndex) {
     if (this.window === null) {
       this.window = WindowManager.create({
         template: 'frame',
@@ -24,6 +25,7 @@ class BoardHolderWindow {
         ignoreMouseEvents: true,
         showInactive: true,
         displayId,
+        sourceIndex,
         maximize: true,
         visibleOnAllWorkspaces: true,
         alwaysOnTop: true,

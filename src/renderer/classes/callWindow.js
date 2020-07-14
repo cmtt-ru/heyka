@@ -163,16 +163,18 @@ class CallWindow {
   /**
    * Show frame window
    * @param {string} displayId – display id
+   * @param {number?} sourceIndex Source index
    * @returns {void}
    */
-  showFrame(displayId) {
+  showFrame(displayId, sourceIndex) {
     if (this.frameWindow === null) {
       this.frameWindow = WindowManager.create({
         template: 'frame',
-        url: 'frame.html',
+        route: '/board-holder',
         ignoreMouseEvents: true,
         showInactive: true,
         displayId,
+        sourceIndex,
         maximize: true,
         visibleOnAllWorkspaces: true,
         onClose: () => {

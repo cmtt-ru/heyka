@@ -410,6 +410,9 @@ class JanusVideoroomWrapper extends EventEmitter {
     if (!this.__janus) {
       console.log('connect janus');
       await this._connect(options.janusServerUrl, options.janusAuthToken);
+      this.__janusOptions = {
+        ...options,
+      };
     }
 
     if (this.__textroomPlugin) {
@@ -421,7 +424,7 @@ class JanusVideoroomWrapper extends EventEmitter {
       janus: this.__janus,
       room: this.__janusOptions.videoRoomId,
       token: this.__janusOptions.channelAuthToken,
-      userId: userId,
+      userId,
     });
 
     this.__textroomPlugin.on('data', () => {

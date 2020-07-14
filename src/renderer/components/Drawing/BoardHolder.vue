@@ -43,7 +43,6 @@ export default {
 .boards-holder
     position relative
     width 100%
-    background-color #222
     overflow hidden
     height 0 // ! will be "height 100%"
     padding-bottom 56.25% // ! will be removed
