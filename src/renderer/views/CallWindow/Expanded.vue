@@ -75,7 +75,7 @@ export default {
   },
   data() {
     return {
-      videoAspectRatio: undefined,
+      videoAspectRatio: 1,
       userId: this.$route.params.id,
       showControls: true,
       controlsOptions: {

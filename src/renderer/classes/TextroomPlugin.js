@@ -163,7 +163,11 @@ class TextroomPlugin extends EventEmitter {
       },
 
       ondata: (msg) => {
-        cnsl.log('Data: ', msg);
+        const parsedMsg = JSON.parse(msg);
+
+        if (parsedMsg.textroom === 'message') {
+          this.emit('data', parsedMsg);
+        }
       },
 
       // Plugin is detached (it can't be used)

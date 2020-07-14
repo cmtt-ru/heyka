@@ -427,8 +427,8 @@ class JanusVideoroomWrapper extends EventEmitter {
       userId,
     });
 
-    this.__textroomPlugin.on('data', () => {
-      this.emit('textroom-data');
+    this.__textroomPlugin.on('data', (data) => {
+      this.emit('textroom-data', data);
     });
 
     this.__textroomPlugin.attach();

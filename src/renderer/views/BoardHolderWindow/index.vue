@@ -56,8 +56,11 @@ export default {
      * @returns {void}
      */
     onTextroomData(data) {
-      console.log('Received drawing data');
-      this.drawingData = data;
+      const from = data.from;
+      const drawingData = JSON.parse(data.text);
+
+      drawingData.userId = from;
+      this.drawingData = drawingData;
     },
   },
 };

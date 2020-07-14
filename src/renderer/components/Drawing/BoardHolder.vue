@@ -33,7 +33,7 @@ export default {
   watch: {
     data(val) {
       this.$set(this.boards, val.userId, val);
-      // console.log(this.boards);
+      console.log(this.boards);
     },
   },
 };

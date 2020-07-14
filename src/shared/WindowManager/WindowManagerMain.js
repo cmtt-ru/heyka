@@ -189,25 +189,15 @@ class WindowManager {
       if (options.displayId || options.sourceIndex) {
         let display = null;
 
-        console.log('source index', options.sourceIndex);
-
         if (options.displayId && typeof options.sourceIndex !== 'number') {
           display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
         } else {
           display = screen.getAllDisplays()[options.sourceIndex];
         }
 
-        console.log(display);
-
         if (display) {
-          console.log('set position on ', display.bounds.x, display.bounds.y);
-          if (!templates[options.template].movable) {
-            browserWindow.setMovable(true);
-          }
-          browserWindow.setPosition(parseInt('200'), parseInt('200'));
-          if (!templates[options.template].movable) {
-            browserWindow.setMovable(false);
-          }
+          browserWindow.setPosition(display.bounds.x, display.bounds.y);
+
           if (options.maximize) {
             browserWindow.setSize(display.bounds.width, display.bounds.height);
             browserWindow.setAlwaysOnTop(true, 'pop-up-menu');

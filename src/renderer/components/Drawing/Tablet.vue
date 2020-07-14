@@ -73,7 +73,7 @@ export default {
   data() {
     return {
       // false if just cursor, true if srawing lines
-      drawingMode: false,
+      drawingMode: true,
       // detect if mouse is clicked down
       isMouseDown: false,
       // stack of dots to push
