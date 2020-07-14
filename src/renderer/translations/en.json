@@ -59,7 +59,8 @@
     },
     "about": {
       "version": "version",
-      "notice": "Notice & Acknowledgements"
+      "notice": "Notice & Acknowledgements",
+      "checkUpdates": "Check for updates"
     },
     "support": {
       "tellerror": "Report an error"
