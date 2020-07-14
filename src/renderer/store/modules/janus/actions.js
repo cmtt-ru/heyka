@@ -1,4 +1,5 @@
 import callWindow from '@classes/callWindow';
+import boardHolderWindow from '@classes/boardHolderWindow';
 import sleep from 'es7-sleep';
 
 export default {
@@ -18,8 +19,10 @@ export default {
      */
     if (source && source.display_id) {
       callWindow.showFrame(source.display_id);
+      boardHolderWindow.show(source.display_id);
     } else {
       callWindow.closeFrame();
+      boardHolderWindow.close();
     }
   },
 

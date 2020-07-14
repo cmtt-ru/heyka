@@ -9,6 +9,7 @@ import { styleguideRoutes } from './styleguideRoutes';
 const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
 const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/Pushes');
+const BoardHolderWindow = () => import(/* webpackChunkName: boardHolder" */ '@views/BoardHolderWindow');
 
 Vue.use(VueRouter);
 
@@ -43,6 +44,12 @@ const routes = [
   {
     path: '/push-window',
     component: PushWindow,
+  },
+
+  /* Board holder window */
+  {
+    path: '/board-holder',
+    component: BoardHolderWindow,
   },
 
   /**
