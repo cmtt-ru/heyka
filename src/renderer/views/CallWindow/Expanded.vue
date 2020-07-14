@@ -4,17 +4,18 @@
     :style="$themes.getColors('popover')"
     @dblclick="showGridHandler"
   >
-    <div class="video-wrapper">
+    <div class="sharing-wrapper wrapper">
       <video
         ref="video"
         class="sharing"
       />
-      <div class="drawing-wrapper">
-        <tablet
-          :aspect-ratio="videoAspectRatio"
-          class="drawing-tablet"
-          @data="onDrawingData"
-        />
+      <div class="tablet-wrapper wrapper">
+        <div class="tablet">
+          <tablet
+            :aspect-ratio="1 / videoAspectRatio"
+            @data="onDrawingData"
+          />
+        </div>
       </div>
     </div>
 
@@ -241,31 +242,28 @@ export default {
 <style lang="stylus" scoped>
 
   .expanded-window
-    display flex
-    flex-direction column
-    height 100vh
-
-  .video-wrapper
+    position relative
     width 100%
     height 100%
-    position relative
 
-    .sharing
+  .wrapper
+    position absolute
+    top 0px
+    left 0px
+    height 100vh
+    flex-direction column
+    display flex
+
+  .tablet-wrapper
+    width 100vw
+    .tablet
       width 100%
       height 100%
-      background-color var(--app-bg)
 
-    .drawing-wrapper
-      position absolute
-      top 0px
-      left 0px
-      width 100%
-      height 100%
-
-      .drawing-tablet
-        width 100%
-        height 100%
-        position relative
+  .sharing
+    width 100%
+    height 100%
+    background-color var(--app-bg)
 
   .badge
     position absolute
