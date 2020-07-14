@@ -43,7 +43,7 @@ class ConnectionCheck {
     while (true) {
       const state = await isOnline();
 
-      this.handleOnlineStatus.bind(state);
+      this.handleOnlineStatus(state);
       await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
     }
   }
@@ -161,7 +161,7 @@ class ConnectionCheck {
 
     if (state) {
       if (nid) {
-        await this.showNotification(name, false);
+        return;
       }
 
       this.notificationsIds[name] = await store.dispatch('app/addNotification', options);
