@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import BoardHolder from '@components/Drawing/BoardHolder';
 import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
 import { mapState, mapGetters } from 'vuex';
