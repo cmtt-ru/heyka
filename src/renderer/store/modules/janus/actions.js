@@ -19,6 +19,7 @@ export default {
      */
     if (source && source.display_id) {
       callWindow.showFrame(source.display_id);
+      console.log('Create boardHolderWindow');
       boardHolderWindow.show(source.display_id);
     } else {
       callWindow.closeFrame();

@@ -10,9 +10,12 @@
 </template>
 
 <script>
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import BoardHolder from '@components/Drawing/BoardHolder';
 import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
 import { mapState } from 'vuex';
+import Logger from '@classes/logger';
+const cnsl = new Logger('BoardHolderWindow', 'maroon');
 
 export default {
   components: {
@@ -30,6 +33,8 @@ export default {
     }),
   },
   async created() {
+    cnsl.info('Hello from board holder window');
+    WindowManager.getCurrentWindow().action('console');
     await janusVideoroomWrapper.init();
     janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
     janusVideoroomWrapper.connectTextroom(this.userId, this.janusOptions);
