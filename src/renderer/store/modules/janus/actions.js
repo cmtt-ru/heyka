@@ -12,7 +12,7 @@ export default {
    */
   setSharingSource({ commit }, source) {
     commit('SET_SHARING_SOURCE', source);
-
+    console.log(IS_LINUX, source);
     /**
      * If source has `display_id`, than show call frame window
      * else – hide frame
