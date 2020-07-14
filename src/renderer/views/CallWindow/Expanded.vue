@@ -9,11 +9,13 @@
         ref="video"
         class="sharing"
       />
-      <tablet
-        :aspect-ratio="videoAspectRatio"
-        class="drawing-tablet"
-        @data="onDrawingData"
-      />
+      <div class="drawing-wrapper">
+        <tablet
+          :aspect-ratio="videoAspectRatio"
+          class="drawing-tablet"
+          @data="onDrawingData"
+        />
+      </div>
     </div>
 
     <div class="badge user">
@@ -253,12 +255,17 @@ export default {
       height 100%
       background-color var(--app-bg)
 
-    .drawing-tablet
+    .drawing-wrapper
       position absolute
       top 0px
       left 0px
       width 100%
       height 100%
+
+      .drawing-tablet
+        width 100%
+        height 100%
+        position relative
 
   .badge
     position absolute

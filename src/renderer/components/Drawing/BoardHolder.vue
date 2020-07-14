@@ -53,6 +53,8 @@ export default {
     const width = parseInt(cs.getPropertyValue('width'), 10);
     const height = parseInt(cs.getPropertyValue('height'), 10);
 
+    console.log(width, height);
+
     this.boardDimensions = {
       width,
       height,
