@@ -57,7 +57,8 @@ export default {
       const from = data.from;
       const drawingData = JSON.parse(data.text);
 
-      drawingData.userId = from;
+      drawingData.userId = from
+        .replace('(sender)', '');
       this.drawingData = drawingData;
     },
   },

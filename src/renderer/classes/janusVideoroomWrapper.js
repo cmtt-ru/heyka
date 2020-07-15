@@ -425,7 +425,7 @@ class JanusVideoroomWrapper extends EventEmitter {
       janus: this.__janus,
       room: this.__janusOptions.videoRoomId,
       token: this.__janusOptions.channelAuthToken,
-      userId: `${userId}-${participantType}`,
+      userId: `${userId}(${participantType})`,
     });
 
     this.__textroomPlugin.on('data', (data) => {
@@ -445,7 +445,7 @@ class JanusVideoroomWrapper extends EventEmitter {
     if (!this.__textroomPlugin) {
       return;
     }
-    this.__textroomPlugin.sendData(data, `${userId}-receiver`);
+    this.__textroomPlugin.sendData(data, `${userId}(receiver)`);
   }
 
   /**
