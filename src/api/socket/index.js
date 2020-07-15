@@ -55,6 +55,25 @@ export async function saveSocketParams() {
 }
 
 /**
+ * Socket connected status
+ *
+ * @return {boolean}
+ */
+export function connected() {
+  return client.connected;
+}
+
+/**
+ * Destroy & connect to sockets
+ *
+ * @returns {void}
+ */
+export async function reconnect() {
+  await destroy();
+  await store.dispatch('initial');
+}
+
+/**
  * Destroy socket connection and unbind events
  *
  * @returns {Promise<void>}
