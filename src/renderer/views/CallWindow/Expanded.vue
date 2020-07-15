@@ -168,9 +168,6 @@ export default {
 
     janusVideoroomWrapper.on('new-stream', publisher => {
       if (publisher.userId === this.userId) {
-        // connect to textroom
-        janusVideoroomWrapper.connectTextroom(this.myId, this.janusOptions);
-
         this.insertVideo(publisher.stream);
       }
     });
@@ -230,6 +227,9 @@ export default {
      * @returns {void}
      */
     insertVideo(stream) {
+      // connect to textroom
+      janusVideoroomWrapper.connectTextroom(this.myId, this.janusOptions);
+
       const htmlElement = this.$refs.video;
 
       htmlElement.srcObject = stream;
