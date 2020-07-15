@@ -8,6 +8,7 @@ import trottleAPI from './throttle';
 import axios from 'axios';
 import { updateTokens } from './tokens';
 import store from '@/store';
+import connectionCheck from '@classes/connectionCheck';
 
 if (IS_DEV) {
   axios.defaults.baseURL = process.env.VUE_APP_DEV_URL;
@@ -53,6 +54,8 @@ function middleware(func, functionName) {
         method: functionName,
         data: Array.prototype.slice.call(arguments),
       });
+
+      connectionCheck.handleServerAvailability(true);
 
       return await func.apply(null, arguments);
     } catch (err) {
