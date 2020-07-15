@@ -68,8 +68,9 @@ export default {
      */
     aspectRatioSize() {
       return {
-        'padding-bottom': `${this.aspectRatio * PERCENTAGE}%`,
         width: `min(100%,${PERCENTAGE / this.aspectRatio}vh)`,
+        height: `min(100%,${PERCENTAGE * this.aspectRatio}vw)`,
+
       };
     },
   },
@@ -231,6 +232,6 @@ export default {
     box-sizing border-box
 .drawing-pad
     overflow hidden
-    height 0
+    height 100%
     width 100%
 </style>
