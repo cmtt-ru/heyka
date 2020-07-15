@@ -1,18 +1,16 @@
 <template>
-  <div>
+  <div
+    ref="drawingPad"
+    class="drawing-pad-container"
+    @mousemove="mouseMoveHandler"
+    @mousedown="mouseDownHandler"
+    @mouseup="mouseUpHandler"
+    @mouseleave="mouseUpHandler"
+  >
     <div
-      ref="drawingPad"
-      class="drawing-pad-container"
-      @mousemove="mouseMoveHandler"
-      @mousedown="mouseDownHandler"
-      @mouseup="mouseUpHandler"
-      @mouseleave="mouseUpHandler"
-    >
-      <div
-        class="drawing-pad aspect-ratio"
-        :style="aspectRatioSize"
-      />
-    </div>
+      class="drawing-pad aspect-ratio"
+      :style="aspectRatioSize"
+    />
   </div>
 </template>
 
@@ -212,6 +210,10 @@ export default {
 .drawing-pad-container
     position relative
     width 100%
+    height 100%
+    display flex
+    align-items center
+    justify-content center
     border 1px solid var(--color-1)
     box-sizing border-box
 .aspect-ratio
