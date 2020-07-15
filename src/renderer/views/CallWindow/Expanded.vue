@@ -14,6 +14,7 @@
           <tablet
             :aspect-ratio="1 / videoAspectRatio"
             :my-id="myId"
+            :color="myColor"
             @data="onDrawingData"
           />
         </div>
@@ -70,6 +71,19 @@ import mediaCapturer from '@classes/mediaCapturer';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 const cnsl = new Logger('Expanded.vue', 'red');
 
+const COLORS = ['#613DC1',
+  '#EE7674',
+  '#F08700',
+  '#00A6A6',
+  '#EFCA08',
+  '#D33F49',
+  '#266DD3',
+  '#C64191'];
+
+const MY_COLOR = COLORS[Math.floor(Math.random() * COLORS.length)];
+
+console.log(MY_COLOR);
+
 export default {
   components: {
     CallControls,
@@ -85,6 +99,7 @@ export default {
       controlsOptions: {
         boundingElement: document.documentElement,
       },
+      myColor: MY_COLOR,
     };
   },
   computed: {

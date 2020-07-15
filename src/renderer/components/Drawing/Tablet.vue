@@ -41,14 +41,7 @@ export default {
      */
     aspectRatio: {
       type: Number,
-      default: 0.5625,
-    },
-    /**
-     * reciever user's Id
-     */
-    recieverId: {
-      type: String,
-      default: '',
+      default: 1,
     },
     /**
      * Color of line, arrow and box
@@ -75,6 +68,16 @@ export default {
      */
     aspectRatioSize() {
       return { 'padding-bottom': `${this.aspectRatio * PERCENTAGE}%` };
+    },
+  },
+
+  watch: {
+    aspectRatio() {
+      this.$nextTick(() => {
+        const drawingPad = this.$refs.drawingPad;
+
+        this.setDrawDimensions(drawingPad);
+      });
     },
   },
 
@@ -107,11 +110,20 @@ export default {
      */
     watchDrawDimensions(entries) {
       for (const entry of entries) {
-        __drawDimensions = {
-          width: entry.contentRect.width,
-          height: entry.contentRect.height,
-        };
+        this.setDrawDimensions(entry.target);
       }
+    },
+
+    /**
+     * set dimensions for drawing pad
+     * @param {object} target - drawing pad
+     * @returns {void}
+     */
+    setDrawDimensions(target) {
+      __drawDimensions = {
+        width: target.offsetWidth,
+        height: target.offsetHeight,
+      };
     },
 
     /**
@@ -219,5 +231,4 @@ export default {
     overflow hidden
     height 0
     width 100%
-    padding-bottom 56.25%
 </style>
