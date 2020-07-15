@@ -67,7 +67,10 @@ export default {
      * @returns {object}
      */
     aspectRatioSize() {
-      return { 'padding-bottom': `${this.aspectRatio * PERCENTAGE}%` };
+      return {
+        'padding-bottom': `${this.aspectRatio * PERCENTAGE}%`,
+        width: `min(100%,${PERCENTAGE / this.aspectRatio}vh)`,
+      };
     },
   },
 
