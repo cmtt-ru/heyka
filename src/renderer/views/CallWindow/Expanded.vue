@@ -267,6 +267,7 @@ export default {
     top 0px
     left 0px
     height 100vh
+    width 100vw
     flex-direction column
     display flex
 
