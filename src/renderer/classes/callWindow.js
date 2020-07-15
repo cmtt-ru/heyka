@@ -181,6 +181,8 @@ class CallWindow {
           this.frameWindow = null;
         },
       });
+
+      this.frameWindow.action('console');
     } else {
       this.frameWindow.action('showInactive');
     }

@@ -166,6 +166,10 @@ class TextroomPlugin extends EventEmitter {
         if (parsedMsg.textroom === 'message') {
           this.emit('data', parsedMsg);
         }
+
+        if (parsedMsg.textroom === 'error') {
+          cnsl.error(msg);
+        }
       },
 
       // Plugin is detached (it can't be used)
