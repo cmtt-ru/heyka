@@ -402,10 +402,11 @@ class JanusVideoroomWrapper extends EventEmitter {
    * Connects to the textroom plugin
    * Connects to the janus if connection doesnt exist
    * @param {string} userId User id
+   * @param {string} participantType "Sender" or "receiver"
    * @param {?JanusOptions} options Janus options
    * @returns {void}
    */
-  async connectTextroom(userId, options) {
+  async connectTextroom(userId, participantType, options) {
     console.log('Connect textroom');
     if (!this.__janus) {
       console.log('connect janus');
@@ -424,7 +425,7 @@ class JanusVideoroomWrapper extends EventEmitter {
       janus: this.__janus,
       room: this.__janusOptions.videoRoomId,
       token: this.__janusOptions.channelAuthToken,
-      userId,
+      userId: `${userId}-${participantType}`,
     });
 
     this.__textroomPlugin.on('data', (data) => {
@@ -444,7 +445,7 @@ class JanusVideoroomWrapper extends EventEmitter {
     if (!this.__textroomPlugin) {
       return;
     }
-    this.__textroomPlugin.sendData(data, userId);
+    this.__textroomPlugin.sendData(data, `${userId}-receiver`);
   }
 
   /**

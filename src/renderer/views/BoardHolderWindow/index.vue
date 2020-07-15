@@ -41,7 +41,7 @@ export default {
     await janusVideoroomWrapper.init();
     janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
     cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store, this.$store.state.me.id);
-    janusVideoroomWrapper.connectTextroom(this.userId, this.janusOptions);
+    janusVideoroomWrapper.connectTextroom(this.userId, 'receiver', this.janusOptions);
   },
   beforeDestroy() {
     janusVideoroomWrapper.disconnectTextroom();

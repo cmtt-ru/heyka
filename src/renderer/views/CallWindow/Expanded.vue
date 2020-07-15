@@ -228,7 +228,7 @@ export default {
      */
     insertVideo(stream) {
       // connect to textroom
-      janusVideoroomWrapper.connectTextroom(this.myId, this.janusOptions);
+      janusVideoroomWrapper.connectTextroom(this.myId, 'sender', this.janusOptions);
 
       const htmlElement = this.$refs.video;
 
