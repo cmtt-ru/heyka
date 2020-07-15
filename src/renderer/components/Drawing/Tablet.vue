@@ -1,15 +1,15 @@
 <template>
   <div
-    ref="drawingPad"
     class="drawing-pad-container"
-    @mousemove="mouseMoveHandler"
-    @mousedown="mouseDownHandler"
-    @mouseup="mouseUpHandler"
-    @mouseleave="mouseUpHandler"
   >
     <div
+      ref="drawingPad"
       class="drawing-pad"
       :style="aspectRatioSize"
+      @mousemove="mouseMoveHandler"
+      @mousedown="mouseDownHandler"
+      @mouseup="mouseUpHandler"
+      @mouseleave="mouseUpHandler"
     />
   </div>
 </template>
