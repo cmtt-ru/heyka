@@ -2,6 +2,7 @@ import store from '@/store';
 import i18n from '@/i18n';
 import isOnline from 'is-online';
 import sleep from 'es7-sleep';
+import isMainWindow from '@shared/WindowManager/isMainWindow';
 
 /**
  * Used for make some debounce for slow internet event
@@ -32,7 +33,9 @@ class ConnectionCheck {
 
     this.slowInternetLastCallTime = null;
 
-    this.startInternetConnectionChecker();
+    if (isMainWindow()) {
+      this.startInternetConnectionChecker();
+    }
   }
 
   /**
