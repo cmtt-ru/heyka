@@ -13,6 +13,7 @@
         <div class="tablet">
           <tablet
             :aspect-ratio="1 / videoAspectRatio"
+            :my-id="myId"
             @data="onDrawingData"
           />
         </div>

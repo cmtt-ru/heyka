@@ -8,7 +8,7 @@
     @mouseleave="mouseUpHandler"
   >
     <div
-      class="drawing-pad aspect-ratio"
+      class="drawing-pad"
       :style="aspectRatioSize"
     />
   </div>
@@ -194,7 +194,6 @@ export default {
       }
       const newDots = {
         color: this.color,
-        drawing: this.drawingMode,
         dots: [ ...dots ],
         userId: this.myId,
       };
@@ -216,8 +215,9 @@ export default {
     justify-content center
     border 1px solid var(--color-1)
     box-sizing border-box
-.aspect-ratio
+.drawing-pad
     overflow hidden
     height 0
+    width 100%
     padding-bottom 56.25%
 </style>
