@@ -201,7 +201,7 @@ export default {
      * @returns {void}
      */
     emitDots(dots) {
-      if (dots.length < 2) {
+      if (dots.length < 2 && dots[dots.length - 1]?.end !== true) {
         return;
       }
       const newDots = {
@@ -225,7 +225,6 @@ export default {
     display flex
     align-items center
     justify-content center
-    border 1px solid var(--color-1)
     box-sizing border-box
 .drawing-pad
     overflow hidden

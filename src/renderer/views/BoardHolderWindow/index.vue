@@ -13,7 +13,6 @@
 </template>
 
 <script>
-// import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import BoardHolder from '@components/Drawing/BoardHolder';
 import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
 import { mapState, mapGetters } from 'vuex';
@@ -39,7 +38,6 @@ export default {
   },
   async mounted() {
     cnsl.info('Hello from board holder window');
-    // WindowManager.getCurrentWindow().action('console');
     await janusVideoroomWrapper.init();
     janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
     cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store, this.$store.state.me.id);

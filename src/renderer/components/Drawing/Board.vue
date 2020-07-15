@@ -59,10 +59,6 @@ const NEIGHBOUR_DISTANCE = 0.02;
 /* after this time of idling lines will dissappear (they'll start dissapearing at 70% of this time)*/
 const TIME_BEFORE_CLEAR = 10000;
 
-/* variables for complex caching current svg line */
-let savedCurrentPath = '';
-let savedCurrentLength = 0;
-
 export default {
   components: {
     UserCursor,
@@ -351,7 +347,6 @@ export default {
         }
 
         this.visibleDots = [];
-        savedCurrentPath = '';
       }
 
       // this.cursorCoords = null;
@@ -411,17 +406,24 @@ export default {
      * @returns {string} full svg path
      */
     svgPath(pointsArr, command) {
+      if (typeof this.svgPath.savedCurrentLength == 'undefined') {
+        this.svgPath.savedCurrentLength = 0;
+        this.svgPath.savedCurrentPath = '';
+      }
+
       const length = pointsArr.length;
       const minSaveLength = 4;
 
-      if (length < minSaveLength) {
+      if (length === 0) {
+        this.svgPath.savedCurrentPath = '';
+      } else if (length < minSaveLength) {
         return pointsArr.reduce((acc, e, i, a) => i === 0
           ? `M ${e[0]},${e[1]}`
           : `${acc} ${command(e, i, a)}`
         , '');
       } else if (length === minSaveLength) {
-        savedCurrentLength = minSaveLength;
-        savedCurrentPath = `M ${pointsArr[0][0]},${pointsArr[0][1]} ${command(pointsArr[1], 1, pointsArr)}`;
+        this.svgPath.savedCurrentLength = minSaveLength;
+        this.svgPath.savedCurrentPath = `M ${pointsArr[0][0]},${pointsArr[0][1]} ${command(pointsArr[1], 1, pointsArr)}`;
 
         return pointsArr.reduce((acc, e, i, a) => i === 0
           ? `M ${e[0]},${e[1]}`
@@ -431,13 +433,13 @@ export default {
       // eslint-disable-next-line no-magic-numbers
       const fiveLastDots = pointsArr.slice(-5);
 
-      if (savedCurrentLength !== length) {
-        savedCurrentPath += command(fiveLastDots[2], 2, fiveLastDots);
-        savedCurrentLength = length;
+      if (this.svgPath.savedCurrentLength !== length) {
+        this.svgPath.savedCurrentPath += command(fiveLastDots[2], 2, fiveLastDots);
+        this.svgPath.savedCurrentLength = length;
       }
 
       // eslint-disable-next-line no-magic-numbers
-      return savedCurrentPath + command(fiveLastDots[3], 3, fiveLastDots) + command(fiveLastDots[4], 4, fiveLastDots);
+      return this.svgPath.savedCurrentPath + command(fiveLastDots[3], 3, fiveLastDots) + command(fiveLastDots[4], 4, fiveLastDots);
     },
 
     /**
@@ -577,7 +579,7 @@ $CLICK_ANIM_TIME = 0.7s
     border 4px solid
     border-radius 50%
     opacity 0
-    animation CLICK_ANIM_TIME 1 forwards click;
+    animation $CLICK_ANIM_TIME 1 forwards click;
 
 @keyframes click {
   0% {

@@ -38,7 +38,6 @@ export default {
   watch: {
     data(val) {
       this.$set(this.boards, val.userId, val);
-      console.log(this.boards);
     },
   },
   /**
@@ -49,11 +48,8 @@ export default {
   mounted() {
     const whiteBoard = this.$refs.whiteBoard;
     const cs = getComputedStyle(whiteBoard);
-
     const width = parseInt(cs.getPropertyValue('width'), 10);
     const height = parseInt(cs.getPropertyValue('height'), 10);
-
-    console.log(width, height);
 
     this.boardDimensions = {
       width,
