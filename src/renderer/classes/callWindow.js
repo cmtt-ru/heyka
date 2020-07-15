@@ -182,7 +182,7 @@ class CallWindow {
         },
       });
 
-      this.frameWindow.action('console');
+      // this.frameWindow.action('console');
     } else {
       this.frameWindow.action('showInactive');
     }
