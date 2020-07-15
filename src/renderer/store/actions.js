@@ -90,14 +90,15 @@ export default {
 
     try {
       response = await API.channel.select(id, getters['me/getMediaState']);
+      dispatch('selectChannelWithoutAPICall', {
+        id,
+        connectionOptions: response.connectionOptions,
+      });
     } catch (err) {
-      commit('app/ANIMATION_CHANNEL_ID', null);
+      if (err.message !== 'select throttled') {
+        commit('app/ANIMATION_CHANNEL_ID', null);
+      }
     }
-
-    dispatch('selectChannelWithoutAPICall', {
-      id,
-      connectionOptions: response.connectionOptions,
-    });
   },
 
   /**
@@ -154,7 +155,14 @@ export default {
    */
   async unselectChannel({ commit, dispatch }, id) {
     commit('app/ANIMATION_CHANNEL_ID', null);
-    await API.channel.unselect(id);
+    try {
+      await API.channel.unselect(id);
+    } catch (err) {
+      if (err.message !== 'unselect throttled') {
+        commit('app/ANIMATION_CHANNEL_ID', id);
+      }
+    }
+
     dispatch('unselectChannelWithoutAPICall', id);
   },
 
