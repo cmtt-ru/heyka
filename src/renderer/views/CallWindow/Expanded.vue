@@ -233,7 +233,7 @@ export default {
      * @returns {void}
      */
     onDrawingData(data) {
-      janusVideoroomWrapper.sendData(data, data.userId);
+      janusVideoroomWrapper.sendData(data, this.userId);
     },
   },
 
