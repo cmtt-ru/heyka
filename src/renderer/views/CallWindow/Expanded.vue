@@ -179,6 +179,7 @@ export default {
   },
 
   beforeDestroy() {
+    janusVideoroomWrapper.disconnectTextroom();
     janusVideoroomWrapper.removeAllListeners('new-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },
