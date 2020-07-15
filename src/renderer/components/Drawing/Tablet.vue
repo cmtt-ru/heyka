@@ -20,7 +20,7 @@ import { throttle } from 'throttle-debounce';
 /* throttle delay between saving dots */
 const DELAY = 33;
 /* throttle delay between sending dots */
-const SEND_DELAY = 250;
+const SEND_DELAY = 132;
 const PERCENTAGE = 100;
 
 /* variables for watching tablet size */

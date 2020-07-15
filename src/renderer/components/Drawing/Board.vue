@@ -51,7 +51,7 @@ import { setInterval, clearInterval } from 'requestanimationframe-timer';
 /* throttle delay between grawing dots (should be same as in sender, Tablet.vue) */
 const DELAY = 33;
 /* delay made for small dots buffering */
-const RECIEVE_DELAY = 150;
+const RECIEVE_DELAY = 70;
 /* smoothing for svg lines */
 const SMOOTHING = 0.2;
 /* smallest distance between dots in svg line */
