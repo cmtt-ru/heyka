@@ -168,6 +168,9 @@ export default {
 
     janusVideoroomWrapper.on('new-stream', publisher => {
       if (publisher.userId === this.userId) {
+        // connect to textroom
+        janusVideoroomWrapper.connectTextroom(this.myId, this.janusOptions);
+
         this.insertVideo(publisher.stream);
       }
     });
@@ -202,9 +205,6 @@ export default {
     },
 
     handleVideoStream() {
-      // connect to textroom
-      janusVideoroomWrapper.connectTextroom(this.myId, this.janusOptions);
-
       // try to get working video stream
       const activePublishers = janusVideoroomWrapper.getActivePublishers();
       const ourPublisher = activePublishers.find(publishers => publishers.userId === this.userId);

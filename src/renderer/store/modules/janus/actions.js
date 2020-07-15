@@ -12,11 +12,12 @@ export default {
    */
   setSharingSource({ commit }, source) {
     commit('SET_SHARING_SOURCE', source);
+
     /**
      * If source has `display_id`, than show call frame window
      * else – hide frame
      */
-    const sourceId = IS_LINUX ? source.id : source.display_id;
+    const sourceId = IS_LINUX ? source?.id : source['display_id'];
 
     if (source && sourceId) {
       // source.index is needed for OS where display_id is not defined
