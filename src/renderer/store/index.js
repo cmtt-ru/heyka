@@ -37,6 +37,7 @@ const plugins = [
       'janus/SET_IN_PROGRESS',
       'me/SET_MEDIA_STATE',
       'me/SET_CHANNEL_ID',
+      'me/SET_USER_ID',
       'channels/ADD_USER',
       'channels/REMOVE_USER',
       'channels/SET_USER_MEDIA_STATE',
