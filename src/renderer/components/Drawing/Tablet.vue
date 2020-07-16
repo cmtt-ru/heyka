@@ -249,7 +249,6 @@ export default {
       };
 
       this.$emit('data', newDots);
-      this.localNewDots = newDots;
       this.sendDots = [];
     },
   },
