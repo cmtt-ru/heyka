@@ -407,7 +407,6 @@ class JanusVideoroomWrapper extends EventEmitter {
    * @returns {void}
    */
   async connectTextroom(userId, participantType, options) {
-    console.log('Connect textroom');
     if (!this.__janus) {
       console.log('connect janus');
       await this._connect(options.janusServerUrl, options.janusAuthToken);
