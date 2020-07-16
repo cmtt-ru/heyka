@@ -59,7 +59,8 @@
     },
     "about": {
       "version": "version",
-      "notice": "Notice & Acknowledgements"
+      "notice": "Notice & Acknowledgements",
+      "checkUpdates": "Check for updates"
     },
     "support": {
       "tellerror": "Report an error"
@@ -134,7 +135,8 @@
   "autoUpdate": {
     "message": "Updated version of Heyka is available and will be installed at the next launch",
     "install": "Install",
-    "later": "Later"
+    "later": "Later",
+    "noUpdate": "No updates available"
   },
   "connectionCheck": {
     "onlineStatus": "It seems you are disconnected from the Internet",
