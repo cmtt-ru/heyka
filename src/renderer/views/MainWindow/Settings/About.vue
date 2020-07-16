@@ -73,13 +73,9 @@ export default {
   methods: {
     checkforUpdatesHandler() {
       ipcRenderer.send('update-check');
-      const noUpdateTimer = 1000;
-      const noUpdateTimeout = setTimeout(() => {
-        this.noUpdate();
-      }, noUpdateTimer);
 
-      ipcRenderer.on('update-available', () => {
-        clearTimeout(noUpdateTimeout);
+      ipcRenderer.once('update-not-available', () => {
+        this.noUpdate()
       });
     },
 
