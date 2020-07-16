@@ -89,6 +89,8 @@ export default {
       screen: false,
     });
 
+    dispatch('janus/setSharingSource', null, { root: true });
+
     try {
       response = await API.channel.select(id, getters['me/getMediaState']);
     } catch (err) {
