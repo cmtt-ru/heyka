@@ -56,7 +56,7 @@ const RECIEVE_DELAY = 70;
 /* smoothing for svg lines */
 const SMOOTHING = 0.2;
 /* smallest distance between dots in svg line */
-const NEIGHBOUR_DISTANCE = 0.02;
+const NEIGHBOUR_DISTANCE = 0.005;
 /* after this time of idling lines will dissappear (they'll start dissapearing at 70% of this time)*/
 // TODO: unite this with css variable below in this file
 const TIME_BEFORE_CLEAR = 5000;
