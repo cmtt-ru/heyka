@@ -88,8 +88,6 @@ const COLORS = ['#613DC1',
 
 const MY_COLOR = COLORS[Math.floor(Math.random() * COLORS.length)];
 
-console.log(MY_COLOR);
-
 export default {
   components: {
     CallControls,
@@ -290,6 +288,8 @@ export default {
     onTextroomData(data) {
       const from = data.from;
       const drawingData = JSON.parse(data.text);
+
+      console.log(drawingData);
 
       drawingData.userId = from
         .replace('(reciever)', '');

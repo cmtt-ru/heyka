@@ -155,6 +155,8 @@ class TextroomPlugin extends EventEmitter {
       ondata: (msg) => {
         const parsedMsg = JSON.parse(msg);
 
+        cnsl.log(parsedMsg);
+
         if (parsedMsg.textroom === 'join' && parsedMsg.username) {
           this.emit('join', parsedMsg.username);
         }

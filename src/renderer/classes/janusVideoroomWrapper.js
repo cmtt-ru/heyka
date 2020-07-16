@@ -429,7 +429,7 @@ class JanusVideoroomWrapper extends EventEmitter {
       this.emit('textroom-data', data);
     });
 
-    this.__textroomPlugin.on('joined', (username) => {
+    this.__textroomPlugin.on('join', (username) => {
       this.emit('textroom-joined', username);
     });
 
