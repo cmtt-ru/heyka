@@ -66,14 +66,6 @@ class TextroomPlugin extends EventEmitter {
         });
       },
 
-      // Triggered after `getUserMedia` is called (isAllowed=true means that request for user media is accepted)
-      consentDialog: isAllowed => {
-        if (this.__detached) {
-          return;
-        }
-        cnsl.debug('Consent dialog', isAllowed);
-      },
-
       // Notifies that WebRTC connection between the computer and Janus is established (or is down)
       // reason is presented in some cases when state = false
       webrtcState: (state, reason) => {
