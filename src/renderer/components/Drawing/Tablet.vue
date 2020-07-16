@@ -5,6 +5,7 @@
     <board
       v-if="myDrawing"
       class="my-drawing"
+      :style="aspectRatioSize"
       local
       :income-data="localdata"
       :board-dimensions="drawDimensions"
