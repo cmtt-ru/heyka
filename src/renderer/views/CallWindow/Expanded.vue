@@ -14,7 +14,10 @@
         ref="preview"
         class="video-preview"
       >
-      <div class="tablet-wrapper wrapper">
+      <div
+        v-if="canDraw"
+        class="tablet-wrapper wrapper"
+      >
         <div class="tablet">
           <tablet
             :aspect-ratio="1 / videoAspectRatio"
@@ -104,6 +107,7 @@ export default {
       },
       showPreview: false,
       myColor: MY_COLOR,
+      canDraw: false,
     };
   },
   computed: {
@@ -184,6 +188,7 @@ export default {
         this.handleVideoStream();
       }
     });
+    janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
   },
 
   beforeDestroy() {
@@ -275,6 +280,22 @@ export default {
      */
     onDrawingData(data) {
       janusVideoroomWrapper.sendData(data, this.userId);
+    },
+
+    /**
+     * Handles new drawing data from the textroom plugin
+     * @param {object} data Drawing data
+     * @returns {void}
+     */
+    onTextroomData(data) {
+      const from = data.from;
+      const drawingData = JSON.parse(data.text);
+
+      drawingData.userId = from
+        .replace('(reciever)', '');
+      if (drawingData.userId === this.userId && drawingData.canDraw !== undefined) {
+        this.canDraw = drawingData.canDraw;
+      }
     },
   },
 

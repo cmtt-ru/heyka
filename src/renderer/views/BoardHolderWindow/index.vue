@@ -3,7 +3,10 @@
     class="layout__popover"
     :style="$themes.getColors('popover')"
   >
-    <div class="board">
+    <div
+      v-if="canDraw"
+      class="board"
+    >
       <board-holder
         :data="drawingData"
       />
@@ -31,6 +34,7 @@ export default {
   computed: {
     ...mapState({
       janusOptions: 'janus',
+      canDraw: 'me/canDraw',
     }),
     ...mapGetters({
       userId: 'me/getMyId',
@@ -40,6 +44,7 @@ export default {
     cnsl.info('Hello from board holder window');
     await janusVideoroomWrapper.init();
     janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
+    janusVideoroomWrapper.on('textroom-joined', this.onNewUser.bind(this));
     cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store, this.$store.state.me.id);
     janusVideoroomWrapper.connectTextroom(this.userId, 'receiver', this.janusOptions);
   },
@@ -60,6 +65,10 @@ export default {
       drawingData.userId = from
         .replace('(sender)', '');
       this.drawingData = drawingData;
+    },
+
+    onNewUser(userId) {
+      janusVideoroomWrapper.sendData({ canDraw: this.canDraw }, userId);
     },
   },
 };

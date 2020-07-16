@@ -429,6 +429,10 @@ class JanusVideoroomWrapper extends EventEmitter {
       this.emit('textroom-data', data);
     });
 
+    this.__textroomPlugin.on('joined', (username) => {
+      this.emit('textroom-joined', username);
+    });
+
     this.__textroomPlugin.attach();
   }
 
@@ -455,6 +459,7 @@ class JanusVideoroomWrapper extends EventEmitter {
     }
 
     this.__textroomPlugin.removeAllListeners('data');
+    this.__textroomPlugin.removeAllListeners('joined');
 
     this.__textroomPlugin.detach();
     this.__textroomPlugin = null;

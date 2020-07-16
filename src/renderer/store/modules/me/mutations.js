@@ -89,4 +89,15 @@ export default {
     state.lockScreenState = value;
   },
 
+  /**
+   * Allow/forbid drawing on your screen while sharing it
+   *
+   * @param {MeState} state – module me state
+   * @param {boolean} value – state
+   * @constructor
+   */
+  SET_ALLOW_DRAW(state, value) {
+    state.allowDraw = value;
+  },
+
 };
