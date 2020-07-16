@@ -15,7 +15,6 @@
             :aspect-ratio="1 / videoAspectRatio"
             :my-id="myId"
             :color="myColor"
-            my-drawing
             @data="onDrawingData"
           />
         </div>
