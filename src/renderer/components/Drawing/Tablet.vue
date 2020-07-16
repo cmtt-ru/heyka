@@ -66,7 +66,7 @@ export default {
      */
     myDrawing: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
 
