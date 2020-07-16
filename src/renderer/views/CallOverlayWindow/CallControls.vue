@@ -126,8 +126,8 @@ export default {
      * @returns {object|boolean}
      */
     lastUserInChannel() {
-      if (this.selectedChannel) {
-        return this.selectedChannel.users[this.selectedChannel.users.length - 1];
+      if (this.selectedChannel && this.selectedChannel.users.length > 0) {
+        return this.selectedChannel.users[this.selectedChannel.users.length - 1].userId;
       }
 
       return false;
@@ -140,8 +140,8 @@ export default {
         return;
       }
 
-      if (this.user.id !== this.lastUserInChannel.userId) {
-        this.channelName = this.userById(this.lastUserInChannel.userId).name;
+      if (this.user.id !== this.lastUserInChannel) {
+        this.channelName = this.userById(this.lastUserInChannel).name;
         this.channelIcon = 'connect';
 
         clearTimeout(lastUserTimer);
