@@ -416,7 +416,6 @@ class JanusVideoroomWrapper extends EventEmitter {
     }
 
     if (this.__textroomPlugin) {
-      console.log('disconnect textroom');
       this.disconnectTextroom();
     }
 
