@@ -446,7 +446,11 @@ class JanusVideoroomWrapper extends EventEmitter {
     if (!this.__textroomPlugin) {
       return;
     }
-    this.__textroomPlugin.sendData(data, `${userId}(receiver)`);
+    if (userId.indexOf('(') !== -1) {
+      this.__textroomPlugin.sendData(data, userId);
+    } else {
+      this.__textroomPlugin.sendData(data, `${userId}(receiver)`);
+    }
   }
 
   /**

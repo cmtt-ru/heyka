@@ -34,10 +34,11 @@ export default {
   computed: {
     ...mapState({
       janusOptions: 'janus',
-      canDraw: 'me/canDraw',
+
     }),
     ...mapGetters({
       userId: 'me/getMyId',
+      canDraw: 'me/getAllowDraw',
     }),
   },
   async mounted() {
@@ -68,6 +69,7 @@ export default {
     },
 
     onNewUser(userId) {
+      console.log('onNewUser', userId, this.canDraw);
       janusVideoroomWrapper.sendData({ canDraw: this.canDraw }, userId);
     },
   },

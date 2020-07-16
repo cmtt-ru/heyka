@@ -289,10 +289,8 @@ export default {
       const from = data.from;
       const drawingData = JSON.parse(data.text);
 
-      console.log(drawingData);
-
       drawingData.userId = from
-        .replace('(reciever)', '');
+        .replace('(receiver)', '');
       if (drawingData.userId === this.userId && drawingData.canDraw !== undefined) {
         this.canDraw = drawingData.canDraw;
       }
