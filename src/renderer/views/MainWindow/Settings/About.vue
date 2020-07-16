@@ -75,7 +75,7 @@ export default {
       ipcRenderer.send('update-check');
 
       ipcRenderer.once('update-not-available', () => {
-        this.noUpdate()
+        this.noUpdate();
       });
     },
 
