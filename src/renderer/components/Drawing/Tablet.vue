@@ -77,7 +77,6 @@ export default {
       // stack of dots to push
       sendDots: [],
       drawDimensions: {},
-      localNewDots: {},
       lastDot: {},
     };
   },
