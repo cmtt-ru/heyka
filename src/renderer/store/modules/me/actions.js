@@ -87,7 +87,6 @@ export default {
       mediaState.speakers = true;
     }
 
-    cnsl.log(state.mediaState.microphone, mediaState.microphone);
     if (state.mediaState.microphone !== mediaState.microphone) {
       sounds.play('microphone-toggle');
     }
