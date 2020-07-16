@@ -24,7 +24,7 @@ export default Object.freeze({
   userUpdated: 'user-updated',
   onlineStatusChanged: 'online-status-updated',
   socketApiError: 'socket-api-error',
-  message: 'message',
-  messageResponse: 'message-response',
-  messageCancelled: 'message-cancelled',
+  invite: 'invite',
+  inviteResponse: 'invite-response',
+  inviteCancelled: 'invite-cancelled',
 });

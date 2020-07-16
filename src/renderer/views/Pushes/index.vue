@@ -5,8 +5,8 @@
   >
     <push
       v-for="push in pushes"
-      :id="push.messageId"
-      :key="push.messageId"
+      :id="push.inviteId"
+      :key="push.inviteId"
       :lifespan="push.lifespan"
       :data="push"
       @close="closeHandler"
@@ -51,10 +51,10 @@ export default {
      * @param {string} id id
      * @returns {void}
     */
-    async responseHandler({ response, messageId, data }) {
+    async responseHandler({ response, inviteId, data }) {
       await broadcastActions.dispatch('app/sendPushResponse', {
         response,
-        messageId,
+        inviteId,
       });
       if (response.action === 'accept-invite') {
         await broadcastActions.dispatch('selectChannel', data.channelId);
