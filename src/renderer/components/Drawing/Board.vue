@@ -35,6 +35,7 @@
       :style="clickHighlightStyle"
     />
     <user-cursor
+      v-show="local === false"
       ref="cursor"
       class="cursor"
       :style="cursorCoordsStyle"
@@ -57,7 +58,8 @@ const SMOOTHING = 0.2;
 /* smallest distance between dots in svg line */
 const NEIGHBOUR_DISTANCE = 0.02;
 /* after this time of idling lines will dissappear (they'll start dissapearing at 70% of this time)*/
-const TIME_BEFORE_CLEAR = 10000;
+// TODO: unite this with css variable below in this file
+const TIME_BEFORE_CLEAR = 5000;
 
 export default {
   components: {
@@ -86,6 +88,14 @@ export default {
         };
       },
     },
+
+    /**
+     * true if board is for local client's drawing
+     */
+    local: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -105,6 +115,10 @@ export default {
     };
   },
   computed: {
+
+    bufferDelay() {
+      return this.local ? 0 : RECIEVE_DELAY;
+    },
     /**
      * Position cursor
      * @returns {object}
@@ -184,11 +198,16 @@ export default {
     newDots(val) {
       this.addDots([ ...val ]);
     },
+
+    boardDimensions() {
+      this.completedPaths = [];
+      this.visibleDots = [];
+    },
   },
 
   methods: {
     /**
-     * Add new dots to local queue and trigger 'parseRecievedDots' after RECIEVE_DELAY
+     * Add new dots to local queue and trigger 'parseRecievedDots' after this.bufferDelay
      *
      * @param {array} incomeDots - array with dots
      * @returns {void}
@@ -201,7 +220,7 @@ export default {
       }
       setTimeout(() => {
         this.parseRecievedDots();
-      }, RECIEVE_DELAY);
+      }, this.bufferDelay);
     },
 
     /**
@@ -508,7 +527,7 @@ export default {
 
 <style lang="stylus" scoped>
 
-$SVG_HIDE_TIME = 10s
+$SVG_HIDE_TIME = 5s
 $CURSOR_HIDE_TIME = 2s
 $CLICK_ANIM_TIME = 0.7s
 

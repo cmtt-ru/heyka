@@ -2,9 +2,6 @@
   <div class="empty-message">
     <div class="empty-message__inner">
       <p>{{ texts.empty }}</p>
-      <router-link :to="{name: 'drawing'}">
-        Рисование
-      </router-link>
     </div>
 
     <div class="changelog">

@@ -2,6 +2,13 @@
   <div
     class="drawing-pad-container"
   >
+    <board
+      v-if="myDrawing"
+      class="my-drawing"
+      local
+      :income-data="localdata"
+      :board-dimensions="drawDimensions"
+    />
     <div
       ref="drawingPad"
       class="drawing-pad"
@@ -16,6 +23,7 @@
 
 <script>
 import { throttle } from 'throttle-debounce';
+import Board from '@components/Drawing/Board';
 
 /* throttle delay between saving dots */
 const DELAY = 33;
@@ -24,10 +32,12 @@ const SEND_DELAY = 132;
 const PERCENTAGE = 100;
 
 /* variables for watching tablet size */
-let __drawDimensions = {};
 let __resizeObserver = {};
 
 export default {
+  components: {
+    Board,
+  },
   props: {
     /**
      * sender's Id (ours)
@@ -50,6 +60,13 @@ export default {
       type: String,
       default: '#000',
     },
+    /**
+     * If we should display our drawings
+     */
+    myDrawing: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -58,10 +75,19 @@ export default {
       isMouseDown: false,
       // stack of dots to push
       sendDots: [],
+      drawDimensions: {},
+      localNewDots: {},
+      lastDot: {},
     };
   },
 
   computed: {
+    localdata() {
+      return {
+        color: this.color,
+        dots: [ this.lastDot ],
+      };
+    },
     /**
      * Style padding-bottom to match reciever screen's aspect ratio
      * @returns {object}
@@ -73,6 +99,7 @@ export default {
 
       };
     },
+
   },
 
   watch: {
@@ -86,7 +113,7 @@ export default {
   },
 
   /**
-   * get relevant __drawDimensions by observing drawingPad element
+   * get relevant drawDimensions by observing drawingPad element
    * @returns {void}
    */
   mounted() {
@@ -124,7 +151,7 @@ export default {
      * @returns {void}
      */
     setDrawDimensions(target) {
-      __drawDimensions = {
+      this.drawDimensions = {
         width: target.offsetWidth,
         height: target.offsetHeight,
       };
@@ -138,14 +165,14 @@ export default {
     mouseDownHandler($event) {
       this.isMouseDown = true;
       const dot = {
-        x: $event.offsetX / __drawDimensions.width,
-        y: $event.offsetY / __drawDimensions.height,
+        x: $event.offsetX / this.drawDimensions.width,
+        y: $event.offsetY / this.drawDimensions.height,
         time: $event.timeStamp,
         start: true,
         rect: $event.ctrlKey, // draw rect if ctrl key on mouseDown
       };
 
-      this.sendDots.push(dot);
+      this.addDot(dot);
       this.throttleSendDots();
     },
 
@@ -160,13 +187,13 @@ export default {
       }
       this.isMouseDown = false;
       const dot = {
-        x: $event.offsetX / __drawDimensions.width,
-        y: $event.offsetY / __drawDimensions.height,
+        x: $event.offsetX / this.drawDimensions.width,
+        y: $event.offsetY / this.drawDimensions.height,
         time: $event.timeStamp,
         end: true,
       };
 
-      this.sendDots.push(dot);
+      this.addDot(dot);
       this.emitDots(this.sendDots);
       this.lastPoint = null;
     },
@@ -181,14 +208,21 @@ export default {
       //   return;
       // }
       const dot = {
-        x: $event.offsetX / __drawDimensions.width,
-        y: $event.offsetY / __drawDimensions.height,
+        x: $event.offsetX / this.drawDimensions.width,
+        y: $event.offsetY / this.drawDimensions.height,
         time: $event.timeStamp,
       };
 
-      this.sendDots.push(dot);
+      this.addDot(dot);
       this.throttleSendDots();
     }),
+
+    addDot(dot) {
+      this.sendDots.push(dot);
+      if (this.myDrawing) {
+        this.lastDot = dot;
+      }
+    },
 
     /**
      * Throttle sending dots by sending them only every SEND_DELAY ms
@@ -210,12 +244,13 @@ export default {
       }
       const newDots = {
         color: this.color,
-        dots: [ ...dots ],
+        dots: dots,
         userId: this.myId,
       };
 
-      this.sendDots = [];
       this.$emit('data', newDots);
+      this.localNewDots = newDots;
+      this.sendDots = [];
     },
   },
 };
@@ -234,4 +269,12 @@ export default {
     overflow hidden
     height 100%
     width 100%
+
+.my-drawing
+  position absolute
+  top 0
+  left 0
+  height 100%
+  width 100%
+  pointer-events none
 </style>
