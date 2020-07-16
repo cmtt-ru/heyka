@@ -1,5 +1,6 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import store from '@/store';
+import sounds from '@classes/sounds';
 
 const ONE_PUSH_SIZE = {
   width: 368,
@@ -8,12 +9,6 @@ const ONE_PUSH_SIZE = {
 const TOP_MARGIN = 12;
 const PUSH_MOVEOUT_TIMER = 500;
 const MAX_AMOUNT = 7;
-
-/**
- * Audio element for audio test
- * @type {HTMLAudioElement}
- */
-const audioNewPush = new Audio(require('@assets/audio/push.mp3'));
 
 /**
  * Class for controlling push window
@@ -30,7 +25,6 @@ class PushWindow {
 
   /**
    * Show frame window
-   * @param {string} displayId – display id
    * @returns {void}
    */
   show() {
@@ -51,7 +45,6 @@ class PushWindow {
         },
 
       });
-      audioNewPush.setSinkId(this._selectedSpeaker());
     } else {
       this.window.action('showInactive');
     }
@@ -107,7 +100,7 @@ class PushWindow {
    */
   _newPushSupport() {
     clearTimeout(this.closewWindowTimeout);
-    audioNewPush.play();
+    sounds.play('push');
   }
 
   /**
