@@ -11,6 +11,7 @@
         @click="expandHandler"
       >
         <ui-button
+          v-if="!isMyMedia"
           :type="7"
           size="medium"
           icon="fullscreen"
@@ -43,6 +44,7 @@ export default {
   data() {
     return {
       videoRoomState: 'closed',
+      isMyMedia: false,
     };
   },
   computed: {
@@ -137,6 +139,7 @@ export default {
      */
     loadCurrentVideo() {
       const userId = this.getUserWhoSharesMedia;
+
       let publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === userId);
 
       if (!publisher) {
@@ -148,6 +151,12 @@ export default {
       }
 
       const currentFeed = janusVideoroomWrapper.currentSingleSubscriptionFeed();
+
+      const currentPublisher = janusVideoroomWrapper.getActivePublishers().find(p => p.janusId === currentFeed);
+
+      if (currentPublisher) {
+        this.isMyMedia = currentPublisher.userId === this.myId;
+      }
 
       if (currentFeed === publisher.janusId) {
         return;
