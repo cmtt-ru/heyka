@@ -107,7 +107,7 @@ export default {
       content ''
       box-sizing border-box
       position absolute
-      top -1.5px
+      top -1px
       right 11.5px
       width 12px
       height 12px
