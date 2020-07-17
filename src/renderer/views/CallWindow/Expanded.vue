@@ -193,6 +193,9 @@ export default {
     janusVideoroomWrapper.disconnectTextroom();
     janusVideoroomWrapper.removeAllListeners('new-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
+
+    this.$refs.video.onerror = null;
+    this.$refs.video.onloadedmetadata = null;
   },
 
   destroyed() {
@@ -203,9 +206,6 @@ export default {
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
-
-    this.$refs.video.onerror = null;
-    this.$refs.video.onloadedmetadata = null;
   },
 
   methods: {
@@ -252,11 +252,11 @@ export default {
       video.onloadedmetadata = () => {
         this.videoAspectRatio = mediaCapturer.getRatioList(stream)[0];
         video.play();
-        this.showPreview = false;
+        this.showPreview = null;
       };
 
       video.onerror = () => {
-        this.showPreview = false;
+        this.showPreview = null;
       };
     },
 
@@ -267,7 +267,9 @@ export default {
      */
     setVideoFrame(base64Image) {
       this.$refs.preview.src = base64Image;
-      this.showPreview = true;
+      if (this.showPreview === false) {
+        this.showPreview = true;
+      }
     },
 
     /**
