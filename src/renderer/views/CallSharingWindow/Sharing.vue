@@ -37,7 +37,7 @@
           v-if="sourceButton === 'screen'"
           v-model="allowDraw"
           class="drawing-switch"
-          text="Рисование"
+          :text="texts.drawing"
         />
       </div>
     </div>
@@ -387,5 +387,4 @@ export default {
   display inline-flex
   font-size 12px
   margin-left auto
-  margin-top -0.5px
 </style>

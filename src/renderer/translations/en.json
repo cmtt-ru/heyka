@@ -75,6 +75,7 @@
       "title": "Sharing preview",
       "screen": "Screen",
       "window": "Window",
+      "drawing": "Drawing",
       "start": "Start sharing",
       "stop": "Stop sharing",
       "cancel": "Cancel"

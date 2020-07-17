@@ -77,17 +77,6 @@ import Tablet from '@components/Drawing/Tablet';
 import mediaCapturer from '@classes/mediaCapturer';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 
-const COLORS = ['#613DC1',
-  '#EE7674',
-  '#F08700',
-  '#00A6A6',
-  '#EFCA08',
-  '#D33F49',
-  '#266DD3',
-  '#C64191'];
-
-const MY_COLOR = COLORS[Math.floor(Math.random() * COLORS.length)];
-
 export default {
   components: {
     CallControls,
@@ -104,7 +93,7 @@ export default {
         boundingElement: document.documentElement,
       },
       showPreview: false,
-      myColor: MY_COLOR,
+      myColor: 'black',
       canDraw: false,
     };
   },
@@ -193,6 +182,9 @@ export default {
     janusVideoroomWrapper.disconnectTextroom();
     janusVideoroomWrapper.removeAllListeners('new-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
+
+    this.$refs.video.onerror = null;
+    this.$refs.video.onloadedmetadata = null;
   },
 
   destroyed() {
@@ -203,9 +195,6 @@ export default {
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
-
-    this.$refs.video.onerror = null;
-    this.$refs.video.onloadedmetadata = null;
   },
 
   methods: {
@@ -252,11 +241,11 @@ export default {
       video.onloadedmetadata = () => {
         this.videoAspectRatio = mediaCapturer.getRatioList(stream)[0];
         video.play();
-        this.showPreview = false;
+        this.showPreview = null;
       };
 
       video.onerror = () => {
-        this.showPreview = false;
+        this.showPreview = null;
       };
     },
 
@@ -267,7 +256,9 @@ export default {
      */
     setVideoFrame(base64Image) {
       this.$refs.preview.src = base64Image;
-      this.showPreview = true;
+      if (this.showPreview === false) {
+        this.showPreview = true;
+      }
     },
 
     /**
@@ -293,6 +284,9 @@ export default {
         .replace('(receiver)', '');
       if (drawingData.userId === this.userId && drawingData.canDraw !== undefined) {
         this.canDraw = drawingData.canDraw;
+        if (drawingData.canDraw) {
+          this.myColor = drawingData.color;
+        }
       }
     },
   },

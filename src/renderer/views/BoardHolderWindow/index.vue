@@ -22,6 +22,16 @@ import { mapState, mapGetters } from 'vuex';
 import Logger from '@classes/logger';
 const cnsl = new Logger('BoardHolderWindow', 'maroon');
 
+const COLORS = [
+  '#EFCA08',
+  '#613DC1',
+  '#EE7674',
+  '#D33F49',
+  '#F08700',
+  '#00A6A6',
+  '#266DD3',
+  '#C64191'];
+
 export default {
   components: {
     BoardHolder,
@@ -69,8 +79,17 @@ export default {
     },
 
     onNewUser(userId) {
-      console.log('onNewUser', userId, this.canDraw);
-      janusVideoroomWrapper.sendData({ canDraw: this.canDraw }, userId);
+      if (typeof this.onNewUser.color === 'undefined') {
+        this.onNewUser.color = 0;
+      }
+      janusVideoroomWrapper.sendData({
+        canDraw: this.canDraw,
+        color: COLORS[this.onNewUser.color],
+      }, userId);
+      this.onNewUser.color++;
+      if (this.onNewUser.color === COLORS.length) {
+        this.onNewUser.color = 0;
+      }
     },
   },
 };
