@@ -149,7 +149,6 @@ export default {
      * @returns {void}
      */
     async clickConnectHandler() {
-      await this.$store.commit('app/ANIMATION_CHANNEL_ID', this.channelId);
       await this.$store.dispatch('selectChannel', this.channelId);
     },
 
@@ -158,7 +157,6 @@ export default {
      * @returns {void}
      */
     async clickDisconnectHandler() {
-      await this.$store.commit('app/ANIMATION_CHANNEL_ID', null);
       await this.$store.dispatch('unselectChannel', this.channelId);
     },
 

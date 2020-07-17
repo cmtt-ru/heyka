@@ -81,6 +81,7 @@ export default {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
+    commit('app/ANIMATION_CHANNEL_ID', id);
 
     let response;
 
