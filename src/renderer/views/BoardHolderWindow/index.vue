@@ -22,12 +22,13 @@ import { mapState, mapGetters } from 'vuex';
 import Logger from '@classes/logger';
 const cnsl = new Logger('BoardHolderWindow', 'maroon');
 
-const COLORS = ['#613DC1',
+const COLORS = [
+  '#EFCA08',
+  '#613DC1',
   '#EE7674',
+  '#D33F49',
   '#F08700',
   '#00A6A6',
-  '#EFCA08',
-  '#D33F49',
   '#266DD3',
   '#C64191'];
 
