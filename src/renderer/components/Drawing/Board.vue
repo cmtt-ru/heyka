@@ -30,7 +30,6 @@
       </svg>
     </div>
     <div
-      v-show="local === false"
       ref="hightlight"
       class="click-highlight"
       :style="clickHighlightStyle"
