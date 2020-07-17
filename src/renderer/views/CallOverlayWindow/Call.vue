@@ -6,14 +6,17 @@
       @dblclick="expandHandler"
     >
       <video ref="video" />
-
-      <ui-button
+      <div
         class="call-window__media__expand"
-        :type="7"
-        size="medium"
-        icon="fullscreen"
         @click="expandHandler"
-      />
+      >
+        <ui-button
+          :type="7"
+          size="medium"
+          icon="fullscreen"
+          @click="expandHandler"
+        />
+      </div>
     </div>
 
     <call-controls
@@ -258,13 +261,10 @@ export default {
 
       &__expand
         position absolute
-        bottom 8px
-        right 8px
-        transition opacity 0.15s ease
-        opacity 0
-
-    &:hover
-      .call-window__media__expand
-        opacity 1
+        bottom 0px
+        right 0px
+        padding 32px 8px 8px 24px
+        cursor pointer
+        -webkit-app-region no-drag
 
 </style>
