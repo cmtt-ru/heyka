@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="expanded"
     class="expanded-window"
     :style="$themes.getColors('popover')"
     @dblclick="showGridHandler"
@@ -57,6 +58,7 @@
       />
     </router-link>
     <div
+      ref="controls"
       v-draggable="controlsOptions"
       class="badge control"
       :class="{'control--hidden': !showControls}"
@@ -77,6 +79,9 @@ import Tablet from '@components/Drawing/Tablet';
 import mediaCapturer from '@classes/mediaCapturer';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 
+/* variable for watching page size */
+let __resizeObserver = {};
+
 export default {
   components: {
     CallControls,
@@ -91,6 +96,8 @@ export default {
       showControls: true,
       controlsOptions: {
         boundingElement: document.documentElement,
+        initialPosition: {},
+        resetInitialPos: false,
       },
       showPreview: false,
       myColor: 'black',
@@ -146,6 +153,11 @@ export default {
    * @returns {void}
    */
   mounted() {
+    const page = this.$refs.expanded;
+
+    __resizeObserver = new ResizeObserver(this.watchPageDimensions);
+    __resizeObserver.observe(page);
+
     const w = WindowManager.getCurrentWindow();
 
     w.on('blur', () => {
@@ -185,6 +197,7 @@ export default {
 
     this.$refs.video.onerror = null;
     this.$refs.video.onloadedmetadata = null;
+    __resizeObserver.unobserve(this.$refs.expanded);
   },
 
   destroyed() {
@@ -198,6 +211,24 @@ export default {
   },
 
   methods: {
+
+    /**
+     * Re-adjust controls position on page resize
+     * @returns {void}
+     */
+    watchPageDimensions() {
+      const page = this.$refs.expanded;
+      const width = page.offsetWidth;
+      const height = page.offsetHeight;
+
+      const controlsMarginBottom = 126;
+      const controlsMarginLeft = 92;
+
+      this.controlsOptions.initialPosition.left = width / 2 - controlsMarginLeft;
+      this.controlsOptions.initialPosition.top = height - controlsMarginBottom;
+      this.controlsOptions.resetInitialPos = true;
+      this.$nextTick(() => (this.controlsOptions.resetInitialPos = false));
+    },
 
     /**
      * Show grid handler
