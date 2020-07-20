@@ -1,7 +1,7 @@
-import { ipcMain, app, nativeTheme } from 'electron';
+import { ipcMain, app, nativeTheme, systemPreferences } from 'electron';
 
 /**
- * subscribe to ipc events which replased "remote" module
+ * subscribe to ipc events which replaced "remote" module
  */
 ipcMain.on('remote-getLocale', (event) => {
   event.returnValue = app.getLocale();
@@ -14,6 +14,9 @@ ipcMain.on('remote-getVersion', (event) => {
 });
 ipcMain.on('remote-shouldUseDarkColors', (event) => {
   event.returnValue = nativeTheme.shouldUseDarkColors;
+});
+ipcMain.on('remote-systemPreferences-microphone', (event) => {
+  event.returnValue = systemPreferences.getMediaAccessStatus('microphone');
 });
 
 ipcMain.on('remote-quit', () => {

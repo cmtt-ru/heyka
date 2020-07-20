@@ -82,7 +82,10 @@ export default {
       }
       janusWrapper.setMuting(!state);
       if (state) {
+        AudioCheck.destroyMediaStream();
         AudioCheck.checkAudio();
+      } else {
+        AudioCheck.subscribeMutedTalk();
       }
     },
 
@@ -101,7 +104,7 @@ export default {
      * @param {boolean} state Is camera sharing enabled
      * @returns {void}
      */
-    camera(state, ps) {
+    camera(state) {
       if (state) {
         this.startSharingCamera();
       } else {
@@ -231,6 +234,8 @@ export default {
         this.setOperationFinish('join');
         if (this.microphone) {
           AudioCheck.checkAudio();
+        } else {
+          AudioCheck.subscribeMutedTalk();
         }
       });
 
@@ -273,6 +278,8 @@ export default {
         janusWrapper.disconnect();
         janusWrapper = null;
       }
+
+      AudioCheck.destroyMediaStream();
     },
 
     /**
