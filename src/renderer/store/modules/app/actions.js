@@ -6,6 +6,7 @@ import { ipcRenderer } from 'electron';
 import dateFormat from 'dateformat';
 import { v4 as uuidV4 } from 'uuid';
 import { heykaStore } from '@/store/localStore';
+import sounds from '@classes/sounds';
 
 /**
  * @typedef PrivacyLogData
@@ -205,9 +206,12 @@ export default {
    */
   setSelectedDevices({ commit }, selectedDevices) {
     commit('SET_SELECTED_DEVICES', selectedDevices);
+
     heykaStore.set('selectedSpeaker', selectedDevices.speaker);
     heykaStore.set('selectedMicrophone', selectedDevices.microphone);
     heykaStore.set('selectedCamera', selectedDevices.camera);
+
+    sounds.setSinkId(selectedDevices.speaker);
   },
 
   /**
