@@ -23,11 +23,14 @@ export default {
    * @constructor
    */
   REMOVE_USER(state, { userId, channelId }) {
-    const users = state.collection[channelId].users;
-    const userIndex = searchIndexByKey(users, 'userId', userId);
+    const channel = state.collection[channelId];
 
-    if (userIndex !== undefined) {
-      users.splice(userIndex, 1);
+    if (channel) {
+      const userIndex = searchIndexByKey(channel.users, 'userId', userId);
+
+      if (userIndex !== undefined) {
+        channel.users.splice(userIndex, 1);
+      }
     }
   },
 
@@ -75,4 +78,35 @@ export default {
       });
     }
   },
+
+  /**
+   * Add channel
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {object} channelData – channel data
+   * @constructor
+   */
+  ADD_CHANNEL(state, channelData) {
+    if (state.collection[channelData.id] === undefined) {
+      if (channelData.users === undefined) {
+        channelData.users = [];
+      }
+
+      Vue.set(state.collection, channelData.id, channelData);
+    }
+  },
+
+  /**
+   * Remove channel
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {string} channelId – channel id
+   * @constructor
+   */
+  REMOVE_CHANNEL(state, channelId) {
+    if (state.collection[channelId]) {
+      Vue.delete(state.collection, channelId);
+    }
+  },
+
 };

@@ -4,6 +4,7 @@ import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
 import sounds from '@classes/sounds';
+import router from '@/router';
 
 export default {
 
@@ -88,6 +89,8 @@ export default {
       camera: false,
       screen: false,
     });
+
+    dispatch('janus/setSharingSource', null, { root: true });
 
     try {
       response = await API.channel.select(id, getters['me/getMediaState']);
@@ -255,5 +258,32 @@ export default {
    */
   async closeSharingWindow() {
     callWindow.closeSharing();
+  },
+
+  /**
+   * Create private channel
+   *
+   * @param {object} vuex functions
+   * @param {string} userId – user id
+   * @returns {void}
+   */
+  async createPrivateChannel({ state, commit, getters, dispatch }, userId) {
+    const selectedWorkspaceId = getters['me/getSelectedWorkspaceId'];
+
+    const response = await API.workspace.privateTalk(selectedWorkspaceId, {
+      users: [ userId ],
+    });
+
+    if (response.channel) {
+      commit('channels/ADD_CHANNEL', response.channel);
+      await dispatch('selectChannel', response.channel.id);
+
+      router.push({
+        name: 'channel',
+        params: {
+          id: response.channel.id,
+        },
+      });
+    }
   },
 };

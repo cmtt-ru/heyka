@@ -4,6 +4,7 @@
  * @property {string} name – channel name
  * @property {string} description – channel description
  * @property {boolean} isPrivate – private status
+ * @property {boolean} isTemporary – temporary status
  * @property {string} createdAt – creation date
  * @property {string} updatedAt – update date
  * @property {MediaState[]} users – array of user's media state
