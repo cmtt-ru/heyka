@@ -103,6 +103,9 @@
       "profile": "Open profile",
       "poke": "Send push",
       "mute": "Mute for all"
+    },
+    "userMore": {
+      "edit": "Edit profile"
     }
   },
   "notifications":{
