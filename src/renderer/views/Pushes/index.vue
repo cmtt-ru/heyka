@@ -69,7 +69,6 @@ export default {
             response,
             inviteId,
           });
-          break;
       }
     },
   },

@@ -1,3 +1,4 @@
+import {ipcRenderer} from "electron";
 <template>
   <div
     class="layout__popover"
