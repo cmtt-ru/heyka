@@ -21,9 +21,10 @@
       "legalTrademarks": "Heyka"
   },
   "linux": {
-      "target": "AppImage",
-      "icon": "public/icon.png",
-      "category": "Network"
+      "target": ["AppImage", "deb"],
+      "icon": "build/",
+      "category": "Network",
+      "maintainer": "KMTT"
   },
   "publish": {
     "provider": "s3",
