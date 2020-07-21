@@ -15,6 +15,15 @@
     </div>
 
     <a class="about-link">{{ texts.notice }}</a>
+
+    <ui-button
+      :type="2"
+      class="check-for-updates"
+      @click="checkforUpdatesHandler"
+    >
+      {{ texts.checkUpdates }}
+    </ui-button>
+
     <div class="changelog">
       <div
         v-for="change in CHANGELOG"
@@ -33,10 +42,16 @@
 </template>
 
 <script>
-
+import { ipcRenderer } from 'electron';
 import { CHANGELOG } from '@/changelog';
+import UiButton from '@components/UiButton';
 
 export default {
+
+  components: {
+
+    UiButton,
+  },
 
   data() {
     return {
@@ -56,7 +71,30 @@ export default {
   },
 
   methods: {
+    checkforUpdatesHandler() {
+      ipcRenderer.send('update-check');
 
+      ipcRenderer.once('update-not-available', () => {
+        this.noUpdate();
+      });
+    },
+
+    /**
+     * Show update install notification
+     * @returns {void}
+     */
+    async noUpdate() {
+      const texts = this.$t('autoUpdate');
+
+      const notification = {
+        lifespan: 5000,
+        data: {
+          text: texts.noUpdate,
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
+    },
   },
 };
 </script>
@@ -82,6 +120,8 @@ export default {
   padding-top 12px
   color var(--color-2)
 
+.check-for-updates
+  margin 16px auto
 .changelog
   display flex
   text-align left
