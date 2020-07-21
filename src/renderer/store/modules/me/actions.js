@@ -196,6 +196,10 @@ export default {
     }
 
     commit('SET_SUSPEND_STATE', value);
+
+    if (!value && state.lockScreenState) {
+      await dispatch('setLockScreenState', false);
+    }
   },
 
   /**
@@ -209,7 +213,7 @@ export default {
     const statusByState = value ? 'idle' : 'online';
 
     /**  If already suspended than ignore lock screen */
-    if (state.suspendState === true) {
+    if (state.suspendState === true || state.lockScreenState === value) {
       return;
     }
 

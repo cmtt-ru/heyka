@@ -8,6 +8,8 @@ import trottleAPI from './throttle';
 import axios from 'axios';
 import { updateTokens } from './tokens';
 import store from '@/store';
+import connectionCheck from '@classes/connectionCheck';
+import * as sockets from '@api/socket';
 
 if (IS_DEV) {
   axios.defaults.baseURL = process.env.VUE_APP_DEV_URL;
@@ -54,6 +56,8 @@ function middleware(func, functionName) {
         data: Array.prototype.slice.call(arguments),
       });
 
+      connectionCheck.handleServerAvailability(true);
+
       return await func.apply(null, arguments);
     } catch (err) {
       if (err.response === undefined) {
@@ -65,6 +69,13 @@ function middleware(func, functionName) {
       /** Update tokens if token is expired */
       if (err.response.data.message === errorMessages.accessTokenExpired) {
         await updateTokens();
+
+        return middleware(func, functionName).apply(null, arguments);
+      }
+
+      /** Try to reconnect sockets */
+      if (!sockets.connected() && err.response.data.message === errorMessages.internalServerError) {
+        await sockets.reconnect();
 
         return middleware(func, functionName).apply(null, arguments);
       }
