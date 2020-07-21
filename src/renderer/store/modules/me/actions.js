@@ -244,4 +244,11 @@ export default {
 
     commit('SET_LOCK_SCREEN_STATE', value);
   },
+
+  turnMicOn({ state, dispatch }) {
+    const newState = { ...state.mediaState };
+
+    newState.microphone = true;
+    dispatch('setMediaState', newState);
+  },
 };

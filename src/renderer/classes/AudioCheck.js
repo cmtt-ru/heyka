@@ -4,10 +4,9 @@ import hark from 'hark';
 import shutdown from 'electron-shutdown-command';
 import router from '@/router';
 import i18n from '@/i18n';
+import { ipcRenderer } from 'electron';
 
 const texts = i18n.t('notifications');
-
-const { systemPreferences } = require('electron').remote;
 
 /**
  * Audio element for audio test
@@ -106,17 +105,17 @@ class AudioCheck extends EventEmitter {
   }
 
   /**
-     * Play test sound
-     * @returns {void}
-     */
+   * Play test sound
+   * @returns {void}
+   */
   playTestSound() {
     audioTest.play();
   }
 
   /**
- * Check audio troubles
- * @returns {boolean}
- */
+   * Check audio troubles
+   * @returns {boolean}
+   */
   async checkAudio() {
     if (this._checkNoMic()) {
       return true;
@@ -236,7 +235,9 @@ class AudioCheck extends EventEmitter {
       return false;
     }
 
-    if (systemPreferences.getMediaAccessStatus('microphone') === 'restricted' || systemPreferences.getMediaAccessStatus('microphone') === 'denied') {
+    const micState = ipcRenderer.sendSync('remote-systemPreferences-microphone');
+
+    if (micState === 'restricted' || micState === 'denied') {
       const notification = {
         data: {
           text: texts.nomicpermission.text,
@@ -262,6 +263,38 @@ class AudioCheck extends EventEmitter {
     } else {
       return false;
     }
+  }
+
+  /**
+   * Subscribe to 'louder than minLevel' event
+   * @returns {void}
+   */
+  async subscribeMutedTalk() {
+    await this.startMediaStream();
+    this.subscribeMutedTalk.talkingLevel = -100;
+    const minLevel = -42; // speak louder and you'll get notification
+
+    this.__harkInstance.on('volume_change', (db) => {
+      this.subscribeMutedTalk.talkingLevel = (this.subscribeMutedTalk.talkingLevel + db) / 2;
+      if (this.subscribeMutedTalk.talkingLevel > minLevel) {
+        this.showTakingMutedNotification();
+        this.destroyMediaStream();
+      }
+    });
+  }
+
+  /**
+   * Display 'No one hears you' push
+   * @returns {void}
+   */
+  async showTakingMutedNotification() {
+    const push = {
+      inviteId: Date.now().toString(),
+      local: true,
+      message: { action: 'muted' },
+    };
+
+    await store.dispatch('app/addPush', push);
   }
 }
 

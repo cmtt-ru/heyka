@@ -131,7 +131,12 @@
     "invitesto": "Invite to",
     "join": "Join",
     "busy": "Busy",
-    "isbusy": "Is busy"
+    "isbusy": "Is busy",
+    "mutedTalking": {
+      "text": "No one hears you",
+      "button1": "Turn mic on",
+      "button2": "Cancel"
+    }
   },
   "autoUpdate": {
     "message": "Updated version of Heyka is available and will be installed at the next launch",
