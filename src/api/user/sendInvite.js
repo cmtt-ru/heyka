@@ -8,10 +8,10 @@ import axios from 'axios';
  * @param {object} params.message - object with any kind of message
  *
  * @returns {object} result data
- * @returns {string} data.messageId
+ * @returns {string} data.inviteId
  */
 export default async function (params) {
-  const res = await axios.post(`/message`, params);
+  const res = await axios.post(`/send-invite`, params);
 
   return res.data;
 }

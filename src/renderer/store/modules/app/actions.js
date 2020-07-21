@@ -138,13 +138,18 @@ export default {
     if (rootGetters['me/getMyId'] === userId) {
       return;
     }
-    const { messageId } = await API.user.sendMessage({
+
+    const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
+
+    const { inviteId } = await API.user.sendInvite({
       userId,
+      workspaceId,
+      channelId: message.channelId,
       isResponseNeeded,
       message,
     });
 
-    return messageId;
+    return inviteId;
   },
 
   /**
@@ -154,9 +159,9 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  async sendPushResponse({ commit, state }, { response, messageId }) {
-    await API.user.sendMessageResponse({
-      messageId,
+  async sendPushResponse({ commit, state }, { response, inviteId }) {
+    await API.user.sendInviteResponse({
+      inviteId,
       response,
     });
   },
@@ -168,9 +173,9 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  addPush({ commit }, { messageId, userId, message }) {
+  addPush({ commit }, { inviteId, userId, message }) {
     const push = {
-      messageId,
+      inviteId,
       userId,
       ...message,
     };
