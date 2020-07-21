@@ -16,11 +16,22 @@
         </p>
 
         <div class="call-controls__channel">
-          <svg-icon
-            name="channel"
-            size="small"
-          />
-          <span>{{ selectedChannelName }}</span>
+          <transition
+            :name="transitionName"
+            mode="out-in"
+          >
+            <svg-icon
+              :key="channelIcon"
+              :name="channelIcon"
+              size="small"
+            />
+          </transition>
+          <transition
+            :name="transitionName"
+            mode="out-in"
+          >
+            <span :key="channelName">{{ channelName }}</span>
+          </transition>
         </div>
       </div>
     </div>
@@ -32,14 +43,15 @@
 </template>
 
 <script>
-// import UiButton from '@components/UiButton';
-// import broadcastActions from '@classes/broadcastActions';
 import CallButtons from './CallButtons';
 import { mapGetters } from 'vuex';
 
+const LAST_USER_INTERVAL = 2000;
+
+let lastUserTimer = null;
+
 export default {
   components: {
-    // UiButton,
     CallButtons,
   },
 
@@ -67,6 +79,9 @@ export default {
   data() {
     return {
       lastSpeakingUser: null,
+      channelIcon: 'channel',
+      channelName: '',
+      transitionName: 'none',
     };
   },
 
@@ -75,6 +90,7 @@ export default {
       user: 'myInfo',
       speakingUser: 'getSpeakingUser',
       selectedChannel: 'myChannel',
+      userById: 'users/getUserById',
     }),
 
     /**
@@ -102,12 +118,62 @@ export default {
         return this.selectedChannel.name;
       }
 
-      return 'no channel selected';
+      return '';
+    },
+
+    /**
+     * Last user in channel
+     * @returns {object|boolean}
+     */
+    lastUserInChannel() {
+      if (this.selectedChannel && this.selectedChannel.users.length > 0) {
+        return this.selectedChannel.users[this.selectedChannel.users.length - 1].userId;
+      }
+
+      return false;
     },
   },
 
-  methods: {
+  watch: {
+    lastUserInChannel() {
+      if (!this.lastUserInChannel) {
+        return;
+      }
 
+      if (this.user.id !== this.lastUserInChannel) {
+        this.channelName = this.userById(this.lastUserInChannel).name;
+        this.channelIcon = 'connect';
+
+        clearTimeout(lastUserTimer);
+
+        lastUserTimer = setTimeout(() => {
+          this.channelName = this.selectedChannel.name;
+          this.channelIcon = 'channel';
+        }, LAST_USER_INTERVAL);
+      }
+    },
+
+    selectedChannelName() {
+      this.channelName = this.selectedChannelName;
+    },
+  },
+
+  mounted() {
+    this.channelName = this.selectedChannelName;
+
+    setTimeout(() => {
+      this.enableTransitions();
+    }, LAST_USER_INTERVAL);
+  },
+
+  methods: {
+    /**
+     * Enable transitions
+     * @returns {void}
+     */
+    enableTransitions() {
+      this.transitionName = 'fade';
+    },
   },
 };
 </script>
@@ -155,6 +221,7 @@ export default {
 
       svg
         flex-shrink 0
+        margin-top -1px
 
       span
         min-width 0
@@ -180,5 +247,13 @@ export default {
 
       .call-controls__row--controls
         margin-left auto
+
+  .fade-enter-active,
+  .fade-leave-active
+    transition all 0.25s
+
+  .fade-enter,
+  .fade-leave-to
+    opacity 0
 
 </style>
