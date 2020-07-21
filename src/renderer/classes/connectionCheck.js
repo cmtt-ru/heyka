@@ -52,6 +52,28 @@ class ConnectionCheck {
   }
 
   /**
+   * Wait until online
+   * @returns {Promise<boolean>}
+   */
+  async waitUntilOnline() {
+    let state = await isOnline();
+
+    if (state) {
+      return true;
+    } else {
+      while (state === false) {
+        state = await isOnline();
+
+        if (state) {
+          return true;
+        }
+
+        await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
+      }
+    }
+  }
+
+  /**
    * Online/offline handler
    *
    * @param {object} state – state
