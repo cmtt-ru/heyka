@@ -35,6 +35,7 @@ export default {
   components: {
     invite: () => import('./Templates/Invite'),
     busy: () => import('./Templates/Busy'),
+    muted: () => import('./Templates/Muted'),
   },
 
   props: {
