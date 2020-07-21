@@ -239,6 +239,16 @@ function bindChannelEvents() {
 
     store.commit('channels/ADD_USER', data);
   });
+
+  /** Channel created */
+  client.on(eventNames.channelCreated, async (data) => {
+    store.dispatch('channels/addChannel', data.channelId);
+  });
+
+  /** Channel deleted */
+  client.on(eventNames.channelDeleted, ({ channelId }) => {
+    store.commit('channels/REMOVE_CHANNEL', channelId);
+  });
 }
 
 /**
@@ -265,18 +275,31 @@ function bindUserEvents() {
  */
 function bindPushEvents() {
   /** Get push notification */
-  client.on(eventNames.message, data => {
+  client.on(eventNames.invite, data => {
     store.dispatch('app/addPush', data);
   });
 
   /** Get response to push notification */
-  client.on(eventNames.messageResponse, ({ messageId, userId, response }) => {
-    if (response.showResponse || response === 'no-response') {
+  client.on(eventNames.inviteResponse, ({ inviteId, userId, response }) => {
+    if (response.showResponse) {
       store.dispatch('app/addPush', {
-        messageId: `response-${messageId}`,
+        inviteId: `response-${inviteId}`,
         userId,
         message: response,
       });
+    } else if (response === 'no-response') {
+      store.dispatch('app/addPush', {
+        inviteId: `response-${inviteId}`,
+        userId,
+        message: {
+          action: 'busy',
+        },
+      });
     }
+  });
+
+  /** Remove push notification */
+  client.on(eventNames.inviteCancelled, data => {
+    store.dispatch('app/removePush', data.inviteId);
   });
 }
