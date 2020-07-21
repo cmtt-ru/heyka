@@ -192,7 +192,12 @@ class JanusVideoroomWrapper extends EventEmitter {
 
         // destroy stream
         mediaCapturer.destroyStream(this.__localVideoStream);
+
+        this.__videoroomPlugin.detach();
+        this._disconnect();
       } else {
+        this.__videoroomPlugin.detach();
+        this._disconnect();
         resolve();
       }
       this.__localVideoStream = null;
@@ -627,6 +632,18 @@ class JanusVideoroomWrapper extends EventEmitter {
         },
       });
     });
+  }
+
+  /**
+   * Disconnects from the Janus server
+   * @private
+   * @returns {void}
+   */
+  async _disconnect() {
+    if (this.__janus) {
+      this.__janus.destroy();
+      this.__janus = null;
+    }
   }
 }
 
