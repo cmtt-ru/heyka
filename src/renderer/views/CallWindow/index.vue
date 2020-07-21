@@ -1,3 +1,4 @@
+import {ipcRenderer} from "electron";
 <template>
   <div
     class="layout__popover"
@@ -10,6 +11,8 @@
 <script>
 import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
 import { mapGetters, mapState } from 'vuex';
+import Mousetrap from 'mousetrap';
+import { ipcRenderer } from 'electron';
 
 export default {
   computed: {
@@ -36,6 +39,10 @@ export default {
     if (this.selectedChannelId) {
       janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
+
+    Mousetrap.bind('esc', () => {
+      ipcRenderer.send('exit-fullscreen');
+    });
   },
 };
 </script>

@@ -2,8 +2,8 @@ import WindowManager from '../WindowManager/WindowManagerMain';
 import TrayManager from '../../main/classes/TrayManager';
 import DeepLink from '../DeepLink/DeepLinkMain';
 import Autoupdater from '../../main/classes/AutoUpdater';
-import { ipcMain, nativeTheme, powerMonitor } from 'electron';
-import { IS_DEV } from '../Constants';
+import { ipcMain, nativeTheme, powerMonitor, app } from 'electron';
+import { IS_DEV, IS_MAC } from '../Constants';
 
 let params = {};
 
@@ -13,6 +13,10 @@ if (TrayManager.isInTray()) {
     template: 'maintray',
     preventClose: true,
   };
+
+  if (IS_MAC) {
+    app.dock.hide();
+  }
 } else {
   params = {
     position: 'center',

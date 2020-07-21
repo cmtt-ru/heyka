@@ -124,6 +124,14 @@ ipcMain.on('open-webrtc-internals', (event) => {
   createWebrtcInternals();
 });
 
+ipcMain.on('exit-fullscreen', (event) => {
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+
+  if (focusedWindow.isFullScreen()) {
+    focusedWindow.setFullScreen(false);
+  }
+});
+
 function createWebrtcInternals() {
   const win = new BrowserWindow({
     width: 800,
