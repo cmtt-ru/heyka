@@ -61,6 +61,8 @@ export default {
       }
 
       await dispatch('janus/untilIdle', null, { root: true });
+    } else if (mediaState.screen === false && state.mediaState.screen === true) {
+      dispatch('janus/setSharingSource', null, { root: true });
     }
 
     /**

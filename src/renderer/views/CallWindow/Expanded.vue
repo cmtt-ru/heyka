@@ -4,10 +4,22 @@
     :style="$themes.getColors('popover')"
     @dblclick="showGridHandler"
   >
-    <video
-      ref="video"
-      class="sharing"
-    />
+    <div class="sharing-wrapper wrapper">
+      <video
+        ref="video"
+        class="sharing"
+      />
+      <div class="tablet-wrapper wrapper">
+        <div class="tablet">
+          <tablet
+            :aspect-ratio="1 / videoAspectRatio"
+            :my-id="myId"
+            :color="myColor"
+            @data="onDrawingData"
+          />
+        </div>
+      </div>
+    </div>
 
     <div class="badge user">
       <avatar
@@ -52,27 +64,51 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
-import { mapGetters } from 'vuex';
-import janusVideoroomPlugin from '../../classes/janusVideoroomWrapper';
+import { mapGetters, mapState } from 'vuex';
+import Tablet from '@components/Drawing/Tablet';
+import Logger from '@classes/logger';
+import mediaCapturer from '@classes/mediaCapturer';
+import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
+const cnsl = new Logger('Expanded.vue', 'red');
+
+const COLORS = ['#613DC1',
+  '#EE7674',
+  '#F08700',
+  '#00A6A6',
+  '#EFCA08',
+  '#D33F49',
+  '#266DD3',
+  '#C64191'];
+
+const MY_COLOR = COLORS[Math.floor(Math.random() * COLORS.length)];
+
+console.log(MY_COLOR);
 
 export default {
   components: {
     CallControls,
     UiButton,
     Avatar,
+    Tablet,
   },
   data() {
     return {
+      videoAspectRatio: 1,
       userId: this.$route.params.id,
       showControls: true,
       controlsOptions: {
         boundingElement: document.documentElement,
       },
+      myColor: MY_COLOR,
     };
   },
   computed: {
     ...mapGetters({
       selectedChannel: 'me/getSelectedChannelId',
+      myId: 'me/getMyId',
+    }),
+    ...mapState({
+      janusOptions: 'janus',
     }),
 
     /**
@@ -130,12 +166,12 @@ export default {
 
     this.handleVideoStream();
 
-    janusVideoroomPlugin.on('new-stream', publisher => {
+    janusVideoroomWrapper.on('new-stream', publisher => {
       if (publisher.userId === this.userId) {
         this.insertVideo(publisher.stream);
       }
     });
-    janusVideoroomPlugin.on('publisher-joined', publisher => {
+    janusVideoroomWrapper.on('publisher-joined', publisher => {
       if (publisher.userId === this.userId) {
         this.handleVideoStream();
       }
@@ -143,8 +179,9 @@ export default {
   },
 
   beforeDestroy() {
-    janusVideoroomPlugin.removeAllListeners('new-stream');
-    janusVideoroomPlugin.removeAllListeners('publisher-joined');
+    janusVideoroomWrapper.disconnectTextroom();
+    janusVideoroomWrapper.removeAllListeners('new-stream');
+    janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },
 
   destroyed() {
@@ -167,7 +204,7 @@ export default {
 
     handleVideoStream() {
       // try to get working video stream
-      const activePublishers = janusVideoroomPlugin.getActivePublishers();
+      const activePublishers = janusVideoroomWrapper.getActivePublishers();
       const ourPublisher = activePublishers.find(publishers => publishers.userId === this.userId);
 
       if (ourPublisher) {
@@ -176,13 +213,13 @@ export default {
 
           return;
         }
-        janusVideoroomPlugin.subscribeFor(ourPublisher.janusId);
+        janusVideoroomWrapper.subscribeFor(ourPublisher.janusId);
       }
 
       // set on pause all videos except this one
       activePublishers
         .filter(publisher => publisher.userId !== this.userId)
-        .forEach(publisher => janusVideoroomPlugin.pauseSubscription(publisher.janusId));
+        .forEach(publisher => janusVideoroomWrapper.pauseSubscription(publisher.janusId));
     },
 
     /**
@@ -191,12 +228,28 @@ export default {
      * @returns {void}
      */
     insertVideo(stream) {
+      // connect to textroom
+      janusVideoroomWrapper.connectTextroom(this.myId, 'sender', this.janusOptions);
+
       const htmlElement = this.$refs.video;
 
       htmlElement.srcObject = stream;
+
       htmlElement.onloadedmetadata = () => {
+        this.videoAspectRatio = mediaCapturer.getRatioList(stream)[0];
+        cnsl.log(`Ratio for video is: ${this.videoAspectRatio}`);
         htmlElement.play();
       };
+    },
+
+    /**
+     * Handles new drawing data from Tablet
+     * @param {object} data Drawing data
+     * @param {object} data.userId User id
+     * @returns {void}
+     */
+    onDrawingData(data) {
+      janusVideoroomWrapper.sendData(data, this.userId);
     },
   },
 
@@ -204,10 +257,26 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
   .expanded-window
-    display flex
-    flex-direction column
+    position relative
+    width 100%
+    height 100%
+
+  .wrapper
+    position absolute
+    top 0px
+    left 0px
     height 100vh
+    width 100vw
+    flex-direction column
+    display flex
+
+  .tablet-wrapper
+    width 100vw
+    .tablet
+      width 100%
+      height 100%
 
   .sharing
     width 100%

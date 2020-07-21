@@ -211,6 +211,7 @@ export default {
      */
     handleSource(source) {
       this.selectedSource = source;
+      this.selectedSource.index = this.sources.findIndex(s => s.id === source.id);
     },
 
     /**
