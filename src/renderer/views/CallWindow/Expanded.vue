@@ -292,47 +292,6 @@ export default {
         }
       }
     },
-
-    /**
-     * Set video frame
-     * @param {string} base64Image – video frame
-     * @returns {void}
-     */
-    setVideoFrame(base64Image) {
-      this.$refs.preview.src = base64Image;
-      if (this.showPreview === false) {
-        this.showPreview = true;
-      }
-    },
-
-    /**
-     * Handles new drawing data from Tablet
-     * @param {object} data Drawing data
-     * @param {object} data.userId User id
-     * @returns {void}
-     */
-    onDrawingData(data) {
-      janusVideoroomWrapper.sendData(data, this.userId);
-    },
-
-    /**
-     * Handles new drawing data from the textroom plugin
-     * @param {object} data Drawing data
-     * @returns {void}
-     */
-    onTextroomData(data) {
-      const from = data.from;
-      const drawingData = JSON.parse(data.text);
-
-      drawingData.userId = from
-        .replace('(receiver)', '');
-      if (drawingData.userId === this.userId && drawingData.canDraw !== undefined) {
-        this.canDraw = drawingData.canDraw;
-        if (drawingData.canDraw) {
-          this.myColor = drawingData.color;
-        }
-      }
-    },
   },
 
 };
