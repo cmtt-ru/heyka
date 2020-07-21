@@ -52,13 +52,23 @@ export default {
      * @returns {void}
     */
     async responseHandler({ response, inviteId, data }) {
-      await broadcastActions.dispatch('app/sendPushResponse', {
-        response,
-        inviteId,
-      });
-      if (response.action === 'accept-invite') {
-        await broadcastActions.dispatch('selectChannel', data.channelId);
-        await broadcastEvents.dispatch('open-channel', data.channelId);
+      switch (response.action) {
+        case 'accept-invite':
+          await broadcastActions.dispatch('selectChannel', data.channelId);
+          await broadcastEvents.dispatch('open-channel', data.channelId);
+          await broadcastActions.dispatch('app/sendPushResponse', {
+            response,
+            inviteId,
+          });
+          break;
+        case 'turn-mic-on':
+          broadcastActions.dispatch('me/turnMicOn');
+          break;
+        default:
+          await broadcastActions.dispatch('app/sendPushResponse', {
+            response,
+            inviteId,
+          });
       }
     },
   },
