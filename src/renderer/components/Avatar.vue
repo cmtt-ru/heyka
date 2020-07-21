@@ -14,6 +14,8 @@
       class="avatar__image"
       :class="{'avatar__image--square': square}"
       alt=""
+      :width="size"
+      :height="size"
       :src="avatarImage"
       @load="loaded=true"
     >

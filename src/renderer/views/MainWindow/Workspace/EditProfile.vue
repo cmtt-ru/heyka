@@ -12,31 +12,17 @@
       />
     </div>
     <div class="user">
-      <avatar
-        :key="me.avatar"
-        class="user__avatar"
-        :image="avatar"
+      <ui-image
+        v-model="profile.avatar"
         :size="40"
-        @click.native="storeImageFile"
+        @input="setNewImage"
       />
       <ui-input
-        v-model="username"
+        v-model="profile.name"
         class="user__name"
         :placeholder="me.name"
       />
     </div>
-    <input
-      id="file"
-      type="file"
-      name="file"
-      accept=".png, .jpg, .jpeg"
-      @input="storeImageFile"
-    >
-    <img
-      :src="newImage"
-      width="30"
-      height="30"
-    >
 
     <ui-button
       :type="5"
@@ -48,9 +34,8 @@
 </template>
 
 <script>
-import { UiInput } from '@components/Form';
+import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
-import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 // import { ipcRenderer } from 'electron';
 // import fs from 'fs';
@@ -58,13 +43,12 @@ import { mapGetters } from 'vuex';
 export default {
   components: {
     UiInput,
-    Avatar,
+    UiImage,
     UiButton,
   },
 
   data() {
     return {
-      newImage: '',
       profile: {
         name: '',
         avatar: '',
@@ -86,26 +70,21 @@ export default {
       return this.$t('workspace.user');
     },
 
-    username: {
-      get() {
-        this.$set(this.profile, 'name', this.me.name);
-
-        return this.me.name;
-      },
-      set(val) {
-        this.profile.name = val;
-      },
+    name() {
+      return this.me.name;
     },
 
-    avatar: {
-      get() {
-        this.$set(this.profile, 'avatar', this.me.avatar);
+    avatar() {
+      return this.me.avatar;
+    },
+  },
 
-        return this.me.avatar;
-      },
-      set(val) {
-        this.profile.avatar = val;
-      },
+  watch: {
+    name(val) {
+      this.$set(this.profile, 'name', val);
+    },
+    avatar(val) {
+      this.$set(this.profile, 'avatar', val);
     },
   },
 
@@ -122,38 +101,8 @@ export default {
       this.$router.back();
     },
 
-    async storeImageFile(e) {
-      console.log(e.target.files);
-      const formData = new FormData();
-
-      formData.append('image', e.target.files[0]);
-      const result = await this.$API.user.image(formData);
-
-      console.log(result);
-
-      // const selectedFile = await ipcRenderer.invoke('remote-selectImage');
-
-      // try {
-      //   const fileBuffer = fs.readFileSync(selectedFile.uri);
-
-      //   const formData = new FormData();
-
-      //   const apiBlob = new Blob(Buffer.from(fileBuffer, 'binary'));
-
-      //   formData.append('image', apiBlob, selectedFile.name);
-      //   const result = await this.$API.user.image(formData);
-
-      //   console.log(result);
-
-      //   // convert image file to base64-encoded string
-
-      //   const base64Image = Buffer.from(fileBuffer, 'binary').toString('base64');
-      //   const imgSrcString = `data:image/${selectedFile.extension};base64,${base64Image}`;
-
-      //   this.newImage = imgSrcString;
-      // } catch (err) {
-      //   console.log(err);
-      // }
+    setNewImage(image) {
+      this.profile.avatar = image;
     },
 
     async submitHandler() {
