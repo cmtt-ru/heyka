@@ -68,7 +68,7 @@ const ICON_MAP = {
   public: 'channel',
   publicOnline: 'channelOnAir',
   private: 'lock',
-  temp: 'clock',
+  temp: 'time',
   default: 'channel',
 };
 
@@ -125,14 +125,14 @@ export default {
      * @returns {string} name of correct icon
      */
     dynamicIcon() {
-      if (this.channel.isPrivate) { // TODO: lifespan
-        return ICON_MAP['private'];
-      } else {
-        if (this.channel.talking) {
-          return ICON_MAP['publicOnline'];
+      if (this.channel.isPrivate) {
+        if (this.channel.isTemporary) {
+          return ICON_MAP['temp'];
         } else {
-          return ICON_MAP['public'];
+          return ICON_MAP['private'];
         }
+      } else {
+        return ICON_MAP['public'];
       }
     },
 
@@ -149,7 +149,6 @@ export default {
      * @returns {void}
      */
     async clickConnectHandler() {
-      await this.$store.commit('app/ANIMATION_CHANNEL_ID', this.channelId);
       await this.$store.dispatch('selectChannel', this.channelId);
     },
 
@@ -158,7 +157,6 @@ export default {
      * @returns {void}
      */
     async clickDisconnectHandler() {
-      await this.$store.commit('app/ANIMATION_CHANNEL_ID', null);
       await this.$store.dispatch('unselectChannel', this.channelId);
     },
 

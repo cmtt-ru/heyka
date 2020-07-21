@@ -9,6 +9,10 @@ import {ipcRenderer} from "electron";
     >
       Open WebRTC Internals
     </ui-button>
+    <br><br>
+    <router-link :to="{name: 'drawing'}">
+      Рисование
+    </router-link>
 
     <p class="settings__label">
       Frame window

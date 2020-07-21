@@ -162,7 +162,6 @@ export default {
      * @returns {void}
      */
     async dbclickChannelHandler(channel) {
-      await this.$store.commit('app/ANIMATION_CHANNEL_ID', channel.id);
       await this.$store.dispatch('selectChannel', channel.id);
     },
 

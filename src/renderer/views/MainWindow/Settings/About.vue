@@ -124,6 +124,7 @@ export default {
   margin 16px auto
 .changelog
   display flex
+  flex-direction column
   text-align left
   width 100%
   padding 20px 0
@@ -140,4 +141,5 @@ export default {
     color var(--text-0)
     white-space pre-line
     line-height 20px
+    margin-bottom 32px
 </style>
