@@ -58,4 +58,14 @@ export default {
   getPreviousOnlineStatus: state => {
     return state.previousOnlineStatus;
   },
+
+  /**
+   * Get drawing allow state
+   *
+   * @param {MeState} state – me module state
+   * @returns {string}
+   */
+  getAllowDraw: state => {
+    return state.allowDraw;
+  },
 };

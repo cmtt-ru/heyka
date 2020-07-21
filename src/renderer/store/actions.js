@@ -3,8 +3,8 @@ import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
-import sounds from '@classes/sounds';
 import router from '@/router';
+import sounds from '@classes/sounds';
 
 export default {
 
@@ -81,6 +81,7 @@ export default {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
+    commit('app/ANIMATION_CHANNEL_ID', id);
 
     let response;
 

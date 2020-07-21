@@ -1,5 +1,6 @@
 import callWindow from '@classes/callWindow';
 import sleep from 'es7-sleep';
+import { IS_LINUX } from '../../../../shared/Constants';
 
 export default {
   /**
@@ -16,8 +17,12 @@ export default {
      * If source has `display_id`, than show call frame window
      * else – hide frame
      */
-    if (source && source.display_id) {
-      callWindow.showFrame(source.display_id);
+    /* eslint-disable-next-line */
+    const sourceId = IS_LINUX ? source?.id : source?.display_id;
+
+    if (source && sourceId) {
+      // source.index is needed for OS where display_id is not defined
+      callWindow.showFrame(sourceId, source.index);
     } else {
       callWindow.closeFrame();
     }

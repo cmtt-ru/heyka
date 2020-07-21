@@ -147,7 +147,7 @@ export default {
         clearTimeout(lastUserTimer);
 
         lastUserTimer = setTimeout(() => {
-          this.channelName = this.selectedChannel.name;
+          this.channelName = this.selectedChannel?.name;
           this.channelIcon = 'channel';
         }, LAST_USER_INTERVAL);
       }

@@ -6,14 +6,18 @@
       @dblclick="expandHandler"
     >
       <video ref="video" />
-
-      <ui-button
+      <div
         class="call-window__media__expand"
-        :type="7"
-        size="medium"
-        icon="fullscreen"
         @click="expandHandler"
-      />
+      >
+        <ui-button
+          v-if="!isMyMedia"
+          :type="7"
+          size="medium"
+          icon="fullscreen"
+          @click="expandHandler"
+        />
+      </div>
     </div>
 
     <call-controls
@@ -40,6 +44,7 @@ export default {
   data() {
     return {
       videoRoomState: 'closed',
+      isMyMedia: false,
     };
   },
   computed: {
@@ -134,6 +139,7 @@ export default {
      */
     loadCurrentVideo() {
       const userId = this.getUserWhoSharesMedia;
+
       let publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === userId);
 
       if (!publisher) {
@@ -145,6 +151,12 @@ export default {
       }
 
       const currentFeed = janusVideoroomWrapper.currentSingleSubscriptionFeed();
+
+      const currentPublisher = janusVideoroomWrapper.getActivePublishers().find(p => p.janusId === currentFeed);
+
+      if (currentPublisher) {
+        this.isMyMedia = currentPublisher.userId === this.myId;
+      }
 
       if (currentFeed === publisher.janusId) {
         return;
@@ -258,13 +270,10 @@ export default {
 
       &__expand
         position absolute
-        bottom 8px
-        right 8px
-        transition opacity 0.15s ease
-        opacity 0
-
-    &:hover
-      .call-window__media__expand
-        opacity 1
+        bottom 0px
+        right 0px
+        padding 32px 8px 8px 24px
+        cursor pointer
+        -webkit-app-region no-drag
 
 </style>

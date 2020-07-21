@@ -12,6 +12,7 @@ import { meStore } from '@/store/localStore';
  * @property {string} previousOnlineStatus – previous online status
  * @property {boolean} suspendState – sleep / awake state
  * @property {boolean} lockScreenState – screen lock / unlock state
+ * @property {boolean} allowDraw – Allow/forbid drawing
  */
 
 /**
@@ -46,6 +47,7 @@ const state = () => {
     previousOnlineStatus: onlineStatus,
     suspendState: false,
     lockScreenState: false,
+    allowDraw: true,
   };
 };
 

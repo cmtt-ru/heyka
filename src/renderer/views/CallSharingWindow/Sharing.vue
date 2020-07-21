@@ -32,6 +32,13 @@
         >
           {{ texts.window }}
         </ui-button>
+
+        <ui-switch
+          v-if="sourceButton === 'screen'"
+          v-model="allowDraw"
+          class="drawing-switch"
+          :text="texts.drawing"
+        />
       </div>
     </div>
 
@@ -96,6 +103,7 @@
 
 <script>
 import UiButton from '@components/UiButton';
+import { UiSwitch } from '@components/Form';
 import mediaCapturer from '@classes/mediaCapturer';
 import broadcastActions from '@classes/broadcastActions';
 import { mapGetters } from 'vuex';
@@ -109,6 +117,7 @@ const THUMBNAIL_SIZE = 460;
 export default {
   components: {
     UiButton,
+    UiSwitch,
   },
 
   data() {
@@ -123,6 +132,16 @@ export default {
     ...mapGetters({
       mediaState: 'me/getMediaState',
     }),
+
+    allowDraw: {
+      get() {
+        return this.$store.state.me.allowDraw;
+      },
+      set(val) {
+        this.$store.commit('me/SET_ALLOW_DRAW', val);
+      },
+
+    },
 
     /**
      * Get needed texts from I18n-locale file
@@ -211,6 +230,7 @@ export default {
      */
     handleSource(source) {
       this.selectedSource = source;
+      this.selectedSource.index = this.sources.findIndex(s => s.id === source.id);
     },
 
     /**
@@ -291,6 +311,7 @@ export default {
 
     &__options
       margin-top 13px
+      display flex
 
     &__sources
       display flex
@@ -360,4 +381,10 @@ export default {
       &:hover:not(.sharing-window__source--active)
         opacity 0.7
 
+.drawing-switch
+  width fit-content
+  -webkit-app-region no-drag
+  display inline-flex
+  font-size 12px
+  margin-left auto
 </style>

@@ -4,15 +4,30 @@
     :style="$themes.getColors('popover')"
     @dblclick="showGridHandler"
   >
-    <video
-      ref="video"
-      class="sharing"
-    />
-    <img
-      v-show="showPreview"
-      ref="preview"
-      class="video-preview"
-    />
+    <div class="sharing-wrapper wrapper">
+      <video
+        ref="video"
+        class="sharing"
+      />
+      <img
+        v-show="showPreview"
+        ref="preview"
+        class="video-preview"
+      >
+      <div
+        v-if="canDraw"
+        class="tablet-wrapper wrapper"
+      >
+        <div class="tablet">
+          <tablet
+            :aspect-ratio="1 / videoAspectRatio"
+            :my-id="myId"
+            :color="myColor"
+            @data="onDrawingData"
+          />
+        </div>
+      </div>
+    </div>
 
     <div class="badge user">
       <avatar
@@ -57,28 +72,38 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@classes/broadcastEvents';
-import { mapGetters } from 'vuex';
-import janusVideoroomPlugin from '../../classes/janusVideoroomWrapper';
+import { mapGetters, mapState } from 'vuex';
+import Tablet from '@components/Drawing/Tablet';
+import mediaCapturer from '@classes/mediaCapturer';
+import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 
 export default {
   components: {
     CallControls,
     UiButton,
     Avatar,
+    Tablet,
   },
   data() {
     return {
+      videoAspectRatio: 1,
       userId: this.$route.params.id,
       showControls: true,
       controlsOptions: {
         boundingElement: document.documentElement,
       },
       showPreview: false,
+      myColor: 'black',
+      canDraw: false,
     };
   },
   computed: {
     ...mapGetters({
       selectedChannel: 'me/getSelectedChannelId',
+      myId: 'me/getMyId',
+    }),
+    ...mapState({
+      janusOptions: 'janus',
     }),
 
     /**
@@ -140,21 +165,26 @@ export default {
 
     this.handleVideoStream();
 
-    janusVideoroomPlugin.on('new-stream', publisher => {
+    janusVideoroomWrapper.on('new-stream', publisher => {
       if (publisher.userId === this.userId) {
         this.insertVideo(publisher.stream);
       }
     });
-    janusVideoroomPlugin.on('publisher-joined', publisher => {
+    janusVideoroomWrapper.on('publisher-joined', publisher => {
       if (publisher.userId === this.userId) {
         this.handleVideoStream();
       }
     });
+    janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
   },
 
   beforeDestroy() {
-    janusVideoroomPlugin.removeAllListeners('new-stream');
-    janusVideoroomPlugin.removeAllListeners('publisher-joined');
+    janusVideoroomWrapper.disconnectTextroom();
+    janusVideoroomWrapper.removeAllListeners('new-stream');
+    janusVideoroomWrapper.removeAllListeners('publisher-joined');
+
+    this.$refs.video.onerror = null;
+    this.$refs.video.onloadedmetadata = null;
   },
 
   destroyed() {
@@ -182,7 +212,7 @@ export default {
 
     handleVideoStream() {
       // try to get working video stream
-      const activePublishers = janusVideoroomPlugin.getActivePublishers();
+      const activePublishers = janusVideoroomWrapper.getActivePublishers();
       const ourPublisher = activePublishers.find(publishers => publishers.userId === this.userId);
 
       if (ourPublisher) {
@@ -191,13 +221,13 @@ export default {
 
           return;
         }
-        janusVideoroomPlugin.subscribeFor(ourPublisher.janusId);
+        janusVideoroomWrapper.subscribeFor(ourPublisher.janusId);
       }
 
       // set on pause all videos except this one
       activePublishers
         .filter(publisher => publisher.userId !== this.userId)
-        .forEach(publisher => janusVideoroomPlugin.pauseSubscription(publisher.janusId));
+        .forEach(publisher => janusVideoroomWrapper.pauseSubscription(publisher.janusId));
     },
 
     /**
@@ -206,17 +236,19 @@ export default {
      * @returns {void}
      */
     insertVideo(stream) {
+      janusVideoroomWrapper.connectTextroom(this.myId, 'sender', this.janusOptions);
       const video = this.$refs.video;
 
       video.srcObject = stream;
 
       video.onloadedmetadata = () => {
+        this.videoAspectRatio = mediaCapturer.getRatioList(stream)[0];
         video.play();
-        this.showPreview = false;
+        this.showPreview = null;
       };
 
       video.onerror = () => {
-        this.showPreview = false;
+        this.showPreview = null;
       };
     },
 
@@ -227,7 +259,38 @@ export default {
      */
     setVideoFrame(base64Image) {
       this.$refs.preview.src = base64Image;
-      this.showPreview = true;
+      if (this.showPreview === false) {
+        this.showPreview = true;
+      }
+    },
+
+    /**
+     * Handles new drawing data from Tablet
+     * @param {object} data Drawing data
+     * @param {object} data.userId User id
+     * @returns {void}
+     */
+    onDrawingData(data) {
+      janusVideoroomWrapper.sendData(data, this.userId);
+    },
+
+    /**
+     * Handles new drawing data from the textroom plugin
+     * @param {object} data Drawing data
+     * @returns {void}
+     */
+    onTextroomData(data) {
+      const from = data.from;
+      const drawingData = JSON.parse(data.text);
+
+      drawingData.userId = from
+        .replace('(receiver)', '');
+      if (drawingData.userId === this.userId && drawingData.canDraw !== undefined) {
+        this.canDraw = drawingData.canDraw;
+        if (drawingData.canDraw) {
+          this.myColor = drawingData.color;
+        }
+      }
     },
   },
 
@@ -235,10 +298,26 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
   .expanded-window
-    display flex
-    flex-direction column
+    position relative
+    width 100%
+    height 100%
+
+  .wrapper
+    position absolute
+    top 0px
+    left 0px
     height 100vh
+    width 100vw
+    flex-direction column
+    display flex
+
+  .tablet-wrapper
+    width 100vw
+    .tablet
+      width 100%
+      height 100%
 
   .sharing
     width 100%

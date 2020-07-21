@@ -4,6 +4,7 @@
     :style="containerSize"
   >
     <img
+      v-if="!loaded"
       class="avatar__no-image"
       src="@assets/apng/loader.png"
     >
@@ -14,6 +15,7 @@
       :class="{'avatar__image--square': square}"
       alt=""
       :src="avatarImage"
+      @load="loaded=true"
     >
 
     <div
@@ -104,6 +106,11 @@ export default {
       type: [ Boolean ],
       default: true,
     },
+  },
+  data() {
+    return {
+      loaded: false,
+    };
   },
 
   computed: {
