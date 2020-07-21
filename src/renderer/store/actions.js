@@ -3,6 +3,7 @@ import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
+import sounds from '@classes/sounds';
 import router from '@/router';
 
 export default {
@@ -101,6 +102,8 @@ export default {
       id,
       connectionOptions: response.connectionOptions,
     });
+
+    sounds.play('me-joined');
   },
 
   /**

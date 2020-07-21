@@ -4,6 +4,7 @@ import * as sockets from '@api/socket';
 import { ipcRenderer } from 'electron';
 import { meStore } from '@/store/localStore';
 import Logger from '@classes/logger';
+import sounds from '@classes/sounds';
 const cnsl = new Logger('Vuex actions /me', '#17A589');
 
 export default {
@@ -84,6 +85,10 @@ export default {
      */
     if (mediaState.microphone && !state.mediaState.speakers) {
       mediaState.speakers = true;
+    }
+
+    if (state.mediaState.microphone !== mediaState.microphone) {
+      sounds.play('microphone-toggle');
     }
 
     commit('SET_MEDIA_STATE', mediaState);
