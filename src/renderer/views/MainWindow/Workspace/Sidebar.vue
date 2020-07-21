@@ -111,7 +111,6 @@ export default {
     ...mapGetters({
       channels: 'channels/getChannels',
       users: 'users/getAllUsers',
-      selectedChannel: 'myChannel',
     }),
 
     /**
@@ -128,6 +127,16 @@ export default {
      */
     searchText() {
       return this.$store.state.app.search;
+    },
+
+    /**
+     * Get pseudo-selected channel for faster bubbling animation
+     * @returns {object} - channel
+     */
+    selectedChannel() {
+      const selectedChannelId = this.$store.state.app.animationChannel || '';
+
+      return this.$store.getters['channels/getChannelById'](selectedChannelId);
     },
 
   },
