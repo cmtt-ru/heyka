@@ -2,6 +2,7 @@ import store from '@/store';
 import i18n from '@/i18n';
 import isOnline from 'is-online';
 import sleep from 'es7-sleep';
+import isMainWindow from '@shared/WindowManager/isMainWindow';
 
 /**
  * Used for make some debounce for slow internet event
@@ -32,7 +33,9 @@ class ConnectionCheck {
 
     this.slowInternetLastCallTime = null;
 
-    this.startInternetConnectionChecker();
+    if (isMainWindow()) {
+      this.startInternetConnectionChecker();
+    }
   }
 
   /**
@@ -43,7 +46,7 @@ class ConnectionCheck {
     while (true) {
       const state = await isOnline();
 
-      this.handleOnlineStatus.bind(state);
+      this.handleOnlineStatus(state);
       await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
     }
   }
@@ -161,7 +164,7 @@ class ConnectionCheck {
 
     if (state) {
       if (nid) {
-        await this.showNotification(name, false);
+        return;
       }
 
       this.notificationsIds[name] = await store.dispatch('app/addNotification', options);
