@@ -455,9 +455,6 @@ export default {
       height 100%
       border-radius 4px
 
-      &--flip
-        transform: scaleX(-1)
-
     &__talking
       position absolute
       top 0

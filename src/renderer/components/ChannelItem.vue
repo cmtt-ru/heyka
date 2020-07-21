@@ -5,9 +5,9 @@
   >
     <svg-icon
       class="channel__type"
-      :name="dynamicIcon"
+      :name="dynamicIcon.name"
+      :stroke="dynamicIcon.color"
       size="medium"
-      stroke="var(--icon-1)"
     />
 
     <div class="channel__content">
@@ -62,7 +62,7 @@ const ICON_MAP = {
   public: 'channel',
   publicOnline: 'channelOnAir',
   private: 'lock',
-  temp: 'clock',
+  temp: 'time',
   default: 'channel',
 };
 const MAX_USERS = 8;
@@ -127,13 +127,25 @@ export default {
      * @returns {string} name of correct icon
      */
     dynamicIcon() {
-      if (this.channel.isPrivate) { // TODO: lifespan
-        return ICON_MAP['private'];
+      if (this.channel.isPrivate && !this.channel.isTemporary) { // TODO: lifespan
+        return {
+          name: ICON_MAP['private'],
+          color: this.isChannelActive ? 'var(--color-1)' : undefined,
+        };
+      } else if (this.channel.isPrivate && this.channel.isTemporary) {
+        return {
+          name: ICON_MAP['temp'],
+          color: this.isChannelActive ? 'var(--color-1)' : undefined,
+        };
       } else {
         if (this.isChannelActive) {
-          return ICON_MAP['publicOnline'];
+          return {
+            name: ICON_MAP['publicOnline'],
+          };
         } else {
-          return ICON_MAP['public'];
+          return {
+            name: ICON_MAP['public'],
+          };
         }
       }
     },
@@ -232,5 +244,5 @@ export default {
 
 .router-link-active
   background-color var(--item-bg-active)
-  box-shadow 0px 1px 2px rgba(0, 0, 0, 0.1)
+  box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
 </style>

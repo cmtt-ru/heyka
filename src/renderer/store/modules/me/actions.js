@@ -4,6 +4,7 @@ import * as sockets from '@api/socket';
 import { ipcRenderer } from 'electron';
 import { meStore } from '@/store/localStore';
 import Logger from '@classes/logger';
+import sounds from '@classes/sounds';
 const cnsl = new Logger('Vuex actions /me', '#17A589');
 
 export default {
@@ -86,13 +87,11 @@ export default {
       mediaState.speakers = true;
     }
 
-    commit('SET_MEDIA_STATE', mediaState);
-
-    try {
-      meStore.set('mediaState', mediaState);
-    } catch (err) {
-      cnsl.error(err);
+    if (state.mediaState.microphone !== mediaState.microphone) {
+      sounds.play('microphone-toggle');
     }
+
+    commit('SET_MEDIA_STATE', mediaState);
 
     if (selectedChannelId) {
       await API.user.setMediaState(mediaState);

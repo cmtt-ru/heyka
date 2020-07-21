@@ -5,6 +5,7 @@ import { getAccessToken } from '../tokens';
 import connectionCheck from '@classes/connectionCheck';
 import { handleError } from '@api/errors';
 import Logger from '@classes/logger';
+import sounds from '@classes/sounds';
 const cnsl = new Logger('SOCKETS', '#d67a24');
 
 const DISCONNECT_TIMEOUT = 2000;
@@ -224,11 +225,10 @@ function bindChannelEvents() {
     const myUserId = store.getters['me/getMyId'];
     const userId = data.userId;
     const unselectData = dataBuffer.get(userId);
+    const selectedChannelId = store.getters['me/getSelectedChannelId'];
 
     /** Same user is trying to join from another device */
     if (data.socketId !== client.id && myUserId === userId) {
-      const selectedChannelId = store.getters['me/getSelectedChannelId'];
-
       store.dispatch('unselectChannelWithoutAPICall', selectedChannelId);
     }
 
@@ -238,6 +238,20 @@ function bindChannelEvents() {
     }
 
     store.commit('channels/ADD_USER', data);
+
+    if (userId !== myUserId && data.channelId === selectedChannelId) {
+      sounds.play('user-joined');
+    }
+  });
+
+  /** Channel created */
+  client.on(eventNames.channelCreated, async (data) => {
+    store.dispatch('channels/addChannel', data.channelId);
+  });
+
+  /** Channel deleted */
+  client.on(eventNames.channelDeleted, ({ channelId }) => {
+    store.commit('channels/REMOVE_CHANNEL', channelId);
   });
 }
 
@@ -265,18 +279,31 @@ function bindUserEvents() {
  */
 function bindPushEvents() {
   /** Get push notification */
-  client.on(eventNames.message, data => {
+  client.on(eventNames.invite, data => {
     store.dispatch('app/addPush', data);
   });
 
   /** Get response to push notification */
-  client.on(eventNames.messageResponse, ({ messageId, userId, response }) => {
-    if (response.showResponse || response === 'no-response') {
+  client.on(eventNames.inviteResponse, ({ inviteId, userId, response }) => {
+    if (response.showResponse) {
       store.dispatch('app/addPush', {
-        messageId: `response-${messageId}`,
+        inviteId: `response-${inviteId}`,
         userId,
         message: response,
       });
+    } else if (response === 'no-response') {
+      store.dispatch('app/addPush', {
+        inviteId: `response-${inviteId}`,
+        userId,
+        message: {
+          action: 'busy',
+        },
+      });
     }
+  });
+
+  /** Remove push notification */
+  client.on(eventNames.inviteCancelled, data => {
+    store.dispatch('app/removePush', data.inviteId);
   });
 }

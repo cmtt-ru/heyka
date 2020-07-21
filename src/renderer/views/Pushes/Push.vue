@@ -18,6 +18,7 @@
 <script>
 import Vue from 'vue';
 import { VueHammer } from 'vue2-hammer';
+
 Vue.use(VueHammer);
 VueHammer.config.pan = {
   threshold: 10,
@@ -117,7 +118,7 @@ export default {
       if (response) {
         this.$emit('response', {
           response,
-          messageId: this.data.messageId,
+          inviteId: this.data.inviteId,
           data: this.data,
         });
       }
@@ -143,7 +144,7 @@ export default {
       if (this.closeResponse) {
         this.$emit('response', {
           response: this.closeResponse,
-          messageId: this.data.messageId,
+          inviteId: this.data.inviteId,
           data: this.data,
         });
       }
@@ -229,7 +230,7 @@ export default {
       if (!clicked) {
         this.closeButtonAction();
       }
-      this.$emit('close', this.data.messageId);
+      this.$emit('close', this.data.inviteId);
     },
 
   },
