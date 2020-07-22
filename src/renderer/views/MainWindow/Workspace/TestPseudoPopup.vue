@@ -1,25 +1,29 @@
 import {ipcRenderer} from "electron";
 <template>
-  <div>
-    <pseudo-popup>
+  <pseudo-popup @close="closeHandler">
 
-      <template #title>
-        Title
-      </template>
+    <template #header>
+      Edit channel
+    </template>
 
-      <template #body>
-        <p>body</p>
-      </template>
+    <template #body>
+      <p>body</p>
+    </template>
 
-      <template #footer>
-        <ui-button
-          :type="1"
-        >
-          Save
-        </ui-button>
-      </template>
-    </pseudo-popup>
-  </div>
+    <template #footer>
+      <ui-button
+        :type="1"
+      >
+        Save changes
+      </ui-button>
+
+      <ui-button
+        :type="2"
+      >
+        Cancel
+      </ui-button>
+    </template>6
+  </pseudo-popup>
 </template>
 
 <script>
@@ -40,7 +44,9 @@ export default {
 
   },
   methods: {
-
+    closeHandler() {
+      console.log('close handler');
+    },
   },
 };
 </script>
