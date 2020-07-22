@@ -1,9 +1,10 @@
 <template>
   <div
     v-if="me"
-    class="l-p-12"
+    class="edit-profile-page"
   >
     <div class="close-strip">
+      <div>{{ texts.edit }}</div>
       <ui-button
         :type="7"
         size="small"
@@ -12,24 +13,69 @@
       />
     </div>
     <div class="user">
+      <div class="user__input-wrapper">
+        <ui-input
+          v-model="profile.name"
+          class="user__input"
+          :placeholder="me.name"
+          @input="debounceSubmit"
+        />
+        <ui-input
+          v-model="me.email"
+          class="user__input"
+          disabled
+        />
+      </div>
+
       <ui-image
         v-model="profile.avatar"
-        :size="40"
+        class="user__avatar"
+        :size="76"
         @input="setNewImage"
-      />
-      <ui-input
-        v-model="profile.name"
-        class="user__name"
-        :placeholder="me.name"
       />
     </div>
 
+    <div class="login-label">
+      {{ texts.login }}
+    </div>
+
     <ui-button
-      :type="5"
-      @click="submitHandler"
+      :type="6"
+      icon=""
+      wide
+      class="login-button"
+      @click="_notImplemented"
     >
-      Submit
+      Slack
+      <svg-icon
+        slot="right"
+        color="var(--icon-1)"
+        name="close"
+        size="medium"
+      />
     </ui-button>
+
+    <ui-button
+      :type="3"
+      :wide="true"
+      class="login-button"
+      @click="_notImplemented"
+    >
+      Facebook
+    </ui-button>
+    <ui-button
+      :type="3"
+      :wide="true"
+      class="login-button"
+      @click="_notImplemented"
+    >
+      Google
+    </ui-button>
+    <div
+      class="saved-text"
+    >
+      {{ texts.saved }}
+    </div>
   </div>
 </template>
 
@@ -37,8 +83,9 @@
 import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
-// import { ipcRenderer } from 'electron';
-// import fs from 'fs';
+import { debounce } from 'throttle-debounce';
+
+const UPDATE_DELAY = 1000;
 
 export default {
   components: {
@@ -50,8 +97,8 @@ export default {
   data() {
     return {
       profile: {
-        name: '',
-        avatar: '',
+        name: null,
+        avatar: null,
       },
     };
   },
@@ -67,7 +114,7 @@ export default {
      * @returns {object}
      */
     texts() {
-      return this.$t('workspace.user');
+      return this.$t('workspace.userSettings');
     },
 
     name() {
@@ -89,7 +136,12 @@ export default {
   },
 
   mounted() {
+    this.$set(this.profile, 'name', this.name);
+    this.$set(this.profile, 'avatar', this.avatar);
+  },
 
+  beforeDestroy() {
+    this.submit();
   },
 
   methods: {
@@ -105,7 +157,15 @@ export default {
       this.profile.avatar = image;
     },
 
-    async submitHandler() {
+    /**
+     * Throttle sending dots by sending them only every SEND_DELAY ms
+     * @returns {void}
+     */
+    debounceSubmit: debounce(UPDATE_DELAY, false, function () {
+      this.submit();
+    }),
+
+    async submit() {
       console.log(this.profile);
       await this.$API.user.editProfile(this.profile);
     },
@@ -115,81 +175,76 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.edit-profile-page
+  padding 0 12px 12px
+  position relative
 
 .close-strip
   height 40px
-  width 40px
-  margin-left auto
-  box-sizing border-box
-  padding 8px
   display flex
   flex-direction row
-  justify-content flex-end
+  justify-content space-between
+  align-items center
+
+.input-wrapper
+  flex-grow 2
 
 .user
-  height 40px
   padding 0
-  margin-bottom 24px
-  width 100%
+  margin 10px 0 12px
   box-sizing border-box
   display flex
   flex-direction row
   align-items center
   justify-content flex-start
 
+  &__input-wrapper
+    flex-grow 1
+
+  &__input
+    margin 6px 0
+
+  &__input:first-of-type
+    margin-bottom 12px
+
   &__avatar
+    margin 6px 0 6px 12px
     flex-shrink 0
-    flex-grow 0
-
-  &__name
-    margin-left 12px
-    font-weight 500
-    font-size 18px
-    flex-shrink 1
-
-  &__status
-    right 0
-    width 8px
-    height 8px
-    box-sizing border-box
     border-radius 50%
-    border: 2px solid
-    margin 2px 8px 0
-    flex-shrink 0
-    flex-grow 0
+    overflow hidden
 
-  &__more
-    margin-left auto
-    flex-shrink 0
-    flex-grow 0
-    margin-top -18px
-    color var(--icon-1)
+.login-label
+  font-size 12px
+  line-height 18px
+  padding 8px 0
 
-.user-action
-  margin-bottom 8px
+.login-button
+  margin-bottom 12px
 
-  &__inner
-    display flex
-    flex-direction row
-    align-items center
+.saved-text
+  position fixed
+  width 100%
+  box-sizing border-box
+  padding 8px
+  bottom 0
+  background-color var(--app-bg)
+  opacity 0
+  pointer-events none
 
-    & div, svg
-      flex-shrink 0
+  &--hiding
+    animation 2s 1 forwards hideSaved
 
-.icon-in-button
-  margin 0 4px
+@keyframes hideSaved {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 
-.user-info
-  margin-top 20px
-
-  &__title
-    font-size 12px
-    color var(--text-1)
-
-  &__content
-    margin-top 4px
-
-    &--email
-      user-select all
+}
 
 </style>
