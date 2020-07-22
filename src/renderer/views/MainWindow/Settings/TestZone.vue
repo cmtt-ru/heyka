@@ -34,6 +34,10 @@ import {ipcRenderer} from "electron";
     >
       Close
     </ui-button>
+
+    <router-link :to="{name: 'test-pseudo-popup'}">
+      Pseudo popup
+    </router-link>
   </div>
 </template>
 
