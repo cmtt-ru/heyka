@@ -31,7 +31,9 @@
 
 <script>
 
-// import { throttle } from 'throttle-debounce';
+import { throttle } from 'throttle-debounce';
+
+const THROTTLE_TIMEOUT = 200;
 
 export default {
   props: {
@@ -56,20 +58,25 @@ export default {
 
   mounted() {
     this.$refs.body.addEventListener('scroll', this.scrollHandler.bind(this));
+    window.addEventListener('resize', this.scrollHandler.bind(this));
     this.scrollHandler();
   },
 
   beforeDestroy() {
     this.$refs.body.removeEventListener('scroll', this.scrollHandler);
+    window.removeEventListener('resize', this.scrollHandler);
   },
 
   methods: {
-    scrollHandler() {
+    scrollHandler: throttle(THROTTLE_TIMEOUT, function () {
       if (this.$refs.body.scrollHeight > this.$refs.body.clientHeight) {
         this.headerShadow = this.$refs.body.scrollTop > 0;
         this.footerShadow = this.$refs.body.clientHeight < this.$refs.body.scrollHeight - this.$refs.body.scrollTop;
+      } else {
+        this.headerShadow = false;
+        this.footerShadow = false;
       }
-    },
+    }),
   },
 };
 </script>
