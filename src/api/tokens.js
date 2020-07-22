@@ -89,8 +89,6 @@ export function isTokenExpired() {
   const now = new Date();
   const tokenExpirationDate = new Date(tokens.accessTokenExpiredAt);
 
-  console.log('token expiration left', Math.round((tokenExpirationDate - now) / parseInt('1000')) + 'sec');
-
   return tokenExpirationDate - now < DATE_DIFFERENCE;
 }
 
