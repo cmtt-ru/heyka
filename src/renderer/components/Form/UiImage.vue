@@ -6,16 +6,12 @@
       class="user__avatar"
       :image="localImage"
       :size="size"
+      square
     />
-
-    <img
-      class="input-group"
-      alt=""
-      :src="tempSrc"
-    >
 
     <div class="input-group">
       <label class="label">
+        {{ $t('workspace.userSettings.upload') }}
         <input
           type="file"
           accept=".png, .jpg, .jpeg"
@@ -23,6 +19,15 @@
         >
       </label>
     </div>
+
+    <img
+      v-show="tempSrc"
+      class="temp-image"
+      alt=""
+      :src="tempSrc"
+      :width="size"
+      :height="size"
+    >
   </div>
 </template>
 
@@ -62,7 +67,7 @@ export default {
 
   data() {
     return {
-      tempSrc: '',
+      tempSrc: null,
     };
   },
 
@@ -76,8 +81,12 @@ export default {
         return this.value;
       },
       set(image) {
-        this.tempSrc = '';
         this.$emit('input', image);
+        const smallFadeOut = 50;
+
+        setTimeout(() => {
+          this.tempSrc = null;
+        }, smallFadeOut);
       },
     },
   },
@@ -92,7 +101,6 @@ export default {
       if (event.target.files.length === 0) {
         return;
       }
-      this.localImage = '';
       const formData = new FormData();
 
       formData.append('image', event.target.files[0]);
@@ -127,18 +135,37 @@ export default {
     height 100%
     top 0
     left 0
-    border-radius 50%
 
     & .label
       width 100%
       height 100%
-      display block
+      display flex
+      flex-direction column
+      justify-content center
+      align-items center
       cursor pointer
+      background-color rgba(0,0,0,0.5)
+      color white
+      opacity 0
+      transition 0.2s opacity ease
+
+      &:hover
+        opacity 1
+
+.temp-image
+  position absolute
+  top 0
+  left 0
+  object-fit cover
+  background-color var(--app-bg)
+  filter grayscale(100%) blur(2px)
 
 input
   pointer-events none
   user-select none
   outline 0
   opacity 0
+  width 0
+  height 0
 
 </style>

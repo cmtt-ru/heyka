@@ -572,7 +572,7 @@ $CLICK_ANIM_TIME = 0.7s
     left 0
 
     &--hiding
-      animation $CURSOR_HIDE_TIME 1 forwards svgClear
+      animation $CURSOR_HIDE_TIME 1 forwards HideCursor
 
 @keyframes HideCursor {
   0% {
