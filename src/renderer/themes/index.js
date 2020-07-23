@@ -4,8 +4,6 @@ import { ipcRenderer } from 'electron';
 import vuex from '@/store';
 import { heykaStore } from '@/store/localStore';
 
-;
-
 /**
  * A class that handles themes
  */
