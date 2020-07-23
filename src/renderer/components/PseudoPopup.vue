@@ -25,6 +25,7 @@
     </div>
 
     <div
+      v-if="$slots.footer"
       class="pseudo-popup__footer"
       :class="{'pseudo-popup__footer--with-shadow': footerShadow}"
     >
