@@ -1,27 +1,40 @@
 <template>
-  <div
-    class="input-wrapper"
-    :class="{'input-wrapper--disabled': disabled}"
-  >
-    <svg-icon
-      v-if="icon"
-      class="input__icon"
-      :name="icon"
-      size="medium"
-    />
-
-    <input
-      ref="input"
-      v-model="localValue"
-      class="input"
-      :class="{'input--with-icon': icon}"
-      :type="type"
-      :placeholder="placeholder"
+  <div class="container">
+    <div
+      class="input-wrapper"
+      :class="{'input-wrapper--disabled': disabled}"
     >
+      <svg-icon
+        v-if="icon"
+        class="input__icon"
+        :name="icon"
+        size="medium"
+      />
+
+      <input
+        ref="input"
+        v-model="localValue"
+        class="input"
+        :class="{'input--with-icon': icon, 'input--error': errorText}"
+        :type="type"
+        :placeholder="placeholder"
+        @input="debounceCheck"
+      >
+    </div>
+    <div
+      v-if="errorText"
+      class="error-text"
+    >
+      {{ errorText }}
+    </div>
   </div>
 </template>
 
 <script>
+import { debounce } from 'throttle-debounce';
+const CHECK_DELAY = 500;
+const NUMBER_REGEXP = /^\d*$/;
+const EMAIL_REGEXP = /^[a-z0-9]([a-z0-9_.]*)@([a-z_.]*)([.][a-z]{2})$/i;
 
 export default {
 
@@ -82,6 +95,35 @@ export default {
       type: Boolean,
       default: false,
     },
+    /**
+     * max length of input text
+     */
+    maxlength: {
+      type: Number,
+      default: null,
+    },
+
+    /**
+     * true if only numbers are allowed
+     */
+    numbers: {
+      type: Boolean,
+      default: false,
+    },
+
+    /**
+     * true if must be email
+     */
+    email: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  data() {
+    return {
+      errorText: null,
+    };
   },
 
   computed: {
@@ -97,8 +139,48 @@ export default {
   },
 
   methods: {
+    /**
+     * Focus cursor on input
+     * @returns {void}
+     */
     focusInput() {
       this.$refs.input.focus();
+    },
+
+    /**
+     * Debounce updating our info and sending API
+     * @returns {void}
+     */
+    debounceCheck: debounce(CHECK_DELAY, false, function (el) {
+      this.check(el.target.value);
+    }),
+    /**
+     * Update our info and send API
+     *
+     * @param {string} text - text
+     * @returns {void}
+     */
+    async check(text) {
+      this.errorText = null;
+      const errors = [];
+
+      if (text.length === 0) {
+        return;
+      }
+      if (this.maxlength < text.length) {
+        errors.push(`max length is: ${this.maxlength}`);
+      }
+      if (this.numbers && NUMBER_REGEXP.test(text) === false) {
+        errors.push('only numbers allowed');
+      }
+      if (this.email && EMAIL_REGEXP.test(text) === false) {
+        errors.push('not a valid email');
+      }
+
+      if (errors.length > 0) {
+        console.log(errors);
+        this.errorText = errors.join(';\n');
+      }
     },
   },
 
@@ -106,6 +188,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.container
+  width 100%
+
 .input-wrapper
   width 100%
   position relative
@@ -139,5 +224,20 @@ export default {
 
   &--with-icon
     padding-left 30px
+
+  &--error
+    border-color var(--color-0)
+
+.error-text
+  color var(--text-tech-0)
+  font-size 10px
+  line-height 12px
+  min-height 16px
+  padding-top 6px
+  display flex
+  flex-direction column
+  justify-content center
+  align-items flex-start
+  white-space pre-line
 
 </style>

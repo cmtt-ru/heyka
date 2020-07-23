@@ -51,6 +51,8 @@
       <br>
       <ui-input
         v-model="formData.nameText"
+        :maxlength="25"
+        email
         placeholder="Введите имя"
       />
       <br>
