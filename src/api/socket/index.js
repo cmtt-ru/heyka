@@ -6,6 +6,7 @@ import connectionCheck from '@classes/connectionCheck';
 import { handleError } from '@api/errors';
 import Logger from '@classes/logger';
 import sounds from '@classes/sounds';
+
 const cnsl = new Logger('SOCKETS', '#d67a24');
 
 const DISCONNECT_TIMEOUT = 2000;
@@ -293,16 +294,7 @@ function bindUserEvents() {
   /** Muted for all */
   client.on(eventNames.mutedForAll, async data => {
     if (data.socketId === client.id) {
-      store.dispatch('me/microphoneState', false);
-
-      const push = {
-        inviteId: Date.now().toString(),
-        local: true,
-        message: { action: 'mutedForAll' },
-        userId: data.fromUserId,
-      };
-
-      await store.dispatch('app/addPush', push);
+      store.dispatch('me/mutedByUser', data.fromUserId);
     }
   });
 }

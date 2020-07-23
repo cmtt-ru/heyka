@@ -5,6 +5,8 @@ import { ipcRenderer } from 'electron';
 import { meStore } from '@/store/localStore';
 import Logger from '@classes/logger';
 import sounds from '@classes/sounds';
+import broadcastEvents from '@classes/broadcastEvents';
+
 const cnsl = new Logger('Vuex actions /me', '#17A589');
 
 export default {
@@ -257,5 +259,26 @@ export default {
 
     newState.microphone = micState;
     dispatch('setMediaState', newState);
+  },
+
+  /**
+   * Muted by user
+   * @param {function} dispatch – vuex dispatch
+   * @param {boolean} userId – microphone state
+   * @returns {void}
+   */
+  async mutedByUser({ dispatch }, userId) {
+    /** Prevent muted talk push */
+    broadcastEvents.dispatch('audio-check-skip-muted-talk');
+
+    dispatch('microphoneState', false);
+
+    /** Show push */
+    await dispatch('app/addPush', {
+      inviteId: Date.now().toString(),
+      local: true,
+      message: { action: 'mutedForAll' },
+      userId,
+    }, { root: true });
   },
 };
