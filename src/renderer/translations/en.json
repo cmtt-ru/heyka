@@ -19,7 +19,8 @@
       "edit": "Edit profile",
       "upload": "Upload",
       "login": "Login settings",
-      "saved": "saved!"
+      "saved": "saved!",
+      "bigImage": "We can't upload files larger than"
     },
     "empty": "So far you've been disconnected\nfrom all channels",
     "new": "What's new?"
