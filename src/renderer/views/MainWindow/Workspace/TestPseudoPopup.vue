@@ -1,28 +1,27 @@
 import {ipcRenderer} from "electron";
 <template>
   <pseudo-popup @close="closeHandler">
-
     <template #header>
       Edit channel
     </template>
 
     <template #body>
-      <p>body</p>
+      <p
+        v-for="(i, index) in new Array(parseInt('20'))"
+        :key="index"
+      >
+        {{ index }}
+      </p>
     </template>
 
     <template #footer>
-      <ui-button
-        :type="1"
-      >
+      <ui-button :type="1">
         Save changes
       </ui-button>
-
-      <ui-button
-        :type="2"
-      >
+      <ui-button :type="2">
         Cancel
       </ui-button>
-    </template>6
+    </template>
   </pseudo-popup>
 </template>
 
