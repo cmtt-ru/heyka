@@ -19,6 +19,7 @@
       <ui-button
         v-if="notMe"
         :type="11"
+        data-popover-close
         @click="muteClickHandler"
       >
         {{ texts.mute }}
@@ -82,8 +83,7 @@ export default {
      * @returns {void}
      */
     muteClickHandler() {
-      console.log('mute user', this.userId);
-      this._notImplemented();
+      this.$store.dispatch('users/muteForAll', this.userId);
     },
   },
 };

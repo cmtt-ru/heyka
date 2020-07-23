@@ -10,6 +10,7 @@
       <ui-button
         v-if="isStreaming && notMe"
         :type="11"
+        data-popover-close
         @click="expandedClickHandler"
       >
         {{ texts.fullscreen }}
@@ -22,6 +23,7 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
+import broadcastActions from '@classes/broadcastActions';
 
 export default {
   components: {
@@ -71,8 +73,7 @@ export default {
      * @returns {void}
      */
     muteClickHandler() {
-      console.log('mute user', this.userId);
-      this._notImplemented();
+      broadcastActions.dispatch('users/muteForAll', this.userId);
     },
 
     /**
