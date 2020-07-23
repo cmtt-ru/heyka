@@ -293,7 +293,6 @@ function bindUserEvents() {
   /** Muted for all */
   client.on(eventNames.mutedForAll, async data => {
     if (data.socketId === client.id) {
-      console.log(data);
       store.dispatch('me/microphoneState', false);
 
       const push = {
