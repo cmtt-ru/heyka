@@ -43,7 +43,7 @@
 
     <div v-else>
       <ui-button
-        v-if="!isMe"
+        v-if="!isMe && !isInPrivateTalk"
         :type="1"
         :wide="true"
         class="user-action"
@@ -52,7 +52,7 @@
         <div>{{ texts.privateTalkButton }}</div>
       </ui-button>
       <ui-button
-        v-if="selectedChannel"
+        v-if="selectedChannel && !isMe"
         :type="3"
         :wide="true"
         class="user-action"
@@ -165,14 +165,6 @@ export default {
     },
 
     /**
-     * Determine if we are connected to current channel or not
-     * @returns {boolean}
-     */
-    isConnected() {
-      return this.$store.getters['me/getSelectedChannelId'] === this.channelId;
-    },
-
-    /**
      * Set status-circle color
      * @returns {object} background-color and border-color
      */
@@ -186,6 +178,18 @@ export default {
      */
     isMe() {
       return this.myUserID === this.userId;
+    },
+
+    /**
+     * Check if we are currently in a private talk
+     * @returns {boolean}
+     */
+    isInPrivateTalk() {
+      if (this.selectedChannel?.isTemporary === true) {
+        return true;
+      }
+
+      return false;
     },
   },
 
