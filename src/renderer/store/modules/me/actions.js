@@ -245,10 +245,17 @@ export default {
     commit('SET_LOCK_SCREEN_STATE', value);
   },
 
-  turnMicOn({ state, dispatch }) {
+  /**
+   * Change microphone state
+   * @param {MeState} state – vuex state
+   * @param {boolean} micState – microphone state
+   * @param {function} dispatch – vuex dispatch
+   * @returns {void}
+   */
+  microphoneState({ state, dispatch }, micState) {
     const newState = { ...state.mediaState };
 
-    newState.microphone = true;
+    newState.microphone = micState;
     dispatch('setMediaState', newState);
   },
 };
