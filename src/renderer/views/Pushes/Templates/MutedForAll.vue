@@ -48,9 +48,6 @@ export default {
       return this.$store.getters['users/getUserById'](this.data.userId);
     },
   },
-  mounted() {
-    console.log('data', this.data);
-  },
 };
 </script>
 
