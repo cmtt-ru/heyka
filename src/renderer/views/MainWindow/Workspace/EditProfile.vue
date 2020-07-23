@@ -31,7 +31,7 @@
         v-model="profile.avatar"
         class="user__avatar"
         :size="76"
-        @input="setNewImage"
+        @input="setNewAvatar"
       />
     </div>
 
@@ -72,6 +72,7 @@
       Google
     </ui-button>
     <div
+      ref="savedText"
       class="saved-text"
     >
       {{ texts.saved }}
@@ -117,20 +118,28 @@ export default {
       return this.$t('workspace.userSettings');
     },
 
-    name() {
+    /**
+     * Our name from vuex
+     * @returns {string}
+     */
+    vuexName() {
       return this.me.name;
     },
 
-    avatar() {
+    /**
+     * Our avatar from vuex
+     * @returns {string}
+     */
+    vuexAvatar() {
       return this.me.avatar;
     },
   },
 
   watch: {
-    name(val) {
+    vuexName(val) {
       this.$set(this.profile, 'name', val);
     },
-    avatar(val) {
+    vuexAvatar(val) {
       this.$set(this.profile, 'avatar', val);
     },
   },
@@ -138,10 +147,6 @@ export default {
   mounted() {
     this.$set(this.profile, 'name', this.name);
     this.$set(this.profile, 'avatar', this.avatar);
-  },
-
-  beforeDestroy() {
-    this.submit();
   },
 
   methods: {
@@ -153,26 +158,60 @@ export default {
       this.$router.back();
     },
 
-    setNewImage(image) {
+    /**
+     * update avatar with mew image
+     * @param {string} image - new image link from uploader
+     * @returns {void}
+     */
+    setNewAvatar(image) {
       this.profile.avatar = image;
+      this.submit();
     },
 
     /**
-     * Throttle sending dots by sending them only every SEND_DELAY ms
+     * Debounce updating our info and sending API
      * @returns {void}
      */
     debounceSubmit: debounce(UPDATE_DELAY, false, function () {
       this.submit();
     }),
 
+    /**
+     * Update our info and send API
+     * @returns {void}
+     */
     async submit() {
-      console.log(this.profile);
-      await this.$API.user.editProfile(this.profile);
+      try {
+        await this.$API.user.editProfile(this.profile);
+        this.savedAnimation();
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    /**
+     * show "saved!" text after successful API request
+     * @returns {void}
+     */
+    savedAnimation() {
+      const text = this.$refs.savedText;
+
+      if (!text) {
+        return;
+      }
+      text.classList.add('saved-text--hiding');
+      const hideTime = 2000;
+
+      setTimeout(() => {
+        text.classList.remove('saved-text--hiding');
+      }, hideTime);
     },
   },
 
 };
 </script>
+
+$SAVE_FADE_TIME = 2s
 
 <style lang="stylus" scoped>
 .edit-profile-page
@@ -181,6 +220,8 @@ export default {
 
 .close-strip
   height 40px
+  width 100%
+  padding 0
   display flex
   flex-direction row
   justify-content space-between
@@ -210,8 +251,6 @@ export default {
   &__avatar
     margin 6px 0 6px 12px
     flex-shrink 0
-    border-radius 50%
-    overflow hidden
 
 .login-label
   font-size 12px
@@ -232,13 +271,16 @@ export default {
   pointer-events none
 
   &--hiding
-    animation 2s 1 forwards hideSaved
+    animation $SAVE_FADE_TIME 1 forwards hideSaved
 
 @keyframes hideSaved {
   0% {
+    opacity: 0;
+  }
+  20%{
     opacity: 1;
   }
-  90% {
+  70% {
     opacity: 1;
   }
   100% {
