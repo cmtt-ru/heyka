@@ -145,8 +145,8 @@ export default {
   },
 
   mounted() {
-    this.$set(this.profile, 'name', this.name);
-    this.$set(this.profile, 'avatar', this.avatar);
+    this.$set(this.profile, 'name', this.vuexName);
+    this.$set(this.profile, 'avatar', this.vuexAvatar);
   },
 
   methods: {
@@ -196,7 +196,7 @@ export default {
     savedAnimation() {
       const text = this.$refs.savedText;
 
-      if (!text) {
+      if (text === undefined) {
         return;
       }
       text.classList.add('saved-text--hiding');
@@ -211,9 +211,9 @@ export default {
 };
 </script>
 
+<style lang="stylus" scoped>
 $SAVE_FADE_TIME = 2s
 
-<style lang="stylus" scoped>
 .edit-profile-page
   padding 0 12px 12px
   position relative
