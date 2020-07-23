@@ -38,15 +38,15 @@
 import UiButton from '@components/UiButton';
 import { throttle } from 'throttle-debounce';
 
+/**
+ * Scroll throttle timeout
+ * @type {number}
+ */
 const THROTTLE_TIMEOUT = 200;
 
 export default {
   components: {
     UiButton,
-  },
-
-  props: {
-
   },
 
   data() {
@@ -57,8 +57,8 @@ export default {
   },
 
   mounted() {
-    this.$refs.body.addEventListener('scroll', this.scrollHandler.bind(this));
-    window.addEventListener('resize', this.scrollHandler.bind(this));
+    this.$refs.body.addEventListener('scroll', this.scrollHandler);
+    window.addEventListener('resize', this.scrollHandler);
 
     this.scrollHandler();
   },
