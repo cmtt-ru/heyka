@@ -43,16 +43,9 @@ export default {
   components: {
     UiButton,
   },
+
   props: {
-    /**
-     * Value in percent
-     * min – 0
-     * max – 100
-     */
-    value: {
-      type: Number,
-      default: 0,
-    },
+
   },
 
   data() {
@@ -65,6 +58,7 @@ export default {
   mounted() {
     this.$refs.body.addEventListener('scroll', this.scrollHandler.bind(this));
     window.addEventListener('resize', this.scrollHandler.bind(this));
+
     this.scrollHandler();
   },
 
@@ -74,6 +68,10 @@ export default {
   },
 
   methods: {
+    /**
+     * Handle scroll event on body slot
+     * @returns {void}
+     */
     scrollHandler: throttle(THROTTLE_TIMEOUT, function () {
       if (this.$refs.body.scrollHeight > this.$refs.body.clientHeight) {
         this.headerShadow = this.$refs.body.scrollTop > 0;
@@ -84,6 +82,10 @@ export default {
       }
     }),
 
+    /**
+     * Close handler
+     * @returns {void}
+     */
     closeHandler() {
       this.$emit('close');
     },
@@ -99,19 +101,19 @@ export default {
 
     &__header
       display flex
+      align-items center
       flex 0 0 40px
       font-size 14px
       font-weight 500
       background var(--app-bg)
       padding 0 12px
       transition box-shadow 0.15s ease
-      align-items center
 
       &__close
         margin-left auto
 
       &--with-shadow
-        box-shadow 0 0 0 1px var(--line-stroke), 0 0 10px 0 rgba(0,0,0,0.25)
+        box-shadow 0 0 0 1px var(--line-stroke), 0 0 10px 0 var(--shadow-20)
 
     &__body
       flex 1 1 auto

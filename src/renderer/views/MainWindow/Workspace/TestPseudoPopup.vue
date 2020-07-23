@@ -7,7 +7,7 @@ import {ipcRenderer} from "electron";
 
     <template #body>
       <p
-        v-for="(i, index) in new Array(parseInt('20'))"
+        v-for="(i, index) in new Array(parseInt('30'))"
         :key="index"
       >
         {{ index }}
