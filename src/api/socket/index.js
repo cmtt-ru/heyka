@@ -289,6 +289,23 @@ function bindUserEvents() {
   client.on(eventNames.mediaStateUpdated, data => {
     store.commit('channels/SET_USER_MEDIA_STATE', data);
   });
+
+  /** Muted for all */
+  client.on(eventNames.mutedForAll, async data => {
+    if (data.socketId === client.id) {
+      console.log(data);
+      store.dispatch('me/microphoneState', false);
+
+      const push = {
+        inviteId: Date.now().toString(),
+        local: true,
+        message: { action: 'mutedForAll' },
+        userId: data.fromUserId,
+      };
+
+      await store.dispatch('app/addPush', push);
+    }
+  });
 }
 
 /**
