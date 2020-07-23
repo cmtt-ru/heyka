@@ -4,7 +4,17 @@
       class="pseudo-popup__header"
       :class="{'pseudo-popup__header--with-shadow': headerShadow}"
     >
-      <slot name="header" />
+      <span>
+        <slot name="header" />
+      </span>
+
+      <ui-button
+        class="pseudo-popup__header__close"
+        :type="7"
+        size="small"
+        icon="close"
+        @click="closeHandler"
+      />
     </div>
 
     <div
@@ -12,12 +22,6 @@
       class="pseudo-popup__body scroll"
     >
       <slot name="body" />
-      <p
-        v-for="(i, index) in test"
-        :key="index"
-      >
-        {{ index }}
-      </p>
     </div>
 
     <div
@@ -30,12 +34,15 @@
 </template>
 
 <script>
-
+import UiButton from '@components/UiButton';
 import { throttle } from 'throttle-debounce';
 
 const THROTTLE_TIMEOUT = 200;
 
 export default {
+  components: {
+    UiButton,
+  },
   props: {
     /**
      * Value in percent
@@ -50,7 +57,6 @@ export default {
 
   data() {
     return {
-      test: new Array(parseInt('100')),
       headerShadow: false,
       footerShadow: false,
     };
@@ -77,6 +83,10 @@ export default {
         this.footerShadow = false;
       }
     }),
+
+    closeHandler() {
+      this.$emit('close');
+    },
   },
 };
 </script>
@@ -88,13 +98,17 @@ export default {
     height 100%
 
     &__header
+      display flex
       flex 0 0 40px
-      line-height 40px
       font-size 14px
       font-weight 500
       background var(--app-bg)
       padding 0 12px
       transition box-shadow 0.15s ease
+      align-items center
+
+      &__close
+        margin-left auto
 
       &--with-shadow
         box-shadow 0 0 0 1px var(--line-stroke), 0 0 10px 0 rgba(0,0,0,0.25)
