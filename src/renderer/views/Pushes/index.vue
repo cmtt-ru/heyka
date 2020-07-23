@@ -62,7 +62,7 @@ export default {
           });
           break;
         case 'turn-mic-on':
-          broadcastActions.dispatch('me/turnMicOn');
+          broadcastActions.dispatch('me/microphoneState', true);
           break;
         default:
           await broadcastActions.dispatch('app/sendPushResponse', {
