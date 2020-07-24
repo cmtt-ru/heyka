@@ -4,7 +4,44 @@
       {{ title }}
     </template>
 
-    <template #body />
+    <template #body>
+      <ui-input
+        v-model="channelModel.name"
+        class="l-mt-16 l-mb-12"
+        icon="channel"
+        :placeholder="texts.name"
+      />
+
+      <ui-input
+        v-model="channelModel.description"
+        class="l-mb-24"
+        disabled
+        :placeholder="texts.description"
+      />
+
+      <ui-switch
+        v-model="channelModel.private"
+        class="l-mb-16"
+        disabled
+        :text="texts.private"
+      />
+
+      <ui-switch
+        v-model="channelModel.chat"
+        class="l-mb-10"
+        disabled
+        :text="texts.chat"
+      />
+
+      <ui-button
+        v-if="isEditMode"
+        :type="14"
+        class="l-mr-8"
+        @click="deleteHandler"
+      >
+        {{ texts.buttonDelete }}
+      </ui-button>
+    </template>
 
     <template #footer>
       <ui-button
@@ -37,19 +74,35 @@
 
 <script>
 import UiButton from '@components/UiButton';
+import { UiInput, UiSwitch } from '@components/Form';
 import PseudoPopup from '@components/PseudoPopup';
+import cloneDeep from 'clone-deep';
+import { mapGetters } from 'vuex';
+
+const CHANNEL_MODEL = {
+  name: '',
+  description: '',
+  private: false,
+  chat: false,
+};
 
 export default {
   components: {
+    UiInput,
+    UiSwitch,
     UiButton,
     PseudoPopup,
   },
   data() {
     return {
-
+      channelModel: cloneDeep(CHANNEL_MODEL),
     };
   },
   computed: {
+    ...mapGetters({
+      getChannelById: 'channels/getChannelById',
+    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -86,9 +139,14 @@ export default {
       }
     },
   },
-  created() {
 
+  mounted() {
+    /** Get channel data in edit mode*/
+    if (this.isEditMode) {
+      this.channelModel = cloneDeep(this.getChannelById(this.channelId));
+    }
   },
+
   methods: {
     /**
      * Create new channel handler
@@ -112,6 +170,14 @@ export default {
      */
     cancelHandler() {
       console.log('cancel handler');
+    },
+
+    /**
+     * Delete channel handler
+     * @returns {void}
+     */
+    deleteHandler() {
+      console.log('delete handler');
     },
   },
 };
