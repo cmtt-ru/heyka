@@ -27,10 +27,7 @@
       "buttonCreate": "Создать канал",
       "buttonSave": "Сохранить",
       "buttonCancel": "Отменить",
-      "buttonDelete": "Удалить канал",
-      "deletePromptText": "Вы уверены, что вы хотите удалить этот канал?",
-      "deletePromptYes": "Да, удалите",
-      "deletePromptNo": "Нет"
+      "buttonDelete": "Удалить канал"
     }
   },
   "settings": {
@@ -145,7 +142,12 @@
       "button1": "Открыть",
       "button2": "Отмена"
     },
-    "notImplemented": "Этой функции пока нет, но есть другие, тоже хорошие ✨"
+    "notImplemented": "Этой функции пока нет, но есть другие, тоже хорошие ✨",
+    "deleteChannel": {
+      "text": "Вы уверены, что вы хотите удалить канал",
+      "yes": "Да, удалите",
+      "no": "Нет"
+    }
   },
   "push": {
     "invitesto": "Зовёт в",

@@ -48,6 +48,7 @@
         v-if="!isEditMode"
         :type="1"
         class="l-mr-8"
+        :disabled="!isAnyChanges"
         @click="createHandler"
       >
         {{ texts.buttonCreate }}
@@ -57,6 +58,7 @@
         v-if="isEditMode"
         :type="1"
         class="l-mr-8"
+        :disabled="!isAnyChanges"
         @click="saveHandler"
       >
         {{ texts.buttonSave }}
@@ -82,9 +84,29 @@ import { mapGetters } from 'vuex';
 const CHANNEL_MODEL = {
   name: '',
   description: '',
-  private: false,
-  chat: false,
+  isPrivate: false,
 };
+
+/**
+ * String to hash
+ * @param {string} object – js object
+ * @returns {number}
+ */
+function obj2hash(object) {
+  const str = JSON.stringify(object);
+
+  let hash = 0,
+      i, chr;
+
+  for (i = 0; i < str.length; i++) {
+    chr = str.charCodeAt(i);
+    // eslint-disable-next-line no-magic-numbers
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+
+  return hash;
+}
 
 export default {
   components: {
@@ -96,6 +118,7 @@ export default {
   data() {
     return {
       channelModel: cloneDeep(CHANNEL_MODEL),
+      channelModelHash: obj2hash(cloneDeep(CHANNEL_MODEL)),
     };
   },
   computed: {
@@ -138,12 +161,19 @@ export default {
         return this.texts.createTitle;
       }
     },
+
+    isAnyChanges() {
+      const hash = obj2hash(this.channelModel);
+
+      return hash !== this.channelModelHash;
+    },
   },
 
   mounted() {
     /** Get channel data in edit mode*/
     if (this.isEditMode) {
       this.channelModel = cloneDeep(this.getChannelById(this.channelId));
+      this.channelModelHash = obj2hash(this.channelModel);
     }
   },
 
@@ -177,7 +207,7 @@ export default {
      * @returns {void}
      */
     deleteHandler() {
-      console.log('delete handler');
+      this.$store.dispatch('channels/deleteChannel', this.channelId);
     },
   },
 };
