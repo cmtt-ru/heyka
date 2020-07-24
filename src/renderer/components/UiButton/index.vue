@@ -61,7 +61,7 @@ export default {
   props: {
     /**
      * Style type of the button
-     * @param [1 — 13]
+     * @param [1 — 14]
      */
     type: {
       type: Number,
