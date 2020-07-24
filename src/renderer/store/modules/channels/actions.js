@@ -24,6 +24,26 @@ export default {
   },
 
   /**
+   * Create new channel
+   *
+   * @param {object} vuex functions
+   * @param {object} channel – channel data
+   * @param {string} channel.name – channel name
+   * @param {boolean} channel.isPrivate – private state
+   * @returns {Promise<void>}
+   */
+  async createChannel({ commit, getters, dispatch, rootGetters }, channel) {
+    const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
+    const response = await API.channel.create(workspaceId, channel);
+
+    if (response.channel.id) {
+      return response.channel;
+    }
+
+    return false;
+  },
+
+  /**
    * Delete channel by id
    *
    * @param {object} vuex functions
