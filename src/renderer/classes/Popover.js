@@ -313,7 +313,7 @@ export default class Popover {
       }, 0);
     } else {
       await this.unmount();
-      if (this.element.__clickOutsideHandler) {
+      if (this.element && this.element.__clickOutsideHandler) {
         document.body.removeEventListener('mouseup', this.element.__clickOutsideHandler);
       }
       if (this.popper) {
