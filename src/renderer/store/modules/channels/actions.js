@@ -24,6 +24,29 @@ export default {
   },
 
   /**
+   * Edit existing channel
+   *
+   * @param {object} vuex functions
+   * @param {object} channel – channel data
+   * @param {string} channel.name – channel name
+   * @param {boolean} channel.isPrivate – private state
+   * @returns {Promise<void>}
+   */
+  async editChannel({ commit, getters, dispatch, rootGetters }, channel) {
+    console.log('EDIT NOT IMPLEMENTED');
+    return;
+    // eslint-disable-next-line no-unreachable
+    const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
+    const response = await API.channel.edit(workspaceId, channel);
+
+    if (response.channel.id) {
+      return response.channel;
+    }
+
+    return false;
+  },
+
+  /**
    * Create new channel
    *
    * @param {object} vuex functions
@@ -69,7 +92,7 @@ export default {
             type: 12,
             action: () => {
               /** Delete channel */
-              console.log('delete');
+              console.log('DELETE NOT IMPLEMENTED');
             },
           },
           {

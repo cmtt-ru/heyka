@@ -81,6 +81,9 @@ import PseudoPopup from '@components/PseudoPopup';
 import cloneDeep from 'clone-deep';
 import { mapGetters } from 'vuex';
 
+/**
+ * Default channel model
+ */
 const CHANNEL_MODEL = {
   name: '',
   description: '',
@@ -117,8 +120,8 @@ export default {
   },
   data() {
     return {
-      channelModel: cloneDeep(CHANNEL_MODEL),
-      channelModelHash: obj2hash(cloneDeep(CHANNEL_MODEL)),
+      channelModel: {},
+      channelModelHash: 0,
     };
   },
   computed: {
@@ -162,6 +165,10 @@ export default {
       }
     },
 
+    /**
+     * Detect's changes in channel model
+     * @returns {boolean}
+     */
     isAnyChanges() {
       const hash = obj2hash(this.channelModel);
 
@@ -169,29 +176,70 @@ export default {
     },
   },
 
+  watch: {
+    isEditMode() {
+      this.updateChannelModel();
+    },
+  },
+
   mounted() {
-    /** Get channel data in edit mode*/
-    if (this.isEditMode) {
-      this.channelModel = cloneDeep(this.getChannelById(this.channelId));
-      this.channelModelHash = obj2hash(this.channelModel);
-    }
+    this.updateChannelModel();
   },
 
   methods: {
     /**
+     * Update channel model
+     * @returns {void}
+     */
+    updateChannelModel() {
+      if (this.isEditMode) {
+        this.channelModel = cloneDeep(this.getChannelById(this.channelId));
+        this.channelModelHash = obj2hash(this.channelModel);
+      } else {
+        this.channelModel = cloneDeep(CHANNEL_MODEL);
+        this.channelModelHash = obj2hash(this.channelModel);
+      }
+    },
+    /**
      * Create new channel handler
      * @returns {void}
      */
-    createHandler() {
-      console.log('create handler');
+    async createHandler() {
+      const channel = await this.$store.dispatch('channels/createChannel', {
+        name: this.channelModel.name,
+        isPrivate: this.channelModel.isPrivate,
+      });
+
+      /** Redirect to new created channel */
+      if (channel) {
+        await this.$router.push({
+          name: 'channel',
+          params: {
+            id: channel.id,
+          },
+        });
+      }
     },
 
     /**
      * Save channel handler
      * @returns {void}
      */
-    saveHandler() {
-      console.log('save handler');
+    async saveHandler() {
+      await this.$store.dispatch('channels/editChannel', {
+        id: this.channelId,
+        channel: {
+          name: this.channelModel.name,
+          isPrivate: this.channelModel.isPrivate,
+        },
+      });
+
+      await this.$router.push({
+        name: 'channel',
+        params: {
+          id: this.channelId,
+        },
+      });
     },
 
     /**
@@ -199,7 +247,7 @@ export default {
      * @returns {void}
      */
     cancelHandler() {
-      console.log('cancel handler');
+      this.$router.back();
     },
 
     /**
