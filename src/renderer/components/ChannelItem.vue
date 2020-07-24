@@ -1,6 +1,6 @@
 <template>
   <router-link
-    :to="'/main-window/workspace/channel/'+channel.id"
+    :to="'/main-window/workspace/channel/' + channel.id"
     class="channel"
   >
     <svg-icon
@@ -21,12 +21,12 @@
         <ui-button
           v-show="isSelected"
           v-stop-propagation
+          v-popover.click="{name: 'Channel', data: {id: channel.id}}"
           :type="7"
           class="channel__more"
           size="small"
           height="16"
           icon="more"
-          @click="moreHandler"
         />
       </div>
 

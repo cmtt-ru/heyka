@@ -16,7 +16,22 @@
       "email": "Email"
     },
     "empty": "So far you've been disconnected\nfrom all channels",
-    "new": "What's new?"
+    "new": "What's new?",
+    "editChannel": {
+      "createTitle": "New channel",
+      "editTitle": "Edit channel",
+      "name": "Name",
+      "description": "Description",
+      "private": "Private channel",
+      "chat": "Text chat",
+      "buttonCreate": "Create channel",
+      "buttonSave": "Save changes",
+      "buttonCancel": "Cancel",
+      "buttonDelete": "Delete channel",
+      "deletePromptText": "Are you sure you want to delete this channel?",
+      "deletePromptYes": "Yes, delete",
+      "deletePromptNo": "No"
+    }
   },
   "settings": {
     "labels": {
@@ -103,6 +118,11 @@
       "profile": "Open profile",
       "poke": "Send push",
       "mute": "Mute for all"
+    },
+    "channel": {
+      "hide": "Hide",
+      "edit": "Edit",
+      "delete": "Delete"
     }
   },
   "notifications":{

@@ -16,7 +16,22 @@
       "email": "Email"
     },
     "empty": "Вы отключены от всех каналов",
-    "new": "Что нового?"
+    "new": "Что нового?",
+    "editChannel": {
+      "createTitle": "Создание канала",
+      "editTitle": "Редактирование канала",
+      "name": "Название",
+      "description": "Описани",
+      "private": "Приватный канал",
+      "chat": "Текстовы чат",
+      "buttonCreate": "Создать канал",
+      "buttonSave": "Сохранить",
+      "buttonCancel": "Отменить",
+      "buttonDelete": "Удалить канал",
+      "deletePromptText": "Вы уверены, что вы хотите удалить этот канал?",
+      "deletePromptYes": "Да, удалите",
+      "deletePromptNo": "Нет"
+    }
   },
   "settings": {
     "labels": {
@@ -103,6 +118,11 @@
       "profile": "Перейти в профиль",
       "poke": "Отправить пуш",
       "mute": "Выкл. микрофон для всех"
+    },
+    "channel": {
+      "hide": "Спрятать",
+      "edit": "Редактировать",
+      "delete": "Удалить"
     }
   },
   "notifications":{
