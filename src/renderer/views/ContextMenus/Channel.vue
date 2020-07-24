@@ -73,7 +73,7 @@ export default {
      * @returns {void}
      */
     deleteHandler() {
-      this._notImplemented();
+      this.$store.dispatch('channels/deleteChannel', this.id);
     },
   },
 };

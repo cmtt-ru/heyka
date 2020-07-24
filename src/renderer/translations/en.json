@@ -27,10 +27,7 @@
       "buttonCreate": "Create channel",
       "buttonSave": "Save changes",
       "buttonCancel": "Cancel",
-      "buttonDelete": "Delete channel",
-      "deletePromptText": "Are you sure you want to delete this channel?",
-      "deletePromptYes": "Yes, delete",
-      "deletePromptNo": "No"
+      "buttonDelete": "Delete channel"
     }
   },
   "settings": {
@@ -145,7 +142,12 @@
       "button1": "Open",
       "button2": "Cancel"
     },
-    "notImplemented": "This feature is not implemented yet"
+    "notImplemented": "This feature is not implemented yet",
+    "deleteChannel": {
+      "text": "Are you sure you want to delete channel",
+      "yes": "Yes, delete",
+      "no": "No"
+    }
   },
   "push": {
     "invitesto": "Invite to",
