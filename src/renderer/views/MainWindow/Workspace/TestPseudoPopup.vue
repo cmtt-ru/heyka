@@ -1,4 +1,3 @@
-import {ipcRenderer} from "electron";
 <template>
   <pseudo-popup @close="closeHandler">
     <template #header>
