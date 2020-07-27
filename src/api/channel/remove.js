@@ -1,18 +1,12 @@
 import axios from 'axios';
 
 /**
- * Create channel in a certain workspace
- * @param {string} id - id of workspace
- * @param {string} params - channel info
- *  @param {string} params.name - channel name
- *  @param {string} params.isPrivate - is channel private
- *  @param {string} params.lifespan - channel lifespan (if it's temporary)
- *
- *
+ * Delete channel
+ * @param {string} id - channel id
  * @returns {string} 'ok'
  */
-export default function (id, params) {
-  const res = axios.post(`/workspaces/${id}/channels`, params);
+export default async function (id) {
+  const res = await axios.delete(`/channels/${id}`);
 
   return res.data;
 }

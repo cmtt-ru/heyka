@@ -1,5 +1,6 @@
 import API from '@api';
 import i18n from '@/i18n';
+import router from '@/router';
 
 export default {
   /**
@@ -90,9 +91,10 @@ export default {
           {
             text: texts.yes,
             type: 12,
-            action: () => {
+            action: async () => {
               /** Delete channel */
-              console.log('DELETE NOT IMPLEMENTED');
+              await API.channel.remove(channelId);
+              router.push({ name: 'workspace' });
             },
           },
           {
