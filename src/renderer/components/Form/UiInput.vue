@@ -124,7 +124,7 @@ export default {
      * custom regExp for input to match
      */
     regex: {
-      type: Object,
+      type: RegExp,
       default: null,
     },
 
@@ -133,7 +133,7 @@ export default {
      */
     regexError: {
       type: String,
-      default: null,
+      default: 'default',
     },
 
   },
@@ -152,6 +152,14 @@ export default {
       set(value) {
         this.$emit('input', value);
       },
+    },
+
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('inputErrors');
     },
 
   },
@@ -186,13 +194,16 @@ export default {
         return;
       }
       if (this.maxlength < text.length) {
-        errors.push(`max length is: ${this.maxlength}`);
+        errors.push(`${this.texts['numbers']} ${this.maxlength}`);
       }
       if (this.numbers && NUMBER_REGEXP.test(text) === false) {
-        errors.push('only numbers allowed');
+        errors.push(this.texts['numbers']);
       }
       if (this.email && EMAIL_REGEXP.test(text) === false) {
-        errors.push('not a valid email');
+        errors.push(this.texts['email']);
+      }
+      if (this.regex && this.regex.test(text) === false) {
+        errors.push(this.texts[this.regexError]);
       }
 
       if (errors.length > 0) {

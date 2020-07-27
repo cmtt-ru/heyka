@@ -158,5 +158,11 @@
     "microphoneOff": "Mute",
     "speakerOn": "Sound on",
     "speakerOff": "Sound off"
+  },
+  "inputErrors": {
+    "default": "not a valid input",
+    "email": "not a valid email",
+    "numbers": "only numbers allowed",
+    "length": "max length is:"
   }
 }
