@@ -34,7 +34,8 @@
 import { debounce } from 'throttle-debounce';
 const CHECK_DELAY = 500;
 const NUMBER_REGEXP = /^\d*$/;
-const EMAIL_REGEXP = /^[a-z0-9]([a-z0-9_.]*)@([a-z_.]*)([.][a-z]{2})$/i;
+// eslint-disable-next-line no-useless-escape
+const EMAIL_REGEXP = /^[a-z0-9]([a-z0-9_.\-]*)@([a-z_.\-]*)([.][a-z]{2,})$/i;
 
 export default {
 
@@ -118,6 +119,23 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    /**
+     * custom regExp for input to match
+     */
+    regex: {
+      type: Object,
+      default: null,
+    },
+
+    /**
+     * error text for custom regExp
+     */
+    regexError: {
+      type: String,
+      default: null,
+    },
+
   },
 
   data() {
