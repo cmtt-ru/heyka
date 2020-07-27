@@ -53,6 +53,7 @@
         v-model="formData.nameText"
         :maxlength="25"
         email
+        :regex="/^\d*$/"
         placeholder="Введите имя"
       />
       <br>
