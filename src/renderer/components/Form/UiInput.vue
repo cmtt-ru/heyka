@@ -15,8 +15,7 @@
         ref="input"
         v-model="localValue"
         class="input"
-        :class="{'input--with-icon': icon, 'input--error': errorText}"
-        :type="type"
+        :class="{'input--with-icon': icon, 'ui-error': errorText}"
         :placeholder="placeholder"
         @input="debounceCheck"
       >
@@ -50,22 +49,6 @@ export default {
     },
 
     /**
-     * Name to identify in form
-     */
-    name: {
-      type: String,
-      default: '',
-    },
-
-    /**
-     * Input's type
-     */
-    type: {
-      type: String,
-      default: 'text',
-    },
-
-    /**
      * Input's placeholder
      */
     placeholder: {
@@ -96,6 +79,23 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    /**
+     * true if field is required
+     */
+    required: {
+      type: Boolean,
+      default: false,
+    },
+
+    /**
+     * min length of input text
+     */
+    minlength: {
+      type: Number,
+      default: null,
+    },
+
     /**
      * max length of input text
      */
@@ -136,6 +136,14 @@ export default {
       default: 'default',
     },
 
+    /**
+     * error name from backend
+     */
+    backendError: {
+      type: String,
+      default: null,
+    },
+
   },
 
   data() {
@@ -145,6 +153,13 @@ export default {
   },
 
   computed: {
+    validate() {
+      if (this.required === true || this.minlength || this.maxlength || this.numbers || this.email || this.regex) {
+        return true;
+      }
+
+      return false;
+    },
     localValue: {
       get() {
         return this.value;
@@ -162,6 +177,16 @@ export default {
       return this.$t('inputErrors');
     },
 
+  },
+
+  watch: {
+    backendError() {
+      this.check(this.localValue);
+    },
+  },
+
+  mounted() {
+    this.check(this.localValue);
   },
 
   methods: {
@@ -191,10 +216,14 @@ export default {
       const errors = [];
 
       if (text.length === 0) {
+        this.checkEmpty();
+
         return;
       }
-      if (this.maxlength < text.length) {
-        errors.push(`${this.texts['numbers']} ${this.maxlength}`);
+      if (this.minlength && this.minlength > text.length) {
+        errors.push(`${this.texts['minlength']} ${this.minlength}`);
+      } else if (this.maxlength && this.maxlength < text.length) {
+        errors.push(`${this.texts['maxlength']} ${this.maxlength}`);
       }
       if (this.numbers && NUMBER_REGEXP.test(text) === false) {
         errors.push(this.texts['numbers']);
@@ -203,14 +232,37 @@ export default {
         errors.push(this.texts['email']);
       }
       if (this.regex && this.regex.test(text) === false) {
-        errors.push(this.texts[this.regexError]);
+        errors.push(this.texts[this.regexError] || this.texts['default']);
+      }
+      if (this.backendError) {
+        errors.push(this.texts[this.backendError] || this.texts['defaultBackend']);
       }
 
       if (errors.length > 0) {
-        console.log(errors);
         this.errorText = errors.join(';\n');
+        this.$parent.$emit('ui-error', true);
+      } else {
+        this.$parent.$emit('ui-error', false);
       }
     },
+
+    checkEmpty() {
+      if (this.required === true) {
+        this.errorText = this.texts['required'];
+        this.$parent.$emit('ui-error', true);
+      } else {
+        this.$parent.$emit('ui-error', false);
+      }
+    },
+
+    checkError() {
+      if (this.errorText !== null) {
+        return true;
+      }
+
+      return false;
+    },
+
   },
 
 };
@@ -254,8 +306,8 @@ export default {
   &--with-icon
     padding-left 30px
 
-  &--error
-    border-color var(--color-0)
+.ui-error
+  border-color var(--color-0)
 
 .error-text
   color var(--text-tech-0)

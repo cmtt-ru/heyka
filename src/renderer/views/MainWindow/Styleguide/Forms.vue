@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form name="styleguideform">
+    <ui-form :error.sync="formError">
       <h3 class="l-mt-24">
         Switch
       </h3>
@@ -54,11 +54,13 @@
         :maxlength="25"
         email
         :regex="/^\d*$/"
+        regex-error="numbers"
         placeholder="Введите имя"
       />
       <br>
       <ui-input
         v-model="formData.settingsText"
+        required
         icon="settings"
       />
       <br>
@@ -81,18 +83,19 @@
       >
         Submit
       </ui-button>
-    </form>
+    </ui-form>
   </div>
 </template>
 
 <script>
 
 import UiButton from '@components/UiButton';
-import { UiSwitch, UiSelect, UiInput } from '@components/Form';
+import { UiForm, UiSwitch, UiSelect, UiInput } from '@components/Form';
 import EditableList from '@components/List/EditableList';
 
 export default {
   components: {
+    UiForm,
     UiSwitch,
     UiSelect,
     UiInput,
@@ -121,6 +124,7 @@ export default {
         name: 'Honda',
         value: 'Honda',
       } ],
+      formError: false,
       formData: {
         themeToggle: false,
         defaultEnabledToggle: true,
@@ -129,7 +133,7 @@ export default {
         carSecondSelect: 'Honda',
         carDisabledSelect: 'Citroen',
         nameText: '',
-        settingsText: 'Настройки',
+        settingsText: '',
         disabledText: 'Я не работаю',
         deletableText: ['111', '222'],
       },
