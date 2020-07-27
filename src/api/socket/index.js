@@ -272,6 +272,12 @@ function bindChannelEvents() {
   client.on(eventNames.channelDeleted, ({ channelId }) => {
     store.commit('channels/REMOVE_CHANNEL', channelId);
   });
+
+  /** Channel updated */
+  client.on(eventNames.channelUpdated, ({ channel }) => {
+    console.log('socket', channel);
+    store.commit('channels/UPDATE_CHANNEL', channel);
+  });
 }
 
 /**

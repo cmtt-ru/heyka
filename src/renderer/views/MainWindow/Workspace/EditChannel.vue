@@ -230,7 +230,7 @@ export default {
         id: this.channelId,
         channel: {
           name: this.channelModel.name,
-          isPrivate: this.channelModel.isPrivate,
+          // isPrivate: this.channelModel.isPrivate,
         },
       });
 
