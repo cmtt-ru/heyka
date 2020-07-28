@@ -1,6 +1,9 @@
 <template>
   <div>
-    <ui-form :error.sync="formError">
+    <ui-form
+      :error.sync="formError"
+      @submit="submit()"
+    >
       <h3 class="l-mt-24">
         Switch
       </h3>
@@ -31,6 +34,7 @@
         v-model="formData.carFirstSelect"
         :data="carDropdownData"
         text="Выбрать машину"
+        required
       />
       <br>
       <ui-select
@@ -51,16 +55,16 @@
       <br>
       <ui-input
         v-model="formData.nameText"
-        :maxlength="25"
+        :maxlength="15"
         email
-        :regex="/^\d*$/"
         regex-error="numbers"
-        placeholder="Введите имя"
+        placeholder="email, maxlength 15"
       />
       <br>
       <ui-input
         v-model="formData.settingsText"
         required
+        placeholder="required *"
         icon="settings"
       />
       <br>
@@ -73,13 +77,14 @@
         v-model="formData.deletableText"
         add-text="Add email"
         placeholder="Меня можно удалить"
+        numbers
       />
       <br>
       <br>
       <br>
       <ui-button
         :type="5"
-        @click.native="submit()"
+        submit
       >
         Submit
       </ui-button>
