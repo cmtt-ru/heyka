@@ -3,6 +3,7 @@ import router from '@/router';
 import store from '@/store';
 import i18n from '@/i18n';
 import { createPopper } from '@popperjs/core';
+import API from '@api';
 
 /**
  * @typedef {object} PopoverModes
@@ -89,7 +90,7 @@ export default class Popover {
    * @param {PopoverModes} modes – popover mode
    * @param {object} data – some data to pass to context menu component
    */
-  constructor({ element, options = {}, componentName, modes, data = {} }) {
+  constructor({ element, options = {}, componentName, modes, data = {}, permissions = null }) {
     this.uid = Math.round(Math.random() * UID_MAX);
 
     this.element = element;
@@ -97,6 +98,7 @@ export default class Popover {
     this.componentName = componentName;
     this.modes = modes;
     this.vueProps = data;
+    this.permissions = permissions;
 
     this.instance = null;
     this.popper = null;
@@ -153,6 +155,14 @@ export default class Popover {
   async mount() {
     if (this.instance) {
       return;
+    }
+
+    if (this.permissions) {
+      API.user.checkPermissions(this.permissions);
+      // eslint-disable-next-line no-return-assign,no-sequences,no-magic-numbers
+      const permissions = this.permissions.actions.reduce((a, b) => (a[b] = Math.random() > 0.5, a), {});
+
+      this.vueProps.permissions = permissions;
     }
 
     const Component = await this.loadComponent(this.componentName);

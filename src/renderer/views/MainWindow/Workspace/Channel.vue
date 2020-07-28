@@ -17,7 +17,7 @@
         {{ channel.name }}
       </div>
       <ui-button
-        v-popover.click="{name: 'Channel', data: {id: channel.id}}"
+        v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
         :type="7"
         class="channel-info__more"
         size="small"
