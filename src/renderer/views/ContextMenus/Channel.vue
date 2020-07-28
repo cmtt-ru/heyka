@@ -9,7 +9,10 @@
         {{ texts.hide }}
       </ui-button>
 
-      <router-link :to="{ name: 'edit-channel', params: { id }}">
+      <router-link
+        v-if="permissions['channel.update']"
+        :to="{ name: 'edit-channel', params: { id }}"
+      >
         <ui-button
           :type="11"
           data-popover-close
@@ -19,6 +22,7 @@
       </router-link>
 
       <ui-button
+        v-if="permissions['channel.delete']"
         :type="11"
         data-popover-close
         @click="deleteHandler"
@@ -46,6 +50,14 @@ export default {
     id: {
       type: String,
       default: '',
+    },
+
+    /**
+     * Permissions object
+     */
+    permissions: {
+      type: Object,
+      default: () => {},
     },
   },
 

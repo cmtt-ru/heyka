@@ -21,7 +21,7 @@
         <ui-button
           v-show="isSelected"
           v-stop-propagation
-          v-popover.click="{name: 'Channel', data: {id: channel.id}}"
+          v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
           :type="7"
           class="channel__more"
           size="small"
