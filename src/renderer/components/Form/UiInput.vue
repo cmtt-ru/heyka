@@ -31,10 +31,11 @@
 
 <script>
 import { debounce } from 'throttle-debounce';
+import { v4 as uuid4 } from 'uuid';
 const CHECK_DELAY = 500;
 const NUMBER_REGEXP = /^\d*$/;
 // eslint-disable-next-line no-useless-escape
-const EMAIL_REGEXP = /^[a-z0-9]([a-z0-9_.\-]*)@([a-z_.\-]*)([.][a-z]{2,})$/i;
+const EMAIL_REGEXP = /^[a-z0-9]([a-z0-9_.\-]*)@([a-z0-9.\-]+)([.][a-z]{2,})$/i;
 
 export default {
 
@@ -148,18 +149,14 @@ export default {
 
   data() {
     return {
+      id: uuid4(),
+      validate: (!!this.required || !!this.minlength || !!this.maxlength || this.numbers || this.email || !!this.regex),
       errorText: null,
     };
   },
 
   computed: {
-    validate() {
-      if (this.required === true || this.minlength || this.maxlength || this.numbers || this.email || this.regex) {
-        return true;
-      }
 
-      return false;
-    },
     localValue: {
       get() {
         return this.value;
@@ -181,12 +178,8 @@ export default {
 
   watch: {
     backendError() {
-      this.check(this.localValue);
+      this.checkErrors();
     },
-  },
-
-  mounted() {
-    this.check(this.localValue);
   },
 
   methods: {
@@ -203,7 +196,7 @@ export default {
      * @returns {void}
      */
     debounceCheck: debounce(CHECK_DELAY, false, function (el) {
-      this.check(el.target.value);
+      this.checkErrors(el.target.value);
     }),
     /**
      * Update our info and send API
@@ -211,14 +204,14 @@ export default {
      * @param {string} text - text
      * @returns {void}
      */
-    async check(text) {
+    checkErrors(text = this.localValue) {
       this.errorText = null;
       const errors = [];
 
       if (text.length === 0) {
-        this.checkEmpty();
+        const res = this.checkEmpty();
 
-        return;
+        return res;
       }
       if (this.minlength && this.minlength > text.length) {
         errors.push(`${this.texts['minlength']} ${this.minlength}`);
@@ -240,27 +233,27 @@ export default {
 
       if (errors.length > 0) {
         this.errorText = errors.join(';\n');
-        this.$parent.$emit('ui-error', true);
+        this.$parent.$emit('ui-error', this.id, true);
+
+        return true;
       } else {
-        this.$parent.$emit('ui-error', false);
+        this.$parent.$emit('ui-error', this.id, false);
+
+        return false;
       }
     },
 
     checkEmpty() {
       if (this.required === true) {
         this.errorText = this.texts['required'];
-        this.$parent.$emit('ui-error', true);
-      } else {
-        this.$parent.$emit('ui-error', false);
-      }
-    },
+        this.$parent.$emit('ui-error', this.id, true);
 
-    checkError() {
-      if (this.errorText !== null) {
         return true;
-      }
+      } else {
+        this.$parent.$emit('ui-error', this.id, false);
 
-      return false;
+        return false;
+      }
     },
 
   },

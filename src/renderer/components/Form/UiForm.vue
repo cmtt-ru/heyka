@@ -23,49 +23,96 @@ export default {
 
   data() {
     return {
-      inputs: [],
+      inputs: {},
+      submitBUtton: null,
     };
   },
 
   mounted() {
     this.listChildren();
-    this.$on('ui-error', this.errorHandle);
+    this.$on('ui-error', this.errorHandler);
+    this.$on('ui-submit', this.submitHandler);
+    this.$on('changed-number-of-inputs', this.listChildren);
   },
 
   methods: {
     listChildren() {
-      this.inputs = this.$children.filter(child => {
-        return typeof child.checkError !== 'undefined';
+      const savedInputs = this.inputs;
+
+      this.inputs = {};
+      const elements = this.allChildren(this);
+      const needValidation = elements.filter(child => {
+        return child.validate === true;
       });
-      console.log(this.inputs);
+
+      for (const el of needValidation) {
+        this.$set(this.inputs, el.id, {
+          el: el,
+          error: savedInputs[el.id]?.error || false,
+        });
+      }
+      this.submitBUtton = elements.find(el => el.submit === true);
+      this.checkErrors();
     },
 
-    errorHandle(value) {
+    allChildren(el) {
+      if (el.$children.length === 0) {
+        return [];
+      }
+
+      return [...el.$children, ...el.$children.map(child => {
+        return child.$children;
+      }).flat()];
+    },
+
+    errorHandler(id, value) {
+      this.inputs[id].error = value;
       if (value === true) {
-        console.log('ERRORS IN FORM');
-        this.$emit('update:error', true);
+        this.updateErrorState(true);
 
         return;
       }
-      this.$nextTick(() => {
-        this.checkErrors();
-      });
+      this.checkErrors();
     },
 
     checkErrors() {
-      for (const el of this.inputs) {
-        if (el.checkError()) {
-          console.log('SOME ERRORS');
-
-          this.$emit('update:error', true);
+      for (const id in this.inputs) {
+        if (this.inputs[id].error) {
+          this.updateErrorState(true);
 
           return;
         }
       }
-      console.log('NO ERRORS');
-
-      this.$emit('update:error', false);
+      this.updateErrorState(false);
     },
+
+    updateErrorState(state) {
+      this.$emit('update:error', state);
+      if (this.submitBUtton === undefined) {
+        return;
+      }
+      if (state) {
+        this.submitBUtton.$el.classList.add('ui-button--disabled');
+      } else {
+        this.submitBUtton.$el.classList.remove('ui-button--disabled');
+      }
+    },
+
+    submitHandler() {
+      let anyErrors = false;
+
+      for (const id in this.inputs) {
+        if (this.inputs[id].el.checkErrors() === true) {
+          anyErrors = true;
+        }
+      }
+      if (anyErrors === false) {
+        this.$emit('submit');
+      } else {
+        this.$emit('submit-error');
+      }
+    },
+
   },
 
 };
