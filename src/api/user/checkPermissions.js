@@ -6,7 +6,7 @@ import axios from 'axios';
  * @returns {object}
  */
 export default async function (data) {
-  const res = await axios.get(`/check-persmissions`, {
+  const res = await axios.get(`/check-permissions`, {
     params: data,
   });
 

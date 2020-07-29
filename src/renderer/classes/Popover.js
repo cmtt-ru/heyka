@@ -158,11 +158,9 @@ export default class Popover {
     }
 
     if (this.permissions) {
-      API.user.checkPermissions(this.permissions);
-      // eslint-disable-next-line no-return-assign,no-sequences,no-magic-numbers
-      const permissions = this.permissions.actions.reduce((a, b) => (a[b] = Math.random() > 0.5, a), {});
+      const permissions = await API.user.checkPermissions(this.permissions);
 
-      this.vueProps.permissions = permissions;
+      this.vueProps.permissions = permissions || {};
     }
 
     const Component = await this.loadComponent(this.componentName);

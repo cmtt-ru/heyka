@@ -16,7 +16,7 @@ class Permissions {
    */
   editChannel(channelId) {
     return {
-      actions: ['channel.update', 'channel.delete'],
+      actions: 'channel.update,channel.delete',
       channelId,
     };
   }
