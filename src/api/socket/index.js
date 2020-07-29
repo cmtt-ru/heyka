@@ -289,6 +289,11 @@ function bindUserEvents() {
   client.on(eventNames.mediaStateUpdated, data => {
     store.commit('channels/SET_USER_MEDIA_STATE', data);
   });
+
+  /** User info changed */
+  client.on(eventNames.userUpdated, data => {
+    store.commit('users/UPDATE_USER', data.user);
+  });
 }
 
 /**
