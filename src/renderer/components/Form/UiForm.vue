@@ -36,6 +36,13 @@ export default {
   },
 
   methods: {
+
+    /**
+     * Find all children (and their children) that need validation
+     * Also find submit button
+     *
+     * @returns {void}
+     */
     listChildren() {
       const savedInputs = this.inputs;
 
@@ -55,6 +62,12 @@ export default {
       this.checkErrors();
     },
 
+    /**
+     * Find all children (and their children) of a vue component
+     *
+     * @param {VueComponent} el - vue component
+     * @returns {void}
+     */
     allChildren(el) {
       if (el.$children.length === 0) {
         return [];
@@ -65,6 +78,13 @@ export default {
       }).flat()];
     },
 
+    /**
+     * Handle error state change of some input
+     *
+     * @param {string} id - input's id
+     * @param {boolean} value - true if validation failed
+     * @returns {void}
+     */
     errorHandler(id, value) {
       this.inputs[id].error = value;
       if (value === true) {
@@ -75,6 +95,11 @@ export default {
       this.checkErrors();
     },
 
+    /**
+     * Determine if there are any failed validations in form
+     *
+     * @returns {void}
+     */
     checkErrors() {
       for (const id in this.inputs) {
         if (this.inputs[id].error) {
@@ -86,6 +111,12 @@ export default {
       this.updateErrorState(false);
     },
 
+    /**
+     * emit "update:error" event and disable submit button if validation failed
+     *
+     * @param {boolean} state - true if validation failed
+     * @returns {void}
+     */
     updateErrorState(state) {
       this.$emit('update:error', state);
       if (this.submitBUtton === undefined) {
@@ -98,6 +129,11 @@ export default {
       }
     },
 
+    /**
+     * Check all inputs than need to be validated and emit "sumbit" event if everything is ok
+     *
+     * @returns {void}
+     */
     submitHandler() {
       let anyErrors = false;
 

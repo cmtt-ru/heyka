@@ -198,13 +198,18 @@ export default {
     debounceCheck: debounce(CHECK_DELAY, false, function (el) {
       this.checkErrors(el.target.value);
     }),
+
     /**
-     * Update our info and send API
+     * Check input for validation errors
+     * Also, edit error text accordingly
      *
-     * @param {string} text - text
-     * @returns {void}
+     * @param {string} text - text in input
+     * @returns {boolean} true if found any errors
      */
     checkErrors(text = this.localValue) {
+      if (this.validate === false) {
+        return;
+      }
       this.errorText = null;
       const errors = [];
 
@@ -243,6 +248,11 @@ export default {
       }
     },
 
+    /**
+     * Check if input is empty and required
+     *
+     * @returns {boolean}
+     */
     checkEmpty() {
       if (this.required === true) {
         this.errorText = this.texts['required'];
