@@ -224,6 +224,12 @@ export default {
       this.visible = false;
     },
 
+    /**
+     * Check input for empty value (if it is required)
+     * Also, edit error text accordingly
+     *
+     * @returns {boolean} true if found any errors
+     */
     checkErrors() {
       this.errorText = null;
       if (this.required === true && !this.value) {
