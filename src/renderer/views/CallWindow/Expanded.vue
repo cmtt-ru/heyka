@@ -208,9 +208,6 @@ export default {
 
     w.removeAllListeners('blur');
     w.removeAllListeners('focus');
-
-    this.$refs.video.onerror = null;
-    this.$refs.video.onloadedmetadata = null;
   },
 
   methods: {

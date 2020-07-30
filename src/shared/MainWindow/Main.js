@@ -82,6 +82,10 @@ class MainWindow {
    * @returns {void}
    */
   _eventsSubscribe() {
+    if (!IS_DEV) {
+      Autoupdater.init(this.window);
+    }
+
     if (TrayManager.isInTray()) {
       const waitTime = 200;
 
@@ -96,7 +100,7 @@ class MainWindow {
     }
 
     nativeTheme.on('updated', () => {
-      WindowManager.sendAll('nativetheme-updated');
+      WindowManager.sendAll('native-theme-updated');
     });
 
     ipcMain.on('start-is-ready', () => {
@@ -105,27 +109,21 @@ class MainWindow {
       }
     });
 
-    ipcMain.on('page-rendered', (event, args) => {
-      if (!IS_DEV) {
-        Autoupdater.init(this.window);
-      }
-
-      /**
-         * Close all windows on main window refresh
-         */
-      this.window.webContents.on('did-finish-load', () => {
-        WindowManager.closeAll();
-      });
-
-      /**
-         * Power monitor events
-         * Handle sleep / awake & lock / unlock screen events
-         */
-      powerMonitor.on('suspend', () => this.window.webContents.send('power-monitor-suspend', true));
-      powerMonitor.on('resume', () => this.window.webContents.send('power-monitor-suspend', false));
-      powerMonitor.on('lock-screen', () => this.window.webContents.send('power-monitor-lock-screen', true));
-      powerMonitor.on('unlock-screen', () => this.window.webContents.send('power-monitor-lock-screen', false));
+    /**
+     * Close all windows on main window refresh
+     */
+    this.window.webContents.on('did-finish-load', () => {
+      WindowManager.closeAll();
     });
+
+    /**
+     * Power monitor events
+     * Handle sleep / awake & lock / unlock screen events
+     */
+    powerMonitor.on('suspend', () => this.window.webContents.send('power-monitor-suspend', true));
+    powerMonitor.on('resume', () => this.window.webContents.send('power-monitor-suspend', false));
+    powerMonitor.on('lock-screen', () => this.window.webContents.send('power-monitor-lock-screen', true));
+    powerMonitor.on('unlock-screen', () => this.window.webContents.send('power-monitor-lock-screen', false));
   }
 }
 
