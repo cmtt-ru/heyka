@@ -3,6 +3,7 @@
     <div class="buttons">
       <ui-button
         :type="11"
+        data-popover-close
         @click="muteClickHandler"
       >
         {{ texts.mute }}
@@ -10,7 +11,6 @@
       <ui-button
         v-if="isStreaming && notMe"
         :type="11"
-        data-popover-close
         @click="expandedClickHandler"
       >
         {{ texts.fullscreen }}
