@@ -109,4 +109,17 @@ export default {
     }
   },
 
+  /**
+   * Update channel
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {object} channel – channel data
+   * @constructor
+   */
+  UPDATE_CHANNEL(state, channel) {
+    if (state.collection[channel.id]) {
+      Object.assign(state.collection[channel.id], channel);
+    }
+  },
+
 };

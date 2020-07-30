@@ -23,7 +23,19 @@
       "bigImage": "We can't upload files larger than"
     },
     "empty": "So far you've been disconnected\nfrom all channels",
-    "new": "What's new?"
+    "new": "What's new?",
+    "editChannel": {
+      "createTitle": "New channel",
+      "editTitle": "Edit channel",
+      "name": "Name",
+      "description": "Description",
+      "private": "Private channel",
+      "chat": "Text chat",
+      "buttonCreate": "Create channel",
+      "buttonSave": "Save changes",
+      "buttonCancel": "Cancel",
+      "buttonDelete": "Delete channel"
+    }
   },
   "settings": {
     "labels": {
@@ -111,6 +123,11 @@
       "poke": "Send push",
       "mute": "Mute for all"
     },
+    "channel": {
+      "hide": "Hide",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
     "userMore": {
       "edit": "Edit profile"
     }
@@ -135,7 +152,12 @@
       "button1": "Open",
       "button2": "Cancel"
     },
-    "notImplemented": "This feature is not implemented yet"
+    "notImplemented": "This feature is not implemented yet",
+    "deleteChannel": {
+      "text": "Are you sure you want to delete channel",
+      "yes": "Yes, delete",
+      "no": "No"
+    }
   },
   "push": {
     "invitesto": "Invite to",

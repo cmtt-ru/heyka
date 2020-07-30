@@ -8,6 +8,7 @@ export default {
       options: binding.value.options,
       data: binding.value.data,
       modes: binding.modifiers,
+      permissions: binding.value.permissions,
     });
 
     /** Save popover instance in vnode context */
