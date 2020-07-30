@@ -234,7 +234,7 @@ export default {
         },
       });
 
-      await this.$router.push({
+      await this.$router.replace({
         name: 'channel',
         params: {
           id: this.channelId,
