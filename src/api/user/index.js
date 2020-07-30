@@ -5,6 +5,7 @@ import sendInvite from './sendInvite';
 import sendInviteResponse from './sendInviteResponse';
 import editProfile from './editProfile';
 import image from './image';
+import muteForAll from './muteForAll';
 
 export default {
   setMediaState,
@@ -14,4 +15,5 @@ export default {
   sendInviteResponse,
   editProfile,
   image,
+  muteForAll,
 };

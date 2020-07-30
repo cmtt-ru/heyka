@@ -146,6 +146,10 @@
       "text": "No one hears you",
       "button1": "Turn mic on",
       "button2": "Cancel"
+    },
+    "mutedForAll": {
+      "text": "You have been muted by",
+      "close": "Close"
     }
   },
   "autoUpdate": {

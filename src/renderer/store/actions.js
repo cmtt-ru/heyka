@@ -5,6 +5,7 @@ import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
 import router from '@/router';
 import sounds from '@classes/sounds';
+import connectionCheck from '@classes/connectionCheck';
 
 export default {
 
@@ -14,6 +15,9 @@ export default {
    * @returns {void}
    */
   async initial({ commit, dispatch, getters }) {
+    /** Wait until internet goes online */
+    await connectionCheck.waitUntilOnline();
+
     /** Get authenticated user */
     const authenticatedUser = await API.user.getAuthenticatedUser();
 
