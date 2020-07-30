@@ -1,95 +1,114 @@
 <template>
-  <div
-    v-if="me"
-    class="edit-profile-page"
-  >
-    <div class="close-strip">
-      <div>{{ texts.edit }}</div>
-      <ui-button
-        :type="7"
-        size="small"
-        icon="close"
-        @click="closeHandler"
-      />
-    </div>
-    <div class="user">
-      <div class="user__input-wrapper">
-        <ui-input
-          v-model="profile.name"
-          class="user__input"
-          :placeholder="me.name"
-          @input="debounceSubmit"
-        />
-        <ui-input
-          v-model="me.email"
-          class="user__input"
-          disabled
-        />
+  <pseudo-popup @close="closeHandler">
+    <template #header>
+      {{ texts.edit }}
+    </template>
+
+    <template
+      #body
+      class="lol"
+    >
+      <div
+        v-if="me"
+        class="edit-profile-page"
+      >
+        <div>
+          <div class="user">
+            <div class="user__input-wrapper">
+              <ui-input
+                v-model="profile.name"
+                class="user__input"
+                :placeholder="me.name"
+              />
+              <ui-input
+                v-model="me.email"
+                class="user__input"
+                disabled
+              />
+            </div>
+
+            <ui-image
+              v-model="profile.avatar"
+              class="user__avatar"
+              :size="76"
+              @input="setNewAvatar"
+            />
+          </div>
+
+          <div class="login-label">
+            {{ texts.login }}
+          </div>
+
+          <ui-button
+            :type="6"
+            icon=""
+            wide
+            class="login-button"
+            @click="_notImplemented"
+          >
+            Slack
+            <svg-icon
+              slot="right"
+              color="var(--icon-1)"
+              name="close"
+              size="medium"
+            />
+          </ui-button>
+
+          <ui-button
+            :type="3"
+            :wide="true"
+            class="login-button"
+            @click="_notImplemented"
+          >
+            Facebook
+          </ui-button>
+          <ui-button
+            :type="3"
+            :wide="true"
+            class="login-button"
+            @click="_notImplemented"
+          >
+            Google
+          </ui-button>
+        </div>
+        <div
+          ref="savedText"
+          class="saved-text"
+        >
+          {{ texts.saved }}
+        </div>
       </div>
+    </template>
+    <template #footer>
+      <ui-button
+        :type="1"
+        class="l-mr-8"
+        @click="submit"
+      >
+        {{ $t('workspace.editChannel.buttonSave') }}
+      </ui-button>
 
-      <ui-image
-        v-model="profile.avatar"
-        class="user__avatar"
-        :size="76"
-        @input="setNewAvatar"
-      />
-    </div>
-
-    <div class="login-label">
-      {{ texts.login }}
-    </div>
-
-    <ui-button
-      :type="6"
-      icon=""
-      wide
-      class="login-button"
-      @click="_notImplemented"
-    >
-      Slack
-      <svg-icon
-        slot="right"
-        color="var(--icon-1)"
-        name="close"
-        size="medium"
-      />
-    </ui-button>
-
-    <ui-button
-      :type="3"
-      :wide="true"
-      class="login-button"
-      @click="_notImplemented"
-    >
-      Facebook
-    </ui-button>
-    <ui-button
-      :type="3"
-      :wide="true"
-      class="login-button"
-      @click="_notImplemented"
-    >
-      Google
-    </ui-button>
-    <div
-      ref="savedText"
-      class="saved-text"
-    >
-      {{ texts.saved }}
-    </div>
-  </div>
+      <ui-button
+        :type="2"
+        @click="closeHandler"
+      >
+        {{ $t('workspace.editChannel.buttonCancel') }}
+      </ui-button>
+    </template>
+  </pseudo-popup>
 </template>
 
 <script>
+import PseudoPopup from '@components/PseudoPopup';
+
 import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
-import { debounce } from 'throttle-debounce';
-
-const UPDATE_DELAY = 1000;
 
 export default {
   components: {
+    PseudoPopup,
     UiInput,
     UiImage,
     UiButton,
@@ -165,16 +184,7 @@ export default {
      */
     setNewAvatar(image) {
       this.profile.avatar = image;
-      this.submit();
     },
-
-    /**
-     * Debounce updating our info and sending API
-     * @returns {void}
-     */
-    debounceSubmit: debounce(UPDATE_DELAY, false, function () {
-      this.submit();
-    }),
 
     /**
      * Update our info and send API
@@ -215,8 +225,9 @@ export default {
 $SAVE_FADE_TIME = 2s
 
 .edit-profile-page
-  padding 0 12px 12px
-  position relative
+  height 100%
+  display flex
+  flex-direction column
 
 .close-strip
   height 40px
@@ -261,10 +272,11 @@ $SAVE_FADE_TIME = 2s
   margin-bottom 12px
 
 .saved-text
-  position fixed
+  flex-grow 2
+  display flex
+  align-items flex-end
   width 100%
   box-sizing border-box
-  padding 8px
   bottom 0
   background-color var(--app-bg)
   opacity 0

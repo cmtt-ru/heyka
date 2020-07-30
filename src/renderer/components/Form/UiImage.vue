@@ -7,6 +7,7 @@
       :image="localImage"
       :size="size"
       square
+      @load="tempSrc=null"
     />
 
     <div class="input-group">
@@ -90,11 +91,6 @@ export default {
       },
       set(image) {
         this.$emit('input', image);
-        const smallFadeOut = 50;
-
-        setTimeout(() => {
-          this.tempSrc = null;
-        }, smallFadeOut);
       },
     },
   },
