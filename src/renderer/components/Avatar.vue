@@ -14,6 +14,8 @@
       class="avatar__image"
       :class="{'avatar__image--square': square}"
       alt=""
+      :width="size"
+      :height="size"
       :src="avatarImage"
       @load="loaded=true"
     >
@@ -168,6 +170,7 @@ export default {
             width 100%
             height 100%
             border-radius 50%
+            object-fit cover
 
             &--square
               border-radius 0

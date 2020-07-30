@@ -22,11 +22,12 @@
         class="user__status"
       />
       <ui-button
+        v-if="isMe"
+        v-popover.click="{name: 'UserMore'}"
         :type="7"
         class="user__more"
         size="small"
         icon="more"
-        @click="_notImplemented()"
       />
     </div>
 

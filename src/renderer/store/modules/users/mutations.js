@@ -9,6 +9,21 @@ export default {
    */
   SET_COLLECTION(state, collection) {
     state.collection = collection;
+    console.log(collection);
+  },
+
+  /**
+   * Update specific user
+   *
+   * @param {UserState} state – user module state
+   * @param {object} data — online status object
+   * @param {string} data.id – user id
+   * @constructor
+   */
+  UPDATE_USER(state, data) {
+    if (state.collection[data.id]) {
+      state.collection[data.id] = data;
+    }
   },
 
   /**
