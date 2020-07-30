@@ -10,6 +10,13 @@ const cnsl = new Logger('SOCKETS', '#d67a24');
 
 const DISCONNECT_TIMEOUT = 2000;
 
+/** Handle internet reconnection event */
+connectionCheck.on('internet-reconnected', () => {
+  if (!connected()) {
+    reconnect();
+  }
+});
+
 /**
  * Connect to socket, authorize and bind events
  *
