@@ -131,6 +131,11 @@ export default class StreamSharingHost extends EventEmitter {
     cnsl.debug(`Close peer connection for ${userId}`);
   }
 
+  /**
+   * Destroy peer connection
+   * @param {object} pc – peer connection
+   * @returns {void}
+   */
   destroyPc(pc) {
     if (pc.mediaStream) {
       mediaCapturer.destroyStream(pc.mediaStream);

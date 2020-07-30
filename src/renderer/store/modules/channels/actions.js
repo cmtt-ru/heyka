@@ -35,9 +35,7 @@ export default {
    * @returns {Promise<void>}
    */
   async editChannel({ commit, getters, dispatch, rootGetters }, { id, channel }) {
-    const response = await API.channel.edit(id, channel);
-
-    return false;
+    await API.channel.edit(id, channel);
   },
 
   /**
