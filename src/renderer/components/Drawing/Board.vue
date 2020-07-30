@@ -2,33 +2,30 @@
   <div
     class="canvas-holder"
   >
-    <div
-      class="drawing"
+    <svg
+      ref="svgPaths"
+      :viewBox="svgViewBox"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <svg
-        ref="svgPaths"
-        :viewBox="svgViewBox"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g :stroke="color">
-          <path
-            v-for="(path, index) in completedPaths"
-            :key="index"
-            class="svg-path"
-            :d="path"
-          />
-          <path
-            class="svg-path"
-            :d="currentPath()"
-          />
-          <path
-            class="svg-path"
-            :d="currentRect()"
-          />
-        </g>
-      </svg>
-    </div>
+      <g :stroke="color">
+        <path
+          v-for="(path, index) in completedPaths"
+          :key="index"
+          class="svg-path"
+          :d="path"
+        />
+        <path
+          class="svg-path"
+          :d="currentPath()"
+        />
+        <path
+          class="svg-path"
+          :d="currentRect()"
+        />
+      </g>
+    </svg>
+
     <div
       ref="hightlight"
       class="click-highlight"
@@ -199,6 +196,11 @@ export default {
       this.addDots([ ...val ]);
     },
 
+    /**
+     * Delete all lines if board was resized
+     *
+     * @returns {void}
+     */
     boardDimensions() {
       this.completedPaths = [];
       this.visibleDots = [];
@@ -232,10 +234,13 @@ export default {
       if (this.dotsQueue.length === 0 || this.recieveDrawInterval !== null) {
         return;
       }
-      this.$refs.cursor.$el.classList.remove('cursor--hiding');
-      this.recieveDrawInterval = setInterval(() => {
-        this.updatePath();
-      }, DELAY);
+      try {
+        this.$refs.cursor.$el.classList.remove('cursor--hiding');
+      } finally {
+        this.recieveDrawInterval = setInterval(() => {
+          this.updatePath();
+        }, DELAY);
+      }
     },
 
     /**
@@ -245,6 +250,9 @@ export default {
      * @returns {void}
      */
     reflow(el) {
+      if (!el) {
+        return;
+      }
       el.style.animation = 'none';
       // eslint-disable-next-line no-unused-expressions
       el.offsetHeight; /* trigger reflow */
@@ -378,10 +386,13 @@ export default {
      * @returns {void}
      */
     startHidingSequence() {
-      this.$refs.svgPaths.classList.add('svg--hiding');
-      this.clearWhiteBoardTimeout = setTimeout(() => {
-        this.completedPaths = [];
-      }, TIME_BEFORE_CLEAR);
+      try {
+        this.$refs.svgPaths.classList.add('svg--hiding');
+      } finally {
+        this.clearWhiteBoardTimeout = setTimeout(() => {
+          this.completedPaths = [];
+        }, TIME_BEFORE_CLEAR);
+      }
     },
 
     /**
@@ -560,19 +571,13 @@ $CLICK_ANIM_TIME = 0.7s
     width 100%
     height 100%
     background-color transparent
-  .drawing
-    position absolute
-    top 0
-    left 0
-    width 100%
-    height 100%
 .cursor
     position absolute
     top 0
     left 0
 
     &--hiding
-      animation $CURSOR_HIDE_TIME 1 forwards svgClear
+      animation $CURSOR_HIDE_TIME 1 forwards HideCursor
 
 @keyframes HideCursor {
   0% {

@@ -114,7 +114,7 @@ class TextroomPlugin extends EventEmitter {
 
           return;
         }
-        cnsl.debug('message', message, jsep);
+        // cnsl.debug('message', message, jsep);
 
         if (jsep !== undefined && jsep !== null) {
           this.__pluginHandle.createAnswer({

@@ -15,6 +15,13 @@
       "localTime": "Local time",
       "email": "Email"
     },
+    "userSettings": {
+      "edit": "Edit profile",
+      "upload": "Upload",
+      "login": "Login settings",
+      "saved": "saved!",
+      "bigImage": "We can't upload files larger than"
+    },
     "empty": "So far you've been disconnected\nfrom all channels",
     "new": "What's new?",
     "editChannel": {
@@ -120,6 +127,9 @@
       "hide": "Hide",
       "edit": "Edit",
       "delete": "Delete"
+    },
+    "userMore": {
+      "edit": "Edit profile"
     }
   },
   "notifications":{
@@ -158,6 +168,10 @@
       "text": "No one hears you",
       "button1": "Turn mic on",
       "button2": "Cancel"
+    },
+    "mutedForAll": {
+      "text": "You have been muted by",
+      "close": "Close"
     }
   },
   "autoUpdate": {
@@ -180,5 +194,14 @@
     "microphoneOff": "Mute",
     "speakerOn": "Sound on",
     "speakerOff": "Sound off"
+  },
+  "inputErrors": {
+    "default": "not a valid input",
+    "defaultBackend": "server didn't accept this text",
+    "required": "this field is required",
+    "email": "not a valid email",
+    "numbers": "only numbers allowed",
+    "minlength": "min length is:",
+    "maxlength": "max length is:"
   }
 }

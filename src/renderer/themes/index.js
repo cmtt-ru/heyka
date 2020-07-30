@@ -39,7 +39,7 @@ class Themes {
     }
 
     /* Listen to native theme update (in case we have automode on) */
-    ipcRenderer.on('nativetheme-updated', () => {
+    ipcRenderer.on('native-theme-updated', () => {
       if (this.storeVue.auto) {
         this.autoSetTheme();
       }

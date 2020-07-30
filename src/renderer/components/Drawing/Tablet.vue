@@ -119,7 +119,7 @@ export default {
   mounted() {
     const drawingPad = this.$refs.drawingPad;
 
-    __resizeObserver = new ResizeObserver(this.watchDrawDimensions);
+    __resizeObserver = new ResizeObserver(this.setDrawDimensions);
     __resizeObserver.observe(drawingPad);
   },
 
@@ -134,23 +134,14 @@ export default {
   },
 
   methods: {
-    /**
-     * watcher for resizeObserver
-     * @param {array} entries - resizeObserver entries
-     * @returns {void}
-     */
-    watchDrawDimensions(entries) {
-      for (const entry of entries) {
-        this.setDrawDimensions(entry.target);
-      }
-    },
 
     /**
      * set dimensions for drawing pad
-     * @param {object} target - drawing pad
      * @returns {void}
      */
-    setDrawDimensions(target) {
+    setDrawDimensions() {
+      const target = this.$refs.drawingPad;
+
       this.drawDimensions = {
         width: target.offsetWidth,
         height: target.offsetHeight,
