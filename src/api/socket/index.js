@@ -298,6 +298,11 @@ function bindUserEvents() {
     store.commit('channels/SET_USER_MEDIA_STATE', data);
   });
 
+  /** User info changed */
+  client.on(eventNames.userUpdated, data => {
+    store.commit('users/UPDATE_USER', data.user);
+  });
+
   /** Muted for all */
   client.on(eventNames.mutedForAll, async data => {
     if (data.socketId === client.id) {

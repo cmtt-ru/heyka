@@ -15,6 +15,13 @@
       "localTime": "Local time",
       "email": "Email"
     },
+    "userSettings": {
+      "edit": "Edit profile",
+      "upload": "Upload",
+      "login": "Login settings",
+      "saved": "saved!",
+      "bigImage": "We can't upload files larger than"
+    },
     "empty": "So far you've been disconnected\nfrom all channels",
     "new": "What's new?"
   },
@@ -103,6 +110,9 @@
       "profile": "Open profile",
       "poke": "Send push",
       "mute": "Mute for all"
+    },
+    "userMore": {
+      "edit": "Edit profile"
     }
   },
   "notifications":{
