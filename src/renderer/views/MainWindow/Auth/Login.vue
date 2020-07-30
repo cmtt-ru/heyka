@@ -15,9 +15,9 @@
         </p>
         <div class="page__content">
           <ui-button
-            :type="6"
+            :type="3"
             wide
-            class="login-button"
+            class="sns-button"
             @click="_notImplemented"
           >
             Slack
@@ -28,11 +28,10 @@
               size="medium"
             />
           </ui-button>
-
           <ui-button
             :type="3"
             wide
-            class="login-button"
+            class="sns-button"
             @click="_notImplemented"
           >
             Facebook
@@ -40,7 +39,7 @@
           <ui-button
             :type="3"
             wide
-            class="login-button"
+            class="sns-button"
             @click="_notImplemented"
           >
             Google
@@ -52,15 +51,48 @@
 
           <ui-input
             v-model="login.email"
-            class="user__input"
+            icon="user"
+            class="login__input"
             placeholder="example@mail.com"
             email
           />
           <ui-input
             v-model="login.pass"
-            class="user__input"
+            icon="lock"
+            class="login__input"
             placeholder="******"
           />
+          <ui-button
+            :type="6"
+            wide
+            class="login__button"
+            @click="_notImplemented"
+          >
+            LOGIN
+          </ui-button>
+
+          <div class="info">
+            <div class="info__text">
+              Not a member?
+            </div>
+            <siv
+              class="info__link"
+              @click="_notImplemented"
+            >
+              Sign up now
+            </siv>
+          </div>
+          <div class="info">
+            <div class="info__text">
+              Have temporary link?
+            </div>
+            <router-link
+              :to="{ name: 'temp'}"
+              class="info__link"
+            >
+              Enter it here
+            </router-link>
+          </div>
         </div>
       </div>
     </template>
@@ -115,18 +147,31 @@ export default {
     text-align center
     box-shadow 0 1px 0 0 var(--stroke-3)
     line-height 0.1em
-    margin 10px 0 20px
+    margin 20px 0 24px
 
     & span
         background var(--app-bg)
         padding 0 10px
 
-.login-button
+.sns-button
     margin-bottom 12px
 
-.user__input
+.login__input
     margin 6px 0
 
     &:first-of-type
         margin-bottom 12px
+
+.login__button
+    margin-top 12px
+
+.info
+    display flex
+    flex-direction row
+    margin-top 24px
+
+    &__link
+        margin-left 8px
+        color var(--text-tech-2)
+        cursor pointer
 </style>
