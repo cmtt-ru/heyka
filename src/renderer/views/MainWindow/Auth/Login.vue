@@ -75,12 +75,12 @@
             <div class="info__text">
               Not a member?
             </div>
-            <siv
+            <div
               class="info__link"
               @click="_notImplemented"
             >
               Sign up now
-            </siv>
+            </div>
           </div>
           <div class="info">
             <div class="info__text">
