@@ -237,7 +237,7 @@ export default {
       }
 
       if (errors.length > 0) {
-        this.errorText = errors.join(';\n');
+        this.errorText = errors.join('\n');
         this.$parent.$emit('ui-error', this.id, true);
 
         return true;
