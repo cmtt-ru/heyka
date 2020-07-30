@@ -74,7 +74,7 @@ export default {
       }
 
       return [...el.$children, ...el.$children.map(child => {
-        return child.$children;
+        return child.$children; // "return this.allChildren(child)" for full tree
       }).flat()];
     },
 
