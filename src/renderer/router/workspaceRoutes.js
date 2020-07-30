@@ -3,7 +3,6 @@ const Channel = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/W
 const User = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/User');
 const WorkspaceEmpty = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Empty');
 const DrawingTest = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/DrawingTest');
-const TestPseudoPopup = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/TestPseudoPopup');
 
 export const workspaceRoutes = {
   path: 'workspace',
@@ -28,11 +27,6 @@ export const workspaceRoutes = {
       path: 'drawing',
       name: 'drawing',
       component: DrawingTest,
-    },
-    {
-      path: 'test-pseudo-popup',
-      name: 'test-pseudo-popup',
-      component: TestPseudoPopup,
     },
   ],
 };
