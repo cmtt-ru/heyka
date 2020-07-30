@@ -172,5 +172,14 @@
     "microphoneOff": "Mute",
     "speakerOn": "Sound on",
     "speakerOff": "Sound off"
+  },
+  "inputErrors": {
+    "default": "not a valid input",
+    "defaultBackend": "server didn't accept this text",
+    "required": "this field is required",
+    "email": "not a valid email",
+    "numbers": "only numbers allowed",
+    "minlength": "min length is:",
+    "maxlength": "max length is:"
   }
 }

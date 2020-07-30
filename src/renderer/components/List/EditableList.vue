@@ -8,6 +8,13 @@
       <ui-input
         v-model="input.value"
         :placeholder="placeholder"
+        required
+        :minlength="minlength"
+        :maxlength="maxlength"
+        :email="email"
+        :numbers="numbers"
+        :regex="regex"
+        :regex-error="regexError"
         @input="update()"
       />
       <ui-button
@@ -68,6 +75,54 @@ export default {
       default: null,
     },
 
+    /**
+     * min length of input text
+     */
+    minlength: {
+      type: Number,
+      default: null,
+    },
+
+    /**
+     * max length of input text
+     */
+    maxlength: {
+      type: Number,
+      default: null,
+    },
+
+    /**
+     * true if only numbers are allowed
+     */
+    numbers: {
+      type: Boolean,
+      default: false,
+    },
+
+    /**
+     * true if must be email
+     */
+    email: {
+      type: Boolean,
+      default: false,
+    },
+
+    /**
+     * custom regExp for input to match
+     */
+    regex: {
+      type: RegExp,
+      default: null,
+    },
+
+    /**
+     * error text for custom regExp
+     */
+    regexError: {
+      type: String,
+      default: 'default',
+    },
+
   },
 
   data() {
@@ -82,6 +137,12 @@ export default {
         };
       }),
     };
+  },
+
+  mounted() {
+    this.$on('ui-error', (id, value) => {
+      this.$parent.$emit('ui-error', id, value);
+    });
   },
 
   methods: {
@@ -104,6 +165,9 @@ export default {
         value: el,
       });
       this.update();
+      this.$nextTick(() => {
+        this.$parent.$emit('changed-number-of-inputs');
+      });
     },
 
     /**
@@ -114,6 +178,9 @@ export default {
     deleteItem(index) {
       this.listData.splice(index, 1);
       this.update();
+      this.$nextTick(() => {
+        this.$parent.$emit('changed-number-of-inputs');
+      });
     },
 
     /**
@@ -143,11 +210,11 @@ export default {
     margin 12px 0
     display flex
     flex-direction row
-    align-items center
+    align-items flex-start
 
 .icon-delete
     color var(--color-0)
-    margin 0 4px 0 8px
+    margin 4px 4px 0 8px
     flex-shrink 0
 
 .add-button
