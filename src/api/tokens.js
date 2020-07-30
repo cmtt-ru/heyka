@@ -3,17 +3,21 @@ import { authFileStore } from '@/store/localStore';
 import refreshToken from './auth/refreshToken';
 
 /**
+ * Max date difference before expiration in milliseconds
+ * @type {number}
+ */
+const DATE_DIFFERENCE = 60000;
+
+/**
  * Tokens
- * @type {{accessToken: null, refreshToken: null}}
+ * @type {object}
  */
 let tokens = {
   accessToken: null,
+  accessTokenExpiredAt: null,
   refreshToken: null,
+  refreshTokenExpiredAt: null,
 };
-
-if (authFileStore.has('accessToken')) {
-  setAxiosTokenHeader(authFileStore.get('accessToken'));
-}
 
 /**
  * Set access token in axios headers
@@ -37,7 +41,9 @@ export function setTokens(newTokens) {
   setAxiosTokenHeader(tokens.accessToken);
 
   authFileStore.set('accessToken', tokens.accessToken);
+  authFileStore.set('accessTokenExpiredAt', tokens.accessTokenExpiredAt);
   authFileStore.set('refreshToken', tokens.refreshToken);
+  authFileStore.set('refreshTokenExpiredAt', tokens.refreshTokenExpiredAt);
 }
 
 /**
@@ -47,21 +53,19 @@ export function setTokens(newTokens) {
  */
 export async function updateTokens() {
   const freshTokens = await refreshToken({
-    accessToken: authFileStore.get('accessToken'),
-    refreshToken: authFileStore.get('refreshToken'),
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
   });
 
   setTokens(freshTokens);
 }
 
 /**
- * Update and return fresh access token
+ * Get access token
  *
  * @returns {string}
  */
 export async function getAccessToken() {
-  await updateTokens();
-
   return tokens.accessToken;
 }
 
@@ -74,4 +78,42 @@ export function clearTokens() {
   authFileStore.clear();
   setAxiosTokenHeader('');
   tokens = {};
+}
+
+/**
+ * Check's token expiration date
+ *
+ * @returns {boolean}
+ */
+export function isTokenExpired() {
+  const now = new Date();
+  const tokenExpirationDate = new Date(tokens.accessTokenExpiredAt);
+
+  return tokenExpirationDate - now < DATE_DIFFERENCE;
+}
+
+/**
+ * Prepare tokens
+ *
+ * @returns {void}
+ */
+export async function prepareTokens() {
+  if (authFileStore.has('accessToken')) {
+    tokens = authFileStore.get();
+
+    await checkAndRefreshTokens();
+
+    setAxiosTokenHeader(tokens.accessToken);
+  }
+}
+
+/**
+ * Check expiration and refresh tokens
+ *
+ * @returns {void}
+ */
+export async function checkAndRefreshTokens() {
+  if (isTokenExpired()) {
+    await updateTokens();
+  }
 }
