@@ -5,6 +5,7 @@ import shutdown from 'electron-shutdown-command';
 import router from '@/router';
 import i18n from '@/i18n';
 import { ipcRenderer } from 'electron';
+import broadcastEvents from '@classes/broadcastEvents';
 
 const texts = i18n.t('notifications');
 
@@ -26,10 +27,16 @@ class AudioCheck extends EventEmitter {
     this.__mediaStream = null;
     this.__harkInstance = null;
     this.__needMediaStream = false;
+    this.__skipMutedTalk = false;
+
     store.watch(() => store.getters['app/getSelectedDevices'], n => {
       if (this.__needMediaStream) {
         this.startMediaStream();
       }
+    });
+
+    broadcastEvents.on('audio-check-skip-muted-talk', () => {
+      this.__skipMutedTalk = true;
     });
   }
 
@@ -270,17 +277,21 @@ class AudioCheck extends EventEmitter {
    * @returns {void}
    */
   async subscribeMutedTalk() {
-    await this.startMediaStream();
-    this.subscribeMutedTalk.talkingLevel = -100;
-    const minLevel = -42; // speak louder and you'll get notification
+    if (this.__skipMutedTalk === false) {
+      await this.startMediaStream();
+      this.subscribeMutedTalk.talkingLevel = -100;
+      const minLevel = -42; // speak louder and you'll get notification
 
-    this.__harkInstance.on('volume_change', (db) => {
-      this.subscribeMutedTalk.talkingLevel = (this.subscribeMutedTalk.talkingLevel + db) / 2;
-      if (this.subscribeMutedTalk.talkingLevel > minLevel) {
-        this.showTakingMutedNotification();
-        this.destroyMediaStream();
-      }
-    });
+      this.__harkInstance.on('volume_change', (db) => {
+        this.subscribeMutedTalk.talkingLevel = (this.subscribeMutedTalk.talkingLevel + db) / 2;
+        if (this.subscribeMutedTalk.talkingLevel > minLevel) {
+          this.showTakingMutedNotification();
+          this.destroyMediaStream();
+        }
+      });
+    } else {
+      this.__skipMutedTalk = false;
+    }
   }
 
   /**
