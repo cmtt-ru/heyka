@@ -212,7 +212,7 @@ export default {
 
       /** Redirect to new created channel */
       if (channel) {
-        await this.$router.push({
+        await this.$router.replace({
           name: 'channel',
           params: {
             id: channel.id,
