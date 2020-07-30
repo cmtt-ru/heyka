@@ -27,4 +27,5 @@ export default Object.freeze({
   invite: 'invite',
   inviteResponse: 'invite-response',
   inviteCancelled: 'invite-cancelled',
+  mutedForAll: 'muted-for-all',
 });
