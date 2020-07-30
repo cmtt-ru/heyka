@@ -123,6 +123,7 @@ export default {
 
         this.localImage = result.image;
       } catch (err) {
+      this.tempSrc = null;
         console.log(err);
       }
     },
