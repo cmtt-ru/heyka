@@ -132,6 +132,10 @@ ipcMain.on('exit-fullscreen', (event) => {
   }
 });
 
+/**
+ * Create webrtc internals window
+ * @returns {void}
+ */
 function createWebrtcInternals() {
   const win = new BrowserWindow({
     width: 800,
