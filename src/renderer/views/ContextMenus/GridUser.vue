@@ -3,6 +3,7 @@
     <div class="buttons">
       <ui-button
         :type="11"
+        data-popover-close
         @click="muteClickHandler"
       >
         {{ texts.mute }}
