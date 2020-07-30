@@ -6,6 +6,7 @@
   >
     <div
       class="dropdown__header"
+      :class="{'ui-error': errorText}"
       @click="headerClickHandler()"
     >
       <div v-textfade>
@@ -15,6 +16,13 @@
         class="dropdown__header__icon"
         name="arrow-down"
       />
+    </div>
+
+    <div
+      v-if="errorText"
+      class="error-text"
+    >
+      {{ errorText }}
     </div>
 
     <div
@@ -42,6 +50,7 @@
 </template>
 
 <script>
+import { v4 as uuid4 } from 'uuid';
 
 export default {
 
@@ -77,10 +86,21 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    /**
+     * true if field is required
+     */
+    required: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
     return {
+      id: uuid4(),
+      validate: this.required,
+      errorText: null,
       listNode: {},
       arrowNode: {},
       visible: false,
@@ -88,6 +108,14 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('inputErrors');
+    },
 
     /**
      * Local copy of selected variant's value
@@ -145,6 +173,10 @@ export default {
      * @returns {void}
      */
     variantClickHandler(item) {
+      if (!this.value) {
+        this.$parent.$emit('ui-error', this.id, false);
+        this.errorText = null;
+      }
       this.localValue = item.value;
     },
 
@@ -190,6 +222,24 @@ export default {
      */
     hide() {
       this.visible = false;
+    },
+
+    /**
+     * Check input for empty value (if it is required)
+     * Also, edit error text accordingly
+     *
+     * @returns {boolean} true if found any errors
+     */
+    checkErrors() {
+      this.errorText = null;
+      if (this.required === true && !this.value) {
+        this.errorText = this.texts['required'];
+        this.$parent.$emit('ui-error', this.id, true);
+
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 
@@ -268,4 +318,18 @@ export default {
   white-space nowrap
   text-overflow ellipsis
   overflow hidden
+
+.ui-error
+  border-color var(--color-0)
+
+.error-text
+  color var(--text-tech-0)
+  font-size 10px
+  line-height 12px
+  min-height 16px
+  padding-top 6px
+  display flex
+  flex-direction column
+  justify-content center
+  align-items flex-start
 </style>
