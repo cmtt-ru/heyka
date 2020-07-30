@@ -95,37 +95,35 @@ export default {
     position relative
     width 24px
     height 10px
-    background-color var(--icon-2)
-    border 0.5px solid var(--line-stroke)
+    background-color var(--input)
     border-radius 10px
     z-index 1
-    -webkit-transition background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1)
-    transition background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1)
     flex-shrink 0
+    box-shadow inset 0 0 0 0.5px var(--line-stroke)
+    transition all 0.28s cubic-bezier(0.4, 0, 0.2, 1)
+    transition-property background-color, box-shadow
 
     &:after
       content ''
       box-sizing border-box
       position absolute
       top -1px
-      right 11.5px
+      right 12px
       width 12px
       height 12px
-      background-color #fff //?: move this color to themes.json?
+      background-color var(--app-bg)
       border-radius 12px
-      border 0.5px solid var(--line-stroke)
-      box-shadow 0px 1px 2px rgba(0, 0, 0, 0.15)
+      box-shadow 0 0 0 0.5px var(--line-stroke), 0 1px 2px rgba(0, 0, 0, 0.15)
       z-index 2
-      -webkit-transition all 0.28s cubic-bezier(0.4, 0, 0.2, 1)
       transition all 0.28s cubic-bezier(0.4, 0, 0.2, 1)
-      -webkit-transition-property right, background-color
       transition-property right, background-color
 
     &--checked
       background-color var(--color-2)
+      box-shadow inset 0 0 0 0.5px #1264CD
 
       &:after
-        right -0.5px
+        right 0
 
   &__text
     margin-right 8px

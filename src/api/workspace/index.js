@@ -1,5 +1,4 @@
 import checkCode from './checkCode';
-import createChannel from './createChannel';
 import createWorkspace from './createWorkspace';
 import getWorkspaceByID from './getWorkspaceByID';
 import getWorkspaces from './getWorkspaces';
@@ -12,7 +11,6 @@ import privateTalk from './privateTalk';
 
 export default {
   checkCode,
-  createChannel,
   createWorkspace,
   getWorkspaceByID,
   getWorkspaces,

@@ -17,12 +17,13 @@
         {{ channel.name }}
       </div>
       <ui-button
+        :key="channel.id"
+        v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
         :type="7"
         class="channel-info__more"
         size="small"
         height="16"
         icon="more"
-        @click.native="moreHandler()"
       />
 
       <ui-button
@@ -158,14 +159,6 @@ export default {
      */
     async clickDisconnectHandler() {
       await this.$store.dispatch('unselectChannel', this.channelId);
-    },
-
-    /**
-     * Dummy popover creation
-     * @returns {void}
-     */
-    moreHandler() {
-      this._notImplemented();
     },
   },
 

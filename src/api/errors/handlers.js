@@ -46,7 +46,7 @@ defineErrorHandler(errorMessages.missingAuthentication, error => {
  * Invalid request payload input
  */
 defineErrorHandler(errorMessages.invalidRequestPayloadInput, error => {
-  logout();
+  // logout();
 
   throw error;
 });

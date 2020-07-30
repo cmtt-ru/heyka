@@ -302,7 +302,7 @@ export default {
 
   &__icon
     position absolute
-    top 9px
+    top 8px
     left 9px
     color var(--icon-1)
 

@@ -170,7 +170,7 @@ export default {
      * @returns {void}
      */
     createChannelHandler() {
-      this._notImplemented();
+      this.$router.push({ name: 'create-channel' });
     },
 
     /**
