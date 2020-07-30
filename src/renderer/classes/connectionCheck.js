@@ -3,6 +3,7 @@ import i18n from '@/i18n';
 import isOnline from 'is-online';
 import sleep from 'es7-sleep';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
+import { EventEmitter } from 'events';
 
 /**
  * Used for make some debounce for slow internet event
@@ -19,11 +20,13 @@ const INTERNET_CONNECTION_CHECK_INTERVAL = 5000;
 /**
  * Connection checking class
  */
-class ConnectionCheck {
+class ConnectionCheck extends EventEmitter {
   /**
-   * Connection check contructor
+   * Connection check constructor
    */
   constructor() {
+    super();
+
     this.notificationsIds = {
       onlineStatus: null,
       slowInternet: null,
@@ -32,6 +35,8 @@ class ConnectionCheck {
     };
 
     this.slowInternetLastCallTime = null;
+
+    this.internetTryingToReconnect = false;
 
     if (isMainWindow()) {
       this.startInternetConnectionChecker();
@@ -46,8 +51,37 @@ class ConnectionCheck {
     while (true) {
       const state = await isOnline();
 
+      if (state === false) {
+        this.internetTryingToReconnect = true;
+      } else if (this.internetTryingToReconnect === true) {
+        this.internetTryingToReconnect = false;
+        this.emit('internet-reconnected');
+      }
+
       this.handleOnlineStatus(state);
       await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
+    }
+  }
+
+  /**
+   * Wait until online
+   * @returns {Promise<boolean>}
+   */
+  async waitUntilOnline() {
+    let state = await isOnline();
+
+    if (state) {
+      return true;
+    } else {
+      while (state === false) {
+        state = await isOnline();
+
+        if (state) {
+          return true;
+        }
+
+        await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
+      }
     }
   }
 
