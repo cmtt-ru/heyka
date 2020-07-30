@@ -37,7 +37,6 @@ export default {
   async editChannel({ commit, getters, dispatch, rootGetters }, { id, channel }) {
     const response = await API.channel.edit(id, channel);
 
-
     return false;
   },
 
