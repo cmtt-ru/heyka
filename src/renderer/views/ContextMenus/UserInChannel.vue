@@ -11,6 +11,7 @@
       <ui-button
         v-if="notMe"
         :type="11"
+        data-popover-close
         @click="pokeClickHandler"
       >
         {{ texts.poke }}
@@ -18,7 +19,6 @@
       <ui-button
         v-if="notMe"
         :type="11"
-        data-popover-close
         @click="muteClickHandler"
       >
         {{ texts.mute }}
