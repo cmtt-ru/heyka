@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { setTokens } from '../tokens';
 
 /**
  * Sign in user with email and password
@@ -27,6 +28,10 @@ import axios from 'axios';
  *   @returns {date} user.credentials.accessTokenExpiredAt
  *   @returns {date} user.credentials.refreshTokenExpiredAt
  */
-export default function (params) {
-  return axios.post('/signin', params);
+export default async function (params) {
+  const res = await axios.post('/signin', params);
+
+  setTokens(res.data.credentials);
+
+  return res;
 }

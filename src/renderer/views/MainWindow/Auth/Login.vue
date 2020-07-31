@@ -48,28 +48,34 @@
           <div class="or-delimiter">
             <span>or</span>
           </div>
-
-          <ui-input
-            v-model="login.email"
-            icon="user"
-            class="login__input"
-            placeholder="example@mail.com"
-            email
-          />
-          <ui-input
-            v-model="login.pass"
-            icon="lock"
-            class="login__input"
-            placeholder="******"
-          />
-          <ui-button
-            :type="6"
-            wide
-            class="login__button"
-            @click="_notImplemented"
+          <ui-form
+            @submit="loginHandler()"
           >
-            LOGIN
-          </ui-button>
+            <ui-input
+              v-model="login.email"
+              icon="user"
+              class="login__input"
+              placeholder="example@mail.com"
+              email
+              required
+            />
+            <ui-input
+              v-model="login.password"
+              icon="lock"
+              required
+              type="password"
+              class="login__input"
+              placeholder="******"
+            />
+            <ui-button
+              :type="6"
+              wide
+              class="login__button"
+              submit
+            >
+              LOGIN
+            </ui-button>
+          </ui-form>
 
           <div class="info">
             <div class="info__text">
@@ -102,22 +108,39 @@
 <script>
 import Layout from './../Layout';
 import UiButton from '@components/UiButton';
-import { UiInput } from '@components/Form';
+import { UiForm, UiInput } from '@components/Form';
 
 export default {
   components: {
     Layout,
     UiButton,
+    UiForm,
     UiInput,
   },
 
   data() {
     return {
       login: {
-        email: '',
-        pass: '',
+        email: 'ivanb@cmtt.ru',
+        password: 'VT3O2O',
       },
     };
+  },
+
+  methods: {
+    async loginHandler() {
+      try {
+        await this.$API.auth.signin({ credentials: this.login });
+
+        await this.$store.dispatch('initial');
+
+        await this.$router.replace({
+          name: 'workspace',
+        });
+      } catch (err) {
+        console.log('ERROR:', err);
+      }
+    },
   },
 
 };

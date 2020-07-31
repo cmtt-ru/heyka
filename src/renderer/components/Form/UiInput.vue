@@ -14,6 +14,7 @@
       <input
         ref="input"
         v-model="localValue"
+        :type="type"
         class="input"
         :class="{'input--with-icon': icon, 'ui-error': errorText}"
         :placeholder="placeholder"
@@ -79,6 +80,14 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+
+    /**
+     * type of unput
+     */
+    type: {
+      type: String,
+      default: 'text',
     },
 
     /**
