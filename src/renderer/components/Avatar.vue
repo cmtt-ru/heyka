@@ -17,7 +17,7 @@
       :width="size"
       :height="size"
       :src="avatarImage"
-      @load="loaded=true"
+      @load="loadHandler"
     >
 
     <div
@@ -146,6 +146,14 @@ export default {
      */
     statusStyle() {
       return STATUS_COLORS[this.status] || null;
+    },
+  },
+
+  methods: {
+
+    loadHandler() {
+      this.loaded = true;
+      this.$emit('load');
     },
   },
 

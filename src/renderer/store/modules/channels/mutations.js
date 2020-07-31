@@ -118,7 +118,7 @@ export default {
    */
   UPDATE_CHANNEL(state, channel) {
     if (state.collection[channel.id]) {
-      Object.assign(state.collection[channel.id], channel);
+      state.collection[channel.id] = Object.assign(state.collection[channel.id], channel);
     }
   },
 
