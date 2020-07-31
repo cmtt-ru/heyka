@@ -5,7 +5,7 @@
     class="ui-button"
     :class="classList"
     :style="buttonSize"
-    @click="$emit('click')"
+    @click="click"
   >
     <slot />
   </div>
@@ -16,7 +16,7 @@
     class="ui-button"
     :class="classList"
     :style="buttonSize"
-    @click="$emit('click')"
+    @click="click"
   >
     <conditional-wrapper :wrap="needToWrapIcon">
       <div
@@ -61,7 +61,7 @@ export default {
   props: {
     /**
      * Style type of the button
-     * @param [1 — 13]
+     * @param [1 — 14]
      */
     type: {
       type: Number,
@@ -139,6 +139,14 @@ export default {
     stroke: {
       type: String,
       default: undefined,
+    },
+
+    /**
+     * true if button is for submitting form
+     */
+    submit: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -258,6 +266,16 @@ export default {
       }
 
       return {};
+    },
+  },
+
+  methods: {
+    click() {
+      if (this.submit === true) {
+        this.$parent.$emit('ui-submit');
+      } else {
+        this.$emit('click');
+      }
     },
   },
 };

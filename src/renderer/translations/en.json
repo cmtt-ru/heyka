@@ -15,8 +15,27 @@
       "localTime": "Local time",
       "email": "Email"
     },
+    "userSettings": {
+      "edit": "Edit profile",
+      "upload": "Upload",
+      "login": "Login settings",
+      "saved": "saved!",
+      "bigImage": "We can't upload files larger than"
+    },
     "empty": "So far you've been disconnected\nfrom all channels",
-    "new": "What's new?"
+    "new": "What's new?",
+    "editChannel": {
+      "createTitle": "New channel",
+      "editTitle": "Edit channel",
+      "name": "Name",
+      "description": "Description",
+      "private": "Private channel",
+      "chat": "Text chat",
+      "buttonCreate": "Create channel",
+      "buttonSave": "Save changes",
+      "buttonCancel": "Cancel",
+      "buttonDelete": "Delete channel"
+    }
   },
   "settings": {
     "labels": {
@@ -103,6 +122,14 @@
       "profile": "Open profile",
       "poke": "Send push",
       "mute": "Mute for all"
+    },
+    "channel": {
+      "hide": "Hide",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "userMore": {
+      "edit": "Edit profile"
     }
   },
   "notifications":{
@@ -125,7 +152,12 @@
       "button1": "Open",
       "button2": "Cancel"
     },
-    "notImplemented": "This feature is not implemented yet"
+    "notImplemented": "This feature is not implemented yet",
+    "deleteChannel": {
+      "text": "Are you sure you want to delete channel",
+      "yes": "Yes, delete",
+      "no": "No"
+    }
   },
   "push": {
     "invitesto": "Invite to",
@@ -136,6 +168,10 @@
       "text": "No one hears you",
       "button1": "Turn mic on",
       "button2": "Cancel"
+    },
+    "mutedForAll": {
+      "text": "You have been muted by",
+      "close": "Close"
     }
   },
   "autoUpdate": {
@@ -158,5 +194,14 @@
     "microphoneOff": "Mute",
     "speakerOn": "Sound on",
     "speakerOff": "Sound off"
+  },
+  "inputErrors": {
+    "default": "not a valid input",
+    "defaultBackend": "server didn't accept this text",
+    "required": "this field is required",
+    "email": "not a valid email",
+    "numbers": "only numbers allowed",
+    "minlength": "min length is:",
+    "maxlength": "max length is:"
   }
 }

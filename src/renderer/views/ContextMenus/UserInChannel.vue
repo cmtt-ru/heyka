@@ -17,8 +17,9 @@
         {{ texts.poke }}
       </ui-button>
       <ui-button
-        v-if="notMe"
+        v-if="notMe && microphone && amIInChannel"
         :type="11"
+        data-popover-close
         @click="muteClickHandler"
       >
         {{ texts.mute }}
@@ -45,6 +46,22 @@ export default {
       type: String,
       default: '',
     },
+
+    /**
+     * User microphone state
+     */
+    microphone: {
+      type: Boolean,
+      default: false,
+    },
+
+    /**
+     * Channel id
+     */
+    channelId: {
+      type: String,
+      default: null,
+    },
   },
 
   computed: {
@@ -56,8 +73,20 @@ export default {
       return this.$t('popover.userInChannel');
     },
 
+    /**
+     * Not me
+     * @returns {boolean}
+     */
     notMe() {
       return (this.$store.state.me.id !== this.userId);
+    },
+
+    /**
+     * Am i in channel
+     * @returns {boolean}
+     */
+    amIInChannel() {
+      return this.$store.getters['me/getSelectedChannelId'] === this.channelId;
     },
   },
 
@@ -82,8 +111,7 @@ export default {
      * @returns {void}
      */
     muteClickHandler() {
-      console.log('mute user', this.userId);
-      this._notImplemented();
+      this.$store.dispatch('users/muteForAll', this.userId);
     },
   },
 };

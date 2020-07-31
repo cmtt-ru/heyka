@@ -6,7 +6,7 @@ import { errorMessages } from './errors/types';
 import { handleError } from './errors';
 import trottleAPI from './throttle';
 import axios from 'axios';
-import { updateTokens } from './tokens';
+import { updateTokens, checkAndRefreshTokens } from './tokens';
 import store from '@/store';
 import connectionCheck from '@classes/connectionCheck';
 import * as sockets from '@api/socket';
@@ -57,6 +57,8 @@ function middleware(func, functionName) {
       });
 
       connectionCheck.handleServerAvailability(true);
+
+      await checkAndRefreshTokens();
 
       return await func.apply(null, arguments);
     } catch (err) {

@@ -11,8 +11,8 @@ import axios from 'axios';
  *
  * @returns {string} 'ok'
  */
-export default function (id, params) {
-  const res = axios.post(`/workspaces/${id}/channels`, params);
+export default async function (id, params) {
+  const res = await axios.post(`/workspaces/${id}/channels`, params);
 
   return res.data;
 }
