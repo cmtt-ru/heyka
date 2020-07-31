@@ -81,7 +81,7 @@ generateLayoutClasses($layout-grid)
  *   `l-mt-8` means `margin-top: 8px`
  */
 .l-
-  $sizes = 4, 8, 12, 18, 24, 36, 48
+  $sizes = 4, 8, 10, 12, 16, 18, 24, 36, 48
   generateLayoutClasses($sizes)
 
 /**
@@ -115,7 +115,7 @@ generateLayoutClasses($layout-grid)
   .scroll::-webkit-scrollbar {
     width: 7px;
     box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0);
-    border: solid 2.5px transparent;
+    border: solid 2px transparent;
     border-radius: 100px;
   }
   .scroll::-webkit-scrollbar:horizontal {
@@ -128,16 +128,16 @@ generateLayoutClasses($layout-grid)
   .scroll::-webkit-scrollbar-thumb {
     box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0);
     border-radius: 100px;
-    border: solid 2.5px transparent;
+    border: solid 2px transparent;
   }
 
   .scroll::-webkit-scrollbar:hover{
-      border: solid 1.5px transparent;
+      border: solid 1px transparent;
       box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.08);
   }
 
   .scroll::-webkit-scrollbar-thumb:hover{
-      border: solid 1.5px transparent;
+      border: solid 1px transparent;
       box-shadow: inset 0 0 10px 10px rgba(var(--scroll-bar), 0.2);
   }
 
@@ -150,7 +150,7 @@ generateLayoutClasses($layout-grid)
   }
 
   .scroll::-webkit-scrollbar-corner{
-    background: transparent; 
+    background: transparent;
   }
 
 }

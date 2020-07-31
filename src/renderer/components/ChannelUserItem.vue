@@ -1,6 +1,7 @@
 <template>
   <div
-    v-popover.mouse.click="{name: 'UserInChannel', data: {userId: user.id}}"
+    :key="user.microphone + channelId"
+    v-popover.mouse.click="{name: 'UserInChannel', data: {userId: user.id, microphone: user.microphone, channelId}}"
     class="user"
   >
     <avatar
@@ -67,6 +68,14 @@ export default {
       default: function () {
         return {};
       },
+    },
+
+    /**
+     * Channel id
+     */
+    channelId: {
+      type: String,
+      default: null,
     },
   },
   data() {

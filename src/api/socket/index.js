@@ -6,9 +6,17 @@ import connectionCheck from '@classes/connectionCheck';
 import { handleError } from '@api/errors';
 import Logger from '@classes/logger';
 import sounds from '@classes/sounds';
+
 const cnsl = new Logger('SOCKETS', '#d67a24');
 
 const DISCONNECT_TIMEOUT = 2000;
+
+/** Handle internet reconnection event */
+connectionCheck.on('internet-reconnected', () => {
+  if (!connected()) {
+    reconnect();
+  }
+});
 
 /**
  * Connect to socket, authorize and bind events
@@ -272,6 +280,11 @@ function bindChannelEvents() {
   client.on(eventNames.channelDeleted, ({ channelId }) => {
     store.commit('channels/REMOVE_CHANNEL', channelId);
   });
+
+  /** Channel updated */
+  client.on(eventNames.channelUpdated, ({ channel }) => {
+    store.commit('channels/UPDATE_CHANNEL', channel);
+  });
 }
 
 /**
@@ -288,6 +301,18 @@ function bindUserEvents() {
   /** User media status changed */
   client.on(eventNames.mediaStateUpdated, data => {
     store.commit('channels/SET_USER_MEDIA_STATE', data);
+  });
+
+  /** User info changed */
+  client.on(eventNames.userUpdated, data => {
+    store.commit('users/UPDATE_USER', data.user);
+  });
+
+  /** Muted for all */
+  client.on(eventNames.mutedForAll, async data => {
+    if (data.socketId === client.id) {
+      store.dispatch('me/mutedByUser', data.fromUserId);
+    }
   });
 }
 

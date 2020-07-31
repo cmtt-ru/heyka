@@ -164,6 +164,15 @@
       Type --11
     </ui-button>
 
+    <div>
+      <ui-button
+        :type="14"
+        class="l-mr-8"
+      >
+        Type --14
+      </ui-button>
+    </div>
+
     <h3 class="l-mt-24">
       Icon only, type --7
     </h3>

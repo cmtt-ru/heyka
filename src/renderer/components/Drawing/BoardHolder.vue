@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="whiteBoard"
     class="boards-holder"
   >
     <board
@@ -46,14 +45,9 @@ export default {
    * @returns {object}
    */
   mounted() {
-    const whiteBoard = this.$refs.whiteBoard;
-    const cs = getComputedStyle(whiteBoard);
-    const width = parseInt(cs.getPropertyValue('width'), 10);
-    const height = parseInt(cs.getPropertyValue('height'), 10);
-
     this.boardDimensions = {
-      width,
-      height,
+      width: window.innerWidth,
+      height: window.innerHeight,
     };
   },
 };

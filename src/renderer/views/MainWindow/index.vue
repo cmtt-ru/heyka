@@ -17,6 +17,8 @@ import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
 // import PerformanceMonitor from '@components/PerformanceMonitor';
 import Logger from '@classes/logger';
+import { prepareTokens } from '@api/tokens';
+
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
 export default {
@@ -34,6 +36,10 @@ export default {
 
   async created() {
     try {
+      /** Prepare tokens */
+      await prepareTokens();
+
+      /** Check authorization */
       await this.$API.auth.check();
 
       ipcRenderer.send('start-is-ready');

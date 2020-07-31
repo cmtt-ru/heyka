@@ -12,6 +12,7 @@ import SvgIcon from '@components/SvgIcon.vue';
 import '@/filters/leonardo';
 import '@/directives';
 import { Mixin } from '@/mixins';
+import permissions from '@classes/permissions';
 
 /**
  * Initialize Hawk error catcher
@@ -28,6 +29,7 @@ if (process.env.VUE_APP_HAWK_TOKEN) {
 Vue.mixin(Mixin);
 Vue.prototype.$themes = themes;
 Vue.prototype.$API = API;
+Vue.prototype.$permissions = permissions;
 Vue.component('SvgIcon', SvgIcon);
 
 Vue.config.productionTip = false;
