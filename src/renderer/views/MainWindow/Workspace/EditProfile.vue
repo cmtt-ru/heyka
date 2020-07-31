@@ -43,6 +43,7 @@
             :type="6"
             icon=""
             wide
+            disabled
             class="login-button"
             @click="_notImplemented"
           >
@@ -59,6 +60,7 @@
             :type="3"
             :wide="true"
             class="login-button"
+            disabled
             @click="_notImplemented"
           >
             Facebook
@@ -67,6 +69,7 @@
             :type="3"
             :wide="true"
             class="login-button"
+            disabled
             @click="_notImplemented"
           >
             Google
