@@ -60,8 +60,7 @@
             :type="3"
             :wide="true"
             class="login-button"
-            disabled
-            @click="_notImplemented"
+            @click="socialHandler('facebook')"
           >
             Facebook
           </ui-button>
@@ -70,7 +69,6 @@
             :wide="true"
             class="login-button"
             disabled
-            @click="_notImplemented"
           >
             Google
           </ui-button>
@@ -108,6 +106,7 @@ import PseudoPopup from '@components/PseudoPopup';
 import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
+import open from 'open';
 
 export default {
   components: {
@@ -218,6 +217,14 @@ export default {
       setTimeout(() => {
         text.classList.remove('saved-text--hiding');
       }, hideTime);
+    },
+
+    async socialHandler(socialName) {
+      const { code } = await this.$API.auth.link();
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      const link = `${baseUrl}/auth/social/${socialName}/link/${code}`;
+
+      open(link);
     },
   },
 
