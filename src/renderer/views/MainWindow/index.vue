@@ -3,7 +3,7 @@
     <janus />
     <notifications />
     <router-view />
-<!--    <performance-monitor />-->
+    <!--    <performance-monitor />-->
   </div>
 </template>
 

@@ -32,7 +32,7 @@
             :type="3"
             wide
             class="sns-button"
-            @click="_notImplemented"
+            @click="socialHandler('facebook')"
           >
             Facebook
           </ui-button>
@@ -128,6 +128,12 @@ export default {
   },
 
   methods: {
+    async socialHandler(sns) {
+      const res = await this.$API.auth.signinBySocial(sns);
+
+      console.log(res);
+    },
+
     async loginHandler() {
       try {
         await this.$API.auth.signin({ credentials: this.login });
