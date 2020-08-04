@@ -49,6 +49,8 @@
             <span>or</span>
           </div>
           <ui-form
+            v-if="!passReset"
+            class="reset-form"
             @submit="loginHandler()"
           >
             <ui-input
@@ -75,6 +77,39 @@
             >
               LOGIN
             </ui-button>
+            <div class="info">
+              <div class="info__text">
+                Forgot your password?
+              </div>
+              <div
+                class="info__link"
+                @click="toggleReset"
+              >
+                Reset
+              </div>
+            </div>
+          </ui-form>
+          <ui-form
+            v-if="passReset"
+            class="reset-form"
+            @submit="resetHandler"
+          >
+            <ui-input
+              v-model="login.email"
+              icon="user"
+              class="login__input"
+              placeholder="example@mail.com"
+              email
+              required
+            />
+            <ui-button
+              :type="12"
+              wide
+              class="login__button"
+              submit
+            >
+              RESET
+            </ui-button>
           </ui-form>
 
           <div class="info">
@@ -88,9 +123,10 @@
               Sign up now
             </div>
           </div>
+          <br>
           <div class="info">
             <div class="info__text">
-              Have temporary link?
+              Have a temporary link?
             </div>
             <router-link
               :to="{ name: 'temp'}"
@@ -109,6 +145,7 @@
 import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
+import { errorMessages } from '@api/errors/types';
 
 export default {
   components: {
@@ -120,6 +157,7 @@ export default {
 
   data() {
     return {
+      passReset: false,
       login: {
         email: 'ivanb@cmtt.ru',
         password: 'VT3O2O',
@@ -128,6 +166,12 @@ export default {
   },
 
   methods: {
+
+    toggleReset() {
+      console.log(this.passReset);
+      this.passReset = !this.passReset;
+    },
+
     async socialHandler(sns) {
       const res = await this.$API.auth.signinBySocial(sns);
 
@@ -143,6 +187,31 @@ export default {
         await this.$router.replace({
           name: 'workspace',
         });
+      } catch (err) {
+        console.log('ERROR:', err);
+        if (err.response.data.message === errorMessages.invalidRequestPayloadInput) {
+          const notification = {
+            data: {
+              text: 'Wrong email/password!',
+            },
+          };
+
+          await this.$store.dispatch('app/addNotification', notification);
+        }
+      }
+    },
+
+    async resetHandler() {
+      try {
+        // await this.$API.auth.resetPass(this.login.email);
+        this.toggleReset();
+        const notification = {
+          data: {
+            text: 'Check your email inbox!',
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
       } catch (err) {
         console.log('ERROR:', err);
       }
@@ -203,4 +272,10 @@ export default {
         margin-left 8px
         color var(--text-tech-2)
         cursor pointer
+
+.reset-form
+  min-height 175px
+  display flex
+  flex-direction column
+  justify-content top
 </style>
