@@ -43,9 +43,8 @@
             :type="6"
             icon=""
             wide
-            disabled
             class="login-button"
-            @click="_notImplemented"
+            @click="socialHandler('slack')"
           >
             Slack
             <svg-icon
@@ -68,7 +67,7 @@
             :type="3"
             :wide="true"
             class="login-button"
-            disabled
+            @click="socialHandler('google')"
           >
             Google
           </ui-button>

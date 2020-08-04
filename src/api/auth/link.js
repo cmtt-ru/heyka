@@ -5,5 +5,5 @@ import axios from 'axios';
  * @returns {object}
  */
 export default function () {
-  return axios.post('/auth-link').then(res => res.data);
+  return axios.post('/create-auth-link').then(res => res.data);
 }
