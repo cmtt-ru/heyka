@@ -136,10 +136,6 @@ export default {
     },
   },
 
-  mounted() {
-    console.log('------------------------------', this.size);
-  },
-
   methods: {
 
     loadHandler() {
