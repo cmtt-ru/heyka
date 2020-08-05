@@ -118,7 +118,6 @@ export default {
         this.localDisplayImage(event.target.files[0]);
         const result = await this.$API.user.image(formData);
 
-        console.log(result);
         const { image64x64, fileId } = result;
 
         this.fileId = fileId;
