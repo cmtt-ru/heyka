@@ -28,7 +28,7 @@
             </div>
 
             <ui-image
-              v-model="profile.avatar"
+              :image="userAvatar(me.id, 76)"
               class="user__avatar"
               :size="76"
               @input="setNewAvatar"
@@ -121,7 +121,7 @@ export default {
     return {
       profile: {
         name: null,
-        avatar: null,
+        avatarFileId: null,
       },
     };
   },
@@ -130,6 +130,7 @@ export default {
     ...mapGetters({
       selectedChannel: 'myChannel',
       me: 'myInfo',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
     /**
@@ -152,8 +153,8 @@ export default {
      * Our avatar from vuex
      * @returns {string}
      */
-    vuexAvatar() {
-      return this.me.avatar;
+    vuexAvatarFileId() {
+      return this.me.avatarFileId;
     },
   },
 
@@ -161,14 +162,14 @@ export default {
     vuexName(val) {
       this.$set(this.profile, 'name', val);
     },
-    vuexAvatar(val) {
-      this.$set(this.profile, 'avatar', val);
+    vuexAvatarFileId(val) {
+      this.$set(this.profile, 'avatarFileId', val);
     },
   },
 
   mounted() {
     this.$set(this.profile, 'name', this.vuexName);
-    this.$set(this.profile, 'avatar', this.vuexAvatar);
+    this.$set(this.profile, 'avatarFileId', this.vuexAvatarFileId);
   },
 
   methods: {
@@ -181,12 +182,12 @@ export default {
     },
 
     /**
-     * update avatar with mew image
-     * @param {string} image - new image link from uploader
+     * update avatar with mew image file id
+     * @param {string} fileId - new image file id from uploader
      * @returns {void}
      */
-    setNewAvatar(image) {
-      this.profile.avatar = image;
+    setNewAvatar(fileId) {
+      this.profile.avatarFileId = fileId;
     },
 
     /**
