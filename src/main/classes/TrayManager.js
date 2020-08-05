@@ -1,6 +1,6 @@
 import path from 'path';
 import { app, Menu, Tray, nativeImage, nativeTheme, ipcMain } from 'electron';
-import { IS_MAC } from '../../shared/Constants';
+import { IS_MAC, IS_LINUX } from '../../shared/Constants';
 import { heykaStore } from '../../renderer/store/localStore';
 
 let animationTimer;
@@ -55,6 +55,23 @@ class TrayManager {
 
     app.on('ready', () => {
       this.set(iconPath);
+
+      if (IS_LINUX) {
+        this.tray.setContextMenu(Menu.buildFromTemplate([
+          {
+            label: 'Heyka',
+            type: 'normal',
+            click: () => {
+              this.clickTray();
+            },
+          },
+          {
+            label: 'Quit',
+            type: 'normal',
+            role: 'quit',
+          },
+        ]));
+      }
 
       this.tray.on('click', () => {
         this.clickTray();
