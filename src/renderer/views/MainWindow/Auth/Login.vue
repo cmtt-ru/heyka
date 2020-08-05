@@ -18,7 +18,7 @@
             :type="3"
             wide
             class="sns-button"
-            @click="_notImplemented"
+            @click="socialHandler('slack')"
           >
             Slack
             <svg-icon
@@ -40,7 +40,7 @@
             :type="3"
             wide
             class="sns-button"
-            @click="_notImplemented"
+            @click="socialHandler('google')"
           >
             Google
           </ui-button>
@@ -146,6 +146,7 @@ import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
+import open from 'open';
 
 export default {
   components: {
@@ -172,10 +173,11 @@ export default {
       this.passReset = !this.passReset;
     },
 
-    async socialHandler(sns) {
-      const res = await this.$API.auth.signinBySocial(sns);
+    async socialHandler(socialName) {
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      const link = `${baseUrl}/auth/social/${socialName}/login`;
 
-      console.log(res);
+      open(link);
     },
 
     async loginHandler() {
