@@ -52,7 +52,7 @@ export default {
     /**
        * image url
        */
-    value: {
+    image: {
       type: String,
       default: '',
     },
@@ -77,6 +77,7 @@ export default {
   data() {
     return {
       tempSrc: null,
+      fileId: null,
     };
   },
 
@@ -87,10 +88,10 @@ export default {
        */
     localImage: {
       get() {
-        return this.value;
+        return this.image;
       },
       set(image) {
-        this.$emit('input', image);
+        this.$emit('input', this.fileId);
       },
     },
   },
@@ -117,7 +118,11 @@ export default {
         this.localDisplayImage(event.target.files[0]);
         const result = await this.$API.user.image(formData);
 
-        this.localImage = result.image;
+        console.log(result);
+        const { image64x64, fileId } = result;
+
+        this.fileId = fileId;
+        this.localImage = image64x64;
       } catch (err) {
         this.tempSrc = null;
         console.log(err);

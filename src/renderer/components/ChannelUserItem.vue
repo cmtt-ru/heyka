@@ -6,7 +6,7 @@
   >
     <avatar
       class="user__avatar"
-      :image="user.avatar"
+      :image="userAvatar(user.id, 24)"
       :size="24"
       :mic="user.microphone"
       :onair="user.speaking"
@@ -47,6 +47,7 @@ import Avatar from '@components/Avatar';
 import UiButton from '@components/UiButton';
 import broadcastActions from '@classes/broadcastActions';
 import broadcastEvents from '@classes/broadcastEvents';
+import { mapGetters } from 'vuex';
 
 const ICON_MAP = {
   mic: 'mic-off',
@@ -84,6 +85,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      userAvatar: 'users/getUserAvatarUrl',
+    }),
 
     /**
      * Prepare status icons

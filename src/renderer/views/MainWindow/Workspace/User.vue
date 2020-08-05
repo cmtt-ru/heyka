@@ -7,7 +7,7 @@
       <avatar
         :key="user.avatar"
         class="user__avatar"
-        :image="user.avatar"
+        :image="userAvatar(user.id, 40)"
         :size="40"
       />
       <div
@@ -127,6 +127,7 @@ export default {
     ...mapGetters({
       selectedChannel: 'myChannel',
       myUserID: 'me/getMyId',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
     /**
