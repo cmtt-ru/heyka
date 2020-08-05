@@ -4,6 +4,7 @@ import signinBySocial from './signinBySocial';
 import signup from './signup';
 import check from './check';
 import link from './link';
+import detachSocial from './detachSocial';
 
 export default {
   signin,
@@ -12,4 +13,5 @@ export default {
   signup,
   check,
   link,
+  detachSocial,
 };
