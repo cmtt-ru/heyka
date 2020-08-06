@@ -2,9 +2,8 @@
   <layout>
     <template #sidebar-body>
       <img
-        width="100%"
         class="sidebar-image"
-        src="https://leonardo.osnova.io/0658b525-8db3-fe95-69bd-fd64537802c6/"
+        :src="coverSrc"
       >
     </template>
 
@@ -14,39 +13,41 @@
           Welcome to Heyka
         </p>
         <div class="page__content">
-          <ui-button
-            :type="3"
-            wide
-            class="sns-button"
-            @click="socialHandler('slack')"
-          >
-            Slack
-            <svg-icon
-              slot="right"
-              color="var(--icon-1)"
-              name="close"
-              size="medium"
-            />
-          </ui-button>
-          <ui-button
-            :type="3"
-            wide
-            class="sns-button"
-            @click="socialHandler('facebook')"
-          >
-            Facebook
-          </ui-button>
-          <ui-button
-            :type="3"
-            wide
-            class="sns-button"
-            @click="socialHandler('google')"
-          >
-            Google
-          </ui-button>
+          <div class="currently-not-needed">
+            <ui-button
+              :type="3"
+              wide
+              class="sns-button"
+              @click="socialHandler('slack')"
+            >
+              Slack
+              <svg-icon
+                slot="right"
+                color="var(--icon-1)"
+                name="close"
+                size="medium"
+              />
+            </ui-button>
+            <ui-button
+              :type="3"
+              wide
+              class="sns-button"
+              @click="socialHandler('facebook')"
+            >
+              Facebook
+            </ui-button>
+            <ui-button
+              :type="3"
+              wide
+              class="sns-button"
+              @click="socialHandler('google')"
+            >
+              Google
+            </ui-button>
 
-          <div class="or-delimiter">
-            <span>or</span>
+            <div class="or-delimiter">
+              <span>or</span>
+            </div>
           </div>
           <ui-form
             v-if="!passReset"
@@ -110,6 +111,14 @@
             >
               RESET
             </ui-button>
+            <ui-button
+              :type="10"
+              wide
+              class="login__button"
+              @click="toggleReset"
+            >
+              cancel
+            </ui-button>
           </ui-form>
 
           <div class="info">
@@ -158,12 +167,25 @@ export default {
 
   data() {
     return {
+      coverSrc: null,
       passReset: false,
       login: {
         email: 'ivanb@cmtt.ru',
         password: 'VT3O2O',
       },
     };
+  },
+
+  mounted() {
+    const hour = new Date().getHours();
+    const morning = 13;
+    const evening = 17;
+
+    if (hour < morning || hour > evening) {
+      this.coverSrc = require('@assets/img/cover_night.png');
+    } else {
+      this.coverSrc = require('@assets/img/cover_day.png');
+    }
   },
 
   methods: {
@@ -177,7 +199,7 @@ export default {
       const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
       const link = `${baseUrl}/auth/social/${socialName}/login`;
 
-      open(link);
+      open(link); // TODO: can replace with window.open (see main index.js)
     },
 
     async loginHandler() {
@@ -224,9 +246,13 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+.currently-not-needed
+  display none
+
 .sidebar-image
     width 100%
     height 100%
+    display block
     object-fit cover
     object-position 0 0
 
@@ -276,7 +302,7 @@ export default {
         cursor pointer
 
 .reset-form
-  min-height 175px
+  min-height 180px
   display flex
   flex-direction column
   justify-content top
