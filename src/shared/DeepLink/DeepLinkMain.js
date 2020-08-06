@@ -12,7 +12,8 @@ class DeepLinkMain {
   constructor(commandsArray) {
     this.commands = commandsArray;
     this.mainWindow = null;
-    this.lastUrlPaths = null;
+    this.lastUrl = null;
+    this.isResent = false;
 
     app.on('will-finish-launching', () => {
       this.bindEvents();
@@ -57,7 +58,7 @@ class DeepLinkMain {
         if (this.mainWindow) {
           this.mainWindow.webContents.send('deep-link', urlPaths);
 
-          this.lastUrlPaths = urlPaths;
+          this.lastUrl = url;
 
           /** Do some stuff to show & focus main window */
           if (this.mainWindow.isMinimized()) {
@@ -95,6 +96,20 @@ class DeepLinkMain {
       command: paths.shift(),
       paths: paths,
     };
+  }
+
+  /**
+   * Resend last url
+   * @returns {void}
+   */
+  resendLast() {
+    if (!this.isResent) {
+      this.isResent = true;
+
+      if (this.lastUrl) {
+        this.deepLinkHandler(this.lastUrl);
+      }
+    }
   }
 
   /**
