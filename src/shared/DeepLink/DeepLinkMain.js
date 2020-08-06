@@ -2,79 +2,40 @@ import { app } from 'electron';
 import { IS_MAC } from '../../shared/Constants';
 
 /**
- * Transforms deep link string to command with hash
- * @param {string} str deep link string
- * @returns {object} object with command and hash
- */
-function deepLinkDeconstruct(str) {
-  if (str.indexOf('://') === -1) { // test deeplink
-    return {
-      // command: 'join',
-      // hash: 'devMode 12357858',
-    };
-  }
-  str = str.split('://')[1]; // remove app name, eg: 'heyka://'
-  str = str.split('/');
-
-  return {
-    command: str[0],
-    hash: str[1],
-  };
-}
-
-/**
  * A class that handles Deep Links in main process
  */
 class DeepLinkMain {
   /**
- * Inits deep link class
- * @param {array} commandsArray legitimate commands
- * @param {object} mainWindow mainWindow instance
- * @returns {undefined} nothing
- */
+   * Deep link class
+   * @param {array} commandsArray – legitimate commands
+   */
   constructor(commandsArray) {
     this.commands = commandsArray;
     this.mainWindow = null;
+    this.lastUrlPaths = null;
+
     app.on('will-finish-launching', () => {
-      this.parseParams();
+      this.bindEvents();
     });
   }
 
   /**
- * We need to parse link params when it is time
- * @returns {undefined} nothing
- */
-  parseParams() {
-    const deepLinkSetParams = this.setParams.bind(this);
-
+   * Bind deep link events for different OS
+   * @returns {void}
+   */
+  bindEvents() {
     if (IS_MAC) {
-      // deepLinkSetParams('heyka://call/test/123');
       app.on('open-url', (event, url) => {
-        console.log('url mac:', url);
+        this.deepLinkHandler(url);
         event.preventDefault();
-        deepLinkSetParams(url);
-
-        this.sendDeepLink();
-
-        this.params = null;
       });
     } else {
-      deepLinkSetParams(process.argv.slice(1));
-
       const gotTheLock = app.requestSingleInstanceLock();
 
       if (gotTheLock) {
-        app.on('second-instance', (e, argv) => {
-          deepLinkSetParams(argv.slice(1));
-          console.log(argv);
-
-          if (this.mainWindow) {
-            if (this.mainWindow.isMinimized()) {
-              this.mainWindow.restore();
-            }
-            this.mainWindow.focus();
-          }
-          this.sendDeepLink();
+        app.on('second-instance', (event, argv) => {
+          this.deepLinkHandler(argv[1]);
+          event.preventDefault();
         });
       } else {
         app.quit();
@@ -83,47 +44,75 @@ class DeepLinkMain {
   }
 
   /**
- * Try sending deep link command to renderer process
- * @returns {undefined} nothing
- */
-  sendDeepLink() {
-    if (this.getParams() && this.mainWindow && this.mainWindow.isVisible()) {
-      this.mainWindow.webContents.send('deep-link', this.getParams());
+   * Deep link event handler
+   * @param {string} url – deep link url
+   * @returns {void}
+   */
+  deepLinkHandler(url) {
+    console.log('deep link:', url);
+    const urlPaths = this.parseUrl(url);
+
+    if (urlPaths) {
+      if (this.isCommandAllowed(urlPaths.command)) {
+        if (this.mainWindow) {
+          this.mainWindow.webContents.send('deep-link', urlPaths);
+
+          this.lastUrlPaths = urlPaths;
+
+          /** Do some stuff to show & focus main window */
+          if (this.mainWindow.isMinimized()) {
+            this.mainWindow.restore();
+          }
+
+          this.mainWindow.show();
+          this.mainWindow.focus();
+
+          return;
+        }
+      }
     }
+
+    console.log(`deep link doesn't pass`);
   }
 
   /**
- * Set deep link parameters
- * @param {string} param deep link string
- * @returns {boolean} if deep link parsing is successful
- */
-  setParams(param) {
-    this.params = null;
-    const commandObj = deepLinkDeconstruct(param.toString());
-
-    if (!this.commands.includes(commandObj.command)) {
-      return false;
+   * Transforms deep link string to command & url paths
+   * @param {string} str – deep link string
+   * @returns {object}
+   */
+  parseUrl(str) {
+    if (str.indexOf('heyka://') === -1) {
+      return;
     }
-    this.params = commandObj;
 
-    return true;
+    /** Remove app name, eg: `heyka://` */
+    let paths = str.split('://')[1];
+
+    /** Make array of url components */
+    paths = paths.split('/');
+
+    return {
+      command: paths.shift(),
+      paths: paths,
+    };
   }
 
   /**
- * add mainWindow instance to deepLink object
- * @param {string} window mainWindow instance
- * @returns {undefined} NOTHING
- */
+   * Check's that command is allowed
+   * @param {string} command – deep link command
+   * @returns {boolean}
+   */
+  isCommandAllowed(command) {
+    return this.commands.includes(command);
+  }
+
+  /**
+   * Add mainWindow instance to deepLink object
+   * @param {BrowserWindow} window – main window instance
+   * @returns {void}
+   */
   bindMainWindow(window) {
     this.mainWindow = window;
-  }
-
-  /**
- * Get deep link params
- * @returns {object} deep link params
- */
-  getParams() {
-    return this.params;
   }
 }
 
