@@ -18,6 +18,8 @@ import { heykaStore } from '@/store/localStore';
 import cloneDeep from 'clone-deep';
 import { throttle } from 'throttle-debounce';
 import Logger from '@classes/logger';
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+
 const cnsl = new Logger('Vuex index', '#17A589');
 
 /**
@@ -212,6 +214,17 @@ if (IS_MAIN_WINDOW) {
   /** Lock / Unlock screen */
   ipcRenderer.on('power-monitor-lock-screen', (event, state) => {
     store.dispatch('me/setLockScreenState', state);
+  });
+
+  /**
+   * Handle deep links
+   */
+  DeepLink.on('join', paths => {
+    console.log('join', paths);
+  });
+
+  DeepLink.on('new-link', data => {
+    console.log('new-link', data);
   });
 } else {
   /** Request state */

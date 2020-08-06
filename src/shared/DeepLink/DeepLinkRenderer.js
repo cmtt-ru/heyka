@@ -1,40 +1,30 @@
-import router from '@/router';
 import { ipcRenderer } from 'electron';
+import { EventEmitter } from 'events';
 
 /**
  * A class that handles Deep Links in renderer process
  */
-export default class DeepLinkRenderer {
+class DeepLinkRenderer extends EventEmitter {
   /**
- * Inits deep link class
- * @param {string} map command-router mapping
- * @returns {undefined} nothing
- */
-  constructor(map) {
-    this.commandMap = map;
+   * Deep link class
+   * @returns {void}
+   */
+  constructor() {
+    super();
     ipcRenderer.on('deep-link', (event, args) => {
-      this.route(args);
+      this.deepLinkHandler(args);
     });
   }
 
   /**
- * Route to correct page with correct params
- * @param {object} params object with command and hash
- * @returns {boolean} valid or invalid route
- */
-  route(params) {
-    if (this.commandMap[params.command]) {
-      router.replace({
-        path: this.commandMap[params.command],
-        query: { hash: params.hash },
-      });
-    }
+   * Deep link handler
+   * @param {object} data – object with command and paths
+   * @returns {void}
+   */
+  deepLinkHandler(data) {
+    this.emit('new-link', data);
+    this.emit(data.command, data.paths);
   }
 }
 
-// export default new DeepLinkRenderer({
-// login: 'login',
-// join: 'main/workspace',
-// call: 'main/workspace',
-// d: 'main/workspace',
-// });
+export default new DeepLinkRenderer();
