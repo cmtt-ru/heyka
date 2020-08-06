@@ -155,7 +155,6 @@ import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
-import open from 'open';
 
 export default {
   components: {
@@ -199,7 +198,7 @@ export default {
       const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
       const link = `${baseUrl}/auth/social/${socialName}/login`;
 
-      open(link); // TODO: can replace with window.open (see main index.js)
+      window.open(link); // TODO: can replace with window.open (see main index.js)
     },
 
     async loginHandler() {

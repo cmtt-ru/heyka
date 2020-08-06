@@ -55,6 +55,8 @@ class DeepLinkMain {
         deepLinkSetParams(url);
 
         this.sendDeepLink();
+
+        this.params = null;
       });
     } else {
       deepLinkSetParams(process.argv.slice(1));
