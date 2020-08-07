@@ -13,7 +13,7 @@
           Welcome to Heyka
         </p>
         <div class="page__content">
-          <div class="currently-not-needed1">
+          <div class="currently-not-needed">
             <ui-button
               :type="3"
               wide
