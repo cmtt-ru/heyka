@@ -53,6 +53,7 @@
               color="var(--icon-1)"
               name="close"
               size="medium"
+              @click.native.stop="detachSocialHandler('slack')"
             />
           </ui-button>
 
@@ -70,6 +71,7 @@
               color="var(--icon-1)"
               name="close"
               size="medium"
+              @click.native.stop="detachSocialHandler('facebook')"
             />
           </ui-button>
           <ui-button
@@ -85,6 +87,7 @@
               color="var(--icon-1)"
               name="close"
               size="medium"
+              @click.native.stop="detachSocialHandler('google')"
             />
             Google
           </ui-button>
@@ -118,10 +121,10 @@
 
 <script>
 import PseudoPopup from '@components/PseudoPopup';
-
 import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
 export default {
   components: {
@@ -191,6 +194,20 @@ export default {
   mounted() {
     this.$set(this.profile, 'name', this.vuexName);
     this.$set(this.profile, 'avatar', this.vuexAvatar);
+
+    DeepLink.on('social-link', ([status, error]) => {
+      if (status === 'false') {
+        this.$store.dispatch('app/addNotification', {
+          data: {
+            text: decodeURIComponent(error),
+          },
+        });
+      }
+    });
+  },
+
+  beforeDestroy() {
+    DeepLink.removeAllListeners('social-link');
   },
 
   methods: {
@@ -244,18 +261,18 @@ export default {
 
     async socialHandler(socialName) {
       if (this.socialAuth[socialName]) {
-        await this.$store.dispatch('me/detachSocial', socialName);
-      } else {
-        const { code } = await this.$API.auth.link();
-        const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-        const link = `${baseUrl}/auth/social/${socialName}/link/${code}`;
-
-        window.open(link);
+        return;
       }
+
+      const { code } = await this.$API.auth.link();
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      const link = `${baseUrl}/auth/social/${socialName}/link/${code}`;
+
+      window.open(link);
     },
 
     async detachSocialHandler(socialName) {
-      console.log('asdasdasd');
+      await this.$store.dispatch('me/detachSocial', socialName);
     },
   },
 

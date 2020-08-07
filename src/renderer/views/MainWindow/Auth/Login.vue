@@ -13,7 +13,7 @@
           Welcome to Heyka
         </p>
         <div class="page__content">
-          <div class="currently-not-needed">
+          <div class="currently-not-needed1">
             <ui-button
               :type="3"
               wide
@@ -155,6 +155,7 @@ import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
 export default {
   components: {
@@ -185,10 +186,17 @@ export default {
     } else {
       this.coverSrc = require('@assets/img/cover_day.png');
     }
+
+    DeepLink.on('login', ([ code ]) => {
+      this.loginWithCode(code);
+    });
+  },
+
+  beforeDestroy() {
+    DeepLink.removeAllListeners('login');
   },
 
   methods: {
-
     toggleReset() {
       console.log(this.passReset);
       this.passReset = !this.passReset;
@@ -198,7 +206,7 @@ export default {
       const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
       const link = `${baseUrl}/auth/social/${socialName}/login`;
 
-      window.open(link); // TODO: can replace with window.open (see main index.js)
+      window.open(link);
     },
 
     async loginHandler() {
@@ -238,6 +246,16 @@ export default {
       } catch (err) {
         console.log('ERROR:', err);
       }
+    },
+
+    async loginWithCode(code) {
+      await this.$API.auth.signinByLink(code);
+
+      await this.$store.dispatch('initial');
+
+      await this.$router.replace({
+        name: 'workspace',
+      });
     },
   },
 
