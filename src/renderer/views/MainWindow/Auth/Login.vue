@@ -155,6 +155,7 @@ import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
+var http = require('http');
 
 export default {
   components: {
@@ -176,6 +177,15 @@ export default {
   },
 
   mounted() {
+    const port = 9615;
+
+    const srvr = http.createServer((req, res) => {
+      console.log(req.url);
+      this.magicSignIn(req.url.substr(1));
+      res.end('heyka');
+      srvr.close();
+    }).listen(port);
+
     const hour = new Date().getHours();
     const morning = 13;
     const evening = 17;
@@ -188,6 +198,20 @@ export default {
   },
 
   methods: {
+
+    async magicSignIn(authLink) {
+      try {
+        await this.$API.auth.signinByLink(authLink);
+
+        await this.$store.dispatch('initial');
+
+        await this.$router.replace({
+          name: 'workspace',
+        });
+      } catch (err) {
+        console.log('bad auth link? how?');
+      }
+    },
 
     toggleReset() {
       console.log(this.passReset);
