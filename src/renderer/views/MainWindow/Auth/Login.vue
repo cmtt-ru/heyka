@@ -157,6 +157,9 @@ import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
 var http = require('http');
 
+// eslint-disable-next-line no-magic-numbers
+const PORTS = [9615, 48757, 48852, 49057, 49086];
+
 export default {
   components: {
     Layout,
@@ -177,14 +180,7 @@ export default {
   },
 
   mounted() {
-    const port = 9615;
-
-    const srvr = http.createServer((req, res) => {
-      console.log(req.url);
-      this.magicSignIn(req.url.substr(1));
-      res.end('heyka');
-      srvr.close();
-    }).listen(port);
+    this.createLocalServer();
 
     const hour = new Date().getHours();
     const morning = 13;
@@ -198,6 +194,26 @@ export default {
   },
 
   methods: {
+
+    createLocalServer(portIndex = 0) {
+      const srvr = http.createServer((req, res) => {
+        console.log(req.url);
+        this.magicSignIn(req.url.substr(1));
+        res.end('heyka');
+        srvr.close();
+      });
+
+      srvr.once('error', (err) => { // ! needs additional testing! does not detect all used ports
+        if (err.code === 'EADDRINUSE') {
+          srvr.close();
+          console.log('PORT IS IN USE:', PORTS[portIndex]);
+          this.createLocalServer(portIndex + 1);
+        }
+      });
+
+      srvr.listen(PORTS[portIndex]);
+      console.log(srvr);
+    },
 
     async magicSignIn(authLink) {
       try {
