@@ -21,11 +21,11 @@ export default Object.freeze({
   userJoined: 'user-joined',
   userUnselectedChannel: 'user-unselected-channel',
   userSelectedChannel: 'user-selected-channel',
-  changedDevice: 'user-changed-device',
   userLeavedWorkspace: 'user-leaved-workspace',
   userUpdated: 'user-updated',
-  meUpdated: 'me-updated',
 
+  changedDevice: 'user-changed-device',
+  meUpdated: 'me-updated',
   mediaStateUpdated: 'media-state-updated',
   onlineStatusChanged: 'online-status-updated',
   socketApiError: 'socket-api-error',
@@ -33,4 +33,5 @@ export default Object.freeze({
   inviteResponse: 'invite-response',
   inviteCancelled: 'invite-cancelled',
   mutedForAll: 'muted-for-all',
+  kickedFromWorkspace: 'kicked-from-workspace',
 });
