@@ -203,7 +203,7 @@ export default {
         srvr.close();
       });
 
-      srvr.once('error', (err) => { // ! needs additional testing! does not detect all used ports
+      srvr.once('error', (err) => {
         if (err.code === 'EADDRINUSE') {
           srvr.close();
           console.log('PORT IS IN USE:', PORTS[portIndex]);
@@ -211,7 +211,7 @@ export default {
         }
       });
 
-      srvr.listen(PORTS[portIndex]);
+      srvr.listen(PORTS[portIndex], '127.0.0.1');
       console.log(srvr);
     },
 
