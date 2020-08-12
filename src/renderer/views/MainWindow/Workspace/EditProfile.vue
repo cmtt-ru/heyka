@@ -242,6 +242,12 @@ export default {
       }, hideTime);
     },
 
+    /**
+     * Connect account to SNS
+     *
+     * @param {string} socialName - SNS name
+     * @returns {void}
+     */
     async socialHandler(socialName) {
       if (this.socialAuth[socialName]) {
         await this.$store.dispatch('me/detachSocial', socialName);
