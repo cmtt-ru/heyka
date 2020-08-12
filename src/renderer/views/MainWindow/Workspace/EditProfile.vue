@@ -40,7 +40,7 @@
           </div>
 
           <ui-button
-            :type="6"
+            :type="3"
             icon=""
             wide
             class="login-button"
@@ -179,7 +179,7 @@ export default {
      * @returns {object}
      */
     socialAuth() {
-      return this.$store.state.me.socialAuth;
+      return this.$store.state.me.socialAuth || {};
     },
   },
 

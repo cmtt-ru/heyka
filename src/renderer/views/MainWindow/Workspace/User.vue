@@ -91,6 +91,19 @@
         {{ user.email }}
       </div>
     </div>
+
+    <div class="user-info">
+      <router-link :to="{ name: 'edit-profile'}">
+        <ui-button
+          v-if="isMe"
+          :type="1"
+          :wide="true"
+          class="user-action"
+        >
+          <div>{{ texts.edit }}</div>
+        </ui-button>
+      </router-link>
+    </div>
   </div>
 </template>
 

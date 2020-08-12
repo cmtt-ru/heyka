@@ -13,7 +13,8 @@
       "inviteButtonStart": "Пригласить в",
       "inviteBySlackButton": "Пригласить через Slack",
       "localTime": "Локальное время",
-      "email": "Email"
+      "email": "Email",
+      "edit": "Редактировать профиль"
     },
     "userSettings": {
       "edit": "Редактировать профиль",
