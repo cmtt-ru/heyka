@@ -301,4 +301,24 @@ export default {
       });
     }
   },
+
+  /**
+   * Log in using auth link
+   *
+   * @param {string} authLink – code to log in with
+   * @returns {void}
+   */
+  async useAuthLink({ dispatch }, authLink) {
+    try {
+      await API.auth.signinByLink(authLink);
+
+      await dispatch('initial');
+
+      await router.replace({
+        name: 'workspace',
+      });
+    } catch (err) {
+      console.log(`Code ${authLink} is invalid:`, err);
+    }
+  },
 };

@@ -206,7 +206,7 @@ export default {
     }
 
     DeepLink.on('login', ([ code ]) => {
-      this.loginWithCode(code);
+      this.$API.useAuthLink(code);
     });
   },
 
@@ -229,7 +229,7 @@ export default {
 
       const srvr = http.createServer((req, res) => {
         console.log(req.url);
-        this.magicSignIn(req.url.substr(1));
+        this.$API.useAuthLink(req.url.substr(1));
         res.end('heyka');
         srvr.close();
       });
@@ -243,26 +243,6 @@ export default {
       });
 
       srvr.listen(PORTS[portIndex], '127.0.0.1');
-    },
-
-    /**
-     * Use auth link we got from web and log in user
-     *
-     * @param {string} authLink - auth link
-     * @returns {void}
-     */
-    async magicSignIn(authLink) {
-      try {
-        await this.$API.auth.signinByLink(authLink);
-
-        await this.$store.dispatch('initial');
-
-        await this.$router.replace({
-          name: 'workspace',
-        });
-      } catch (err) {
-        console.log('bad auth link...');
-      }
     },
 
     /**
@@ -334,16 +314,6 @@ export default {
       } catch (err) {
         console.log('ERROR:', err);
       }
-    },
-
-    async loginWithCode(code) {
-      await this.$API.auth.signinByLink(code);
-
-      await this.$store.dispatch('initial');
-
-      await this.$router.replace({
-        name: 'workspace',
-      });
     },
   },
 

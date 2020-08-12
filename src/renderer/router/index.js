@@ -7,7 +7,6 @@ import { settingsRoutes } from './settingsRoutes';
 import { styleguideRoutes } from './styleguideRoutes';
 
 const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
-const SigninLinkCheck = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/SigninLinkCheck');
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/Pushes');
 const BoardHolderWindow = () => import(/* webpackChunkName: boardHolder" */ '@views/BoardHolderWindow');
 
@@ -29,14 +28,6 @@ const routes = [
       authRoutes,
       settingsRoutes,
       styleguideRoutes,
-      /**
-       * Process signin link from deep link
-       * TODO: may be need to move out?
-       */
-      {
-        path: 'signinbylink',
-        component: SigninLinkCheck,
-      },
     ],
   },
   ...callRoutes,
