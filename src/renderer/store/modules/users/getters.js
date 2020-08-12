@@ -1,5 +1,5 @@
 import { sortByPriority } from '@libs/arrays';
-import { formImageUrl } from '../../../filters/leonardo';
+import { formImageUrl, isRetina, RETINA_MULTIPLICATOR } from '@/filters/leonardo';
 
 const AVATAR_SIZE_32 = 32;
 
@@ -45,6 +45,10 @@ export default {
     }
 
     if (user.avatarFileId) {
+      if (isRetina()) {
+        size *= RETINA_MULTIPLICATOR;
+      }
+
       return size <= AVATAR_SIZE_32 ? user.avatarSet.image32x32 : user.avatarSet.image64x64;
     }
 
