@@ -2,14 +2,14 @@
  * Retina image size multiplicator
  * @type {number}
  */
-const retinaMultiplicator = 2;
+export const RETINA_MULTIPLICATOR = 2;
 
 /**
  * Checks if user has retina display
  *
  * @returns {boolean}
  */
-function isRetina() {
+export function isRetina() {
   return window.devicePixelRatio > 1;
 }
 
@@ -36,8 +36,8 @@ export function formImageUrl(src, width, height, scaleType = 'scale_crop') {
   }
 
   if (isRetina()) {
-    width *= retinaMultiplicator;
-    height *= retinaMultiplicator;
+    width *= RETINA_MULTIPLICATOR;
+    height *= RETINA_MULTIPLICATOR;
   }
 
   return `${src}-/${scaleType}/${width}x${height}/center`;
