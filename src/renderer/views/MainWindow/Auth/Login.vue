@@ -271,7 +271,6 @@ export default {
      * @returns {void}
      */
     toggleReset() {
-      console.log(this.passReset);
       this.passReset = !this.passReset;
     },
 
