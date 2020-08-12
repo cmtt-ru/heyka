@@ -104,9 +104,7 @@ class MainWindow {
     });
 
     ipcMain.on('start-is-ready', () => {
-      if (DeepLink.getParams()) {
-        this.window.webContents.send('deep-link', DeepLink.getParams());
-      }
+      DeepLink.resendLast();
     });
 
     /**
