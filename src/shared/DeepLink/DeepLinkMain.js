@@ -55,6 +55,8 @@ class DeepLinkMain {
         deepLinkSetParams(url);
 
         this.sendDeepLink();
+
+        this.params = null;
       });
     } else {
       deepLinkSetParams(process.argv.slice(1));
@@ -99,8 +101,6 @@ class DeepLinkMain {
     this.params = null;
     const commandObj = deepLinkDeconstruct(param.toString());
 
-    // console.log(commandObj);
-
     if (!this.commands.includes(commandObj.command)) {
       return false;
     }
@@ -127,4 +127,4 @@ class DeepLinkMain {
   }
 }
 
-export default new DeepLinkMain(['invite', 'call', 'join']);
+export default new DeepLinkMain(['invite', 'call', 'join', 'login']);

@@ -13,16 +13,20 @@ export default Object.freeze({
   auth: 'auth',
   authSuccess: 'auth-success',
   authSuccessError: 'socket-api-error-auth',
+
   channelCreated: 'channel-created',
   channelUpdated: 'channel-updated',
   channelDeleted: 'channel-deleted',
+
   userJoined: 'user-joined',
   userUnselectedChannel: 'user-unselected-channel',
   userSelectedChannel: 'user-selected-channel',
   changedDevice: 'user-changed-device',
-  mediaStateUpdated: 'media-state-updated',
   userLeavedWorkspace: 'user-leaved-workspace',
   userUpdated: 'user-updated',
+  meUpdated: 'me-updated',
+
+  mediaStateUpdated: 'media-state-updated',
   onlineStatusChanged: 'online-status-updated',
   socketApiError: 'socket-api-error',
   invite: 'invite',

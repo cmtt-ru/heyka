@@ -281,4 +281,28 @@ export default {
       userId,
     }, { root: true });
   },
+
+  /**
+   * Update me data
+   * @param {function} commit – vuex commit
+   * @param {object} data – me data
+   * @returns {void}
+   */
+  async update({ commit }, data) {
+    const filteredData = {
+      socialAuth: data.socialAuth,
+    };
+
+    commit('UPDATE', filteredData);
+  },
+
+  /**
+   * Detach social network
+   * @param {function} dispatch – vuex dispatch
+   * @param {string} socialName – social name
+   * @returns {void}
+   */
+  async detachSocial({ dispatch }, socialName) {
+    await API.auth.detachSocial(socialName);
+  },
 };
