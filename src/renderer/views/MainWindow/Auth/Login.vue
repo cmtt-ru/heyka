@@ -144,7 +144,9 @@ import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
-var http = require('http');
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+
+const http = require('http');
 
 // eslint-disable-next-line no-magic-numbers
 const PORTS = [9615, 48757, 48852, 49057, 49086];
@@ -202,6 +204,14 @@ export default {
     } else {
       this.coverSrc = require('@assets/img/cover_day.png');
     }
+
+    DeepLink.on('login', ([ code ]) => {
+      this.loginWithCode(code);
+    });
+  },
+
+  beforeDestroy() {
+    DeepLink.removeAllListeners('login');
   },
 
   methods: {
@@ -325,6 +335,16 @@ export default {
       } catch (err) {
         console.log('ERROR:', err);
       }
+    },
+
+    async loginWithCode(code) {
+      await this.$API.auth.signinByLink(code);
+
+      await this.$store.dispatch('initial');
+
+      await this.$router.replace({
+        name: 'workspace',
+      });
     },
   },
 

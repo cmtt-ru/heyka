@@ -9,7 +9,6 @@
 
 <script>
 import { ipcRenderer } from 'electron';
-import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
 import broadcastEvents from '@classes/broadcastEvents';
 import Notifications from '@components/Notifications';
@@ -29,21 +28,12 @@ export default {
   },
   data() {
     return {
-      deepLink: {},
       updateNotificationShown: false,
     };
   },
 
   async created() {
     try {
-      this.deepLink = new DeepLinkRenderer({
-        login: '/main-window/auth/code-login',
-        invite: 'main-window/signinbylink',
-        join: 'main-window/workspace',
-        call: 'main-window/workspace',
-        d: 'main-window/workspace',
-      });
-
       /** Prepare tokens */
       await prepareTokens();
 
