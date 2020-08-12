@@ -6,7 +6,7 @@
   >
     <avatar
       class="user__avatar"
-      :image="user.avatar"
+      :image="userAvatar(user.id, 14)"
       :status="isStrangeStatus"
       :size="14"
     />
@@ -34,6 +34,7 @@
 <script>
 import Avatar from '@components/Avatar';
 import UiButton from '@components/UiButton';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -53,6 +54,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      userAvatar: 'users/getUserAvatarUrl',
+    }),
 
     /**
      * Return true if this user is currently offline

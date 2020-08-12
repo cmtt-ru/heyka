@@ -23,7 +23,7 @@
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
-        :image="myInfo.avatar"
+        :image="userAvatar(myInfo.id, 24)"
         :status="myInfo.onlineStatus"
         :size="24"
       />
@@ -63,6 +63,7 @@ export default {
     ...mapGetters({
       myInfo: 'myInfo',
       mediaState: 'me/getMediaState',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
     /**
