@@ -25,6 +25,8 @@ export default {
     const userId = authenticatedUser.id;
 
     if (userId) {
+      dispatch('me/update', authenticatedUser);
+
       /** Get workspaces list */
       /**
        * todo: Предусмотреть, что воркспейсов может не быть.

@@ -13,6 +13,7 @@ import { meStore } from '@/store/localStore';
  * @property {boolean} suspendState – sleep / awake state
  * @property {boolean} lockScreenState – screen lock / unlock state
  * @property {boolean} allowDraw – Allow/forbid drawing
+ * @property {object} socialAuth – social accounts
  */
 
 /**
@@ -48,6 +49,7 @@ const state = () => {
     suspendState: false,
     lockScreenState: false,
     allowDraw: true,
+    socialAuth: {},
   };
 };
 

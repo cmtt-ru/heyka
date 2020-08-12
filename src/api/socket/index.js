@@ -314,6 +314,11 @@ function bindUserEvents() {
       store.dispatch('me/mutedByUser', data.fromUserId);
     }
   });
+
+  /** Me updated */
+  client.on(eventNames.meUpdated, async data => {
+    store.dispatch('me/update', data.user);
+  });
 }
 
 /**

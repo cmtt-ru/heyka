@@ -3,7 +3,7 @@
     <janus />
     <notifications />
     <router-view />
-<!--    <performance-monitor />-->
+    <!--    <performance-monitor />-->
   </div>
 </template>
 
@@ -36,6 +36,14 @@ export default {
 
   async created() {
     try {
+      this.deepLink = new DeepLinkRenderer({
+        login: '/main-window/auth/code-login',
+        invite: 'main-window/signinbylink',
+        join: 'main-window/workspace',
+        call: 'main-window/workspace',
+        d: 'main-window/workspace',
+      });
+
       /** Prepare tokens */
       await prepareTokens();
 
@@ -43,14 +51,6 @@ export default {
       await this.$API.auth.check();
 
       ipcRenderer.send('start-is-ready');
-
-      this.deepLink = new DeepLinkRenderer({
-        invite: 'main-window/signinbylink',
-        login: 'main-window/login',
-        join: 'main-window/workspace',
-        call: 'main-window/workspace',
-        d: 'main-window/workspace',
-      });
 
       await this.$store.dispatch('initial');
     } catch (e) {

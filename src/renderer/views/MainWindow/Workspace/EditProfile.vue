@@ -43,12 +43,12 @@
             :type="6"
             icon=""
             wide
-            disabled
             class="login-button"
-            @click="_notImplemented"
+            @click="socialHandler('slack')"
           >
             Slack
             <svg-icon
+              v-if="socialAuth.slack"
               slot="right"
               color="var(--icon-1)"
               name="close"
@@ -58,20 +58,34 @@
 
           <ui-button
             :type="3"
+            icon=""
             :wide="true"
             class="login-button"
-            disabled
-            @click="_notImplemented"
+            @click="socialHandler('facebook')"
           >
             Facebook
+            <svg-icon
+              v-if="socialAuth.facebook"
+              slot="right"
+              color="var(--icon-1)"
+              name="close"
+              size="medium"
+            />
           </ui-button>
           <ui-button
             :type="3"
+            icon=""
             :wide="true"
             class="login-button"
-            disabled
-            @click="_notImplemented"
+            @click="socialHandler('google')"
           >
+            <svg-icon
+              v-if="socialAuth.google"
+              slot="right"
+              color="var(--icon-1)"
+              name="close"
+              size="medium"
+            />
             Google
           </ui-button>
         </div>
@@ -155,6 +169,14 @@ export default {
     vuexAvatar() {
       return this.me.avatar;
     },
+
+    /**
+     * Social accounts
+     * @returns {object}
+     */
+    socialAuth() {
+      return this.$store.state.me.socialAuth;
+    },
   },
 
   watch: {
@@ -218,6 +240,28 @@ export default {
       setTimeout(() => {
         text.classList.remove('saved-text--hiding');
       }, hideTime);
+    },
+
+    /**
+     * Connect account to SNS
+     *
+     * @param {string} socialName - SNS name
+     * @returns {void}
+     */
+    async socialHandler(socialName) {
+      if (this.socialAuth[socialName]) {
+        await this.$store.dispatch('me/detachSocial', socialName);
+      } else {
+        const { code } = await this.$API.auth.link();
+        const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+        const link = `${baseUrl}/auth/social/${socialName}/link/${code}`;
+
+        window.open(link);
+      }
+    },
+
+    async detachSocialHandler(socialName) {
+      console.log('asdasdasd');
     },
   },
 

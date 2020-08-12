@@ -113,6 +113,9 @@ export async function prepareTokens() {
  * @returns {void}
  */
 export async function checkAndRefreshTokens() {
+  if (!tokens.accessToken) {
+    return;
+  }
   if (isTokenExpired()) {
     await updateTokens();
   }
