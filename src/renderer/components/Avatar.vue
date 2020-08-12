@@ -16,7 +16,7 @@
       alt=""
       :width="size"
       :height="size"
-      :src="avatarImage"
+      :src="image"
       @load="loadHandler"
     >
 
@@ -116,19 +116,6 @@ export default {
   },
 
   computed: {
-
-    /**
-     * Set img as bg-image in css
-     * @returns {object} corresponding background-image
-     */
-    avatarImage() {
-      if (this.image) {
-        return this.$options.filters.formImageUrl(this.image, this.size); // TODO: поставить таймаут и перескачивание, если '429 Too many requests'
-      }
-
-      return {};
-    },
-
     /**
      * Set img size in css
      * @returns {object} height and width
@@ -156,7 +143,6 @@ export default {
       this.$emit('load');
     },
   },
-
 };
 </script>
 
