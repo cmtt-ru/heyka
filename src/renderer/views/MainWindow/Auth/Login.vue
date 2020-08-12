@@ -213,6 +213,10 @@ export default {
      * @returns {void}
      */
     createLocalServer(portIndex = 0) {
+      if (portIndex === PORTS.length) {
+        return;
+      }
+
       const srvr = http.createServer((req, res) => {
         console.log(req.url);
         this.magicSignIn(req.url.substr(1));
