@@ -1,6 +1,6 @@
 <template>
   <div>
-    logining...
+    logging in...
   </div>
 </template>
 
@@ -11,6 +11,13 @@ export default {
     this.login(this.$route.query.hash);
   },
   methods: {
+
+    /**
+     * Log in with auth link
+     *
+     * @param {string} code - auth link
+     * @returns {void}
+     */
     async login(code) {
       await this.$API.auth.signinByLink(code);
 
