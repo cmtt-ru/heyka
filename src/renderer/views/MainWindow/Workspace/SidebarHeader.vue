@@ -38,7 +38,7 @@
       </div>
 
       <div
-        v-popover.click="{name: 'Workspace'}"
+        v-popover.click="{name: 'Workspace', permissions: $permissions.manageWorkspaces()}"
         class="workspace__wrapper"
       >
         <img

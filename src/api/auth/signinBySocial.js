@@ -10,5 +10,5 @@ import axios from 'axios';
  * @returns {object} result data
  */
 export default function (social, params) {
-  return axios.post(`/signin/${social}`, params).then(res => res.data);
+  return axios.get(`/signin/${social}`, params).then(res => res.data);
 }
