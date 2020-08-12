@@ -8,10 +8,12 @@
       >
         {{ texts.invite }}
       </ui-button>
+
       <ui-button
+        v-if="permissions['workspaces.manage']"
         :type="11"
         icon="edit"
-        @click="_notImplemented()"
+        @click="openManageWorkspace"
       >
         {{ texts.manage }}
       </ui-button>
@@ -81,6 +83,16 @@ export default {
     UiButton,
   },
 
+  props: {
+    /**
+     * Permissions object
+     */
+    permissions: {
+      type: Object,
+      default: () => {},
+    },
+  },
+
   data() {
     return {
       IS_DEV,
@@ -110,6 +122,19 @@ export default {
      */
     quitAppHandler() {
       ipcRenderer.send('remote-quit');
+    },
+
+    /**
+     * Open manage workspace
+     * @returns {void}
+     */
+    async openManageWorkspace() {
+      const { code } = await this.$API.auth.link();
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      // const baseUrl = 'http://localhost:8080/';
+      const link = `${baseUrl}/manage/${code}`;
+
+      window.open(link);
     },
   },
 };

@@ -6,6 +6,7 @@ import connectionCheck from '@classes/connectionCheck';
 import { handleError } from '@api/errors';
 import Logger from '@classes/logger';
 import sounds from '@classes/sounds';
+import broadcastEvents from '@classes/broadcastEvents';
 
 const cnsl = new Logger('SOCKETS', '#d67a24');
 
@@ -318,6 +319,16 @@ function bindUserEvents() {
   /** Me updated */
   client.on(eventNames.meUpdated, async data => {
     store.dispatch('me/update', data.user);
+  });
+
+  /** User leaved workspace */
+  client.on(eventNames.userLeavedWorkspace, async data => {
+    store.dispatch('updateCurrentWorkspaceState');
+  });
+
+  /** Me kicked from workspace */
+  client.on(eventNames.kickedFromWorkspace, async data => {
+    broadcastEvents.dispatch('logout');
   });
 }
 
