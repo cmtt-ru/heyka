@@ -10,7 +10,7 @@
     <template #content-body>
       <div class="page l-p-18">
         <p class="l-fs-18">
-          Welcome to Heyka
+          {{ texts.welcome }}
         </p>
         <div class="page__content">
           <div class="currently-not-needed">
@@ -46,7 +46,7 @@
             </ui-button>
 
             <div class="or-delimiter">
-              <span>or</span>
+              <span>{{ texts.or }}</span>
             </div>
           </div>
           <ui-form
@@ -76,17 +76,17 @@
               class="login__button"
               submit
             >
-              LOGIN
+              {{ texts.login }}
             </ui-button>
             <div class="info">
               <div class="info__text">
-                Forgot your password?
+                {{ texts.forgot }}
               </div>
               <div
                 class="info__link"
                 @click="toggleReset"
               >
-                Reset
+                {{ texts.reset }}
               </div>
             </div>
           </ui-form>
@@ -106,10 +106,10 @@
             <ui-button
               :type="12"
               wide
-              class="login__button"
+              class="login__button login__button--caps"
               submit
             >
-              RESET
+              {{ texts.reset }}
             </ui-button>
             <ui-button
               :type="10"
@@ -117,33 +117,22 @@
               class="login__button"
               @click="toggleReset"
             >
-              cancel
+              {{ texts.cancel }}
             </ui-button>
           </ui-form>
 
           <div class="info">
             <div class="info__text">
-              Not a member?
+              {{ texts.newMember }}
             </div>
             <div
               class="info__link"
               @click="_notImplemented"
             >
-              Sign up now
+              {{ texts.signup }}
             </div>
           </div>
           <br>
-          <div class="info">
-            <div class="info__text">
-              Have a temporary link?
-            </div>
-            <router-link
-              :to="{ name: 'temp'}"
-              class="info__link"
-            >
-              Enter it here
-            </router-link>
-          </div>
         </div>
       </div>
     </template>
@@ -157,6 +146,11 @@ import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
+const http = require('http');
+
+// eslint-disable-next-line no-magic-numbers
+const PORTS = [9615, 48757, 48852, 49057, 49086];
+
 export default {
   components: {
     Layout,
@@ -169,14 +163,38 @@ export default {
     return {
       coverSrc: null,
       passReset: false,
+      // login: {
+      //   email: 'ivanb@cmtt.ru',
+      //   password: 'VT3O2O',
+      // },
       login: {
-        email: 'ivanb@cmtt.ru',
-        password: 'VT3O2O',
+        email: '',
+        password: '',
       },
     };
   },
 
+  computed: {
+    /**
+     * Get notification texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('login');
+    },
+
+    /**
+     * Get notification texts from I18n-locale file
+     * @returns {object}
+     */
+    notifTexts() {
+      return this.$t('notifications.login');
+    },
+  },
+
   mounted() {
+    this.createLocalServer();
+
     const hour = new Date().getHours();
     const morning = 13;
     const evening = 17;
@@ -197,11 +215,72 @@ export default {
   },
 
   methods: {
+
+    /**
+     * Open web server to listen for magic login from web
+     *
+     * @param {number} portIndex - port to listen to
+     * @returns {void}
+     */
+    createLocalServer(portIndex = 0) {
+      if (portIndex === PORTS.length) {
+        return;
+      }
+
+      const srvr = http.createServer((req, res) => {
+        console.log(req.url);
+        this.magicSignIn(req.url.substr(1));
+        res.end('heyka');
+        srvr.close();
+      });
+
+      srvr.once('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          srvr.close();
+          console.log('PORT IS IN USE:', PORTS[portIndex]);
+          this.createLocalServer(portIndex + 1);
+        }
+      });
+
+      srvr.listen(PORTS[portIndex], '127.0.0.1');
+    },
+
+    /**
+     * Use auth link we got from web and log in user
+     *
+     * @param {string} authLink - auth link
+     * @returns {void}
+     */
+    async magicSignIn(authLink) {
+      try {
+        await this.$API.auth.signinByLink(authLink);
+
+        await this.$store.dispatch('initial');
+
+        await this.$router.replace({
+          name: 'workspace',
+        });
+      } catch (err) {
+        console.log('bad auth link...');
+      }
+    },
+
+    /**
+     * Show/hide reset block
+     *
+     * @returns {void}
+     */
     toggleReset() {
       console.log(this.passReset);
       this.passReset = !this.passReset;
     },
 
+    /**
+     * Log in with SNS
+     *
+     * @param {string} socialName - SNS name
+     * @returns {void}
+     */
     async socialHandler(socialName) {
       const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
       const link = `${baseUrl}/auth/social/${socialName}/login`;
@@ -209,6 +288,11 @@ export default {
       window.open(link);
     },
 
+    /**
+     * Log in with email+pass
+     *
+     * @returns {void}
+     */
     async loginHandler() {
       try {
         await this.$API.auth.signin({ credentials: this.login });
@@ -223,7 +307,7 @@ export default {
         if (err.response.data.message === errorMessages.invalidRequestPayloadInput) {
           const notification = {
             data: {
-              text: 'Wrong email/password!',
+              text: this.notifTexts.wrongPass,
             },
           };
 
@@ -232,13 +316,18 @@ export default {
       }
     },
 
+    /**
+     * Reset password
+     *
+     * @returns {void}
+     */
     async resetHandler() {
       try {
         // await this.$API.auth.resetPass(this.login.email);
         this.toggleReset();
         const notification = {
           data: {
-            text: 'Check your email inbox!',
+            text: this.notifTexts.passReset,
           },
         };
 
@@ -307,6 +396,9 @@ export default {
 
 .login__button
     margin-top 12px
+
+    &--caps
+      text-transform uppercase
 
 .info
     display flex
