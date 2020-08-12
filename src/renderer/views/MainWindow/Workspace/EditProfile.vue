@@ -43,35 +43,52 @@
             :type="6"
             icon=""
             wide
-            disabled
             class="login-button"
-            @click="_notImplemented"
+            @click="socialHandler('slack')"
           >
             Slack
             <svg-icon
+              v-if="socialAuth.slack"
               slot="right"
               color="var(--icon-1)"
               name="close"
               size="medium"
+              @click.native.stop="detachSocialHandler('slack')"
             />
           </ui-button>
 
           <ui-button
             :type="3"
+            icon=""
             :wide="true"
             class="login-button"
-            disabled
-            @click="_notImplemented"
+            @click="socialHandler('facebook')"
           >
             Facebook
+            <svg-icon
+              v-if="socialAuth.facebook"
+              slot="right"
+              color="var(--icon-1)"
+              name="close"
+              size="medium"
+              @click.native.stop="detachSocialHandler('facebook')"
+            />
           </ui-button>
           <ui-button
             :type="3"
+            icon=""
             :wide="true"
             class="login-button"
-            disabled
-            @click="_notImplemented"
+            @click="socialHandler('google')"
           >
+            <svg-icon
+              v-if="socialAuth.google"
+              slot="right"
+              color="var(--icon-1)"
+              name="close"
+              size="medium"
+              @click.native.stop="detachSocialHandler('google')"
+            />
             Google
           </ui-button>
         </div>
@@ -104,10 +121,10 @@
 
 <script>
 import PseudoPopup from '@components/PseudoPopup';
-
 import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
 export default {
   components: {
@@ -156,6 +173,14 @@ export default {
     vuexAvatarFileId() {
       return this.me.avatarFileId;
     },
+
+    /**
+     * Social accounts
+     * @returns {object}
+     */
+    socialAuth() {
+      return this.$store.state.me.socialAuth;
+    },
   },
 
   watch: {
@@ -170,6 +195,20 @@ export default {
   mounted() {
     this.$set(this.profile, 'name', this.vuexName);
     this.$set(this.profile, 'avatarFileId', this.vuexAvatarFileId);
+
+    DeepLink.on('social-link', ([status, error]) => {
+      if (status === 'false') {
+        this.$store.dispatch('app/addNotification', {
+          data: {
+            text: decodeURIComponent(error),
+          },
+        });
+      }
+    });
+  },
+
+  beforeDestroy() {
+    DeepLink.removeAllListeners('social-link');
   },
 
   methods: {
@@ -219,6 +258,28 @@ export default {
       setTimeout(() => {
         text.classList.remove('saved-text--hiding');
       }, hideTime);
+    },
+
+    /**
+     * Connect account to SNS
+     *
+     * @param {string} socialName - SNS name
+     * @returns {void}
+     */
+    async socialHandler(socialName) {
+      if (this.socialAuth[socialName]) {
+        return;
+      }
+
+      const { code } = await this.$API.auth.link();
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      const link = `${baseUrl}/auth/social/${socialName}/link/${code}`;
+
+      window.open(link);
+    },
+
+    async detachSocialHandler(socialName) {
+      await this.$store.dispatch('me/detachSocial', socialName);
     },
   },
 

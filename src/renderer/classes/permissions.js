@@ -20,6 +20,16 @@ class Permissions {
       channelId,
     };
   }
+
+  /**
+   * Permissions for manage workspaces
+   * @returns {PermissionsData}
+   */
+  manageWorkspaces() {
+    return {
+      actions: 'workspaces.manage',
+    };
+  }
 }
 
 export default new Permissions();

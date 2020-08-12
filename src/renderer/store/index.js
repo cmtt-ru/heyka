@@ -18,6 +18,7 @@ import { heykaStore } from '@/store/localStore';
 import cloneDeep from 'clone-deep';
 import { throttle } from 'throttle-debounce';
 import Logger from '@classes/logger';
+
 const cnsl = new Logger('Vuex index', '#17A589');
 
 /**

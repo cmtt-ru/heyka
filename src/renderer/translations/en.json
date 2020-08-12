@@ -100,6 +100,16 @@
       "cancel": "Cancel"
     }
   },
+  "login": {
+    "welcome": "Welcome to Heyka",
+    "or": "or",
+    "login": "LOGIN",
+    "forgot": "Forgot your password?",
+    "reset": "Reset",
+    "cancel": "Cancel",
+    "newMember": "Not a member?",
+    "signup": "Sign up now"
+  },
   "popover": {
     "workspace": {
       "invite": "Invite members",
@@ -132,7 +142,7 @@
       "edit": "Edit profile"
     }
   },
-  "notifications":{
+  "notifications": {
     "nomic": {
       "text": "No microphone detected!",
       "button1": "This is bad"
@@ -157,6 +167,10 @@
       "text": "Are you sure you want to delete channel",
       "yes": "Yes, delete",
       "no": "No"
+    },
+    "login": {
+      "wrongPass": "Wrong email/password!",
+      "passReset": "Check your email inbox!"
     }
   },
   "push": {

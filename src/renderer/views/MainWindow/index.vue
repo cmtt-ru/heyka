@@ -3,13 +3,12 @@
     <janus />
     <notifications />
     <router-view />
-<!--    <performance-monitor />-->
+    <!--    <performance-monitor />-->
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron';
-import DeepLinkRenderer from '@shared/DeepLink/DeepLinkRenderer';
 import Janus from '@components/Janus.vue';
 import broadcastEvents from '@classes/broadcastEvents';
 import Notifications from '@components/Notifications';
@@ -29,7 +28,6 @@ export default {
   },
   data() {
     return {
-      deepLink: {},
       updateNotificationShown: false,
     };
   },
@@ -43,14 +41,6 @@ export default {
       await this.$API.auth.check();
 
       ipcRenderer.send('start-is-ready');
-
-      this.deepLink = new DeepLinkRenderer({
-        invite: 'main-window/signinbylink',
-        login: 'main-window/login',
-        join: 'main-window/workspace',
-        call: 'main-window/workspace',
-        d: 'main-window/workspace',
-      });
 
       await this.$store.dispatch('initial');
     } catch (e) {
