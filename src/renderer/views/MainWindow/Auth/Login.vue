@@ -13,126 +13,128 @@
           {{ texts.welcome }}
         </p>
         <div class="page__content">
-          <div class="currently-not-needed">
-            <ui-button
-              :type="3"
-              wide
-              class="sns-button"
-              @click="socialHandler('slack')"
-            >
-              Slack
-              <svg-icon
-                slot="right"
-                color="var(--icon-1)"
-                name="close"
-                size="medium"
-              />
-            </ui-button>
-            <ui-button
-              :type="3"
-              wide
-              class="sns-button"
-              @click="socialHandler('facebook')"
-            >
-              Facebook
-            </ui-button>
-            <ui-button
-              :type="3"
-              wide
-              class="sns-button"
-              @click="socialHandler('google')"
-            >
-              Google
-            </ui-button>
+          <div class="currently-not-need1ed">
+            <div class="currently-not-need1ed">
+              <ui-button
+                :type="3"
+                wide
+                class="sns-button"
+                @click="socialHandler('slack')"
+              >
+                Slack
+                <svg-icon
+                  slot="right"
+                  color="var(--icon-1)"
+                  name="close"
+                  size="medium"
+                />
+              </ui-button>
+              <ui-button
+                :type="3"
+                wide
+                class="sns-button"
+                @click="socialHandler('facebook')"
+              >
+                Facebook
+              </ui-button>
+              <ui-button
+                :type="3"
+                wide
+                class="sns-button"
+                @click="socialHandler('google')"
+              >
+                Google
+              </ui-button>
 
-            <div class="or-delimiter">
-              <span>{{ texts.or }}</span>
+              <div class="or-delimiter">
+                <span>{{ texts.or }}</span>
+              </div>
             </div>
-          </div>
-          <ui-form
-            v-if="!passReset"
-            class="reset-form"
-            @submit="loginHandler()"
-          >
-            <ui-input
-              v-model="login.email"
-              icon="user"
-              class="login__input"
-              placeholder="example@mail.com"
-              email
-              required
-            />
-            <ui-input
-              v-model="login.password"
-              icon="lock"
-              required
-              type="password"
-              class="login__input"
-              placeholder="******"
-            />
-            <ui-button
-              :type="6"
-              wide
-              class="login__button"
-              submit
+            <ui-form
+              v-if="!passReset"
+              class="reset-form"
+              @submit="loginHandler()"
             >
-              {{ texts.login }}
-            </ui-button>
+              <ui-input
+                v-model="login.email"
+                icon="user"
+                class="login__input"
+                placeholder="example@mail.com"
+                email
+                required
+              />
+              <ui-input
+                v-model="login.password"
+                icon="lock"
+                required
+                type="password"
+                class="login__input"
+                placeholder="******"
+              />
+              <ui-button
+                :type="6"
+                wide
+                class="login__button"
+                submit
+              >
+                {{ texts.login }}
+              </ui-button>
+              <div class="info">
+                <div class="info__text">
+                  {{ texts.forgot }}
+                </div>
+                <div
+                  class="info__link"
+                  @click="toggleReset"
+                >
+                  {{ texts.reset }}
+                </div>
+              </div>
+            </ui-form>
+            <ui-form
+              v-if="passReset"
+              class="reset-form"
+              @submit="resetHandler"
+            >
+              <ui-input
+                v-model="login.email"
+                icon="user"
+                class="login__input"
+                placeholder="example@mail.com"
+                email
+                required
+              />
+              <ui-button
+                :type="12"
+                wide
+                class="login__button login__button--caps"
+                submit
+              >
+                {{ texts.reset }}
+              </ui-button>
+              <ui-button
+                :type="10"
+                wide
+                class="login__button"
+                @click="toggleReset"
+              >
+                {{ texts.cancel }}
+              </ui-button>
+            </ui-form>
+
             <div class="info">
               <div class="info__text">
-                {{ texts.forgot }}
+                {{ texts.newMember }}
               </div>
               <div
                 class="info__link"
-                @click="toggleReset"
+                @click="_notImplemented"
               >
-                {{ texts.reset }}
+                {{ texts.signup }}
               </div>
             </div>
-          </ui-form>
-          <ui-form
-            v-if="passReset"
-            class="reset-form"
-            @submit="resetHandler"
-          >
-            <ui-input
-              v-model="login.email"
-              icon="user"
-              class="login__input"
-              placeholder="example@mail.com"
-              email
-              required
-            />
-            <ui-button
-              :type="12"
-              wide
-              class="login__button login__button--caps"
-              submit
-            >
-              {{ texts.reset }}
-            </ui-button>
-            <ui-button
-              :type="10"
-              wide
-              class="login__button"
-              @click="toggleReset"
-            >
-              {{ texts.cancel }}
-            </ui-button>
-          </ui-form>
-
-          <div class="info">
-            <div class="info__text">
-              {{ texts.newMember }}
-            </div>
-            <div
-              class="info__link"
-              @click="_notImplemented"
-            >
-              {{ texts.signup }}
-            </div>
+            <br>
           </div>
-          <br>
         </div>
       </div>
     </template>
