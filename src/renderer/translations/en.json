@@ -13,7 +13,8 @@
       "inviteButtonStart": "Invite to",
       "inviteBySlackButton": "Send invite via Slack",
       "localTime": "Local time",
-      "email": "Email"
+      "email": "Email",
+      "edit": "Edit profile"
     },
     "userSettings": {
       "edit": "Edit profile",
