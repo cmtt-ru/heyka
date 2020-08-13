@@ -229,7 +229,7 @@ export default {
 
       const srvr = http.createServer((req, res) => {
         console.log(req.url);
-        this.$API.useAuthLink(req.url.substr(1));
+        this.$store.dispatch('useAuthLink', req.url.substr(1));
         res.end('heyka');
         srvr.close();
       });
