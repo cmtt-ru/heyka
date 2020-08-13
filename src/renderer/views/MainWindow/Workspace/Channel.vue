@@ -54,7 +54,10 @@
         :filter-key="user.name"
         button
       >
-        <channel-user-item :user="user" :channel-id="channelId" />
+        <channel-user-item
+          :user="user"
+          :channel-id="channelId"
+        />
       </list-item>
     </list>
   </div>

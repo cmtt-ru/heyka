@@ -8,7 +8,7 @@
 
     <ui-button
       :type="1"
-      @click="$emit('buttonClick')"
+      @click="$emit('button-click')"
     >
       {{ texts.close }}
     </ui-button>
