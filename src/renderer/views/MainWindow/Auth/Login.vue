@@ -206,7 +206,7 @@ export default {
     }
 
     DeepLink.on('login', ([ code ]) => {
-      this.$API.useAuthLink(code);
+      this.$store.dispatch('useAuthLink', code);
     });
   },
 
