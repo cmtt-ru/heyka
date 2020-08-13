@@ -30,7 +30,7 @@
         :type="1"
         size="medium"
         class="push__button"
-        @click="$emit('buttonClick', {action: 'accept-invite'})"
+        @click="$emit('button-click', {action: 'accept-invite'})"
       >
         {{ texts.join }}
       </ui-button>
@@ -38,7 +38,7 @@
         :type="3"
         size="medium"
         class="push__button"
-        @click="$emit('buttonClick', {action: 'busy', showResponse: true})"
+        @click="$emit('button-click', {action: 'busy', showResponse: true})"
       >
         {{ texts.busy }}
       </ui-button>
@@ -89,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    this.$emit('defaultCloseResponse', {
+    this.$emit('default-close-response', {
       action: 'busy',
       showResponse: true,
     });
