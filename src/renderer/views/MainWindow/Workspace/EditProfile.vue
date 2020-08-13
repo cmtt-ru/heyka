@@ -28,6 +28,7 @@
             </div>
 
             <ui-image
+              :key="me.id"
               :image="userAvatar(me.id, 76)"
               class="user__avatar"
               :size="76"
