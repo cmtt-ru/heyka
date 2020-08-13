@@ -9,7 +9,7 @@
           :type="1"
           size="medium"
           class="push__button"
-          @click="$emit('buttonClick', {action: 'turn-mic-on'})"
+          @click="$emit('button-click', {action: 'turn-mic-on'})"
         >
           {{ texts.button1 }}
         </ui-button>
@@ -17,7 +17,7 @@
           :type="3"
           size="medium"
           class="push__button"
-          @click="$emit('buttonClick')"
+          @click="$emit('button-click')"
         >
           {{ texts.button2 }}
         </ui-button>
