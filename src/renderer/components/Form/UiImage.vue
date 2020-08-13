@@ -77,23 +77,12 @@ export default {
   data() {
     return {
       tempSrc: null,
-      fileId: null,
+      localImage: null,
     };
   },
 
-  computed: {
-    /**
-       * Local copy of image url
-       * @returns {string} value
-       */
-    localImage: {
-      get() {
-        return this.image;
-      },
-      set(image) {
-        this.$emit('input', this.fileId);
-      },
-    },
+  mounted() {
+    this.localImage = this.image;
   },
 
   methods: {
@@ -114,14 +103,13 @@ export default {
       const formData = new FormData();
 
       formData.append('image', event.target.files[0]);
+
       try {
         this.localDisplayImage(event.target.files[0]);
         const result = await this.$API.user.image(formData);
 
-        const { image64x64, fileId } = result;
-
-        this.fileId = fileId;
-        this.localImage = image64x64;
+        this.localImage = this.tempSrc;
+        this.$emit('input', result.fileId);
       } catch (err) {
         this.tempSrc = null;
         console.log(err);
