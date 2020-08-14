@@ -78,6 +78,7 @@ import { mapGetters, mapState } from 'vuex';
 import Tablet from '@components/Drawing/Tablet';
 import mediaCapturer from '@classes/mediaCapturer';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
+import { ipcRenderer } from 'electron';
 
 /* variable for watching page size */
 let __resizeObserver = {};
@@ -235,6 +236,10 @@ export default {
      * @returns {void}
      */
     showGridHandler() {
+      if (WindowManager.getCurrentWindow().isFullscreen()) {
+        ipcRenderer.send('exit-fullscreen');
+      }
+
       this.$router.push('/call-window');
     },
 
