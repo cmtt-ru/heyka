@@ -55,6 +55,10 @@ class DeepLinkMain {
   winParse(argv = process.argv) {
     const deepLinkFlag = argv.find(el => el.includes('heyka://'));
 
+    if (deepLinkFlag === undefined) {
+      return;
+    }
+
     this.deepLinkHandler(deepLinkFlag);
   }
 
