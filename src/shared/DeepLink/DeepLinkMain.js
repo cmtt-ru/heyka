@@ -31,11 +31,13 @@ class DeepLinkMain {
         event.preventDefault();
       });
     } else {
+      this.winParse();
+
       const gotTheLock = app.requestSingleInstanceLock();
 
       if (gotTheLock) {
         app.on('second-instance', (event, argv) => {
-          this.deepLinkHandler(argv[1]);
+          this.winParse(argv);
           event.preventDefault();
         });
       } else {
@@ -45,20 +47,30 @@ class DeepLinkMain {
   }
 
   /**
+   * Get heyka deeplink from window args (WIN only)
+   *
+   * @param {array} argv – process flags (deep link included)
+   * @returns {void}
+   */
+  winParse(argv = process.argv) {
+    const deepLinkFlag = argv.find(el => el.includes('heyka://'));
+
+    this.deepLinkHandler(deepLinkFlag);
+  }
+
+  /**
    * Deep link event handler
    * @param {string} url – deep link url
    * @returns {void}
    */
   deepLinkHandler(url) {
-    console.log('deep link:', url);
     const urlPaths = this.parseUrl(url);
 
     if (urlPaths) {
       if (this.isCommandAllowed(urlPaths.command)) {
+        this.lastUrl = url;
         if (this.mainWindow) {
           this.mainWindow.webContents.send('deep-link', urlPaths);
-
-          this.lastUrl = url;
 
           /** Do some stuff to show & focus main window */
           if (this.mainWindow.isMinimized()) {
@@ -67,13 +79,13 @@ class DeepLinkMain {
 
           this.mainWindow.show();
           this.mainWindow.focus();
-
-          return;
         }
+
+        return;
       }
     }
 
-    console.log(`deep link doesn't pass`);
+    console.log(`deep link doesn't pass: ${url}`);
   }
 
   /**
@@ -105,7 +117,6 @@ class DeepLinkMain {
   resendLast() {
     if (!this.isResent) {
       this.isResent = true;
-
       if (this.lastUrl) {
         this.deepLinkHandler(this.lastUrl);
       }

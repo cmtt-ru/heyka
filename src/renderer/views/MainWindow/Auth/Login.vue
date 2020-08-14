@@ -146,7 +146,6 @@ import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
-import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
 const http = require('http');
 
@@ -206,14 +205,6 @@ export default {
     } else {
       this.coverSrc = require('@assets/img/cover_day.png');
     }
-
-    DeepLink.on('login', ([ code ]) => {
-      this.$store.dispatch('useAuthLink', code);
-    });
-  },
-
-  beforeDestroy() {
-    DeepLink.removeAllListeners('login');
   },
 
   methods: {
