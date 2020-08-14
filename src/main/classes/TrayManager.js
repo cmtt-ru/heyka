@@ -76,14 +76,17 @@ class TrayManager {
       this.tray.on('click', () => {
         this.clickTray();
       });
+
       this.tray.on('double-click', () => {
         this.clickTray();
       });
+
       this.tray.on('right-click', () => {
         this.tray.popUpContextMenu(Menu.buildFromTemplate([ {
           role: 'quit',
         } ]));
       });
+
       ipcMain.on('tray-animation', (event, state) => {
         if (state) {
           this.setAnimation();
@@ -104,7 +107,7 @@ class TrayManager {
   }
 
   /**
-   * Toggle Mainwindow on tray click
+   * Toggle main window on tray click
    * @returns {void}
    */
   clickTray() {
@@ -232,7 +235,9 @@ class TrayManager {
       if (this.mainWindow.isVisible() && this.mainWindow.isFocused()) {
         this.mainWindow.hide();
       } else {
+        this.mainWindow.setVisibleOnAllWorkspaces(true);
         this.mainWindow.show();
+        this.mainWindow.setVisibleOnAllWorkspaces(false);
       }
     }
   }
