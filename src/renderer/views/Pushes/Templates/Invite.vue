@@ -4,7 +4,7 @@
       <avatar
         class="push__avatar"
         :size="40"
-        :image="user.avatar"
+        :image="userAvatar(user.id, 40)"
       />
 
       <div class="push__col">
@@ -49,6 +49,7 @@
 <script>
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -65,6 +66,9 @@ export default {
     },
   },
   computed: {
+    ...mapGetters({
+      userAvatar: 'users/getUserAvatarUrl',
+    }),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
