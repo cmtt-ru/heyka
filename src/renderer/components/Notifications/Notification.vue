@@ -296,24 +296,22 @@ $ANIM_DELAY = 200ms
     margin 0 4px
 
 .notification-fade-enter
-  height 0
-  padding 0px 12px
-  margin 0px 12px
   opacity 0
+  transform translateY(60px)
+  margin-bottom -60px
 
-.notification-fade-enter-active
+.notification-fade-enter-to
   pointer-events none
-  transition opacity $ANIM ease $ANIM_DELAY, height $ANIM ease, padding $ANIM ease, margin $ANIM ease
+  margin-bottom 12px
+  transition opacity $ANIM ease $ANIM_DELAY, margin-bottom $ANIM ease, transform $ANIM ease
 
 .notification-fade-leave
-  height 0
-  opacity 0
+  margin-bottom 12px
 
-.notification-fade-leave-active
-  padding 0px 12px
-  margin 0px 12px
+.notification-fade-leave-to
   opacity 0
-  height 0
-  transition opacity $ANIM ease, height $ANIM ease $ANIM_DELAY, padding $ANIM ease $ANIM_DELAY, margin $ANIM ease $ANIM_DELAY, transform $ANIM ease
+  transform translateY(60px)
+  margin-bottom -60px
+  transition opacity $ANIM ease, margin-bottom $ANIM ease $ANIM_DELAY, transform $ANIM ease
 
 </style>
