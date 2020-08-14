@@ -7,7 +7,7 @@
     <div class="call-controls__row">
       <img
         class="call-controls__avatar"
-        :src="speakingUserAvatar|formImageUrl(36)"
+        :src="speakingUserAvatar"
       >
 
       <div class="call-controls__col">
@@ -47,6 +47,7 @@ import CallButtons from './CallButtons';
 import { mapGetters } from 'vuex';
 
 const LAST_USER_INTERVAL = 2000;
+const AVATAR_36 = 36;
 
 let lastUserTimer = null;
 
@@ -91,6 +92,7 @@ export default {
       speakingUser: 'getSpeakingUser',
       selectedChannel: 'myChannel',
       userById: 'users/getUserById',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
     /**
@@ -106,7 +108,15 @@ export default {
      * @return {string}
      */
     speakingUserAvatar() {
-      return this.speakingUser?.avatar || this.user?.avatar || '';
+      if (this.speakingUser) {
+        return this.userAvatar(this.speakingUser.id, AVATAR_36);
+      }
+
+      if (this.user) {
+        return this.userAvatar(this.user.id, AVATAR_36);
+      }
+
+      return '';
     },
 
     /**
