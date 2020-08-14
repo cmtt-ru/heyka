@@ -33,7 +33,7 @@
     <div class="badge user">
       <avatar
         class="user__avatar"
-        :image="sharingUser.avatar"
+        :image="userAvatar(sharingUser.id, 20)"
         :size="20"
         square
       />
@@ -108,6 +108,7 @@ export default {
     ...mapGetters({
       selectedChannel: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
     ...mapState({
       janusOptions: 'janus',
