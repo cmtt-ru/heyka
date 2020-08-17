@@ -50,6 +50,8 @@ export default {
       await dispatch('updateCurrentWorkspaceState');
 
       await sockets.init();
+
+      dispatch('me/setOnlineStatus', 'online');
     } else {
       console.error('AUTH REQUIRED');
     }
