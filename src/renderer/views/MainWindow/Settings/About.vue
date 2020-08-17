@@ -142,4 +142,5 @@ export default {
     white-space pre-line
     line-height 20px
     margin-bottom 32px
+    user-select text
 </style>
