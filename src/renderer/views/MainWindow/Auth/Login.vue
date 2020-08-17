@@ -13,128 +13,126 @@
           {{ texts.welcome }}
         </p>
         <div class="page__content">
-          <div class="currently-not-need1ed">
-            <div class="currently-not-need1ed">
-              <ui-button
-                :type="3"
-                wide
-                class="sns-button"
-                @click="socialHandler('slack')"
-              >
-                Slack
-                <svg-icon
-                  slot="right"
-                  color="var(--icon-1)"
-                  name="close"
-                  size="medium"
-                />
-              </ui-button>
-              <ui-button
-                :type="3"
-                wide
-                class="sns-button"
-                @click="socialHandler('facebook')"
-              >
-                Facebook
-              </ui-button>
-              <ui-button
-                :type="3"
-                wide
-                class="sns-button"
-                @click="socialHandler('google')"
-              >
-                Google
-              </ui-button>
+          <div class="currently-not-needed">
+            <ui-button
+              :type="3"
+              wide
+              class="sns-button"
+              @click="socialHandler('slack')"
+            >
+              Slack
+              <svg-icon
+                slot="right"
+                color="var(--icon-1)"
+                name="close"
+                size="medium"
+              />
+            </ui-button>
+            <ui-button
+              :type="3"
+              wide
+              class="sns-button"
+              @click="socialHandler('facebook')"
+            >
+              Facebook
+            </ui-button>
+            <ui-button
+              :type="3"
+              wide
+              class="sns-button"
+              @click="socialHandler('google')"
+            >
+              Google
+            </ui-button>
 
-              <div class="or-delimiter">
-                <span>{{ texts.or }}</span>
-              </div>
+            <div class="or-delimiter">
+              <span>{{ texts.or }}</span>
             </div>
-            <ui-form
-              v-if="!passReset"
-              class="reset-form"
-              @submit="loginHandler()"
+          </div>
+          <ui-form
+            v-show="!passReset"
+            class="reset-form"
+            @submit="loginHandler()"
+          >
+            <ui-input
+              v-model="login.email"
+              icon="user"
+              class="login__input"
+              placeholder="example@mail.com"
+              email
+              required
+            />
+            <ui-input
+              v-model="login.password"
+              icon="lock"
+              required
+              type="password"
+              class="login__input"
+              placeholder="******"
+            />
+            <ui-button
+              :type="6"
+              wide
+              class="login__button"
+              submit
             >
-              <ui-input
-                v-model="login.email"
-                icon="user"
-                class="login__input"
-                placeholder="example@mail.com"
-                email
-                required
-              />
-              <ui-input
-                v-model="login.password"
-                icon="lock"
-                required
-                type="password"
-                class="login__input"
-                placeholder="******"
-              />
-              <ui-button
-                :type="6"
-                wide
-                class="login__button"
-                submit
-              >
-                {{ texts.login }}
-              </ui-button>
-              <div class="info">
-                <div class="info__text">
-                  {{ texts.forgot }}
-                </div>
-                <div
-                  class="info__link"
-                  @click="toggleReset"
-                >
-                  {{ texts.reset }}
-                </div>
-              </div>
-            </ui-form>
-            <ui-form
-              v-if="passReset"
-              class="reset-form"
-              @submit="resetHandler"
-            >
-              <ui-input
-                v-model="login.email"
-                icon="user"
-                class="login__input"
-                placeholder="example@mail.com"
-                email
-                required
-              />
-              <ui-button
-                :type="12"
-                wide
-                class="login__button login__button--caps"
-                submit
-              >
-                {{ texts.reset }}
-              </ui-button>
-              <ui-button
-                :type="10"
-                wide
-                class="login__button"
-                @click="toggleReset"
-              >
-                {{ texts.cancel }}
-              </ui-button>
-            </ui-form>
-
+              {{ texts.login }}
+            </ui-button>
             <div class="info">
               <div class="info__text">
-                {{ texts.newMember }}
+                {{ texts.forgot }}
               </div>
               <div
                 class="info__link"
-                @click="_notImplemented"
+                @click="toggleReset"
               >
-                {{ texts.signup }}
+                {{ texts.reset }}
               </div>
             </div>
-            <br>
+          </ui-form>
+          <ui-form
+            v-show="passReset"
+            class="reset-form"
+            @submit="resetHandler"
+          >
+            <ui-input
+              v-model="login.email"
+              icon="user"
+              class="login__input"
+              placeholder="example@mail.com"
+              email
+              required
+            />
+            <ui-button
+              :type="12"
+              wide
+              class="login__button login__button--caps"
+              submit
+            >
+              {{ texts.reset }}
+            </ui-button>
+            <ui-button
+              :type="10"
+              wide
+              class="login__button"
+              @click="toggleReset"
+            >
+              {{ texts.cancel }}
+            </ui-button>
+          </ui-form>
+
+          <div class="info currently-not-needed">
+            <div class="info__text">
+              {{ texts.newMember }}
+            </div>
+            <div
+              class="info__link"
+              @click="_notImplemented"
+            >
+              {{ texts.signup }}
+            </div>
           </div>
+          <br>
         </div>
       </div>
     </template>
@@ -146,7 +144,6 @@ import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
-import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
 const http = require('http');
 
@@ -206,14 +203,6 @@ export default {
     } else {
       this.coverSrc = require('@assets/img/cover_day.png');
     }
-
-    DeepLink.on('login', ([ code ]) => {
-      this.$store.dispatch('useAuthLink', code);
-    });
-  },
-
-  beforeDestroy() {
-    DeepLink.removeAllListeners('login');
   },
 
   methods: {
@@ -284,8 +273,8 @@ export default {
           name: 'workspace',
         });
       } catch (err) {
-        console.log('ERROR:', err);
-        if (err.response.data.message === errorMessages.invalidRequestPayloadInput) {
+        if (err.response.data.message === errorMessages.emailOrPasswordAreInvalid ||
+            err.response.data.message === errorMessages.invalidRequestPayloadInput) { //? maybe not needed
           const notification = {
             data: {
               text: this.notifTexts.wrongPass,
@@ -304,18 +293,19 @@ export default {
      */
     async resetHandler() {
       try {
-        // await this.$API.auth.resetPass(this.login.email);
-        this.toggleReset();
-        const notification = {
-          data: {
-            text: this.notifTexts.passReset,
-          },
-        };
-
-        await this.$store.dispatch('app/addNotification', notification);
+        await this.$API.auth.discardPass({ email: this.login.email });
       } catch (err) {
         console.log('ERROR:', err);
       }
+
+      this.toggleReset();
+      const notification = {
+        data: {
+          text: this.notifTexts.passReset,
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
     },
   },
 
@@ -324,7 +314,8 @@ export default {
 
 <style scoped lang="stylus">
 .currently-not-needed
-  display none
+  opacity 0.5
+  pointer-events none
 
 .sidebar-image
     width 100%
