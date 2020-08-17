@@ -14,12 +14,22 @@
       <input
         ref="input"
         v-model="localValue"
-        :type="type"
+        :type="localType"
         class="input"
-        :class="{'input--with-icon': icon, 'ui-error': errorText}"
+        :class="{'input--with-icon': icon, 'input--with-eye': isPass, 'ui-error': errorText}"
         :placeholder="placeholder"
         @input="debounceCheck"
       >
+      <svg-icon
+        v-if="isPass"
+        class="input__eye"
+        :class="{'input__eye--active': localType === 'text'}"
+        name="eye"
+        size="large"
+        @mousedown.native.stop="iconClickHandler(true)"
+        @mouseup.native.stop="iconClickHandler()"
+        @mouseleave.native.stop="iconClickHandler()"
+      />
     </div>
     <div
       v-if="errorText"
@@ -161,6 +171,7 @@ export default {
       id: uuid4(),
       validate: (!!this.required || !!this.minlength || !!this.maxlength || this.numbers || this.email || !!this.regex),
       errorText: null,
+      localType: this.type || 'text',
     };
   },
 
@@ -183,6 +194,10 @@ export default {
       return this.$t('inputErrors');
     },
 
+    isPass() {
+      return this.type === 'password';
+    },
+
   },
 
   watch: {
@@ -198,6 +213,17 @@ export default {
      */
     focusInput() {
       this.$refs.input.focus();
+    },
+
+    iconClickHandler(state = false) {
+      if (this.type !== 'password') {
+        return;
+      }
+      if (state) {
+        this.localType = 'text';
+      } else {
+        this.localType = 'password';
+      }
     },
 
     /**
@@ -315,8 +341,20 @@ export default {
     left 9px
     color var(--icon-1)
 
+  &__eye
+    position absolute
+    top 7px
+    right 4px
+    color var(--icon-1)
+
+    &--active
+      color var(--color-2)
+
   &--with-icon
     padding-left 30px
+
+  &--with-eye
+    padding-right 30px
 
 .ui-error
   border-color var(--color-0)
