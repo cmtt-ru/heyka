@@ -274,7 +274,7 @@ export default {
         });
       } catch (err) {
         if (err.response.data.message === errorMessages.emailOrPasswordAreInvalid ||
-            err.response.data.message === errorMessages.invalidRequestPayloadInput) { // ? maybe not needed
+            err.response.data.message === errorMessages.invalidRequestPayloadInput) {
           const notification = {
             data: {
               text: this.notifTexts.wrongPass,
