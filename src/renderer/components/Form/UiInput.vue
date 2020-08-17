@@ -9,9 +9,6 @@
         class="input__icon"
         :name="icon"
         size="medium"
-        @mousedown.native.stop="iconClickHandler(true)"
-        @mouseup.native.stop="iconClickHandler()"
-        @mouseleave.native.stop="iconClickHandler()"
       />
 
       <input
@@ -19,15 +16,16 @@
         v-model="localValue"
         :type="localType"
         class="input"
-        :class="{'input--with-icon': icon, 'ui-error': errorText}"
+        :class="{'input--with-icon': icon, 'input--with-eye': isPass, 'ui-error': errorText}"
         :placeholder="placeholder"
         @input="debounceCheck"
       >
       <svg-icon
-        v-if="icon"
-        class="input__icon"
-        :name="icon"
-        size="medium"
+        v-if="isPass"
+        class="input__eye"
+        :class="{'input__eye--active': localType === 'text'}"
+        name="eye"
+        size="large"
         @mousedown.native.stop="iconClickHandler(true)"
         @mouseup.native.stop="iconClickHandler()"
         @mouseleave.native.stop="iconClickHandler()"
@@ -343,8 +341,20 @@ export default {
     left 9px
     color var(--icon-1)
 
+  &__eye
+    position absolute
+    top 7px
+    right 4px
+    color var(--icon-1)
+
+    &--active
+      color var(--color-2)
+
   &--with-icon
     padding-left 30px
+
+  &--with-eye
+    padding-right 30px
 
 .ui-error
   border-color var(--color-0)
