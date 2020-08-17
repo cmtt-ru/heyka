@@ -86,13 +86,15 @@ export default {
      * @returns {void}
      */
     errorHandler(id, value) {
+      if (this.inputs[id] === undefined) {
+        this.listChildren();
+      }
       this.inputs[id].error = value;
       if (value === true) {
         this.updateErrorState(true);
-
-        return;
+      } else {
+        this.checkErrors();
       }
-      this.checkErrors();
     },
 
     /**
