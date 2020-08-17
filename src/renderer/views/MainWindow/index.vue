@@ -17,6 +17,7 @@ import mediaCapturer from '@classes/mediaCapturer';
 // import PerformanceMonitor from '@components/PerformanceMonitor';
 import Logger from '@classes/logger';
 import { prepareTokens } from '@api/tokens';
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
@@ -39,8 +40,6 @@ export default {
 
       /** Check authorization */
       await this.$API.auth.check();
-
-      ipcRenderer.send('start-is-ready');
 
       await this.$store.dispatch('initial');
     } catch (e) {
@@ -72,6 +71,18 @@ export default {
     ipcRenderer.send('tray-animation', false);
 
     this.showMacScreenSharingPermission();
+  },
+
+  mounted() {
+    DeepLink.on('login', ([ code ]) => {
+      console.log('useAuthLink', code);
+      this.$store.dispatch('useAuthLink', code);
+    });
+    ipcRenderer.send('start-is-ready');
+  },
+
+  beforeDestroy() {
+    DeepLink.removeAllListeners('login');
   },
 
   destroyed() {
