@@ -28,7 +28,7 @@
             </div>
 
             <ui-image
-              :key="me.id"
+              :key="me.avatarFileId || me.id"
               :image="userAvatar(me.id, 76)"
               class="user__avatar"
               :size="76"
@@ -36,62 +36,64 @@
             />
           </div>
 
-          <div class="login-label">
-            {{ texts.login }}
+          <div class="currently-not-needed">
+            <div class="login-label">
+              {{ texts.login }}
+            </div>
+
+            <ui-button
+              :type="3"
+              icon=""
+              wide
+              class="login-button"
+              @click="socialHandler('slack')"
+            >
+              Slack
+              <svg-icon
+                v-if="socialAuth.slack"
+                slot="right"
+                color="var(--icon-1)"
+                name="close"
+                size="medium"
+                @click.native.stop="detachSocialHandler('slack')"
+              />
+            </ui-button>
+
+            <ui-button
+              :type="3"
+              icon=""
+              :wide="true"
+              class="login-button"
+              @click="socialHandler('facebook')"
+            >
+              Facebook
+              <svg-icon
+                v-if="socialAuth.facebook"
+                slot="right"
+                color="var(--icon-1)"
+                name="close"
+                size="medium"
+                @click.native.stop="detachSocialHandler('facebook')"
+              />
+            </ui-button>
+            <ui-button
+              :type="3"
+              icon=""
+              :wide="true"
+              class="login-button"
+              @click="socialHandler('google')"
+            >
+              <svg-icon
+                v-if="socialAuth.google"
+                slot="right"
+                color="var(--icon-1)"
+                name="close"
+                size="medium"
+                @click.native.stop="detachSocialHandler('google')"
+              />
+              Google
+            </ui-button>
           </div>
-
-          <ui-button
-            :type="3"
-            icon=""
-            wide
-            class="login-button"
-            @click="socialHandler('slack')"
-          >
-            Slack
-            <svg-icon
-              v-if="socialAuth.slack"
-              slot="right"
-              color="var(--icon-1)"
-              name="close"
-              size="medium"
-              @click.native.stop="detachSocialHandler('slack')"
-            />
-          </ui-button>
-
-          <ui-button
-            :type="3"
-            icon=""
-            :wide="true"
-            class="login-button"
-            @click="socialHandler('facebook')"
-          >
-            Facebook
-            <svg-icon
-              v-if="socialAuth.facebook"
-              slot="right"
-              color="var(--icon-1)"
-              name="close"
-              size="medium"
-              @click.native.stop="detachSocialHandler('facebook')"
-            />
-          </ui-button>
-          <ui-button
-            :type="3"
-            icon=""
-            :wide="true"
-            class="login-button"
-            @click="socialHandler('google')"
-          >
-            <svg-icon
-              v-if="socialAuth.google"
-              slot="right"
-              color="var(--icon-1)"
-              name="close"
-              size="medium"
-              @click.native.stop="detachSocialHandler('google')"
-            />
-            Google
-          </ui-button>
         </div>
         <div
           ref="savedText"
@@ -288,6 +290,10 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.currently-not-needed
+  opacity 0.5
+  pointer-events none
+
 $SAVE_FADE_TIME = 2s
 
 .edit-profile-page
