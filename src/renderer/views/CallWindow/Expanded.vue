@@ -33,7 +33,7 @@
     <div class="badge user">
       <avatar
         class="user__avatar"
-        :image="sharingUser.avatar"
+        :image="userAvatar(sharingUser.id, 20)"
         :size="20"
         square
       />
@@ -78,6 +78,7 @@ import { mapGetters, mapState } from 'vuex';
 import Tablet from '@components/Drawing/Tablet';
 import mediaCapturer from '@classes/mediaCapturer';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
+import { ipcRenderer } from 'electron';
 
 /* variable for watching page size */
 let __resizeObserver = {};
@@ -108,6 +109,7 @@ export default {
     ...mapGetters({
       selectedChannel: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
     ...mapState({
       janusOptions: 'janus',
@@ -235,6 +237,10 @@ export default {
      * @returns {void}
      */
     showGridHandler() {
+      if (WindowManager.getCurrentWindow().isFullscreen()) {
+        ipcRenderer.send('exit-fullscreen');
+      }
+
       this.$router.push('/call-window');
     },
 
