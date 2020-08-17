@@ -38,7 +38,7 @@
           <avatar
             v-for="person in users"
             :key="person.name"
-            :image="person.avatar"
+            :image="userAvatar(person.id, 12)"
             :size="12"
           />
         </div>
@@ -96,6 +96,7 @@ export default {
     ...mapGetters({
       myId: 'me/getMyId',
       me: 'myInfo',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
     /**
