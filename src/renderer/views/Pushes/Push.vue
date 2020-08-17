@@ -9,8 +9,8 @@
       :style="styles"
       class="push"
       :data="data"
-      @buttonClick="clickHandler"
-      @defaultCloseResponse="saveCloseResponse"
+      @button-click="clickHandler"
+      @default-close-response="saveCloseResponse"
     />
   </transition>
 </template>

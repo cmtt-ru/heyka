@@ -32,7 +32,7 @@ class WindowManager {
 
   /**
    * Get Window instance of window which invoked this method
-   * @returns {void}
+   * @returns {Window}
    */
   getCurrentWindow() {
     return new Window(this.getCurrentWindowId());
@@ -121,6 +121,16 @@ class Window extends EventEmitter {
       width,
       height,
       margin,
+    });
+  }
+
+  /**
+   * Whether window is in fullscreen mode
+   * @returns {boolean}
+   */
+  isFullscreen() {
+    return ipcRenderer.sendSync('window-manager-is-fullscreen', {
+      id: this.windowId,
     });
   }
 }

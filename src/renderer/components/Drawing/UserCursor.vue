@@ -21,7 +21,7 @@
     >
       <avatar
         class="badge__avatar"
-        :image="user.avatar"
+        :image="userAvatar(user.id, 12)"
         :size="12"
         square
       />
@@ -34,6 +34,8 @@
 
 <script>
 import Avatar from '@components/Avatar';
+import { mapGetters } from 'vuex';
+
 export default {
   components: {
     Avatar,
@@ -55,6 +57,11 @@ export default {
       type: String,
       default: '#000',
     },
+  },
+  computed: {
+    ...mapGetters({
+      userAvatar: 'users/getUserAvatarUrl',
+    }),
   },
 };
 </script>

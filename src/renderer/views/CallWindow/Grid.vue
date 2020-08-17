@@ -60,7 +60,7 @@
           <avatar
             v-show="!user.camera && !user.screen"
             class="cell__avatar"
-            :image="user.avatar"
+            :image="userAvatar(user.id, 100)"
             :size="100"
             square
           />
@@ -150,6 +150,7 @@ export default {
       channelId: 'me/getSelectedChannelId',
       selectedChannel: 'myChannel',
       users: 'usersInMyChannel',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
     /**
