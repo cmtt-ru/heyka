@@ -7,6 +7,7 @@ export default Object.freeze({
   connectError: 'connect_error',
   reconnect: 'reconnect',
   reconnecting: 'reconnecting',
+  connect: 'connect',
   error: 'error',
 
   /** Socket API events */

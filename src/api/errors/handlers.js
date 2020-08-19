@@ -56,7 +56,7 @@ defineErrorHandler(errorMessages.invalidRequestPayloadInput, error => {
  */
 defineErrorHandler(errorMessages.internalServerError, error => {
   /** Show fancy error */
-  alert('500\nInternal server error');
+  cnsl.error('500\nInternal server error');
   cnsl.log(error);
 
   throw error;
@@ -67,7 +67,7 @@ defineErrorHandler(errorMessages.internalServerError, error => {
  */
 defineErrorHandler(errorMessages.socketNotFound, error => {
   /** Show fancy error */
-  alert('Huh, socket not found');
+  cnsl.error('Huh, socket not found');
   cnsl.log(error);
 
   throw error;
@@ -78,7 +78,7 @@ defineErrorHandler(errorMessages.socketNotFound, error => {
  */
 defineErrorHandler(errorMessages.accessDenied, error => {
   /** Show fancy error */
-  alert('It seems you don\'t have access');
+  cnsl.error('It seems you don\'t have access');
   cnsl.log(error);
 
   throw error;
