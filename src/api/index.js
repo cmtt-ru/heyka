@@ -76,7 +76,7 @@ function middleware(func, functionName) {
       }
 
       /** Try to reconnect sockets */
-      if (!sockets.connected() && err.response.data.message === errorMessages.internalServerError) {
+      if (err.response.data.message === errorMessages.socketNotFound) {
         await sockets.reconnect();
 
         return middleware(func, functionName).apply(null, arguments);
