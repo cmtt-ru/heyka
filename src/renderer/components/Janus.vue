@@ -82,10 +82,7 @@ export default {
       }
       janusWrapper.setMuting(!state);
       if (state) {
-        AudioCheck.destroyMediaStream();
         AudioCheck.checkAudio();
-      } else {
-        AudioCheck.subscribeMutedTalk();
       }
     },
 
