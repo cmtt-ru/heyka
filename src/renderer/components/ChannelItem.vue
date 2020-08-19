@@ -104,9 +104,11 @@ export default {
      * @returns {array} array of users
      */
     users() {
-      const otherUsers = this.$store.getters.getUsersByChannel(this.channel.id).filter((user) => user.id !== this.myId);
+      const allUsers = this.$store.getters.getUsersByChannel(this.channel.id);
+      const otherUsers = allUsers.filter((user) => user.id !== this.myId);
+      const amIInChannel = allUsers.find(u => u.id === this.me.id);
 
-      if (this.excludeMe) {
+      if (this.excludeMe || !amIInChannel) {
         return otherUsers;
       } else {
         return [this.me, ...otherUsers];
