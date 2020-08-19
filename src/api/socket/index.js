@@ -153,15 +153,11 @@ function bindErrorEvents() {
     saveSocketParams();
   });
 
-  client.on(eventNames.reconnecting, data => {
-    connectionCheck.handleSocketReconnecting(true);
-  });
-
-  client.on(eventNames.reconnect, data => {
+  client.on(eventNames.connect, data => {
     // rewrite last socket id
     client.lastSocketId = client.id;
 
-    cnsl.info('reconnected:', data);
+    cnsl.info('connected!');
     connectionCheck.handleSocketReconnecting(false);
 
     // try to authorize new connection as the old connection
@@ -174,6 +170,10 @@ function bindErrorEvents() {
     } else {
       authorize();
     }
+  });
+
+  client.on(eventNames.reconnecting, data => {
+    connectionCheck.handleSocketReconnecting(true);
   });
 
   client.on(eventNames.error, data => {
