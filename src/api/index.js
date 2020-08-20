@@ -51,6 +51,10 @@ function middleware(func, functionName) {
         }
       }
 
+      if (!connectionCheck.isOnline()) {
+        throw new Error(`Can't call API method '${functionName}'. No internet connection`);
+      }
+
       store.dispatch('app/addPrivacyLog', {
         category: 'api',
         method: functionName,
