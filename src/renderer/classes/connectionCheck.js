@@ -38,6 +38,8 @@ class ConnectionCheck extends EventEmitter {
 
     this.internetTryingToReconnect = false;
 
+    this.onlineState = false;
+
     if (isMainWindow()) {
       this.startInternetConnectionChecker();
     }
@@ -50,6 +52,8 @@ class ConnectionCheck extends EventEmitter {
   async startInternetConnectionChecker() {
     while (true) {
       const state = await isOnline();
+
+      this.onlineState = state;
 
       if (state === false) {
         this.internetTryingToReconnect = true;
@@ -105,7 +109,7 @@ class ConnectionCheck extends EventEmitter {
         },
       };
 
-      this.showNotification(name, true, notification);
+      await this.showNotification(name, true, notification);
     }
   }
 
@@ -120,7 +124,7 @@ class ConnectionCheck extends EventEmitter {
     const now = Date.now();
 
     if (this.slowInternetLastCallTime && now - this.slowInternetLastCallTime < SLOW_INTERNET_INTERVAL) {
-      if (state) {
+      if (state && this.onlineState) {
         const notification = {
           preventSwipe: true,
           data: {
@@ -146,7 +150,7 @@ class ConnectionCheck extends EventEmitter {
   async handleSocketReconnecting(state) {
     const name = 'socketReconnecting';
 
-    if (state && this.notificationsIds.onlineStatus) {
+    if (state && this.onlineState) {
       const notification = {
         preventSwipe: true,
         infinite: true,
@@ -172,7 +176,7 @@ class ConnectionCheck extends EventEmitter {
 
     if (state) {
       this.showNotification(name, false);
-    } else if (this.notificationsIds.onlineStatus) {
+    } else if (this.notificationsIds.onlineStatus && this.onlineState) {
       const notification = {
         preventSwipe: true,
         infinite: true,
@@ -217,6 +221,14 @@ class ConnectionCheck extends EventEmitter {
    */
   getText(name) {
     return i18n.t(`connectionCheck.${name}`);
+  }
+
+  /**
+   * Internet online state
+   * @returns {boolean}
+   */
+  isOnline() {
+    return this.onlineState;
   }
 }
 
