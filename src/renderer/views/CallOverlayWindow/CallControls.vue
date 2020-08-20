@@ -46,7 +46,7 @@
 import CallButtons from './CallButtons';
 import { mapGetters } from 'vuex';
 
-const LAST_USER_INTERVAL = 2000;
+const LAST_USER_INTERVAL = 4000;
 const AVATAR_36 = 36;
 
 let lastUserTimer = null;
