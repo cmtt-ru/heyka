@@ -82,9 +82,13 @@
       "markers": ["=", "!"]
     }],
     "semi": [2, "always"],
-    "indent": [2, 2, {
-      "SwitchCase": 1,
-      "VariableDeclarator": 2
+    // "indent": [2, 2, {
+    //   "SwitchCase": 1,
+    //   "VariableDeclarator": 2
+    // }],
+    "template-curly-spacing" : "off",
+    "indent": ["error", 2, {
+      "ignoredNodes": ["TemplateLiteral"]
     }],
 
     /**

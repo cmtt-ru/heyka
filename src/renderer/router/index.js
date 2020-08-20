@@ -8,7 +8,7 @@ import { styleguideRoutes } from './styleguideRoutes';
 
 const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/Pushes');
-const BoardHolderWindow = () => import(/* webpackChunkName: boardHolder" */ '@views/BoardHolderWindow');
+const BoardHolderWindow = () => import(/* webpackChunkName: "boardHolder" */ '@views/BoardHolderWindow');
 
 Vue.use(VueRouter);
 
