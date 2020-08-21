@@ -57,6 +57,7 @@
         v-model="formData.nameText"
         :maxlength="15"
         email
+        enter-submit
         regex-error="numbers"
         placeholder="email, maxlength 15"
       />
