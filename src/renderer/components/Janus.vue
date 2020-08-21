@@ -84,8 +84,6 @@ export default {
       if (state) {
         AudioCheck.destroyMediaStream();
         AudioCheck.checkAudio();
-      } else {
-        AudioCheck.subscribeMutedTalk();
       }
     },
 
