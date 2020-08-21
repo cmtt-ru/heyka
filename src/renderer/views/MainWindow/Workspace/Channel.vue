@@ -1,7 +1,8 @@
 <template>
-  <div class="l-p-8">
+  <div>
     <div
       v-if="channel"
+      v-sticky
       class="channel-info"
     >
       <svg-icon
@@ -46,20 +47,21 @@
         {{ texts.disconnect }}
       </ui-button>
     </div>
-
-    <list :filter-by="''">
-      <list-item
-        v-for="user in users"
-        :key="user.name"
-        :filter-key="user.name"
-        button
-      >
-        <channel-user-item
-          :user="user"
-          :channel-id="channelId"
-        />
-      </list-item>
-    </list>
+    <div class="l-p-8">
+      <list :filter-by="''">
+        <list-item
+          v-for="user in users"
+          :key="user.name"
+          :filter-key="user.name"
+          button
+        >
+          <channel-user-item
+            :user="user"
+            :channel-id="channelId"
+          />
+        </list-item>
+      </list>
+    </div>
   </div>
 </template>
 
@@ -171,8 +173,8 @@ export default {
 <style lang="stylus" scoped>
 
 .channel-info
-  height 32px
-  padding 0 4px 8px 0
+  height 40px
+  padding 0 12px 0 8px
   margin-bottom 8px
   width 100%
   box-sizing border-box
@@ -180,6 +182,10 @@ export default {
   flex-direction row
   align-items center
   justify-content flex-start
+  background-color var(--app-bg)
+
+  &&.ui-sticked
+    box-shadow 0 0px 8px 0px #808080
 
   &__type
     margin 0 4px
