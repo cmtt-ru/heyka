@@ -69,6 +69,7 @@
               type="password"
               class="login__input"
               placeholder="******"
+              enter-submit
             />
             <ui-button
               :type="6"
@@ -102,6 +103,7 @@
               placeholder="example@mail.com"
               email
               required
+              enter-submit
             />
             <ui-button
               :type="12"
