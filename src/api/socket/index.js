@@ -375,7 +375,7 @@ function bindPushEvents() {
   });
 }
 
-window.client = client;
+window.client = client; // TODO: delete after stability
 window.destroy = () => {
   destroy();
 };
