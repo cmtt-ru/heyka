@@ -19,6 +19,7 @@
         :class="{'input--with-icon': icon, 'input--with-eye': isPass, 'ui-error': errorText}"
         :placeholder="placeholder"
         @input="debounceCheck"
+        @keyup.enter="submitHandler"
       >
       <svg-icon
         v-if="isPass"
@@ -164,6 +165,14 @@ export default {
       default: null,
     },
 
+    /**
+     * true if we need to submit form on enter
+     */
+    enterSubmit: {
+      type: Boolean,
+      default: false,
+    },
+
   },
 
   data() {
@@ -298,6 +307,17 @@ export default {
         this.$parent.$emit('ui-error', this.id, false);
 
         return false;
+      }
+    },
+
+    /**
+     * Submit on enter if such flag is provided
+     *
+     * @returns {void}
+     */
+    submitHandler() {
+      if (this.enterSubmit === true) {
+        this.$parent.$emit('ui-submit');
       }
     },
 
