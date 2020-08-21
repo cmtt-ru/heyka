@@ -13,24 +13,12 @@
         {{ texts.new }}
       </router-link>
     </div>
-
-    <div class="changelog">
-      <div>{{ CHANGELOG[0].version }}.</div>
-      <router-link
-        :to="{name: 'settings-about'}"
-        class="changelog__link"
-      >
-        {{ texts.new }}
-      </router-link>
-    </div>
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron';
-import Logger from '@classes/logger';
 import { CHANGELOG } from '@/changelog';
-const cnsl = new Logger('Empty.vue', '#16A085');
 
 export default {
   data() {
@@ -49,7 +37,6 @@ export default {
   },
   mounted() {
     ipcRenderer.send('page-rendered', 'Hello from Main!');
-    cnsl.log('IS_DEV:', IS_DEV, ', IS_MAC:', IS_MAC, ', IS_WIN:', IS_WIN, ', IS_LINUX:', IS_LINUX);
   },
 };
 </script>
