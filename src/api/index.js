@@ -10,6 +10,7 @@ import { updateTokens, checkAndRefreshTokens } from './tokens';
 import store from '@/store';
 import connectionCheck from '@classes/connectionCheck';
 import * as sockets from '@api/socket';
+import { client } from './socket/client';
 
 if (IS_DEV) {
   axios.defaults.baseURL = process.env.VUE_APP_DEV_URL;
@@ -50,6 +51,10 @@ function middleware(func, functionName) {
         }
       }
 
+      if (!connectionCheck.isOnline()) {
+        throw new Error(`Can't call API method '${functionName}'. No internet connection`);
+      }
+
       store.dispatch('app/addPrivacyLog', {
         category: 'api',
         method: functionName,
@@ -76,7 +81,7 @@ function middleware(func, functionName) {
       }
 
       /** Try to reconnect sockets */
-      if (!sockets.connected() && err.response.data.message === errorMessages.internalServerError) {
+      if (err.response.data.message === errorMessages.socketNotFound || (client.id === undefined && client.connected === true)) {
         await sockets.reconnect();
 
         return middleware(func, functionName).apply(null, arguments);

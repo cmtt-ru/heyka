@@ -79,7 +79,7 @@ export function connected() {
  * @returns {void}
  */
 export async function reconnect() {
-  await destroy();
+  destroy();
   await store.dispatch('initial');
 }
 
@@ -88,12 +88,12 @@ export async function reconnect() {
  *
  * @returns {Promise<void>}
  */
-export async function destroy() {
-  client.disconnect();
-
+export function destroy() {
   Object.values(eventNames).forEach(eventName => {
     client.removeAllListeners(eventName);
   });
+  client.off('connect', connectHandler);
+  client.disconnect();
 }
 
 /**
@@ -140,6 +140,30 @@ async function authorize(prevSocketId) {
 }
 
 /**
+ * Connect event handler
+ *
+ * @returns {void}
+ */
+function connectHandler() {
+  // rewrite last socket id
+  client.lastSocketId = client.id;
+
+  cnsl.info('connected!');
+  connectionCheck.handleSocketReconnecting(false);
+
+  // try to authorize new connection as the old connection
+  const prevSocketParams = store.state.app.socket;
+
+  const timeFromLastSocketConnected = Date.now() - parseInt(prevSocketParams.connectedAt);
+
+  if (timeFromLastSocketConnected < DISCONNECT_TIMEOUT) {
+    authorize(prevSocketParams.id);
+  } else {
+    authorize();
+  }
+}
+
+/**
  * Bind error events
  *
  * @returns {void}
@@ -153,27 +177,10 @@ function bindErrorEvents() {
     saveSocketParams();
   });
 
+  client.on('connect', connectHandler);
+
   client.on(eventNames.reconnecting, data => {
     connectionCheck.handleSocketReconnecting(true);
-  });
-
-  client.on(eventNames.reconnect, data => {
-    // rewrite last socket id
-    client.lastSocketId = client.id;
-
-    cnsl.info('reconnected:', data);
-    connectionCheck.handleSocketReconnecting(false);
-
-    // try to authorize new connection as the old connection
-    const prevSocketParams = store.state.app.socket;
-
-    const timeFromLastSocketConnected = Date.now() - parseInt(prevSocketParams.connectedAt);
-
-    if (timeFromLastSocketConnected < DISCONNECT_TIMEOUT) {
-      authorize(prevSocketParams.id);
-    } else {
-      authorize();
-    }
   });
 
   client.on(eventNames.error, data => {
@@ -367,3 +374,11 @@ function bindPushEvents() {
     store.dispatch('app/removePush', data.inviteId);
   });
 }
+
+window.client = client; // TODO: delete after stability
+window.destroy = () => {
+  destroy();
+};
+window.initial = () => {
+  store.dispatch('initial');
+};

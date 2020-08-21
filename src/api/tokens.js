@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { authFileStore } from '@/store/localStore';
 import refreshToken from './auth/refreshToken';
+import { handleError } from './errors';
 
 /**
  * Max date difference before expiration in milliseconds
@@ -52,12 +53,16 @@ export function setTokens(newTokens) {
  * @returns {Promise<void>}
  */
 export async function updateTokens() {
-  const freshTokens = await refreshToken({
-    accessToken: tokens.accessToken,
-    refreshToken: tokens.refreshToken,
-  });
+  try {
+    const freshTokens = await refreshToken({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    });
 
-  setTokens(freshTokens);
+    setTokens(freshTokens);
+  } catch (err) {
+    await handleError(err);
+  }
 }
 
 /**
