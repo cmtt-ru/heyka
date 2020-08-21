@@ -38,7 +38,7 @@ class ConnectionCheck extends EventEmitter {
 
     this.internetTryingToReconnect = false;
 
-    this.onlineState = false;
+    this.onlineState = true;
 
     if (isMainWindow()) {
       this.startInternetConnectionChecker();
