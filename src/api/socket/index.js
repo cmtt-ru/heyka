@@ -379,7 +379,7 @@ window.client = client;
 window.destroy = () => {
   destroy();
 };
-window.store = () => {
+window.initial = () => {
   store.dispatch('initial');
 };
 window.init = () => {
