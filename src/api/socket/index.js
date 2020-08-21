@@ -382,6 +382,3 @@ window.destroy = () => {
 window.initial = () => {
   store.dispatch('initial');
 };
-window.init = () => {
-  init();
-};
