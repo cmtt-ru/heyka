@@ -64,6 +64,10 @@
         "dark": "Dark"
       },
       "automaticallySwitch": "Automatically",
+      "advanced": "advanced options",
+      "resize": "Resizeable window",
+      "nomic": "Disable mic after hanging up",
+      "closeOverlay": "Show «Close» button in call overlay",
       "restartNow": "Restart now"
     },
     "devices": {

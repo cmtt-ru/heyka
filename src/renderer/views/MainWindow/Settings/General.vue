@@ -11,11 +11,11 @@
       {{ texts.behaviourLabel }}
     </div>
     <ui-select
-      v-model="mode"
+      v-model="localSettings.mode"
       :data="modes"
     />
     <div
-      v-if="modeWillChange"
+      v-if="settingsWillChange"
       class="extra-info"
     >
       {{ texts.behaviourWillChange }}
@@ -40,8 +40,32 @@
       :text="texts.automaticallySwitch"
     />
     <br>
+
+    <details class="expand">
+      <summary class="expand__header">
+        {{ texts.advanced }}
+      </summary>
+      <ui-switch
+        v-model="localSettings.resizeWindow"
+        :text="texts.resize"
+      />
+      <div
+        v-if="settingsWillChange"
+        class="extra-info"
+      >
+        {{ texts.behaviourWillChange }}
+      </div>
+      <ui-switch
+        v-model="themeAuto"
+        :text="texts.nomic"
+      />
+      <ui-switch
+        v-model="themeAuto"
+        :text="texts.closeOverlay"
+      />
+    </details>
+
     <div
-      v-if="modeWillChange"
       class="restart-container"
     >
       <ui-button
@@ -60,6 +84,7 @@ import { UiSelect, UiSwitch } from '@components/Form';
 import UiButton from '@components/UiButton';
 import broadcastEvents from '@classes/broadcastEvents';
 import { ipcRenderer } from 'electron';
+import { heykaStore } from '@/store/localStore';
 
 export default {
   components: {
@@ -82,6 +107,11 @@ export default {
           value: 'ru',
         },
       ],
+
+      localSettings: {
+        mode: this.$store.state.app.runAppFrom,
+        resizeWindow: this.$store.state.app.resizeWindow,
+      },
 
     };
   },
@@ -113,14 +143,20 @@ export default {
 
     /**
      * Selected window mode
+     *
+     * @returns {void}
      */
-    mode: {
-      get() {
-        return this.$store.state.app.runAppFrom;
-      },
-      set(value) {
-        this.$store.dispatch('app/setMode', value);
-      },
+    mode() {
+      return this.$store.state.app.runAppFrom;
+    },
+
+    /**
+     * Enabled/disabled window resize
+     *
+     * @returns {void}
+     */
+    resizeWindow() {
+      return this.$store.state.app.resizeWindow;
     },
 
     /**
@@ -195,8 +231,8 @@ export default {
      * Flag for "restart app to see changes" text
      * @returns {boolean}
      */
-    modeWillChange() {
-      return this.$store.getters['app/getModeWillChange'];
+    settingsWillChange() {
+      return (this.localSettings.mode !== this.mode) || (this.localSettings.resizeWindow !== this.resizeWindow);
     },
     /**
      * Array for theme select
@@ -216,8 +252,20 @@ export default {
     },
   },
 
+  watch: {
+    mode(val) {
+      this.$set(this.localSettings, 'mode', val);
+    },
+
+    resizeWindow(val) {
+      this.$set(this.localSettings, 'resizeWindow', val);
+    },
+  },
+
   methods: {
     restartHandler() {
+      heykaStore.set('runAppFrom', this.localSettings.mode);
+      heykaStore.set('resizeWindow', this.localSettings.resizeWindow);
       ipcRenderer.send('remote-restart');
     },
   },
@@ -237,6 +285,23 @@ export default {
   font-size 10px
   line-height 10px
   color var(--text-1)
+
+.expand
+
+  &__header
+    cursor pointer
+    padding 6px 8px 8px
+    border-radius 4px
+    border-top 2px solid var(--line-stroke)
+    text-align center
+    margin-bottom 20px
+
+    &::-webkit-details-marker {
+      display none
+    }
+
+    &:hover
+      background-color var(--button-bg-4)
 
 .restart-container
   flex-grow 2
