@@ -3,7 +3,7 @@ import TrayManager from '../../main/classes/TrayManager';
 import DeepLink from '../DeepLink/DeepLinkMain';
 import Autoupdater from '../../main/classes/AutoUpdater';
 import { ipcMain, nativeTheme, powerMonitor, app } from 'electron';
-import { heykaStore } from '@/store/localStore';
+import { heykaStore } from '../../renderer/store/localStore';
 import { IS_DEV, IS_MAC } from '../Constants';
 
 const resizeable = IS_DEV || heykaStore.get('resizeWindow', false);

@@ -56,16 +56,17 @@
         {{ texts.behaviourWillChange }}
       </div>
       <ui-switch
-        v-model="themeAuto"
+        v-model="muteMic"
         :text="texts.nomic"
       />
       <ui-switch
-        v-model="themeAuto"
+        v-model="closeOverlayButton"
         :text="texts.closeOverlay"
       />
     </details>
 
     <div
+      v-if="settingsWillChange"
       class="restart-container"
     >
       <ui-button
@@ -175,6 +176,23 @@ export default {
       },
     },
 
+    /**
+     * Array for theme select
+     * @returns {array}
+     */
+    themes() {
+      return [
+        {
+          name: this.texts.theme.light,
+          value: 'light',
+        },
+        {
+          name: this.texts.theme.dark,
+          value: 'dark',
+        },
+      ];
+    },
+
     themeName: {
       get() {
         return this.theme.name;
@@ -227,28 +245,37 @@ export default {
         },
       ];
     },
+
+    /**
+     * Mute mic after call?
+     */
+    muteMic: {
+      get() {
+        return this.$store.state.app.muteMic;
+      },
+      set(value) {
+        this.$store.dispatch('app/setMuteMic', value);
+      },
+    },
+
+    /**
+     * Display "close" button in call overlay
+     */
+    closeOverlayButton: {
+      get() {
+        return this.$store.state.app.closeOverlayButton;
+      },
+      set(value) {
+        this.$store.dispatch('app/setCloseOverlayButton', value);
+      },
+    },
+
     /**
      * Flag for "restart app to see changes" text
      * @returns {boolean}
      */
     settingsWillChange() {
       return (this.localSettings.mode !== this.mode) || (this.localSettings.resizeWindow !== this.resizeWindow);
-    },
-    /**
-     * Array for theme select
-     * @returns {array}
-     */
-    themes() {
-      return [
-        {
-          name: this.texts.theme.light,
-          value: 'light',
-        },
-        {
-          name: this.texts.theme.dark,
-          value: 'dark',
-        },
-      ];
     },
   },
 
@@ -296,9 +323,8 @@ export default {
     text-align center
     margin-bottom 20px
 
-    &::-webkit-details-marker {
-      display none
-    }
+    &::-webkit-details-marker
+      opacity 0.5
 
     &:hover
       background-color var(--button-bg-4)

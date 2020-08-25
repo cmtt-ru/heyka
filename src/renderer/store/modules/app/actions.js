@@ -99,6 +99,30 @@ export default {
   },
 
   /**
+   * Set muteMic mode
+   *
+   * @param {function} commit – store commit
+   * @param {string} muteMic – app muteMic mode
+   * @returns {void}
+   */
+  setMuteMic({ commit }, muteMic) {
+    commit('SET_MUTE_MIC', muteMic);
+    heykaStore.set('muteMic', muteMic);
+  },
+
+  /**
+   * Set closeOverlayButton mode
+   *
+   * @param {function} commit – store commit
+   * @param {string} closeOverlayButton – app closeOverlayButton mode
+   * @returns {void}
+   */
+  setCloseOverlayButton({ commit }, closeOverlayButton) {
+    commit('SET_CLOSE_OVERLAY_BUTTON', closeOverlayButton);
+    heykaStore.set('closeOverlayButton', closeOverlayButton);
+  },
+
+  /**
    * Add new in-app notification
    *
    * @param {function} commit – store commit
