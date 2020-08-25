@@ -35,6 +35,11 @@ const plugins = [
   createMutationsSharer({
     predicate: [
       'app/SET_SELECTED_DEVICES',
+      'app/SET_MICROPHONE_VOLUME',
+      'app/ADD_PUSH',
+      'app/REMOVE_PUSH',
+      'app/SET_DEVICES',
+      'app/SET_CLOSE_OVERLAY_BUTTON',
       'janus/SET_IN_PROGRESS',
       'me/SET_MEDIA_STATE',
       'me/SET_CHANNEL_ID',
@@ -45,10 +50,6 @@ const plugins = [
       'channels/SET_USER_MEDIA_STATE',
       'channels/ADD_CHANNEL',
       'channels/REMOVE_CHANNEL',
-      'app/SET_MICROPHONE_VOLUME',
-      'app/ADD_PUSH',
-      'app/REMOVE_PUSH',
-      'app/SET_DEVICES',
       'janus/SET_OPTIONS',
       'janus/SET_SHARING_SOURCE',
     ],

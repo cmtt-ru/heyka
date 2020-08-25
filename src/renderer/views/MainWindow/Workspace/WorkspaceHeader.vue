@@ -4,6 +4,15 @@
       v-if="myInfo"
       class="user"
     >
+      <ui-button
+        v-if="selectedChannel"
+        v-tooltip="$t('tooltips.grid')"
+        :type="7"
+        class="user__status"
+        size="small"
+        icon="grid"
+        @click="gridHandler"
+      />
       <microphone
         v-tooltip="microphoneTooltip"
         class="user__status"
@@ -17,7 +26,7 @@
         class="user__status"
         size="small"
         :icon="icons.speakers"
-        @click.native="switchProp('speakers')"
+        @click="switchProp('speakers')"
       />
 
       <avatar
@@ -36,6 +45,7 @@ import UiButton from '@components/UiButton';
 import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
+import callWindow from '@classes/callWindow';
 
 /**
  * Map media state points to corresponding icons
@@ -61,6 +71,7 @@ export default {
   computed: {
 
     ...mapGetters({
+      selectedChannel: 'myChannel',
       myInfo: 'myInfo',
       mediaState: 'me/getMediaState',
       userAvatar: 'users/getUserAvatarUrl',
@@ -117,6 +128,10 @@ export default {
         newState.speaking = false;
       }
       this.$store.dispatch('me/setMediaState', newState);
+    },
+
+    gridHandler() {
+      callWindow.showGrid();
     },
 
   },

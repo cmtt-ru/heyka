@@ -212,7 +212,8 @@
     "microphoneOn" : "Вкл. микрофон",
     "microphoneOff": "Выкл. микрофон",
     "speakerOn": "Вкл. аудио",
-    "speakerOff": "Выкл. аудио"
+    "speakerOff": "Выкл. аудио",
+    "grid": "Окно звонка"
   },
   "inputErrors": {
     "default": "неправильный формат ввода",
