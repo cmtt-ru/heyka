@@ -212,7 +212,8 @@
     "microphoneOn" : "Unmute",
     "microphoneOff": "Mute",
     "speakerOn": "Sound on",
-    "speakerOff": "Sound off"
+    "speakerOff": "Sound off",
+    "grid": "Сall window"
   },
   "inputErrors": {
     "default": "not a valid input",
