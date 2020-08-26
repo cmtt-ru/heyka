@@ -50,7 +50,7 @@ const state = () => {
     autorun: heykaStore.get('autorun', true),
     resizeWindow: heykaStore.get('resizeWindow', false),
     muteMic: heykaStore.get('muteMic', true),
-    closeOverlayButton: heykaStore.get('closeOverlayButton', false),
+    closeOverlayButton: heykaStore.get('closeOverlayButton', true),
     theme: heykaStore.get('theme', {
       name: 'light',
       auto: false,
