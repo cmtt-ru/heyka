@@ -139,6 +139,7 @@ export default {
         userId: state.me.id,
         channelId: state.me.selectedChannelId,
       });
+      callWindow.closeGrid();
     }
 
     commit('janus/SET_OPTIONS', connectionOptions);

@@ -161,6 +161,16 @@ class CallWindow {
   }
 
   /**
+   * Close grid (main) window
+   * @returns {void}
+   */
+  closeGrid() {
+    if (this.gridWindow) {
+      this.gridWindow.action('close');
+    }
+  }
+
+  /**
    * Show frame window
    * @param {string} displayId – display id
    * @param {number?} sourceIndex Source index
