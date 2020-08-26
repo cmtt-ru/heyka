@@ -59,10 +59,10 @@
         v-model="muteMic"
         :text="texts.nomic"
       />
-      <ui-switch
+      <!-- <ui-switch
         v-model="closeOverlayButton"
         :text="texts.closeOverlay"
-      />
+      /> -->
     </details>
 
     <div
