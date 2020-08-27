@@ -347,13 +347,11 @@ function bindUserEvents() {
 function bindPushEvents() {
   /** Get push notification */
   client.on(eventNames.invite, data => {
-    cnsl.log(data);
     store.dispatch('app/addPush', data);
   });
 
   /** Get response to push notification */
   client.on(eventNames.inviteResponse, ({ inviteId, userId, response }) => {
-    cnsl.log('inviteId:', inviteId, 'response:', response);
     if (response.showResponse) {
       store.dispatch('app/addPush', {
         inviteId: `response-${inviteId}`,
