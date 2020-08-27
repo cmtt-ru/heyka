@@ -1,6 +1,5 @@
 import API from '@api';
 import themes from '@/themes';
-import pushWindow from '@classes/pushWindow';
 import i18n from '@/i18n';
 import { ipcRenderer } from 'electron';
 import dateFormat from 'dateformat';
@@ -136,9 +135,9 @@ export default {
    * @returns {string} id
    */
   async sendPush({ rootGetters }, { userId, isResponseNeeded = false, message }) {
-    // if (rootGetters['me/getMyId'] === userId) {
-    //   return;
-    // }
+    if (rootGetters['me/getMyId'] === userId) {
+      return;
+    }
 
     const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
 
@@ -182,7 +181,6 @@ export default {
     }; // TODO: брать workspaceId из пришедшего пуша
 
     commit('ADD_PUSH', push);
-    pushWindow.addPush();
   },
 
   /**
@@ -194,7 +192,6 @@ export default {
    */
   removePush({ commit }, id) {
     commit('REMOVE_PUSH', id);
-    pushWindow.removePush();
   },
 
   /**

@@ -44,6 +44,7 @@
 
     <div v-else>
       <ui-button
+        v-if="!isMe && !isInPrivateTalk"
         :type="1"
         :wide="true"
         class="user-action"
@@ -52,7 +53,7 @@
         <div>{{ texts.privateTalkButton }}</div>
       </ui-button>
       <ui-button
-        v-if="selectedChannel"
+        v-if="selectedChannel && !isMe"
         :type="3"
         :wide="true"
         class="user-action"
