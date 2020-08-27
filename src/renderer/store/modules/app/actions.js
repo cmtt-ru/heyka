@@ -136,9 +136,9 @@ export default {
    * @returns {string} id
    */
   async sendPush({ rootGetters }, { userId, isResponseNeeded = false, message }) {
-    if (rootGetters['me/getMyId'] === userId) {
-      return;
-    }
+    // if (rootGetters['me/getMyId'] === userId) {
+    //   return;
+    // }
 
     const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
 
@@ -179,7 +179,7 @@ export default {
       inviteId,
       userId,
       ...message,
-    };
+    }; // TODO: брать workspaceId из пришедшего пуша
 
     commit('ADD_PUSH', push);
     pushWindow.addPush();
