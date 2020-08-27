@@ -1,6 +1,9 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import store from '@/store';
 import sounds from '@classes/sounds';
+import Logger from '@classes/logger';
+
+const cnsl = new Logger('Push Window', '#a9ff71');
 
 const ONE_PUSH_SIZE = {
   width: 368,
@@ -105,6 +108,7 @@ class PushWindow {
    */
   _removePush(length) {
     if (length === 0) {
+      cnsl.log('no pushes left');
       this.closewWindowTimeout = setTimeout(() => {
         this.window.action('close');
       }, PUSH_MOVEOUT_TIMER);
@@ -121,6 +125,7 @@ class PushWindow {
    */
   _newPushSupport() {
     clearTimeout(this.closewWindowTimeout);
+    cnsl.log('cleared timeout for push window resize');
     sounds.play('push');
   }
 }
