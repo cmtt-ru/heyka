@@ -6,7 +6,7 @@
     <img
       v-if="!loaded"
       class="avatar__no-image"
-      src="@assets/apng/loader.png"
+      :src="loaderUrl"
     >
 
     <img
@@ -125,6 +125,20 @@ export default {
         height: this.size + 'px',
         width: this.size + 'px',
       };
+    },
+
+    /**
+     * Set preloader image with appropriate sizes
+     * @returns {object} image src
+     */
+    loaderUrl() {
+      const maxWidth = 25;
+
+      if (this.size < maxWidth) {
+        return require('@assets/apng/loader.png');
+      }
+
+      return require('@assets/apng/loader@2x.png');
     },
 
     /**
