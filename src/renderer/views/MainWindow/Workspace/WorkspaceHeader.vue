@@ -24,6 +24,7 @@
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
         :image="userAvatar(myInfo.id, 24)"
+        :user-id="myInfo.id"
         :status="myInfo.onlineStatus"
         :size="24"
       />
