@@ -328,6 +328,11 @@ function bindUserEvents() {
     store.dispatch('me/update', data.user);
   });
 
+  /** User joined workspace */
+  client.on(eventNames.userJoined, async data => {
+    store.dispatch('updateCurrentWorkspaceState');
+  });
+
   /** User leaved workspace */
   client.on(eventNames.userLeavedWorkspace, async data => {
     store.dispatch('updateCurrentWorkspaceState');
