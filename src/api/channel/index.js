@@ -6,6 +6,8 @@ import info from './info';
 import create from './create';
 import edit from './edit';
 import remove from './remove';
+import join from './join';
+import invite from './invite';
 
 export default {
   getActiveUsers,
@@ -16,4 +18,6 @@ export default {
   create,
   edit,
   remove,
+  join,
+  invite,
 };

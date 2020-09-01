@@ -137,7 +137,8 @@
     "channel": {
       "hide": "Hide",
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "invite": "Copy invite link"
     },
     "userMore": {
       "edit": "Edit profile"

@@ -29,6 +29,14 @@
       >
         {{ texts.delete }}
       </ui-button>
+
+      <ui-button
+        :type="11"
+        data-popover-close
+        @click="inviteHandler"
+      >
+        {{ texts.invite }}
+      </ui-button>
     </div>
   </popover>
 </template>
@@ -36,6 +44,7 @@
 <script>
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
+import { clipboard } from 'electron';
 
 export default {
   components: {
@@ -86,6 +95,27 @@ export default {
      */
     deleteHandler() {
       this.$store.dispatch('channels/deleteChannel', this.id);
+    },
+
+    /**
+     * Copy invite link
+     * @returns {void}
+     */
+    async inviteHandler() {
+      const { token } = await this.$API.channel.invite(this.id);
+
+      if (token) {
+        /** TODO: unhardcode link */
+        clipboard.writeText(`https://localhost:8080/guest/${token}`);
+
+        const notification = {
+          data: {
+            text: 'Invite link copied!',
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
+      }
     },
   },
 };
