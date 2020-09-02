@@ -45,6 +45,7 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import { clipboard } from 'electron';
+import {IS_DEV} from "@shared/Constants";
 
 export default {
   components: {
@@ -105,8 +106,13 @@ export default {
       const { token } = await this.$API.channel.invite(this.id);
 
       if (token) {
-        /** TODO: unhardcode link */
-        clipboard.writeText(`https://localhost:8080/guest/${token}`);
+        let domain = process.env.VUE_APP_PROD_URL;
+
+        if (IS_DEV) {
+          domain = process.env.VUE_APP_DEV_URL;
+        }
+
+        clipboard.writeText(`${domain}/guest/${token}`);
 
         const notification = {
           data: {
