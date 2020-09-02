@@ -8,6 +8,7 @@
       class="user__avatar"
       :image="userAvatar(user.id, 24)"
       :size="24"
+      :user-id="user.id"
       :mic="user.microphone"
       :onair="user.speaking"
     />

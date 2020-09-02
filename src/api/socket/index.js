@@ -117,7 +117,7 @@ async function authorize(prevSocketId) {
     });
 
     client.once(eventNames.authSuccessError, data => {
-      console.error('socket auth error', data);
+      cnsl.error('socket auth error', data);
       reject(data);
     });
 
@@ -184,11 +184,11 @@ function bindErrorEvents() {
   });
 
   client.on(eventNames.error, data => {
-    console.error('error', data);
+    cnsl.error('error', data);
   });
 
   client.on(eventNames.socketApiError, error => {
-    console.error('socket-api-error', error.event, error.message);
+    cnsl.error('socket-api-error', error.event, error.message);
   });
 }
 
