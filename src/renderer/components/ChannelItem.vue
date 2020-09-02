@@ -38,6 +38,7 @@
           <avatar
             v-for="person in users"
             :key="person.name"
+            :user-id="person.id"
             :image="userAvatar(person.id, 12)"
             :size="12"
           />
