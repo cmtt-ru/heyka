@@ -8,6 +8,7 @@
       class="user__avatar"
       :image="userAvatar(user.id, 14)"
       :status="isStrangeStatus"
+      :user-id="user.id"
       :size="14"
     />
 
