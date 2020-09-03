@@ -14,6 +14,8 @@ import '@/directives';
 import { Mixin } from '@/mixins';
 import permissions from '@classes/permissions';
 
+import '@classes/SpeedTest';
+
 /**
  * Initialize Hawk error catcher
  */
