@@ -21,7 +21,7 @@ import '@classes/SpeedTest';
  */
 if (process.env.VUE_APP_HAWK_TOKEN) {
   // eslint-disable-next-line no-new
-  new HawkCatcher({
+  window.hawk = new HawkCatcher({
     token: process.env.VUE_APP_HAWK_TOKEN,
     vue: Vue,
     release: buildRevision,

@@ -247,7 +247,6 @@ export default {
       bitrateInterval = setInterval(() => {
         JanusEvents.emit('bitrate', janusWrapper.__audiobridgePlugin.getBitrate());
       }, BITRATE_CHECK_TIMEOUT);
-      console.log('setInterval', bitrateInterval);
 
       // audio events
       janusWrapper.on(JanusWrapper.events.connectionError, this.onConnectionError.bind(this));
@@ -290,7 +289,6 @@ export default {
       }
 
       JanusEvents.emit('left');
-      console.log('clearInterval', bitrateInterval);
       clearInterval(bitrateInterval);
       AudioCheck.destroyMediaStream();
     },
