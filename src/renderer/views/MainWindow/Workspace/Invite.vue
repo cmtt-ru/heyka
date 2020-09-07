@@ -44,15 +44,21 @@
           class="email-inputs"
         />
         <ui-button
-          :type="5"
+          :type="1"
           submit
         >
-          Submit
+          Send
         </ui-button>
       </ui-form>
       <div v-if="emailsSent">
-        <div>
+        <div class="success">
           You have successfully sent 3 invitations
+          <svg-icon
+            class="success__tick"
+            name="check"
+            stroke="var(--color-1)"
+            size="medium"
+          />
         </div>
         <ui-button
           :type="1"
@@ -90,9 +96,7 @@ export default {
 
   computed: {
     ...mapGetters({
-      selectedChannel: 'myChannel',
-      myUserID: 'me/getMyId',
-      userAvatar: 'users/getUserAvatarUrl',
+      selectedWorkspaceId: 'me/getSelectedWorkspaceId',
     }),
 
     /**
@@ -103,28 +107,19 @@ export default {
       return this.$t('workspace.user');
     },
 
-    /**
-     * Get user ID from route param
-     * @returns {string} – user ID
-     */
-    userId() {
-      return this.$route.params.id;
-    },
-
-    /**
-     * Returns current user
-     * @returns {object} – user
-     */
-    user() {
-      return this.$store.getters['users/getUserById'](this.userId);
-    },
-
   },
 
   methods: {
-    copyLinkHandler() {
-      navigator.clipboard.writeText('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
-      this.linkCopied = true;
+    async copyLinkHandler() {
+      try {
+        const link = await this.$API.workspace.inviteByCode(this.selectedWorkspaceId);
+
+        console.log(link);
+        navigator.clipboard.writeText(link.code);
+        this.linkCopied = true;
+      } catch (err) {
+        console.log(err);
+      }
     },
     sendInvites() {
       console.log([ ...this.emails ]);
@@ -152,5 +147,12 @@ export default {
 
 .email-inputs
   margin-bottom 30px
+
+.success
+  display inline-block
+  margin-bottom 16px
+
+  &__tick
+    transform translateY(2px)
 
 </style>
