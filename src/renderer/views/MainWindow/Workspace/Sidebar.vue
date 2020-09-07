@@ -61,15 +61,16 @@
         href="#sidebar_user_anchor"
         class="channel-header__label l-ml-4"
       >{{ texts.usersHeader }}</a>
-      <ui-button
-        v-tooltip="$t('tooltips.newUser')"
-        :type="7"
-        class="channel-header__add"
-        size="small"
-        height="16"
-        icon="add"
-        @click.native="addUserHandler"
-      />
+      <router-link :to="{name: 'invite'}">
+        <ui-button
+          v-tooltip="$t('tooltips.newUser')"
+          :type="7"
+          class="channel-header__add"
+          size="small"
+          height="16"
+          icon="add"
+        />
+      </router-link>
     </div>
 
     <list
@@ -173,13 +174,6 @@ export default {
       this.$router.push({ name: 'create-channel' });
     },
 
-    /**
-     * Show add-user pseudo-popup
-     * @returns {void}
-     */
-    addUserHandler() {
-      this._notImplemented();
-    },
   },
 
 };
