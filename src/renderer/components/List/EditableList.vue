@@ -18,6 +18,7 @@
         @input="update()"
       />
       <ui-button
+        v-if="listData.length>1"
         class="icon-delete"
         :type="7"
         size="small"
@@ -31,7 +32,7 @@
       class="add-button"
       :type="9"
       icon="add"
-      @click.native="add('')"
+      @click.native="add()"
     >
       {{ addText }}
     </ui-button>
@@ -159,7 +160,7 @@ export default {
      * @param {any} el new element to add (string or object)
      * @returns {void}
      */
-    add(el) {
+    add(el = '') {
       this.listData.push({
         id: this.UniqueHash(),
         value: el,
