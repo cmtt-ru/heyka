@@ -49,8 +49,8 @@
           />
 
           <ui-button
-            :key="isStreaming(user.id)"
-            v-popover.click="{name: 'GridUser', data: {userId: user.id, isStreaming: isStreaming(user.id)}}"
+            :key="hasVideo(user.id)"
+            v-popover.click="{name: 'GridUser', data: {userId: user.id, isStreaming: hasVideo(user.id)}}"
             class="badge badge--hidden cell__more"
             :type="7"
             size="medium"
@@ -68,7 +68,7 @@
 
           <div
             class="badge cell__username"
-            :class="{'cell__username--hidden': isStreaming(user.id)}"
+            :class="{'cell__username--hidden': user.camera}"
           >
             <div v-textfade>
               {{ user.name }}
@@ -86,15 +86,6 @@
               size="small"
             />
           </div>
-
-          <!-- <ui-button
-            v-if="isStreaming(user.id)"
-            class="badge badge--hidden cell__expand"
-            :type="7"
-            size="medium"
-            icon="fullscreen"
-            @click="expandedClickHandler(user.id)"
-          /> -->
         </div>
       </div>
     </div>
@@ -365,7 +356,7 @@ export default {
      * @param {string} id user's id
      * @returns {boolean}
      */
-    isStreaming(id) {
+    hasVideo(id) {
       if (this.getUsersWhoShareMedia.includes(id)) {
         return true;
       }
@@ -379,7 +370,7 @@ export default {
      * @returns {void}
      */
     expandedClickHandler(id) {
-      if (!this.isStreaming(id) || id === this.myId) {
+      if (!this.hasVideo(id) || id === this.myId) {
         return;
       }
       this.$router.push({ path: `/call-window/expanded/${id}` });
