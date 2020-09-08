@@ -8,6 +8,7 @@
       <img
         class="call-controls__avatar"
         :src="speakingUserAvatar"
+        alt=""
       >
 
       <div class="call-controls__col">
