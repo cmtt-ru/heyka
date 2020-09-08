@@ -8,7 +8,8 @@
       "join": "Join",
       "disconnect": "Disconnect",
       "invite": "Copy invite link",
-      "revokeInvite": "Revoke all links"
+      "revokeInvite": "Revoke all links",
+      "inviteCopied": "Invite link copied"
     },
     "user": {
       "privateTalkButton": "Private talk",

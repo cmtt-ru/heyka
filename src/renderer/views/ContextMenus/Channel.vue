@@ -44,8 +44,6 @@
 <script>
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
-import { clipboard } from 'electron';
-import { IS_DEV } from '@shared/Constants';
 
 export default {
   components: {
@@ -103,25 +101,7 @@ export default {
      * @returns {void}
      */
     async inviteHandler() {
-      const { token } = await this.$API.channel.invite(this.id);
-
-      if (token) {
-        let domain = process.env.VUE_APP_PROD_URL;
-
-        if (IS_DEV) {
-          domain = process.env.VUE_APP_DEV_URL;
-        }
-
-        clipboard.writeText(`${domain}/guest/${token}`);
-
-        const notification = {
-          data: {
-            text: 'Invite link copied!',
-          },
-        };
-
-        await this.$store.dispatch('app/addNotification', notification);
-      }
+      this.$store.dispatch('channels/copyInviteLink', this.id);
     },
   },
 };
