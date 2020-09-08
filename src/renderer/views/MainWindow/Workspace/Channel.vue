@@ -67,6 +67,7 @@
           :type="9"
           icon="add"
           class="l-ml-4"
+          @click="inviteLinkHandler"
         >
           {{ texts.invite }}
         </ui-button>
@@ -74,6 +75,7 @@
         <ui-button
           :type="14"
           class="l-ml-auto l-mr-4"
+          @click="revokeInviteHandler"
         >
           {{ texts.revokeInvite }}
         </ui-button>
@@ -193,6 +195,22 @@ export default {
      */
     async clickDisconnectHandler() {
       await this.$store.dispatch('unselectChannel', this.channelId);
+    },
+
+    /**
+     * Invite link handler
+     * @returns {void}
+     */
+    inviteLinkHandler() {
+      this.$store.dispatch('channels/copyInviteLink', this.channelId);
+    },
+
+    /**
+     * Revoke invites handler
+     * @returns {void}
+     */
+    revokeInviteHandler() {
+      this.$store.dispatch('channels/revokeInviteLinks', this.channelId);
     },
   },
 };
