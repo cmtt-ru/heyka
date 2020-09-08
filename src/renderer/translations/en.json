@@ -6,7 +6,9 @@
     },
     "channel": {
       "join": "Join",
-      "disconnect": "Disconnect"
+      "disconnect": "Disconnect",
+      "invite": "Скоп. гостевую ссылку",
+      "revokeInvite": "Отменить"
     },
     "user": {
       "privateTalkButton": "Private talk",

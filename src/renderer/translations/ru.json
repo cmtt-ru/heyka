@@ -6,7 +6,9 @@
     },
     "channel": {
       "join": "Войти",
-      "disconnect": "Отключиться"
+      "disconnect": "Отключиться",
+      "invite": "Скоп. приглашение",
+      "revokeInvite": "Отменить приглашения"
     },
     "user": {
       "privateTalkButton": "Позвонить",
