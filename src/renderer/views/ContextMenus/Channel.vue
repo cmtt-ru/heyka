@@ -45,7 +45,7 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import { clipboard } from 'electron';
-import {IS_DEV} from "@shared/Constants";
+import { IS_DEV } from '@shared/Constants';
 
 export default {
   components: {
