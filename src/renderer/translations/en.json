@@ -7,8 +7,8 @@
     "channel": {
       "join": "Join",
       "disconnect": "Disconnect",
-      "invite": "Скоп. гостевую ссылку",
-      "revokeInvite": "Отменить"
+      "invite": "Copy invite link",
+      "revokeInvite": "Revoke all links"
     },
     "user": {
       "privateTalkButton": "Private talk",
