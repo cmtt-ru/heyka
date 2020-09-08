@@ -12,6 +12,8 @@
       </ui-button>
     </div>
 
+    <div class="ui-delimiter" />
+
     <div class="ui-tabs__content">
       <slot />
     </div>
@@ -76,12 +78,9 @@ export default {
 <style scoped lang="stylus">
   .ui-tabs
     &__nav
-      border-bottom 1px solid var(--line-stroke)
-      padding-left 12px
       padding-bottom 12px
 
     &__content
       padding 0
-      padding-left 12px
       padding-top 16px
 </style>
