@@ -1,14 +1,14 @@
 <template>
   <pseudo-popup @close="closeHandler">
     <template #header>
-      Add to workspace
+      {{ texts.header }}
     </template>
 
     <template #body>
       <tabs>
         <tab
           selected
-          name="Link"
+          :name="texts.link"
         >
           <div class="link-wrapper">
             <ui-button
@@ -18,7 +18,7 @@
               class="link"
               @click="copyLinkHandler"
             >
-              Copy invite link
+              {{ texts.copy }}
             </ui-button>
             <ui-button
               v-show="linkCopied"
@@ -27,25 +27,25 @@
               class="link"
               @click="copyLinkHandler"
             >
-              Copied!
+              {{ texts.copied }}
             </ui-button>
           </div>
           <div
             v-show="linkCopied"
             class="link__copied-text"
           >
-            Your invite link expires in 30 days
+            {{ texts.expires }}
           </div>
         </tab>
 
-        <tab name="Email">
+        <tab :name="texts.email">
           <ui-form
             v-if="!emailsSent"
             @submit="sendInvites()"
           >
             <editable-list
               v-model="emails"
-              add-text="Add email"
+              :add-text="texts.addEmail"
               email
               placeholder="name@example.com"
               class="email-inputs"
@@ -54,12 +54,12 @@
               :type="1"
               submit
             >
-              Send
+              {{ texts.send }}
             </ui-button>
           </ui-form>
           <div v-if="emailsSent">
             <div class="success">
-              You have successfully sent 3 invitations
+              {{ texts.sendSuccess }} {{ $tc("workspace.invite.inviteAmount", emails.length) }}
               <svg-icon
                 class="success__tick"
                 name="check"
@@ -73,7 +73,7 @@
               class="link"
               @click="resetEmails"
             >
-              Send more invites
+              {{ texts.moreInvites }}
             </ui-button>
           </div>
         </tab>
@@ -122,7 +122,7 @@ export default {
      * @returns {object}
      */
     texts() {
-      return this.$t('workspace.user');
+      return this.$t('workspace.invite');
     },
 
   },
@@ -140,9 +140,8 @@ export default {
     },
     async sendInvites() {
       try {
-        const res = await this.$API.workspace.inviteByMail(this.selectedWorkspaceId, [ ...this.emails ]);
+        await this.$API.workspace.inviteByMail(this.selectedWorkspaceId, [ ...this.emails ]);
 
-        console.log(res);
         this.emailsSent = true;
       } catch (err) {
         console.log(err);
