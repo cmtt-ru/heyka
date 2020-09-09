@@ -36,6 +36,19 @@
       "buttonSave": "Save changes",
       "buttonCancel": "Cancel",
       "buttonDelete": "Delete channel"
+    },
+    "invite":{
+      "header": "Add to workspace",
+      "link": "Link",
+      "email": "Email",
+      "copy": "Copy invite link",
+      "copied": "Copied!",
+      "addEmail": "Add email",
+      "expires": "Your invite link expires in 30 days",
+      "send": "Send",
+      "sendSuccess": "You have successfully sent",
+      "inviteAmount": "1 invitation | {n} invitations",
+      "moreInvites": "Send more invites"
     }
   },
   "settings": {
