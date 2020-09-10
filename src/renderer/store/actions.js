@@ -139,7 +139,6 @@ export default {
         userId: state.me.id,
         channelId: state.me.selectedChannelId,
       });
-      callWindow.closeGrid();
     }
 
     commit('janus/SET_OPTIONS', connectionOptions);
@@ -198,7 +197,7 @@ export default {
 
     dispatch('me/setDefaultMediaState');
 
-    callWindow.hideAll();
+    callWindow.closeAll();
 
     ipcRenderer.send('tray-animation', false);
   },
