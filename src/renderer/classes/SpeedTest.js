@@ -25,9 +25,6 @@ class SpeedTest extends EventEmitter {
     this.gotMedium = false;
 
     if (window.hawk) {
-      JanusEvents.on('joined', () => {
-        // console.log('joined, from speedtest');
-      });
       JanusEvents.on('bitrate', (bitrate) => {
         this.addBitrate({ ...bitrate });
       });
@@ -46,14 +43,12 @@ class SpeedTest extends EventEmitter {
   }
 
   addBitrate(val) {
-    console.log(val);
     this.bitrates = this.bitrates.slice(-MEAN_COUNT);
     this.bitrates.push(val);
 
     // gather info from last 30 secs
     this.connectionInfo = this.connectionInfo.slice(-TEST_COUNT);
     this.connectionInfo.push(`OUTPUT: ${val.outvalueInt}, INPUT: ${val.valueInt}, LOST PACKETS: ${val.lostPackets - val.lostPacketsBefore}`);
-    console.log(this.connectionInfo);
 
     this.testBitrateDrop();
     this.testLostPackets(val);
@@ -65,8 +60,6 @@ class SpeedTest extends EventEmitter {
     }
 
     const meanbitrate = this.simpleMean(this.bitrates, 'outvalueInt');
-
-    // console.log('MEAN BITRATE:', meanbitrate);
 
     if (meanbitrate <= AWFUL_BITRATE && !this.gotAwful) {
       window.hawk.send(new Error(`AWFUL BITRATE (<${AWFUL_BITRATE})`), this.connectionInfo);
