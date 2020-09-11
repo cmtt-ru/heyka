@@ -2,6 +2,7 @@ import userApi from './user';
 import authApi from './auth';
 import workspaceApi from './workspace';
 import channelApi from './channel';
+import appApi from './app';
 import { errorMessages } from './errors/types';
 import { handleError } from './errors';
 import trottleAPI from './throttle';
@@ -98,4 +99,5 @@ export default {
   auth: injectMiddleware(authApi),
   workspace: injectMiddleware(workspaceApi),
   channel: injectMiddleware(channelApi),
+  app: injectMiddleware(appApi),
 };

@@ -19,12 +19,14 @@ if (isMainWindow()) {
   require('@classes/pushWindow');
 }
 
+import '@classes/SpeedTest';
+
 /**
  * Initialize Hawk error catcher
  */
 if (process.env.VUE_APP_HAWK_TOKEN) {
   // eslint-disable-next-line no-new
-  new HawkCatcher({
+  window.hawk = new HawkCatcher({
     token: process.env.VUE_APP_HAWK_TOKEN,
     vue: Vue,
     release: buildRevision,
