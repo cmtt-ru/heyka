@@ -3,7 +3,7 @@ import axios from 'axios';
 /**
  * Send invite to a user by email
  * @param {string} id - workspace id
- * @param {string} emailList - email array
+ * @param {array} emailList - email array
  *
  * @returns {string} result string
  */
