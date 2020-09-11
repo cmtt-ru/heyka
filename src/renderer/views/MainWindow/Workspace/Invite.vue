@@ -132,7 +132,7 @@ export default {
       try {
         const link = await this.$API.workspace.inviteByCode(this.selectedWorkspaceId);
 
-        navigator.clipboard.writeText(link.code);
+        navigator.clipboard.writeText(`${process.env.VUE_APP_PROD_URL}/auth?invite=${link.code}`);
         this.linkCopied = true;
       } catch (err) {
         console.log(err);
