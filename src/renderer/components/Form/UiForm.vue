@@ -140,7 +140,7 @@ export default {
       let anyErrors = false;
 
       for (const id in this.inputs) {
-        if (this.inputs[id].el.checkErrors() === true) {
+        if (this.inputs[id].el.checkErrors(undefined, true) === true) {
           anyErrors = true;
         }
       }

@@ -61,6 +61,25 @@
           />
         </list-item>
       </list>
+
+      <div class="l-flex">
+        <ui-button
+          :type="9"
+          icon="add"
+          class="l-ml-4"
+          @click="inviteLinkHandler"
+        >
+          {{ texts.invite }}
+        </ui-button>
+
+        <ui-button
+          :type="14"
+          class="l-ml-auto l-mr-4"
+          @click="revokeInviteHandler"
+        >
+          {{ texts.revokeInvite }}
+        </ui-button>
+      </div>
     </div>
   </div>
 </template>
@@ -84,6 +103,12 @@ export default {
     ListItem,
     ChannelUserItem,
     UiButton,
+  },
+
+  data: () => {
+    return {
+      showInviteButtons: false,
+    };
   },
 
   computed: {
@@ -148,6 +173,12 @@ export default {
 
   },
 
+  async mounted() {
+    const permissions = await this.$API.user.checkPermissions(this.$permissions.manageWorkspaces());
+
+    this.showInviteButtons = Object.values(permissions)[0];
+  },
+
   methods: {
 
     /**
@@ -165,8 +196,23 @@ export default {
     async clickDisconnectHandler() {
       await this.$store.dispatch('unselectChannel', this.channelId);
     },
-  },
 
+    /**
+     * Invite link handler
+     * @returns {void}
+     */
+    inviteLinkHandler() {
+      this.$store.dispatch('channels/copyInviteLink', this.channelId);
+    },
+
+    /**
+     * Revoke invites handler
+     * @returns {void}
+     */
+    revokeInviteHandler() {
+      this.$store.dispatch('channels/revokeInviteLinks', this.channelId);
+    },
+  },
 };
 </script>
 

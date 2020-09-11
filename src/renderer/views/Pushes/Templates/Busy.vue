@@ -5,6 +5,7 @@
         class="push__avatar"
         :size="40"
         :image="userAvatar(user.id, 40)"
+        :user-id="user.id"
       />
 
       <div class="push__col">

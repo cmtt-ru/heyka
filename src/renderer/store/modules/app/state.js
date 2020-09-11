@@ -47,8 +47,10 @@ const state = () => {
     appVersion: ipcRenderer.sendSync('remote-getVersion'),
     language: heykaStore.get('language', 'en'),
     runAppFrom: heykaStore.get('runAppFrom', 'window'),
-    runAppFromOld: heykaStore.get('runAppFrom', 'window'),
     autorun: heykaStore.get('autorun', true),
+    resizeWindow: heykaStore.get('resizeWindow', false),
+    muteMic: heykaStore.get('muteMic', false),
+    closeOverlayButton: heykaStore.get('closeOverlayButton', true),
     theme: heykaStore.get('theme', {
       name: 'light',
       auto: false,

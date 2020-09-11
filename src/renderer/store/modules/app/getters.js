@@ -18,16 +18,6 @@ export default {
   },
 
   /**
-   * Get OLD mode state (to see if it will change after restart)
-   *
-   * @param {AppState} state – module app state
-   * @returns {string}
-   */
-  getModeWillChange: (state) => {
-    return (state.runAppFromOld !== state.runAppFrom);
-  },
-
-  /**
    * Get devices
    *
    * @param {AppState} state – module app state
@@ -64,5 +54,13 @@ export default {
    * @returns {object}
    */
   getMicrophoneVolume: (state) => state.microphoneVolume,
+
+  /**
+   * Get pushes
+   *
+   * @param {AppState} state – module app state
+   * @returns {object}
+   */
+  getPushes: (state) => state.pushes,
 
 };
