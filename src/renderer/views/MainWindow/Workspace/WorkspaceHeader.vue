@@ -4,6 +4,15 @@
       v-if="myInfo"
       class="user"
     >
+      <ui-button
+        v-if="selectedChannel"
+        v-tooltip="'send connection info'"
+        :type="7"
+        class="user__status"
+        size="small"
+        icon="connection"
+        @click="bitrateHandler"
+      />
       <microphone
         v-tooltip="microphoneTooltip"
         class="user__status"
@@ -36,6 +45,7 @@ import UiButton from '@components/UiButton';
 import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
+import JanusEvents from '@classes/janusEvents';
 
 /**
  * Map media state points to corresponding icons
@@ -61,6 +71,7 @@ export default {
   computed: {
 
     ...mapGetters({
+      selectedChannel: 'myChannel',
       myInfo: 'myInfo',
       mediaState: 'me/getMediaState',
       userAvatar: 'users/getUserAvatarUrl',
@@ -117,6 +128,10 @@ export default {
         newState.speaking = false;
       }
       this.$store.dispatch('me/setMediaState', newState);
+    },
+
+    bitrateHandler() {
+      JanusEvents.emit('submit-data');
     },
 
   },
