@@ -1,6 +1,9 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import store from '@/store';
 import sounds from '@classes/sounds';
+import Logger from '@classes/logger';
+
+const cnsl = new Logger('Push Window', '#a9ff71');
 
 const ONE_PUSH_SIZE = {
   width: 368,
@@ -21,13 +24,17 @@ class PushWindow {
     this.window = null;
     this.closewWindowTimeout = null;
     this.amount = 0;
+
+    store.watch(() => store.getters['app/getPushes'], (pushes) => {
+      this._changeAmount(pushes.length);
+    });
   }
 
   /**
    * Show frame window
    * @returns {void}
    */
-  show() {
+  _show() {
     if (this.window === null) {
       this.window = WindowManager.create({
         route: '/push-window',
@@ -59,37 +66,55 @@ class PushWindow {
   }
 
   /**
-   * Manage push window because of push add
+   * Manage push window size
+   *
+   * @param {number} length - real amount of pushes
    * @returns {void}
    */
-  addPush() {
-    this.amount++;
+  _changeAmount(length) {
+    if (length > this.amount) {
+      this._addPush(length);
+    } else {
+      this._removePush(length);
+    }
+    this.amount = length;
+  }
+
+  /**
+   * Manage push window because of push add
+   *
+   * @param {number} length - real amount of pushes
+   * @returns {void}
+   */
+  _addPush(length) {
     this._newPushSupport();
     if (this.window === null) {
-      this.show();
+      this._show();
     } else {
       // resize to fit one extra notification in case some old notification is still in move-out transition
-      this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(this.amount + 1, MAX_AMOUNT), 0);
+      this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(length + 1, MAX_AMOUNT), 0);
 
       this.closewWindowTimeout = setTimeout(() => {
-        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(this.amount, MAX_AMOUNT), 0);
+        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(length, MAX_AMOUNT), 0);
       }, PUSH_MOVEOUT_TIMER);
     }
   }
 
   /**
    * Manage push window because of push removal
+   *
+   * @param {number} length - real amount of pushes
    * @returns {void}
    */
-  removePush() {
-    this.amount--;
-    if (this.amount === 0) {
+  _removePush(length) {
+    if (length === 0) {
+      cnsl.log('no pushes left');
       this.closewWindowTimeout = setTimeout(() => {
         this.window.action('close');
       }, PUSH_MOVEOUT_TIMER);
     } else {
       this.closewWindowTimeout = setTimeout(() => {
-        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(this.amount, MAX_AMOUNT), 0);
+        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(length, MAX_AMOUNT), 0);
       }, PUSH_MOVEOUT_TIMER);
     }
   }
@@ -100,17 +125,8 @@ class PushWindow {
    */
   _newPushSupport() {
     clearTimeout(this.closewWindowTimeout);
+    cnsl.log('cleared timeout for push window resize');
     sounds.play('push');
-  }
-
-  /**
-   * Hide push window
-   * @returns {void}
-   */
-  hide() {
-    if (this.window) {
-      this.window.action('hide');
-    }
   }
 }
 
