@@ -117,7 +117,7 @@ export default {
         domain = process.env.VUE_APP_DEV_URL;
       }
 
-      clipboard.writeText(`${domain}/guest/${token}`);
+      navigator.clipboard.writeText(`${domain}/guest/${token}`);
 
       const texts = i18n.t('workspace.channel');
 
