@@ -3,13 +3,14 @@
     class="avatar"
     :style="containerSize"
   >
-    <img
-      v-if="!loaded"
+    <div
       class="avatar__no-image"
-      src="@assets/apng/loader.png"
-    >
+      :class="{'avatar__image--square': square}"
+      :style="{'background-color': imageColor}"
+    />
 
     <img
+      v-if="image"
       loading="lazy"
       class="avatar__image"
       :class="{'avatar__image--square': square}"
@@ -38,6 +39,20 @@
 </template>
 
 <script>
+
+const COLORS = [
+  '#ff0074AA',
+  '#EFCA08',
+  '#EE7674',
+  '#D33F49',
+  '#845EC2',
+  '#008E83',
+  '#266DD3',
+  '#C64191',
+  '#B0A8B9',
+  '#4FFBDF',
+  '#4B4453', // used when no userId is provided
+];
 
 /**
  * status-to-color map (small circle in bottom right corner)
@@ -108,6 +123,14 @@ export default {
       type: [ Boolean ],
       default: true,
     },
+
+    /**
+     * ID of avatar's user
+     */
+    userId: {
+      type: [ String ],
+      default: null,
+    },
   },
   data() {
     return {
@@ -134,6 +157,15 @@ export default {
     statusStyle() {
       return STATUS_COLORS[this.status] || null;
     },
+
+    imageColor() {
+      if (this.userId === null) {
+        return COLORS[10];
+      }
+      const firstDigit = this.userId.match(/\d/);
+
+      return COLORS[firstDigit];
+    },
   },
 
   methods: {
@@ -156,7 +188,7 @@ export default {
             left 0
             width 100%
             height 100%
-            color var(--shadow-50)
+            border-radius 50%
 
         &__image
             position relative

@@ -6,7 +6,10 @@
     },
     "channel": {
       "join": "Join",
-      "disconnect": "Disconnect"
+      "disconnect": "Disconnect",
+      "invite": "Copy invite link",
+      "revokeInvite": "Revoke all links",
+      "inviteCopied": "Invite link copied"
     },
     "user": {
       "privateTalkButton": "Private talk",
@@ -36,6 +39,19 @@
       "buttonSave": "Save changes",
       "buttonCancel": "Cancel",
       "buttonDelete": "Delete channel"
+    },
+    "invite":{
+      "header": "Add to workspace",
+      "link": "Link",
+      "email": "Email",
+      "copy": "Copy invite link",
+      "copied": "Copied!",
+      "addEmail": "Add email",
+      "expires": "Your invite link expires in 30 days",
+      "send": "Send",
+      "sendSuccess": "You have successfully sent",
+      "inviteAmount": "1 invitation | {n} invitations",
+      "moreInvites": "Send more invites"
     }
   },
   "settings": {
@@ -64,6 +80,10 @@
         "dark": "Dark"
       },
       "automaticallySwitch": "Automatically",
+      "advanced": "advanced options",
+      "resize": "Resizeable window",
+      "nomic": "Disable mic after hanging up",
+      "closeOverlay": "Show «Close» button in call overlay",
       "restartNow": "Restart now"
     },
     "devices": {
@@ -137,7 +157,8 @@
     "channel": {
       "hide": "Hide",
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "invite": "Copy invite link"
     },
     "userMore": {
       "edit": "Edit profile"
@@ -208,7 +229,8 @@
     "microphoneOn" : "Unmute",
     "microphoneOff": "Mute",
     "speakerOn": "Sound on",
-    "speakerOff": "Sound off"
+    "speakerOff": "Sound off",
+    "grid": "Сall window"
   },
   "inputErrors": {
     "default": "not a valid input",
