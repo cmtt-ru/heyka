@@ -1,4 +1,5 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import broadcastEvents from '@classes/broadcastEvents';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
@@ -23,6 +24,9 @@ class CallWindow {
     this.sharingWindow = null;
     this.gridWindow = null;
     this.frameWindow = null;
+    broadcastEvents.on('closeOverlay', () => {
+      this.closeOverlay();
+    });
   }
 
   /**
@@ -68,6 +72,16 @@ class CallWindow {
   hideOverlay() {
     if (this.overlayWindow) {
       this.overlayWindow.action('hide');
+    }
+  }
+
+  /**
+   * Close call overlay
+   * @returns {void}
+   */
+  closeOverlay() {
+    if (this.overlayWindow) {
+      this.overlayWindow.action('close');
     }
   }
 

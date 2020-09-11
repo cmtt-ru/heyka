@@ -10,7 +10,6 @@ const stickyObservers = {};
  * @returns {void}
  */
 function elementCheck(el) {
-  console.log(el);
   if (el.intersectionRatio === 1) {
     el.target.classList.add(STICKED_CLASS);
   } else {
@@ -34,6 +33,7 @@ export default {
     el.setAttribute('sticky-instance-uid', id);
     el.style.position = 'sticky';
     el.style.top = '0';
+    el.style.zIndex = '1';
     el.style.transform = 'translateY(-0.1px)';
   },
 

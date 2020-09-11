@@ -5,13 +5,20 @@
       class="user"
     >
       <ui-button
-        v-if="selectedChannel"
         v-tooltip="'send connection info'"
         :type="7"
         class="user__status"
         size="small"
         icon="connection"
         @click="bitrateHandler"
+      />
+      <ui-button
+        v-tooltip="$t('tooltips.grid')"
+        :type="7"
+        class="user__status"
+        size="small"
+        icon="grid"
+        @click="gridHandler"
       />
       <microphone
         v-tooltip="microphoneTooltip"
@@ -26,7 +33,7 @@
         class="user__status"
         size="small"
         :icon="icons.speakers"
-        @click.native="switchProp('speakers')"
+        @click="switchProp('speakers')"
       />
 
       <avatar
@@ -46,6 +53,7 @@ import UiButton from '@components/UiButton';
 import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
+import callWindow from '@classes/callWindow';
 import JanusEvents from '@classes/janusEvents';
 
 /**
@@ -131,6 +139,10 @@ export default {
       this.$store.dispatch('me/setMediaState', newState);
     },
 
+    gridHandler() {
+      callWindow.showGrid();
+    },
+    
     bitrateHandler() {
       JanusEvents.emit('submit-data');
     },
