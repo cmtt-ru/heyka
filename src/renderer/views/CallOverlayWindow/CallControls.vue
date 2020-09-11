@@ -5,11 +5,13 @@
     :class="{'call-controls--row': row}"
   >
     <div class="call-controls__row">
-      <img
+      <avatar
         class="call-controls__avatar"
-        :src="speakingUserAvatar"
-        alt=""
-      >
+        :user-id="speakingUser.id"
+        :image="userAvatar(speakingUser.id, 12)"
+        :size="36"
+        rounded
+      />
 
       <div class="call-controls__col">
         <p class="call-controls__user-name">
@@ -45,16 +47,17 @@
 
 <script>
 import CallButtons from './CallButtons';
+import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 
 const LAST_USER_INTERVAL = 4000;
-const AVATAR_36 = 36;
 
 let lastUserTimer = null;
 
 export default {
   components: {
     CallButtons,
+    Avatar,
   },
 
   props: {
@@ -90,7 +93,7 @@ export default {
   computed: {
     ...mapGetters({
       user: 'myInfo',
-      speakingUser: 'getSpeakingUser',
+      getSpeakingUser: 'getSpeakingUser',
       selectedChannel: 'myChannel',
       userById: 'users/getUserById',
       userAvatar: 'users/getUserAvatarUrl',
@@ -108,13 +111,13 @@ export default {
      * Speaking user avatar
      * @return {string}
      */
-    speakingUserAvatar() {
-      if (this.speakingUser) {
-        return this.userAvatar(this.speakingUser.id, AVATAR_36);
+    speakingUser() {
+      if (this.getSpeakingUser) {
+        return this.getSpeakingUser;
       }
 
       if (this.user) {
-        return this.userAvatar(this.user.id, AVATAR_36);
+        return this.user;
       }
 
       return '';
