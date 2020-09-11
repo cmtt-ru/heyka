@@ -142,7 +142,7 @@ export default {
     gridHandler() {
       callWindow.showGrid();
     },
-    
+
     bitrateHandler() {
       JanusEvents.emit('submit-data');
     },
