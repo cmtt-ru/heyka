@@ -12,15 +12,20 @@
 import JanusWrapper from '@classes/JanusWrapper.js';
 import connectionCheck from '@classes/connectionCheck';
 import AudioCheck from '@classes/AudioCheck';
+import JanusEvents from '@classes/janusEvents';
 import { mapState } from 'vuex';
 import Logger from '@classes/logger';
 const cnsl = new Logger('Janus.vue', '#AF7AC5 ');
+
+const BITRATE_CHECK_TIMEOUT = 1000;
 
 /**
  * Janus wrapper instance
  * @type {object}
  */
 let janusWrapper = null;
+
+let bitrateInterval = null;
 
 export default {
   name: 'Janus',
@@ -237,6 +242,12 @@ export default {
         }
       });
 
+      JanusEvents.emit('joined');
+
+      bitrateInterval = setInterval(() => {
+        JanusEvents.emit('bitrate', janusWrapper.__audiobridgePlugin.getBitrate());
+      }, BITRATE_CHECK_TIMEOUT);
+
       // audio events
       janusWrapper.on(JanusWrapper.events.connectionError, this.onConnectionError.bind(this));
       janusWrapper.on(JanusWrapper.events.remoteAudioStream, this.onRemoteAudioStream.bind(this));
@@ -277,6 +288,8 @@ export default {
         janusWrapper = null;
       }
 
+      JanusEvents.emit('left');
+      clearInterval(bitrateInterval);
       AudioCheck.destroyMediaStream();
     },
 

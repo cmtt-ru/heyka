@@ -173,6 +173,25 @@
       </ui-button>
     </div>
 
+    <div>
+      <ui-button
+        :type="15"
+        :active="true"
+      >
+        Type --15
+      </ui-button>
+      <ui-button
+        :type="15"
+      >
+        Type --15
+      </ui-button>
+      <ui-button
+        :type="15"
+      >
+        Type --15
+      </ui-button>
+    </div>
+
     <h3 class="l-mt-24">
       Icon only, type --7
     </h3>

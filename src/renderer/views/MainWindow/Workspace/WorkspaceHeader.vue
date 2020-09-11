@@ -5,7 +5,14 @@
       class="user"
     >
       <ui-button
-        v-if="selectedChannel"
+        v-tooltip="'send connection info'"
+        :type="7"
+        class="user__status"
+        size="small"
+        icon="connection"
+        @click="bitrateHandler"
+      />
+      <ui-button
         v-tooltip="$t('tooltips.grid')"
         :type="7"
         class="user__status"
@@ -33,6 +40,7 @@
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
         :image="userAvatar(myInfo.id, 24)"
+        :user-id="myInfo.id"
         :status="myInfo.onlineStatus"
         :size="24"
       />
@@ -46,6 +54,7 @@ import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 import callWindow from '@classes/callWindow';
+import JanusEvents from '@classes/janusEvents';
 
 /**
  * Map media state points to corresponding icons
@@ -132,6 +141,10 @@ export default {
 
     gridHandler() {
       callWindow.showGrid();
+    },
+    
+    bitrateHandler() {
+      JanusEvents.emit('submit-data');
     },
 
   },

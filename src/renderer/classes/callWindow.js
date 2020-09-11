@@ -54,6 +54,18 @@ class CallWindow {
   }
 
   /**
+   * Hide or close any window
+   * @param {object} window - window
+   * @param {('hide'|'close')} action - 'hide' or 'close'
+   * @retuoid}
+   */
+  manageWindow(window, action) {
+    if (window) {
+      window.action(action);
+    }
+  }
+
+  /**
    * Hide call overlay
    * @returns {void}
    */
@@ -175,6 +187,16 @@ class CallWindow {
   }
 
   /**
+   * Close grid (main) window
+   * @returns {void}
+   */
+  closeGrid() {
+    if (this.gridWindow) {
+      this.gridWindow.action('close');
+    }
+  }
+
+  /**
    * Show frame window
    * @param {string} displayId – display id
    * @param {number?} sourceIndex Source index
@@ -211,37 +233,14 @@ class CallWindow {
   }
 
   /**
-   * Hide ALL call windows
-   * @returns {void}
-   */
-  hideAll() {
-    this.hideGrid();
-    this.hideSharing();
-    if (this.overlayWindow) {
-      this.overlayWindow.action('close');
-    }
-    if (this.frameWindow) {
-      this.frameWindow.action('close');
-    }
-  }
-
-  /**
    * Close ALL call windows
    * @returns {void}
    */
   closeAll() {
-    if (this.gridWindow) {
-      this.gridWindow.action('close');
-    }
-    if (this.sharingWindow) {
-      this.sharingWindow.action('close');
-    }
-    if (this.overlayWindow) {
-      this.overlayWindow.action('close');
-    }
-    if (this.frameWindow) {
-      this.frameWindow.action('close');
-    }
+    this.manageWindow(this.frameWindow, 'close');
+    this.manageWindow(this.gridWindow, 'close');
+    this.manageWindow(this.sharingWindow, 'close');
+    this.manageWindow(this.overlayWindow, 'close');
   }
 
   /**

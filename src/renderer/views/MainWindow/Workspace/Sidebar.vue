@@ -78,11 +78,12 @@
     >
       <list-item
         v-for="user in users"
-        :key="user.name"
+        :key="user.id"
         :filter-key="user.name"
         button
       >
         <sidebar-user-item
+          v-show="user.onlineStatus!=='offline' || searchText!==''"
           :user="user"
         />
       </list-item>
