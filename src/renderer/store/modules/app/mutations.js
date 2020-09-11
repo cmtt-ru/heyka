@@ -73,6 +73,28 @@ export default {
   },
 
   /**
+   * Set app muteMic mode
+   *
+   * @param {AppState} state – module app state
+   * @param {string} muteMic – new muteMic mode
+   * @constructor
+   */
+  SET_MUTE_MIC(state, muteMic) {
+    state.muteMic = muteMic;
+  },
+
+  /**
+   * Set app closeOverlayButton mode
+   *
+   * @param {AppState} state – module app state
+   * @param {string} closeOverlayButton – new closeOverlayButton mode
+   * @constructor
+   */
+  SET_CLOSE_OVERLAY_BUTTON(state, closeOverlayButton) {
+    state.closeOverlayButton = closeOverlayButton;
+  },
+
+  /**
    * Add new notification
    *
    * @param {AppState} state – module app state

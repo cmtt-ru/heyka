@@ -64,6 +64,10 @@
         "dark": "Dark"
       },
       "automaticallySwitch": "Automatically",
+      "advanced": "advanced options",
+      "resize": "Resizeable window",
+      "nomic": "Disable mic after hanging up",
+      "closeOverlay": "Show «Close» button in call overlay",
       "restartNow": "Restart now"
     },
     "devices": {
@@ -208,7 +212,8 @@
     "microphoneOn" : "Unmute",
     "microphoneOff": "Mute",
     "speakerOn": "Sound on",
-    "speakerOff": "Sound off"
+    "speakerOff": "Sound off",
+    "grid": "Сall window"
   },
   "inputErrors": {
     "default": "not a valid input",
