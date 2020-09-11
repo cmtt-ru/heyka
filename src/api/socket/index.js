@@ -347,6 +347,7 @@ function bindUserEvents() {
 function bindPushEvents() {
   /** Get push notification */
   client.on(eventNames.invite, data => {
+    cnsl.log('INCOMING INVITE:', data);
     store.dispatch('app/addPush', data);
   });
 

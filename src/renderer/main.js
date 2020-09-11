@@ -13,6 +13,11 @@ import '@/filters/leonardo';
 import '@/directives';
 import { Mixin } from '@/mixins';
 import permissions from '@classes/permissions';
+import isMainWindow from '@shared/WindowManager/isMainWindow';
+
+if (isMainWindow()) {
+  require('@classes/pushWindow');
+}
 
 /**
  * Initialize Hawk error catcher
