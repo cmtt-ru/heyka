@@ -1,7 +1,6 @@
 import API from '@api';
 import i18n from '@/i18n';
 import router from '@/router';
-import { clipboard } from 'electron';
 import { IS_DEV } from '@shared/Constants';
 
 export default {
