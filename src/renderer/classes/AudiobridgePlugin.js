@@ -78,6 +78,9 @@ class AudiobridgePlugin extends EventEmitter {
         if (this.__detached) {
           return;
         }
+        if (state) {
+          this.__pluginHandle.getBitrate();
+        }
         cnsl.debug('webrtcState', state, reason);
       },
 
@@ -180,6 +183,10 @@ class AudiobridgePlugin extends EventEmitter {
         cnsl.debug('detached');
       },
     });
+  }
+
+  getBitrate() {
+    return this.__pluginHandle.webrtcStuff.bitrate;
   }
 
   /**
