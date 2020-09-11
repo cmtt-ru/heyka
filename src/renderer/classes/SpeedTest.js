@@ -90,7 +90,7 @@ class SpeedTest extends EventEmitter {
   }
 
   testLostPackets(bitrate) {
-    if (bitrate.lostPackets - bitrate.lostPacketsBefore > 1) {
+    if (bitrate.lostPackets - bitrate.lostPacketsBefore > 1 && !this.lostPackets) {
       this.lostPackets = true;
       window.hawk.send(new Error(`packet loss`), this.connectionInfo);
     }
