@@ -1,16 +1,10 @@
 /* eslint-disable require-jsdoc */
 import { EventEmitter } from 'events';
 import JanusEvents from './janusEvents';
-// import API from '@api';
 
-// const TEST_DATA_SIZE = 20000000;
-// const MAX_API_TIME = 2000;
-// const CHECK_AMOUNT = 3;
-// const CRITICAL_DELTA = 0.4;
-// const MAX_TIME = 10000;
-// const MIN_TIME = 1000;
+const MEAN_COUNT = 8;
 
-const TEST_TIME = 6;
+const TEST_COUNT = 30;
 
 const MEDIUM_BITRATE = 25;
 const BAD_BITRATE = 20;
@@ -24,26 +18,43 @@ class SpeedTest extends EventEmitter {
     super();
 
     this.bitrates = [];
+    this.connectionInfo = [];
+    this.lostPackets = false;
 
-    JanusEvents.on('joined', () => {
-      // console.log('joined, from speedtest');
-    });
-    JanusEvents.on('bitrate', (bitrate) => {
-      this.addBitrate({ ...bitrate });
-    });
-    JanusEvents.on('left', () => {
-      this.bitrates = [];
-    });
+    if (!window.hawk) {
+      JanusEvents.on('joined', () => {
+        // console.log('joined, from speedtest');
+      });
+      JanusEvents.on('bitrate', (bitrate) => {
+        this.addBitrate({ ...bitrate });
+      });
+      JanusEvents.on('left', () => {
+        this.bitrates = [];
+        this.lostPackets = false;
+      });
+
+      JanusEvents.on('submit-data', () => {
+        window.hawk.send(new Error(`User submitted bitrate data`), this.connectionInfo);
+      });
+    }
   }
 
   addBitrate(val) {
-    this.bitrates = this.bitrates.slice(-TEST_TIME);
+    console.log(val);
+    this.bitrates = this.bitrates.slice(-MEAN_COUNT);
     this.bitrates.push(val);
+
+    // gather info from last 30 secs
+    this.connectionInfo = this.connectionInfo.slice(-TEST_COUNT);
+    this.connectionInfo.push(`OUTPUT: ${val.outvalueInt}, INPUT: ${val.valueInt}, LOST PACKETS: ${val.lostPackets - val.lostPacketsBefore}`);
+    console.log(this.connectionInfo);
+
     this.testBitrateDrop();
+    this.testLostPackets(val);
   }
 
   testBitrateDrop() {
-    if (!window.hawk || this.bitrates.length < TEST_TIME) {
+    if (this.bitrates.length < TEST_COUNT / 2) {
       return;
     }
 
@@ -52,11 +63,11 @@ class SpeedTest extends EventEmitter {
     // console.log('MEAN BITRATE:', meanbitrate);
 
     if (meanbitrate <= AWFUL_BITRATE) {
-      window.hawk.send(new Error('AWFUL BITRATE (<10)'), this.bitrates);
+      window.hawk.send(new Error(`AWFUL BITRATE (<${AWFUL_BITRATE})`), this.connectionInfo);
     } else if (meanbitrate <= BAD_BITRATE) {
-      window.hawk.send(new Error('BAD BITRATE (<20)'), this.bitrates);
+      window.hawk.send(new Error(`BAD BITRATE (<${BAD_BITRATE})`), this.connectionInfo);
     } else if (meanbitrate <= MEDIUM_BITRATE) {
-      window.hawk.send(new Error('MEDIUM BITRATE (<25)'), this.bitrates);
+      window.hawk.send(new Error(`MEDIUM BITRATE (<${MEDIUM_BITRATE})`), this.connectionInfo);
     }
   }
 
@@ -69,54 +80,12 @@ class SpeedTest extends EventEmitter {
     return mean;
   }
 
-  // async checkUpload() {
-  //   const speed = await this.checkSpeed('upload');
-
-  //   console.log('Upload: ', speed, 'MB/s');
-  //   this.uploadSpeed = speed;
-  //   this.uploadTimeout = setTimeout(() => {
-  //     this.checkUpload();
-  //   }, MAX_TIME);
-  // }
-
-  // async checkDownload() {
-  //   const speed = await this.checkSpeed('download');
-
-  //   console.log('Download: ', speed, 'MB/s');
-  // }
-
-  // async checkSpeed(type, amount = CHECK_AMOUNT) {
-  //   const times = [];
-
-  //   for (let i = 0; i < amount; i++) {
-  //     const t0 = performance.now();
-
-  //     if (type === 'upload') {
-  //       let formData = new FormData();
-
-  //       formData.append('data', this.generateRandomData());
-  //       await API.app.checkUpload(formData);
-  //       formData = null;
-  //     } else {
-  //       await API.app.checkDownload();
-  //     }
-  //     const t1 = performance.now();
-
-  //     if (t1 - t0 > MAX_API_TIME) {
-  //       return TEST_DATA_SIZE / (t1 - t0);
-  //     }
-
-  //     times.push(Math.floor(t1 - t0));
-  //   }
-  //   const time = times.reduce((a, b) => a + b, 0) / amount;
-  //   const speed = TEST_DATA_SIZE / time;
-
-  //   return speed;
-  // }
-
-  // generateRandomData() {
-  //   return new Blob([ new ArrayBuffer(TEST_DATA_SIZE) ], { type: 'multipart/form-data' });
-  // };
+  testLostPackets(bitrate) {
+    if (bitrate.lostPackets - bitrate.lostPacketsBefore > 1) {
+      this.lostPackets = true;
+      window.hawk.send(new Error(`packet loss`), this.connectionInfo);
+    }
+  }
 }
 
 export default new SpeedTest();
