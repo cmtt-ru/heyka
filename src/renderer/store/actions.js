@@ -197,7 +197,7 @@ export default {
 
     dispatch('me/setDefaultMediaState');
 
-    callWindow.hideAll();
+    callWindow.closeAll();
 
     ipcRenderer.send('tray-animation', false);
   },
