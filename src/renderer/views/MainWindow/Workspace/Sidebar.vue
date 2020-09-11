@@ -78,7 +78,7 @@
     >
       <list-item
         v-for="user in users"
-        :key="user.id || user.name"
+        :key="user.id"
         :filter-key="user.name"
         button
       >
