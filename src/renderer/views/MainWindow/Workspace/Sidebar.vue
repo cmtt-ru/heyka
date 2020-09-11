@@ -83,6 +83,7 @@
         button
       >
         <sidebar-user-item
+          v-show="user.onlineStatus!=='offline' || searchText!==''"
           :user="user"
         />
       </list-item>
