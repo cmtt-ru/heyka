@@ -82,5 +82,4 @@ export default {
 
     &__content
       padding 0
-      padding-top 16px
 </style>
