@@ -6,7 +6,10 @@
     },
     "channel": {
       "join": "Join",
-      "disconnect": "Disconnect"
+      "disconnect": "Disconnect",
+      "invite": "Copy invite link",
+      "revokeInvite": "Revoke all links",
+      "inviteCopied": "Invite link copied"
     },
     "user": {
       "privateTalkButton": "Private talk",
@@ -141,7 +144,8 @@
     "channel": {
       "hide": "Hide",
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "invite": "Copy invite link"
     },
     "userMore": {
       "edit": "Edit profile"
