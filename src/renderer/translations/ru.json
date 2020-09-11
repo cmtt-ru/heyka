@@ -9,7 +9,8 @@
       "disconnect": "Отключиться",
       "invite": "Скоп. гостевую ссылку",
       "revokeInvite": "Отменить",
-      "inviteCopied": "Гостевая ссылка скопирована"
+      "inviteCopied": "Гостевая ссылка скопирована",
+      "invitesDeleted": "Все гостевые ссылки удалены"
     },
     "user": {
       "privateTalkButton": "Позвонить",
