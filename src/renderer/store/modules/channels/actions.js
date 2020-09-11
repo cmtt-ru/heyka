@@ -139,6 +139,16 @@ export default {
    * @returns {Promise<void>}
    */
   async revokeInviteLinks({ dispatch }, channelId) {
-    console.log('code here');
+    await API.channel.deleteAllInvites(channelId);
+
+    const texts = i18n.t('workspace.channel');
+
+    const notification = {
+      data: {
+        text: texts.invitesDeleted,
+      },
+    };
+
+    await dispatch('app/addNotification', notification, { root: true });
   },
 };
