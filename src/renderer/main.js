@@ -15,11 +15,11 @@ import { Mixin } from '@/mixins';
 import permissions from '@classes/permissions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 
+import '@classes/SpeedTest';
+
 if (isMainWindow()) {
   require('@classes/pushWindow');
 }
-
-import '@classes/SpeedTest';
 
 /**
  * Initialize Hawk error catcher
