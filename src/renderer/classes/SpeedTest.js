@@ -20,8 +20,11 @@ class SpeedTest extends EventEmitter {
     this.bitrates = [];
     this.connectionInfo = [];
     this.lostPackets = false;
+    this.gotAwful = false;
+    this.gotBad = false;
+    this.gotMedium = false;
 
-    if (!window.hawk) {
+    if (window.hawk) {
       JanusEvents.on('joined', () => {
         // console.log('joined, from speedtest');
       });
@@ -31,6 +34,9 @@ class SpeedTest extends EventEmitter {
       JanusEvents.on('left', () => {
         this.bitrates = [];
         this.lostPackets = false;
+        this.gotAwful = false;
+        this.gotBad = false;
+        this.gotMedium = false;
       });
 
       JanusEvents.on('submit-data', () => {
@@ -62,12 +68,15 @@ class SpeedTest extends EventEmitter {
 
     // console.log('MEAN BITRATE:', meanbitrate);
 
-    if (meanbitrate <= AWFUL_BITRATE) {
+    if (meanbitrate <= AWFUL_BITRATE && !this.gotAwful) {
       window.hawk.send(new Error(`AWFUL BITRATE (<${AWFUL_BITRATE})`), this.connectionInfo);
-    } else if (meanbitrate <= BAD_BITRATE) {
+      this.gotAwful = true;
+    } else if (meanbitrate <= BAD_BITRATE && !this.gotBad) {
       window.hawk.send(new Error(`BAD BITRATE (<${BAD_BITRATE})`), this.connectionInfo);
-    } else if (meanbitrate <= MEDIUM_BITRATE) {
+      this.gotBad = true;
+    } else if (meanbitrate <= MEDIUM_BITRATE && !this.gotMedium) {
       window.hawk.send(new Error(`MEDIUM BITRATE (<${MEDIUM_BITRATE})`), this.connectionInfo);
+      this.gotMedium = true;
     }
   }
 
