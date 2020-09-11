@@ -57,7 +57,7 @@ class CallWindow {
    * Hide or close any window
    * @param {object} window - window
    * @param {('hide'|'close')} action - 'hide' or 'close'
-   * @retuoid}
+   * @returns {void}
    */
   manageWindow(window, action) {
     if (window) {

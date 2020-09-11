@@ -43,7 +43,7 @@ export default {
 
       await this.$store.dispatch('initial');
     } catch (e) {
-      cnsl.log('redirecting to login');
+      cnsl.log('redirecting to login', e);
     }
 
     broadcastEvents.on('open-channel', id => {
