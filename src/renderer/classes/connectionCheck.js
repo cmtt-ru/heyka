@@ -51,6 +51,7 @@ class ConnectionCheck extends EventEmitter {
    */
   async startInternetConnectionChecker() {
     while (true) {
+      await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
       const state = await isOnline();
 
       this.onlineState = state;
@@ -63,7 +64,6 @@ class ConnectionCheck extends EventEmitter {
       }
 
       this.handleOnlineStatus(state);
-      await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
     }
   }
 
