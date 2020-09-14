@@ -14,6 +14,7 @@ import '@/directives';
 import { Mixin } from '@/mixins';
 import permissions from '@classes/permissions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
+import '@classes/SpeedTest';
 
 import '@classes/SpeedTest';
 

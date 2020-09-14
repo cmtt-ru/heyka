@@ -1,6 +1,7 @@
 /**
  * @typedef {object} JanusState
  * @param {string} janusServerUrl – janus server url
+ * @param {string} janusWsServerUrl – janus websocket server url
  * @param {string} janusAuthToken – janus auth token
  * @param {string} channelAuthToken – channel auth token
  * @param {number} audioRoomId – janus audio room id
@@ -19,6 +20,7 @@ const state = () => {
    */
   return {
     janusServerUrl: '',
+    janusWsServerUrl: '',
     janusAuthToken: '',
     channelAuthToken: '',
     audioRoomId: 0,

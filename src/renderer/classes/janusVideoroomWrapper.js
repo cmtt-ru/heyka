@@ -17,6 +17,7 @@ const ERROR_CODES = {
 /**
  * @typedef JanusOptions
  * @property {string} options.janusServerUrl Janus server url
+ * @property {string} options.janusWsServerUrl Janus websocket server url
  * @property {string} options.janusAuthToken Janus auth token
  * @property {string} options.channelAuthToken Auth token for Janus channel
  * @property {number} options.videoRoomId Id of video room
@@ -51,6 +52,7 @@ class JanusVideoroomWrapper extends EventEmitter {
     this.__janusOptions = {
       janusAuthToken: null,
       janusServerUrl: null,
+      janusWsServerUrl: null,
       channelAuthToken: null,
       videoRoomId: null,
       userId: null,
@@ -105,7 +107,7 @@ class JanusVideoroomWrapper extends EventEmitter {
   async join(userId, options) {
     /** Connect to Janus */
     if (!this.__janus) {
-      await this._connect(options.janusServerUrl, options.janusAuthToken);
+      await this._connect(options.janusServerUrl, options.janusWsServerUrl, options.janusAuthToken);
     }
 
     // If channel if changed, leave previous channel first
@@ -576,32 +578,18 @@ class JanusVideoroomWrapper extends EventEmitter {
    * Connects to the Janus server
    * @private
    * @param {string} janusServerUrl janus server url
+   * @param {string} janusWsServerUrl janus websocket server url
    * @param {string} janusAuthToken janus auth token
    * @returns {Promise<null>}
    */
-  _connect(janusServerUrl, janusAuthToken) {
+  _connect(janusServerUrl, janusWsServerUrl, janusAuthToken) {
     return new Promise((resolve, reject) => {
       let isFullfilled = false;
 
-      janusServerUrl += ':8088/janus';
-
-      // convert url to websocket connect
-      // url is like "http://janus-host.domen.zone:8088/janus";
-      let wsurl = '';
-
-      if (janusServerUrl.indexOf('http') + 1) {
-        wsurl = janusServerUrl.replace('http', 'ws')
-          .replace('8088', '8188')
-          .replace('/janus', '');
-      } else {
-        wsurl = janusServerUrl.replace('https', 'wss')
-          .replace('8089', '8189')
-          .replace('/janus', '');
-      }
-      console.log(`Connect to janus. rest-api: ${janusServerUrl}, ws-api: ${wsurl}`);
+      console.log(`Connect to janus. rest-api: ${janusServerUrl}, ws-api: ${janusWsServerUrl}`);
 
       this.__janus = new Janus({
-        server: [wsurl, janusServerUrl],
+        server: [janusWsServerUrl, janusServerUrl],
         token: janusAuthToken,
         success: () => {
           resolve();
