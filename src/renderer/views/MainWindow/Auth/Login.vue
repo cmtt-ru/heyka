@@ -56,7 +56,7 @@
           >
             <ui-input
               v-model="login.email"
-              icon="user"
+              icon="mail"
               class="login__input"
               placeholder="example@mail.com"
               email
@@ -123,13 +123,13 @@
             </ui-button>
           </ui-form>
 
-          <div class="info currently-not-needed">
+          <div class="info">
             <div class="info__text">
               {{ texts.newMember }}
             </div>
             <div
               class="info__link"
-              @click="_notImplemented"
+              @click="registerHandler"
             >
               {{ texts.signup }}
             </div>
@@ -256,6 +256,19 @@ export default {
     async socialHandler(socialName) {
       const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
       const link = `${baseUrl}/auth/social/${socialName}/login`;
+
+      window.open(link);
+    },
+
+    /**
+     * Open registration page
+     *
+     * @param {string} socialName - SNS name
+     * @returns {void}
+     */
+    async registerHandler() {
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      const link = `${baseUrl}/auth/register`;
 
       window.open(link);
     },
