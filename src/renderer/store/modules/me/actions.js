@@ -199,6 +199,7 @@ export default {
 
     /** Wake up */
     if (!value) {
+      commit('app/ANIMATION_CHANNEL_ID', null, { root: true });
       await dispatch('initial', null, { root: true });
     }
 

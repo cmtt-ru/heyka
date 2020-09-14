@@ -130,9 +130,12 @@ export default {
   methods: {
     async copyLinkHandler() {
       try {
-        const link = await this.$API.workspace.inviteByCode(this.selectedWorkspaceId);
+        const codeData = await this.$API.workspace.inviteByCode(this.selectedWorkspaceId);
 
-        navigator.clipboard.writeText(link.code);
+        const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+        const link = `${baseUrl}/auth?invite=${codeData.code}`;
+
+        navigator.clipboard.writeText(link);
         this.linkCopied = true;
       } catch (err) {
         console.log(err);
