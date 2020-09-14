@@ -281,9 +281,12 @@ export default {
      */
     updatePath() {
       if (this.dotsQueue.length === 0) {
-        this.$refs.cursor.$el.classList.add('cursor--hiding');
-        clearInterval(this.recieveDrawInterval);
-        this.recieveDrawInterval = null;
+        try {
+          this.$refs.cursor.$el.classList.add('cursor--hiding');
+        } finally {
+          clearInterval(this.recieveDrawInterval);
+          this.recieveDrawInterval = null;
+        }
 
         return;
       }
