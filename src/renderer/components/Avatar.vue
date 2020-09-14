@@ -5,7 +5,7 @@
   >
     <div
       class="avatar__no-image"
-      :class="{'avatar__image--square': square, 'avatar__image--rounded': rounded}"
+      :class="{'avatar__image--square': square, 'avatar__image--round-corners': roundCorners}"
       :style="{'background-color': imageColor}"
     />
 
@@ -13,7 +13,7 @@
       v-if="image"
       loading="lazy"
       class="avatar__image"
-      :class="{'avatar__image--square': square, 'avatar__image--rounded': rounded}"
+      :class="{'avatar__image--square': square, 'avatar__image--round-corners': roundCorners}"
       alt=""
       :width="size"
       :height="size"
@@ -101,9 +101,9 @@ export default {
     },
 
     /**
-     * if true, image is not rounded
+     * Avatar with round corners
      */
-    rounded: {
+    roundCorners: {
       type: [ Boolean ],
       default: false,
     },
@@ -209,7 +209,7 @@ export default {
             &--square
               border-radius 0
 
-            &--rounded
+            &--round-corners
               border-radius 4px
 
         &__status
