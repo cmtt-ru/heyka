@@ -9,7 +9,8 @@
       "disconnect": "Disconnect",
       "invite": "Copy invite link",
       "revokeInvite": "Revoke all links",
-      "inviteCopied": "Invite link copied"
+      "inviteCopied": "Invite link copied",
+      "invitesDeleted": "All invites are deleted"
     },
     "user": {
       "privateTalkButton": "Private talk",
