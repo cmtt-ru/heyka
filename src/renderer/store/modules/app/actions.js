@@ -1,6 +1,5 @@
 import API from '@api';
 import themes from '@/themes';
-import pushWindow from '@classes/pushWindow';
 import i18n from '@/i18n';
 import { ipcRenderer } from 'electron';
 import dateFormat from 'dateformat';
@@ -99,6 +98,30 @@ export default {
   },
 
   /**
+   * Set muteMic mode
+   *
+   * @param {function} commit – store commit
+   * @param {string} muteMic – app muteMic mode
+   * @returns {void}
+   */
+  setMuteMic({ commit }, muteMic) {
+    commit('SET_MUTE_MIC', muteMic);
+    heykaStore.set('muteMic', muteMic);
+  },
+
+  /**
+   * Set closeOverlayButton mode
+   *
+   * @param {function} commit – store commit
+   * @param {string} closeOverlayButton – app closeOverlayButton mode
+   * @returns {void}
+   */
+  setCloseOverlayButton({ commit }, closeOverlayButton) {
+    commit('SET_CLOSE_OVERLAY_BUTTON', closeOverlayButton);
+    heykaStore.set('closeOverlayButton', closeOverlayButton);
+  },
+
+  /**
    * Add new in-app notification
    *
    * @param {function} commit – store commit
@@ -179,10 +202,9 @@ export default {
       inviteId,
       userId,
       ...message,
-    };
+    }; // TODO: брать workspaceId из пришедшего пуша
 
     commit('ADD_PUSH', push);
-    pushWindow.addPush();
   },
 
   /**
@@ -194,7 +216,6 @@ export default {
    */
   removePush({ commit }, id) {
     commit('REMOVE_PUSH', id);
-    pushWindow.removePush();
   },
 
   /**

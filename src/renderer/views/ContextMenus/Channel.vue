@@ -29,6 +29,14 @@
       >
         {{ texts.delete }}
       </ui-button>
+
+      <ui-button
+        :type="11"
+        data-popover-close
+        @click="inviteHandler"
+      >
+        {{ texts.invite }}
+      </ui-button>
     </div>
   </popover>
 </template>
@@ -86,6 +94,14 @@ export default {
      */
     deleteHandler() {
       this.$store.dispatch('channels/deleteChannel', this.id);
+    },
+
+    /**
+     * Copy invite link
+     * @returns {void}
+     */
+    async inviteHandler() {
+      this.$store.dispatch('channels/copyInviteLink', this.id);
     },
   },
 };

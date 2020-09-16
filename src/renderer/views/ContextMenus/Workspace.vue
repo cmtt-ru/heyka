@@ -1,13 +1,18 @@
 <template>
   <popover>
     <div class="buttons">
-      <ui-button
-        :type="11"
-        icon="add"
-        @click="_notImplemented()"
+      <router-link
+        v-if="permissions['workspaces.manage']"
+        :to="{name: 'invite'}"
       >
-        {{ texts.invite }}
-      </ui-button>
+        <ui-button
+          :type="11"
+          icon="add"
+          data-popover-close
+        >
+          {{ texts.invite }}
+        </ui-button>
+      </router-link>
 
       <ui-button
         v-if="permissions['workspaces.manage']"
