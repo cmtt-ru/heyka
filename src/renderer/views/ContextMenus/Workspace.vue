@@ -32,10 +32,14 @@
         :key="workspace.id"
         :type="11"
       >
-        <img
+        <avatar
           class="workspace-avatar"
-          :src="workspace.avatar"
-        >
+          :user-id="workspace.id"
+          :image="userAvatar(workspace, 14)"
+          :size="14"
+          :border-radius="2"
+        />
+
         {{ workspace.name }}
 
         <svg-icon
@@ -77,15 +81,18 @@
 </template>
 
 <script>
+import Avatar from '@components/Avatar';
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import { ipcRenderer } from 'electron';
 import { mapGetters } from 'vuex';
+import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   components: {
     Popover,
     UiButton,
+    Avatar,
   },
 
   props: {
@@ -155,18 +162,15 @@ export default {
       console.log(link);
       window.open(link);
     },
+
+    userAvatar: getUserAvatarUrl,
   },
 };
 </script>
 
 <style lang="stylus">
   .workspace-avatar
-    width 14px
-    height 14px
-    border-radius 2px
     margin-right 7px
-    outline solid 1px var(--shadow-10)
-    outline-offset: -1px;
 
   .workspace--checked
     color var(--color-1)
