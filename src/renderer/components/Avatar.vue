@@ -5,15 +5,16 @@
   >
     <div
       class="avatar__no-image"
-      :class="{'avatar__image--square': square, 'avatar__image--round-corners': roundCorners}"
-      :style="{'background-color': imageColor}"
+      :class="{'avatar__image--square': square}"
+      :style="{'background-color': imageColor, 'border-radius': borderRadius + 'px'}"
     />
 
     <img
       v-if="image"
       loading="lazy"
       class="avatar__image"
-      :class="{'avatar__image--square': square, 'avatar__image--round-corners': roundCorners}"
+      :class="{'avatar__image--square': square}"
+      :style="{'border-radius': borderRadius + 'px'}"
       alt=""
       :width="size"
       :height="size"
@@ -101,11 +102,11 @@ export default {
     },
 
     /**
-     * Avatar with round corners
+     * Avatar border radius
      */
-    roundCorners: {
-      type: [ Boolean ],
-      default: false,
+    borderRadius: {
+      type: Number,
+      default: 1000,
     },
 
     /**
@@ -207,10 +208,7 @@ export default {
             object-fit cover
 
             &--square
-              border-radius 0
-
-            &--round-corners
-              border-radius 4px
+              border-radius 0 !important
 
         &__status
             position absolute
