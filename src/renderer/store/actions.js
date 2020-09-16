@@ -25,26 +25,11 @@ export default {
     const userId = authenticatedUser.id;
 
     if (userId) {
+      commit('me/SET_USER_ID', userId);
       dispatch('me/update', authenticatedUser);
 
-      /** Get workspaces list */
-      /**
-       * todo: Предусмотреть, что воркспейсов может не быть.
-       *       Перекинуть юзера на веб страницу где можно создать воркспейс
-       */
-      const workspaces = await API.workspace.getWorkspaces();
-      const workspacesIdList = workspaces.map(w => w.id);
-
-      /** Selected workspace id */
-      let selectedWorkspaceId = getters['me/getSelectedWorkspaceId'];
-
-      if (!selectedWorkspaceId || !workspacesIdList.includes(selectedWorkspaceId)) {
-        selectedWorkspaceId = workspaces[0].id;
-        dispatch('me/setSelectedWorkspaceId', selectedWorkspaceId);
-      }
-
-      commit('me/SET_USER_ID', userId);
-      commit('workspaces/SET_COLLECTION', mapKeys(workspaces, 'id'));
+      /** Update workspace list */
+      await dispatch('workspaces/updateList');
 
       /** Get specific workspace data */
       await dispatch('updateCurrentWorkspaceState');
