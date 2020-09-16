@@ -3,6 +3,7 @@ const StyleguideButtons = () => import(/* webpackChunkName: "main" */ '@views/Ma
 const StyleguideLists = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Lists');
 const StyleguideForms = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Forms');
 const StyleguideNotifications = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Notifications');
+const StyleguideTabs = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Styleguide/Tabs');
 
 export const styleguideRoutes = {
   path: 'styleguide',
@@ -28,6 +29,11 @@ export const styleguideRoutes = {
       path: 'notifications',
       name: 'styleguide-notifications',
       component: StyleguideNotifications,
+    },
+    {
+      path: 'tabs',
+      name: 'styleguide-tabs',
+      component: StyleguideTabs,
     },
   ],
 };

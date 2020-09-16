@@ -282,6 +282,21 @@
     stroke var(--text-tech-0)
     padding 0
 
+  &--15
+    buttonSmallSize()
+    font-size 12px
+    padding 0 8px
+    color var(--text-1)
+    border-radius 100px
+
+    &^[0]--active
+      background var(--button-bg-6)
+      color var(--text-0)
+      pointer-events none
+
+    &:hover:not(.ui-button--active)
+      buttonDefaultHoverState()
+
   &--icon&--caption&--wide
     buttonWithIconAndCaption()
 

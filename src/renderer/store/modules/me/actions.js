@@ -115,15 +115,18 @@ export default {
    * @param {MeState} state – state
    * @returns {void}
    */
-  async setDefaultMediaState({ commit, state }) {
+  async setDefaultMediaState({ commit, state, rootState }) {
     const defaultState = {
       ...state.mediaState,
-      microphone: false,
       camera: false,
       screen: false,
       speakers: true,
       speaking: false,
     };
+
+    if (rootState.app.muteMic) {
+      defaultState.microphone = false;
+    }
 
     commit('SET_MEDIA_STATE', defaultState);
   },
@@ -196,6 +199,7 @@ export default {
 
     /** Wake up */
     if (!value) {
+      commit('app/ANIMATION_CHANNEL_ID', null, { root: true });
       await dispatch('initial', null, { root: true });
     }
 

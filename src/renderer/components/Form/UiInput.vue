@@ -248,14 +248,20 @@ export default {
      * Also, edit error text accordingly
      *
      * @param {string} text - text in input
+     * @param {boolean} externalCheck - true if function was called outside (from UiForm.vue)
      * @returns {boolean} true if found any errors
      */
-    checkErrors(text = this.localValue) {
+    checkErrors(text = this.localValue, externalCheck = false) {
       if (this.validate === false) {
         return;
       }
       this.errorText = null;
       const errors = [];
+
+      if (externalCheck) {
+        this.localValue = this.localValue.trim();
+      }
+      text = text.trim();
 
       if (text.length === 0) {
         const res = this.checkEmpty();

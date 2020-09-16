@@ -1,6 +1,7 @@
 import API from '@api';
 import i18n from '@/i18n';
 import router from '@/router';
+import { IS_DEV } from '@shared/Constants';
 
 export default {
   /**
@@ -93,6 +94,58 @@ export default {
             close: true,
           },
         ],
+      },
+    };
+
+    await dispatch('app/addNotification', notification, { root: true });
+  },
+
+  /**
+   * Copy invite link to channel
+   *
+   * @param {object} vuex functions
+   * @param {string} channelId – channel id
+   * @returns {Promise<void>}
+   */
+  async copyInviteLink({ dispatch }, channelId) {
+    const { token } = await API.channel.invite(channelId);
+
+    if (token) {
+      let domain = process.env.VUE_APP_PROD_URL;
+
+      if (IS_DEV) {
+        domain = process.env.VUE_APP_DEV_URL;
+      }
+
+      navigator.clipboard.writeText(`${domain}/guest/${token}`);
+
+      const texts = i18n.t('workspace.channel');
+
+      const notification = {
+        data: {
+          text: texts.inviteCopied,
+        },
+      };
+
+      await dispatch('app/addNotification', notification, { root: true });
+    }
+  },
+
+  /**
+   * Revoke invite links to channel
+   *
+   * @param {object} vuex functions
+   * @param {string} channelId – channel id
+   * @returns {Promise<void>}
+   */
+  async revokeInviteLinks({ dispatch }, channelId) {
+    await API.channel.deleteAllInvites(channelId);
+
+    const texts = i18n.t('workspace.channel');
+
+    const notification = {
+      data: {
+        text: texts.invitesDeleted,
       },
     };
 

@@ -16,7 +16,7 @@ const ERROR_CODES = {
 };
 const REQUEST_VIDEOSTREAM_TIMEOUT = 5000;
 const DEFAULT_BITRATE_CAMERA_ = 256000;
-const DEFAULT_BITRATE_SCREEN = 512000;
+const DEFAULT_BITRATE_SCREEN = 768000;
 
 // Possible events for subscribing
 const JANUS_WRAPPER_EVENTS = {
@@ -45,7 +45,8 @@ class JanusWrapper extends EventEmitter {
   /**
    * Creates an instance for Janus connection
    * @param {object} config Janus connection parameters
-   * @param {string} config.url Url of Janus server
+   * @param {string} config.janusServerUrl Url of Janus server
+   * @param {string} config.janusWsServerUrl Weboscket url of janus server
    * @param {string} config.workspaceToken Authentication token for Janus connection
    * @param {string} config.channelToken Authentication token for channels
    * @param {number} config.audioRoomId Janus audio room id
@@ -56,6 +57,7 @@ class JanusWrapper extends EventEmitter {
    */
   constructor({
     janusServerUrl,
+    janusWsServerUrl,
     janusAuthToken,
     channelAuthToken,
     audioRoomId,
@@ -67,7 +69,8 @@ class JanusWrapper extends EventEmitter {
     super();
 
     // Initialize private variables
-    this.__url = janusServerUrl + ':8088/janus';
+    this.__url = janusServerUrl;
+    this.__wsUrl = janusWsServerUrl;
     this.__workspaceToken = janusAuthToken;
     this.__channelToken = channelAuthToken;
     this.__audioRoomId = audioRoomId;
@@ -311,23 +314,10 @@ class JanusWrapper extends EventEmitter {
     return new Promise((resolve, reject) => {
       let isFullfilled = false;
 
-      // convert url to websocket connect
-      // url is like "http://janus-host.domen.zone:8088/janus";
-      let wsurl = '';
-
-      if (this.__url.indexOf('http') + 1) {
-        wsurl = this.__url.replace('http', 'ws')
-          .replace('8088', '8188')
-          .replace('/janus', '');
-      } else {
-        wsurl = this.__url.replace('https', 'wss')
-          .replace('8089', '8189')
-          .replace('/janus', '');
-      }
-      cnsl.debug(`Connect to janus. rest-api: ${this.__url}, ws-api: ${wsurl}`);
+      cnsl.debug(`Connect to janus. rest-api: ${this.__url}, ws-api: ${this.__wsUrl}`);
 
       this.__janus = new Janus({
-        server: [wsurl, this.__url],
+        server: [this.__wsUrl, this.__url],
         token: this.__workspaceToken,
         success: () => {
           resolve();

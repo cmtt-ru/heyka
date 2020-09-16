@@ -36,6 +36,13 @@
         >
           Notifications
         </router-link>
+        <router-link
+          class="link"
+          :to="{name: 'styleguide-tabs'}"
+          replace
+        >
+          Tabs
+        </router-link>
       </div>
     </template>
 

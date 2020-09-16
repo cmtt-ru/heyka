@@ -1,4 +1,5 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import broadcastEvents from '@classes/broadcastEvents';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
@@ -23,6 +24,9 @@ class CallWindow {
     this.sharingWindow = null;
     this.gridWindow = null;
     this.frameWindow = null;
+    broadcastEvents.on('closeOverlay', () => {
+      this.closeOverlay();
+    });
   }
 
   /**
@@ -50,12 +54,34 @@ class CallWindow {
   }
 
   /**
+   * Hide or close any window
+   * @param {object} window - window
+   * @param {('hide'|'close')} action - 'hide' or 'close'
+   * @returns {void}
+   */
+  manageWindow(window, action) {
+    if (window) {
+      window.action(action);
+    }
+  }
+
+  /**
    * Hide call overlay
    * @returns {void}
    */
   hideOverlay() {
     if (this.overlayWindow) {
       this.overlayWindow.action('hide');
+    }
+  }
+
+  /**
+   * Close call overlay
+   * @returns {void}
+   */
+  closeOverlay() {
+    if (this.overlayWindow) {
+      this.overlayWindow.action('close');
     }
   }
 
@@ -161,6 +187,16 @@ class CallWindow {
   }
 
   /**
+   * Close grid (main) window
+   * @returns {void}
+   */
+  closeGrid() {
+    if (this.gridWindow) {
+      this.gridWindow.action('close');
+    }
+  }
+
+  /**
    * Show frame window
    * @param {string} displayId – display id
    * @param {number?} sourceIndex Source index
@@ -197,37 +233,14 @@ class CallWindow {
   }
 
   /**
-   * Hide ALL call windows
-   * @returns {void}
-   */
-  hideAll() {
-    this.hideGrid();
-    this.hideSharing();
-    if (this.overlayWindow) {
-      this.overlayWindow.action('close');
-    }
-    if (this.frameWindow) {
-      this.frameWindow.action('close');
-    }
-  }
-
-  /**
    * Close ALL call windows
    * @returns {void}
    */
   closeAll() {
-    if (this.gridWindow) {
-      this.gridWindow.action('close');
-    }
-    if (this.sharingWindow) {
-      this.sharingWindow.action('close');
-    }
-    if (this.overlayWindow) {
-      this.overlayWindow.action('close');
-    }
-    if (this.frameWindow) {
-      this.frameWindow.action('close');
-    }
+    this.manageWindow(this.frameWindow, 'close');
+    this.manageWindow(this.gridWindow, 'close');
+    this.manageWindow(this.sharingWindow, 'close');
+    this.manageWindow(this.overlayWindow, 'close');
   }
 
   /**
