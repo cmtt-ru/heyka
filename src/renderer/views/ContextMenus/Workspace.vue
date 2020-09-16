@@ -18,6 +18,7 @@
         v-if="permissions['workspaces.manage']"
         :type="11"
         icon="edit"
+        data-popover-close
         @click="openManageWorkspace"
       >
         {{ texts.manage }}
@@ -31,6 +32,8 @@
         v-for="workspace in workspaces"
         :key="workspace.id"
         :type="11"
+        data-popover-close
+        @click="workspaceClickHandler(workspace.id)"
       >
         <avatar
           class="workspace-avatar"
@@ -52,6 +55,7 @@
       <ui-button
         :type="11"
         icon="workspace"
+        data-popover-close
         @click="openWorkspaceCreation"
       >
         {{ texts.new }}
@@ -161,6 +165,10 @@ export default {
 
       console.log(link);
       window.open(link);
+    },
+
+    workspaceClickHandler(workspaceId) {
+      this.$store.dispatch('changeWorkspace', workspaceId);
     },
 
     userAvatar: getUserAvatarUrl,

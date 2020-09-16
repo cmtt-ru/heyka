@@ -307,6 +307,7 @@ export default {
   /**
    * Log in using auth link
    *
+   * @param {object} vuex context
    * @param {string} authLink – code to log in with
    * @returns {void}
    */
@@ -322,5 +323,17 @@ export default {
     } catch (err) {
       console.log(`Code ${authLink} is invalid:`, err);
     }
+  },
+
+  /**
+   * Change current workspace
+   *
+   * @param {object} vuex context
+   * @param {string} workspaceId – workspace id
+   * @returns {Promise<void>}
+   */
+  async changeWorkspace({ dispatch }, workspaceId) {
+    dispatch('me/setSelectedWorkspaceId', workspaceId);
+    await dispatch('initial');
   },
 };
