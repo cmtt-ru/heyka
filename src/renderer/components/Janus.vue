@@ -240,6 +240,12 @@ export default {
         } else {
           AudioCheck.subscribeMutedTalk();
         }
+        if (this.screen) {
+          this.startSharingScreen();
+        }
+        if (this.camera) {
+          this.startSharingCamera();
+        }
       });
 
       JanusEvents.emit('joined');
