@@ -3,7 +3,7 @@ import store from '@/store';
 import hark from 'hark';
 import shutdown from 'electron-shutdown-command';
 import router from '@/router';
-import i18n from '@/i18n';
+import i18n from '@sdk/translations/i18n';
 import { ipcRenderer } from 'electron';
 import broadcastEvents from '@classes/broadcastEvents';
 
