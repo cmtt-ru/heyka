@@ -48,6 +48,6 @@ export default {
 </script>
 
 <style lang="stylus">
-  @import './styles/fonts'
-  @import './styles/global'
+  @import '../sdk/styles/fonts'
+  @import '../sdk/styles/global'
 </style>
