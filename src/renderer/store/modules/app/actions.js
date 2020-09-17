@@ -1,5 +1,5 @@
 import API from '@api';
-import themes from '@/themes';
+import themes from '@sdk/themes';
 import i18n from '@sdk/translations/i18n';
 import { ipcRenderer } from 'electron';
 import dateFormat from 'dateformat';

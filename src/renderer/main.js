@@ -1,10 +1,10 @@
 /* global buildRevision */
-import '@shared/Constants';
+import '@sdk/Constants';
 import HawkCatcher from '@hawk.so/javascript';
 import Vue from 'vue';
 import App from '@/App.vue';
 import router from '@/router';
-import themes from '@/themes';
+import themes from '@sdk/themes';
 import i18n from '@sdk/translations/i18n';
 import store from '@/store';
 import API from '@api';

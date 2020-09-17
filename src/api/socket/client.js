@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import eventNames from './eventNames';
-import { IS_DEV } from '../../shared/Constants';
+import { IS_DEV } from '@sdk/Constants';
 
 let socketUrl = process.env.VUE_APP_PROD_URL;
 
