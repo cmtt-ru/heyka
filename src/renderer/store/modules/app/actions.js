@@ -1,6 +1,6 @@
 import API from '@api';
 import themes from '@/themes';
-import i18n from '@/i18n';
+import i18n from '@sdk/translations/i18n';
 import { ipcRenderer } from 'electron';
 import dateFormat from 'dateformat';
 import { v4 as uuidV4 } from 'uuid';

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import router from '@/router';
 import store from '@/store';
-import i18n from '@/i18n';
+import i18n from '@sdk/translations/i18n';
 import { createPopper } from '@popperjs/core';
 import API from '@api';
 

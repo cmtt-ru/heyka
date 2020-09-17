@@ -1,5 +1,5 @@
 import { sortByPriority } from '@libs/arrays';
-import { formImageUrl, isRetina, RETINA_MULTIPLICATOR } from '@/filters/leonardo';
+import { formImageUrl, isRetina, RETINA_MULTIPLICATOR } from '@sdk/filters/leonardo';
 
 const AVATAR_SIZE_32 = 32;
 

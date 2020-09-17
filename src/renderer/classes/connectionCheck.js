@@ -1,5 +1,5 @@
 import store from '@/store';
-import i18n from '@/i18n';
+import i18n from '@sdk/translations/i18n';
 import isOnline from 'is-online';
 import sleep from 'es7-sleep';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
