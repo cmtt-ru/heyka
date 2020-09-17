@@ -5,7 +5,7 @@ import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
-import { IS_WIN, IS_DEV, IS_LINUX } from '../../shared/Constants';
+import { IS_WIN, IS_DEV, IS_LINUX } from '../../sdk/Constants';
 
 let icon;
 
