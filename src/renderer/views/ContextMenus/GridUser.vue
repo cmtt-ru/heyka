@@ -23,7 +23,7 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
-import broadcastActions from '@classes/broadcastActions';
+import broadcastActions from '@sdk/classes/broadcastActions';
 
 export default {
   components: {

@@ -3,7 +3,7 @@ import Janus from './janus';
 import PublishingVideoroomPlugin from './PublishingVideoroomPlugin';
 import SubscribingVideoroomPlugin from './SubscribingVideoroomPlugin';
 import TextroomPlugin from './TextroomPlugin';
-import mediaCapturer from './mediaCapturer';
+import mediaCapturer from '@classes/mediaCapturer';
 
 /** @type {number} How much time I should wait for 'webrtc-cleanup' event before throw an error */
 const WAIT_UNTIL_UNPUBLISH_TIMEOUT = 1000;

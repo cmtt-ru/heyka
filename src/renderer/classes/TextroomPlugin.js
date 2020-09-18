@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 import { v4 as uuid4 } from 'uuid';
 const cnsl = new Logger('Textroom Plugin', '#F1C40F');
 const JANUS_PLUGIN = 'janus.plugin.textroom';

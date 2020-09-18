@@ -10,12 +10,12 @@
 <script>
 import { ipcRenderer } from 'electron';
 import Janus from '@components/Janus.vue';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 import Notifications from '@components/Notifications';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
 // import PerformanceMonitor from '@components/PerformanceMonitor';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 import { prepareTokens } from '@api/tokens';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 

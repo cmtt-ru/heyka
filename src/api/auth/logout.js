@@ -1,7 +1,7 @@
 import { clearTokens } from '../tokens';
 import router from '@/router';
 import * as sockets from '@api/socket';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 /** List for event and logout user */
 broadcastEvents.on('logout', logout);

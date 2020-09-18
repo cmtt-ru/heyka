@@ -41,8 +41,8 @@
 import captureFrame from 'capture-frame';
 import CallControls from './CallControls';
 import { mapGetters, mapState } from 'vuex';
-import broadcastActions from '@classes/broadcastActions';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastActions from '@sdk/classes/broadcastActions';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
 

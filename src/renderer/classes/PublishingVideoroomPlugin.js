@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import mediaCapturer from './mediaCapturer';
-import Logger from '@classes/logger';
+import mediaCapturer from '@classes/mediaCapturer';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('Publ Videoroom', '#1990bf');
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 const WAITING_UNPUBLISH_TIMEOUT = 2000;

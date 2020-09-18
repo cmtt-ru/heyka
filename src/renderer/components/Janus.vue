@@ -9,12 +9,12 @@
 </template>
 
 <script>
-import JanusWrapper from '@classes/JanusWrapper.js';
+import JanusWrapper from '@sdk/classes/JanusWrapper.js';
 import connectionCheck from '@classes/connectionCheck';
-import AudioCheck from '@classes/AudioCheck';
-import JanusEvents from '@classes/janusEvents';
+import AudioCheck from '@classes/audioCheck';
+import JanusEvents from '@sdk/classes/janusEvents';
 import { mapState } from 'vuex';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('Janus.vue', '#AF7AC5 ');
 
 const BITRATE_CHECK_TIMEOUT = 1000;

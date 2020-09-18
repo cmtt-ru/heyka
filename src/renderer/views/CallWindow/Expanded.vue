@@ -74,7 +74,7 @@ import CallControls from '../CallOverlayWindow/CallControls';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 import { mapGetters, mapState } from 'vuex';
 import Tablet from '@components/Drawing/Tablet';
 import mediaCapturer from '@classes/mediaCapturer';

@@ -104,9 +104,9 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { GRIDS } from './grids';
 import { mapGetters } from 'vuex';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('Grid.vue', '#138D75');
 
 /**

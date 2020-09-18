@@ -8,16 +8,16 @@ import state from './state';
 import mutations from './mutations';
 import mediaDevices from '@classes/mediaDevices';
 import createMutationsSharer from 'vuex-shared-mutations';
-import broadcastActions from '@classes/broadcastActions';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastActions from '@sdk/classes/broadcastActions';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
-import broadcastState from '@classes/broadcastState';
+import broadcastState from '@sdk/classes/broadcastState';
 import { ipcRenderer } from 'electron';
 import createPersistedState from 'vuex-persistedstate';
 import { heykaStore } from '@/store/localStore';
 import cloneDeep from 'clone-deep';
 import { throttle } from 'throttle-debounce';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 
 const cnsl = new Logger('Vuex index', '#17A589');
 

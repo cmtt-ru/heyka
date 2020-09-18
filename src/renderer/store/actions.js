@@ -4,7 +4,7 @@ import * as sockets from '@api/socket';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
 import router from '@/router';
-import sounds from '@classes/sounds';
+import sounds from '@sdk/classes/sounds';
 import connectionCheck from '@classes/connectionCheck';
 
 export default {
