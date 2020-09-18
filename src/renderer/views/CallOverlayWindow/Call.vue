@@ -39,12 +39,12 @@
 
 <script>
 import captureFrame from 'capture-frame';
-import CallControls from './CallControls';
+import CallControls from '@sdk/views/Call/CallControls';
 import { mapGetters, mapState } from 'vuex';
 import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
-import janusVideoroomWrapper from '../../classes/janusVideoroomWrapper';
+import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 
 export default {
   components: {
