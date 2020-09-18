@@ -44,7 +44,7 @@
 import UiButton from '@components/UiButton';
 import { UiSelect } from '@components/Form';
 import ProgressBar from '@components/ProgressBar';
-import AudioCheck from '@classes/AudioCheck';
+import AudioCheck from '@classes/audioCheck';
 import mediaDevices from '@classes/mediaDevices';
 
 /**

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import hark from 'hark';
 import mediaCapturer from '@classes/mediaCapturer';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('Audiobridge plugin', '#2980B9');
 const JANUS_PLUGIN = 'janus.plugin.audiobridge';
 const HARK_UPDATE_INTERVAL_MS = 75;

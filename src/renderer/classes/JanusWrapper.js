@@ -3,10 +3,10 @@ import Janus from './janus';
 import AudiobridgePlugin from './AudiobridgePlugin';
 import PublishingVideoroomPlugin from './PublishingVideoroomPlugin';
 import SubscribingVideoroomPlugin from './SubscribingVideoroomPlugin';
-import mediaCapturer from './mediaCapturer';
+import mediaCapturer from '@classes/mediaCapturer';
 // eslint-disable-next-line no-unused-vars
 import adapter from 'webrtc-adapter';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('Janus wrapper', '#5DADE2');
 
 const ERROR_CODES = {

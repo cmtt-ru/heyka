@@ -70,8 +70,8 @@
 
 <script>
 import UiButton from '@components/UiButton';
-import broadcastActions from '@classes/broadcastActions';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastActions from '@sdk/classes/broadcastActions';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 import Microphone from '@components/Microphone';
 import { mapGetters } from 'vuex';
 

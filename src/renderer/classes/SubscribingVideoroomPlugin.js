@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import mediaCapturer from './mediaCapturer';
-import Logger from '@classes/logger';
+import mediaCapturer from '@classes/mediaCapturer';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('Subscribing Videoroom Plugin', '#F1C40F');
 const JANUS_PLUGIN = 'janus.plugin.videoroom';
 

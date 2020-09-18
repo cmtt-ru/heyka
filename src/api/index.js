@@ -9,7 +9,7 @@ import trottleAPI from './throttle';
 import axios from 'axios';
 import { updateTokens, checkAndRefreshTokens } from './tokens';
 import store from '@/store';
-import connectionCheck from '@classes/connectionCheck';
+import connectionCheck from '@sdk/classes/connectionCheck';
 import * as sockets from '@api/socket';
 import { client } from './socket/client';
 

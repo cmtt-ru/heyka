@@ -54,7 +54,7 @@ import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 import callWindow from '@classes/callWindow';
-import JanusEvents from '@classes/janusEvents';
+import JanusEvents from '@sdk/classes/janusEvents';
 
 /**
  * Map media state points to corresponding icons

@@ -12,7 +12,7 @@ import SvgIcon from '@components/SvgIcon.vue';
 import '@sdk/filters/leonardo';
 import '@sdk/directives';
 import { Mixin } from '@/mixins';
-import permissions from '@classes/permissions';
+import permissions from '@sdk/classes/permissions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import '@classes/SpeedTest';
 

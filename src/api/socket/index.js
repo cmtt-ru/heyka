@@ -4,9 +4,9 @@ import { client, connect } from './client';
 import { getAccessToken } from '../tokens';
 import connectionCheck from '@classes/connectionCheck';
 import { handleError } from '@api/errors';
-import Logger from '@classes/logger';
-import sounds from '@classes/sounds';
-import broadcastEvents from '@classes/broadcastEvents';
+import Logger from '@sdk/classes/logger';
+import sounds from '@sdk/classes/sounds';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 const cnsl = new Logger('SOCKETS', '#d67a24');
 

@@ -5,6 +5,9 @@
 </template>
 
 <script>
+import '@sdk/styles/fonts.styl';
+import '@sdk/styles/global.styl';
+import '@styles/global.styl';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Mousetrap from 'mousetrap';
 require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
@@ -46,8 +49,3 @@ export default {
   },
 };
 </script>
-
-<style lang="stylus">
-  @import '../sdk/styles/fonts'
-  @import '../sdk/styles/global'
-</style>

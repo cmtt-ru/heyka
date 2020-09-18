@@ -5,7 +5,7 @@ import { ipcRenderer } from 'electron';
 import dateFormat from 'dateformat';
 import { v4 as uuidV4 } from 'uuid';
 import { heykaStore } from '@/store/localStore';
-import sounds from '@classes/sounds';
+import sounds from '@sdk/classes/sounds';
 
 /**
  * @typedef PrivacyLogData
