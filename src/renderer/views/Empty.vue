@@ -7,16 +7,12 @@
     <router-link :to="{name: 'settings'}">
       Settings
     </router-link>
-    <performance-monitor />
   </div>
 </template>
 
 <script>
-import PerformanceMonitor from '@components/PerformanceMonitor';
-
 export default {
   components: {
-    PerformanceMonitor,
   },
 };
 </script>
