@@ -146,8 +146,8 @@ export default {
      */
     async openManageWorkspace() {
       const { code } = await this.$API.auth.link();
-      // const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      const baseUrl = 'http://localhost:8082/';
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      // const baseUrl = 'http://localhost:8082/';
       const link = `${baseUrl}/manage/${code}`;
 
       window.open(link);
@@ -159,8 +159,8 @@ export default {
      */
     async openWorkspaceCreation() {
       const { code } = await this.$API.auth.link();
-      // const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      const baseUrl = 'http://localhost:8082';
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      // const baseUrl = 'http://localhost:8082';
       const link = `${baseUrl}/workspace/create/${code}`;
 
       console.log(link);
