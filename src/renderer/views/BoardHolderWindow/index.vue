@@ -17,9 +17,9 @@
 
 <script>
 import BoardHolder from '@components/Drawing/BoardHolder';
-import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
+import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 import { mapState, mapGetters } from 'vuex';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('BoardHolderWindow', 'maroon');
 
 const COLORS = [

@@ -1,6 +1,7 @@
 <template>
   <layout>
     <template #sidebar-header>
+      <performance-monitor />
       <sidebar-header />
     </template>
 
@@ -23,6 +24,7 @@ import Layout from './../Layout';
 import Sidebar from './Sidebar';
 import SidebarHeader from './SidebarHeader';
 import WorkspaceHeader from './WorkspaceHeader';
+import PerformanceMonitor from '@components/PerformanceMonitor';
 
 export default {
   components: {
@@ -30,6 +32,7 @@ export default {
     Sidebar,
     SidebarHeader,
     WorkspaceHeader,
+    PerformanceMonitor,
   },
   data() {
     return {

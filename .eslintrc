@@ -207,6 +207,7 @@
     "IS_WIN": true,
     "IS_MAC": true,
     "IS_LINUX": true,
+    "IS_ELECTRON": true,
     "buildRevision": true
   }
 }
