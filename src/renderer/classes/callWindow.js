@@ -1,5 +1,5 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {

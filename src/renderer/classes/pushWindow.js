@@ -1,7 +1,7 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import store from '@/store';
-import sounds from '@classes/sounds';
-import Logger from '@classes/logger';
+import sounds from '@sdk/classes/sounds';
+import Logger from '@sdk/classes/logger';
 
 const cnsl = new Logger('Push Window', '#a9ff71');
 

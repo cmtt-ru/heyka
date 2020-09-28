@@ -83,7 +83,7 @@
 
 import { UiSelect, UiSwitch } from '@components/Form';
 import UiButton from '@components/UiButton';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 import { ipcRenderer } from 'electron';
 import { heykaStore } from '@/store/localStore';
 

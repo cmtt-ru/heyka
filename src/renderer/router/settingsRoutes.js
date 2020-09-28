@@ -1,6 +1,6 @@
 const Settings = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings');
 const General = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/General');
-const Devices = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Devices');
+const Devices = () => import(/* webpackChunkName: "main" */ '@sdk/views/Settings/Devices');
 const Network = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Network');
 const About = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/About');
 const Support = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Support');
