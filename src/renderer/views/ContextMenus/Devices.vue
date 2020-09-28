@@ -8,7 +8,7 @@
 
 <script>
 import Popover from '@components/Popover';
-import Devices from '@views/MainWindow/Settings/Devices';
+import Devices from '@sdk/views/Settings/Devices';
 
 export default {
   components: {

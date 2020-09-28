@@ -9,7 +9,7 @@ import {ipcRenderer} from "electron";
 </template>
 
 <script>
-import janusVideoroomWrapper from '@classes/janusVideoroomWrapper';
+import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 import { mapGetters, mapState } from 'vuex';
 import Mousetrap from 'mousetrap';
 import { ipcRenderer } from 'electron';

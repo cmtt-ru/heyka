@@ -1,6 +1,6 @@
 import callWindow from '@classes/callWindow';
 import sleep from 'es7-sleep';
-import { IS_LINUX } from '../../../../shared/Constants';
+import { IS_LINUX } from '@sdk/Constants';
 
 export default {
   /**

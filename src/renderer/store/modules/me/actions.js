@@ -3,9 +3,9 @@ import callWindow from '@classes/callWindow';
 import * as sockets from '@api/socket';
 import { ipcRenderer } from 'electron';
 import { meStore } from '@/store/localStore';
-import Logger from '@classes/logger';
-import sounds from '@classes/sounds';
-import broadcastEvents from '@classes/broadcastEvents';
+import Logger from '@sdk/classes/logger';
+import sounds from '@sdk/classes/sounds';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 const cnsl = new Logger('Vuex actions /me', '#17A589');
 

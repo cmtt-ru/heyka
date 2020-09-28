@@ -105,7 +105,7 @@
 import UiButton from '@components/UiButton';
 import { UiSwitch } from '@components/Form';
 import mediaCapturer from '@classes/mediaCapturer';
-import broadcastActions from '@classes/broadcastActions';
+import broadcastActions from '@sdk/classes/broadcastActions';
 import { mapGetters } from 'vuex';
 
 /**

@@ -1,6 +1,6 @@
 const CallWindow = () => import(/* webpackChunkName: "call" */ '@views/CallWindow');
-const CallWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallWindow/Grid');
-const CallWindowExpanded = () => import(/* webpackChunkName: "call" */ '@views/CallWindow/Expanded');
+const CallWindowMain = () => import(/* webpackChunkName: "call" */ '@sdk/views/Call/Grid');
+const CallWindowExpanded = () => import(/* webpackChunkName: "call" */ '@sdk/views/Call/Expanded');
 
 const CallOverlayWindow = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow');
 const CallOverlayWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow/Call');

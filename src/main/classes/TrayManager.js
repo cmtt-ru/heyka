@@ -1,6 +1,6 @@
 import path from 'path';
 import { app, Menu, Tray, nativeImage, nativeTheme, ipcMain } from 'electron';
-import { IS_MAC, IS_LINUX } from '../../shared/Constants';
+import { IS_MAC, IS_LINUX } from '../../sdk/Constants';
 import { heykaStore } from '../../renderer/store/localStore';
 
 let animationTimer;
