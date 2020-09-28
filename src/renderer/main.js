@@ -1,17 +1,17 @@
 /* global buildRevision */
-import '@shared/Constants';
+import '@sdk/Constants';
 import HawkCatcher from '@hawk.so/javascript';
 import Vue from 'vue';
 import App from '@/App.vue';
 import router from '@/router';
-import themes from '@/themes';
-import i18n from '@/i18n';
+import themes from '@sdk/themes';
+import i18n from '@sdk/translations/i18n';
 import store from '@/store';
 import API from '@api';
 import SvgIcon from '@components/SvgIcon.vue';
-import '@/directives';
+import '@sdk/directives';
 import { Mixin } from '@/mixins';
-import permissions from '@classes/permissions';
+import permissions from '@sdk/classes/permissions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import '@classes/SpeedTest';
 

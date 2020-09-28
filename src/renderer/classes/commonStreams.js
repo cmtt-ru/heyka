@@ -1,7 +1,7 @@
 import StreamReceiver from '@classes/StreamSharing/Receiver';
-import mediaCapturer from './mediaCapturer';
+import mediaCapturer from '@classes/mediaCapturer';
 import { EventEmitter } from 'events';
-import Logger from '@classes/logger';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('commonStreams', '#1A5276');
 
 /**

@@ -17,8 +17,8 @@
 
 <script>
 import Push from './Push';
-import broadcastActions from '@classes/broadcastActions';
-import broadcastEvents from '@classes/broadcastEvents';
+import broadcastActions from '@sdk/classes/broadcastActions';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 export default {
   components: {

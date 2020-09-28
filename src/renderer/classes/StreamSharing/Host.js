@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import broadcastEvents from '../broadcastEvents';
-import mediaCapturer from '../mediaCapturer';
-import Logger from '@classes/logger';
+import mediaCapturer from '.@classes/mediaCapturer';
+import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('Host.js', '#85929E');
 
 /**

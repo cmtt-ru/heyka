@@ -1,5 +1,5 @@
-import i18n from '@/i18n';
-import broadcastActions from '@classes/broadcastActions';
+import i18n from '@sdk/translations/i18n';
+import broadcastActions from '@sdk/classes/broadcastActions';
 
 export const Mixin = {
 
