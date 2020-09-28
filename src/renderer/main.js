@@ -14,7 +14,7 @@ import '@sdk/directives';
 import { Mixin } from '@/mixins';
 import permissions from '@sdk/classes/permissions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
-import '@classes/SpeedTest';
+import '@sdk/classes/SpeedTest';
 
 if (isMainWindow()) {
   require('@classes/pushWindow');
