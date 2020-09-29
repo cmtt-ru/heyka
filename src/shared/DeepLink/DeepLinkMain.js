@@ -146,4 +146,4 @@ class DeepLinkMain {
   }
 }
 
-export default new DeepLinkMain(['focus', 'login', 'social-link']);
+export default new DeepLinkMain(['focus', 'login', 'social-link', 'workspace']);

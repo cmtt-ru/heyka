@@ -41,10 +41,13 @@
         v-popover.click="{name: 'Workspace', permissions: $permissions.manageWorkspaces()}"
         class="workspace__wrapper"
       >
-        <img
+        <avatar
           class="workspace__avatar"
-          :src="myWorkspace.avatar"
-        >
+          :user-id="myWorkspace.id"
+          :image="userAvatar(myWorkspace, 14)"
+          :size="14"
+          :border-radius="2"
+        />
         <div>{{ myWorkspace.name }}</div>
         <ui-button
           :type="7"
@@ -62,11 +65,14 @@
 import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import { mapGetters } from 'vuex';
+import { getUserAvatarUrl } from '@libs/image';
+import Avatar from '@components/Avatar';
 
 export default {
   components: {
     UiButton,
     UiInput,
+    Avatar,
   },
 
   data() {
@@ -133,6 +139,8 @@ export default {
       this.searchText = '';
       this.inputActive = false;
     },
+
+    userAvatar: getUserAvatarUrl,
   },
 
 };

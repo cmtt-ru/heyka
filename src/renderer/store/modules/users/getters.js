@@ -1,7 +1,5 @@
 import { sortByPriority } from '@libs/arrays';
-import { formImageUrl, isRetina, RETINA_MULTIPLICATOR } from '@sdk/filters/leonardo';
-
-const AVATAR_SIZE_32 = 32;
+import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   /**
@@ -37,23 +35,13 @@ export default {
    * @param {UserState} state - user module state
    * @returns {function(*): User}
    */
-  getUserAvatarUrl: state => (id, size = AVATAR_SIZE_32) => {
+  getUserAvatarUrl: state => (id, size) => {
     const user = state.collection[id];
 
     if (!user) {
       return null;
     }
 
-    if (user.avatarFileId) {
-      if (isRetina()) {
-        size *= RETINA_MULTIPLICATOR;
-      }
-
-      return size <= AVATAR_SIZE_32 ? user.avatarSet.image32x32 : user.avatarSet.image64x64;
-    }
-
-    if (user.avatar) {
-      return formImageUrl(user.avatar, size, size);
-    }
+    return getUserAvatarUrl(user, size);
   },
 };
