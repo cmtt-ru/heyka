@@ -105,12 +105,6 @@ export default {
     UiButton,
   },
 
-  data: () => {
-    return {
-      showInviteButtons: false,
-    };
-  },
-
   computed: {
     /**
      * Get needed texts from I18n-locale file
@@ -173,14 +167,7 @@ export default {
 
   },
 
-  async mounted() {
-    const permissions = await this.$API.user.checkPermissions(this.$permissions.manageWorkspaces());
-
-    this.showInviteButtons = Object.values(permissions)[0];
-  },
-
   methods: {
-
     /**
      * Connect to channel
      * @returns {void}
@@ -230,8 +217,8 @@ export default {
   justify-content flex-start
   background-color var(--app-bg)
 
-  &&.ui-sticked
-    box-shadow 0 0px 8px 0px #808080
+  &.ui-sticked
+    box-shadow 0 0 8px 0 #808080
 
   &__type
     margin 0 4px
