@@ -9,7 +9,6 @@ import i18n from '@sdk/translations/i18n';
 import store from '@/store';
 import API from '@api';
 import SvgIcon from '@components/SvgIcon.vue';
-import '@sdk/filters/leonardo';
 import '@sdk/directives';
 import { Mixin } from '@/mixins';
 import permissions from '@sdk/classes/permissions';

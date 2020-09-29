@@ -18,6 +18,7 @@
         v-if="permissions['workspaces.manage']"
         :type="11"
         icon="edit"
+        data-popover-close
         @click="openManageWorkspace"
       >
         {{ texts.manage }}
@@ -31,11 +32,17 @@
         v-for="workspace in workspaces"
         :key="workspace.id"
         :type="11"
+        data-popover-close
+        @click="workspaceClickHandler(workspace.id)"
       >
-        <img
+        <avatar
           class="workspace-avatar"
-          :src="workspace.avatar"
-        >
+          :user-id="workspace.id"
+          :image="userAvatar(workspace, 14)"
+          :size="14"
+          :border-radius="2"
+        />
+
         {{ workspace.name }}
 
         <svg-icon
@@ -48,7 +55,8 @@
       <ui-button
         :type="11"
         icon="workspace"
-        @click="_notImplemented()"
+        data-popover-close
+        @click="openWorkspaceCreation"
       >
         {{ texts.new }}
       </ui-button>
@@ -77,15 +85,18 @@
 </template>
 
 <script>
+import Avatar from '@components/Avatar';
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import { ipcRenderer } from 'electron';
 import { mapGetters } from 'vuex';
+import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   components: {
     Popover,
     UiButton,
+    Avatar,
   },
 
   props: {
@@ -136,23 +147,37 @@ export default {
     async openManageWorkspace() {
       const { code } = await this.$API.auth.link();
       const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      // const baseUrl = 'http://localhost:8080/';
+      // const baseUrl = 'http://localhost:8082/';
       const link = `${baseUrl}/manage/${code}`;
 
       window.open(link);
     },
+
+    /**
+     * Open workspace creation
+     * @returns {void}
+     */
+    async openWorkspaceCreation() {
+      const { code } = await this.$API.auth.link();
+      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
+      // const baseUrl = 'http://localhost:8082';
+      const link = `${baseUrl}/workspace/create/${code}`;
+
+      window.open(link);
+    },
+
+    workspaceClickHandler(workspaceId) {
+      this.$store.dispatch('changeWorkspace', workspaceId);
+    },
+
+    userAvatar: getUserAvatarUrl,
   },
 };
 </script>
 
 <style lang="stylus">
   .workspace-avatar
-    width 14px
-    height 14px
-    border-radius 2px
     margin-right 7px
-    outline solid 1px var(--shadow-10)
-    outline-offset: -1px;
 
   .workspace--checked
     color var(--color-1)

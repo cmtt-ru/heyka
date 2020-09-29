@@ -74,10 +74,23 @@ export default {
   },
 
   mounted() {
+    /**
+     * Deep link for login
+     */
     DeepLink.on('login', ([ code ]) => {
       console.log('useAuthLink', code);
       this.$store.dispatch('useAuthLink', code);
     });
+
+    /**
+     * Deep link for open specific workspace
+     */
+    DeepLink.on('workspace', async ([ workspaceId ]) => {
+      console.log('workspaceId', workspaceId);
+      await this.$store.dispatch('workspaces/updateList');
+      await this.$store.dispatch('changeWorkspace', workspaceId);
+    });
+
     ipcRenderer.send('start-is-ready');
   },
 
