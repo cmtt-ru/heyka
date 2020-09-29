@@ -163,7 +163,6 @@ export default {
       // const baseUrl = 'http://localhost:8082';
       const link = `${baseUrl}/workspace/create/${code}`;
 
-      console.log(link);
       window.open(link);
     },
 
