@@ -170,7 +170,7 @@ export default {
       // },
       login: {
         email: '',
-        password: '',
+        password: IS_DEV ? 'heyka-password' : '',
       },
     };
   },
