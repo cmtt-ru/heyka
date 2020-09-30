@@ -9,35 +9,35 @@
     <template #sidebar-body>
       <div class="l-p-8">
         <router-link
-          class="link"
+          class="settings-link"
           :to="{name: 'settings'}"
           replace
         >
           {{ texts.general }}
         </router-link>
         <router-link
-          class="link"
+          class="settings-link"
           :to="{name: 'settings-devices'}"
           replace
         >
           {{ texts.devices }}
         </router-link>
         <router-link
-          class="link"
+          class="settings-link"
           :to="{name: 'settings-network'}"
           replace
         >
           {{ texts.network }}
         </router-link>
         <router-link
-          class="link"
+          class="settings-link"
           :to="{name: 'settings-about'}"
           replace
         >
           {{ texts.about }}
         </router-link>
         <router-link
-          class="link"
+          class="settings-link"
           :to="{name: 'settings-support'}"
           replace
         >
@@ -45,7 +45,7 @@
         </router-link>
         <router-link
           v-if="IS_DEV"
-          class="link"
+          class="settings-link"
           :to="{name: 'styleguide'}"
           replace
         >
@@ -53,7 +53,7 @@
         </router-link>
         <router-link
           v-if="IS_DEV"
-          class="link"
+          class="settings-link"
           :to="{name: 'test-zone'}"
           replace
         >
@@ -138,19 +138,19 @@ export default {
   white-space pre-line
   padding 4px
 
-.link
-    display block
-    padding 4px
-    border-radius 4px
-    font-size 14px
-    text-decoration none
-    color var(--text-0)
-    margin-bottom 2px
+.settings-link
+  display block
+  padding 4px
+  border-radius 4px
+  font-size 14px
+  text-decoration none
+  color var(--text-0)
+  margin-bottom 2px
 
-    &:hover:not(.router-link-exact-active)
-      background-color var(--item-bg-hover)
+  &:hover:not(.router-link-exact-active)
+    background-color var(--item-bg-hover)
 
-  .router-link-exact-active
+  &.router-link-exact-active
     background-color var(--item-bg-active)
     box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
 
