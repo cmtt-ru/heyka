@@ -24,16 +24,6 @@
       :row="isMediaSharing"
       :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
     />
-
-    <ui-button
-      v-if="closeOverlayButton"
-      class="close-button"
-      :type="7"
-      size="small"
-      :height="20"
-      icon="close"
-      @click="closeHandler"
-    />
   </div>
 </template>
 
@@ -60,7 +50,6 @@ export default {
   computed: {
     ...mapState({
       janusOptions: 'janus',
-      closeOverlayButton: state => state.app.closeOverlayButton,
     }),
     ...mapGetters({
       getUserWhoSharesMedia: 'getUserWhoSharesMedia',
@@ -259,10 +248,6 @@ export default {
       const frameBuffer = captureFrame(this.$refs.video, 'jpeg');
 
       return 'data:image/jpeg;base64,' + frameBuffer.toString('base64');
-    },
-
-    closeHandler() {
-      broadcastEvents.dispatch('closeOverlay');
     },
   },
 };
