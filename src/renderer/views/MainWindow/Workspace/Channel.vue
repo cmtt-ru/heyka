@@ -51,7 +51,7 @@
       <list :filter-by="''">
         <list-item
           v-for="user in users"
-          :key="user.name"
+          :key="user.id"
           :filter-key="user.name"
           button
         >
