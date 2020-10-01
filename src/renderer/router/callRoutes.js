@@ -36,10 +36,12 @@ export const callRoutes = [ {
   children: [
     {
       path: '',
+      name: 'grid',
       component: CallWindowMain,
     },
     {
       path: 'expanded/:id',
+      name: 'expanded',
       component: CallWindowExpanded,
     },
   ],
