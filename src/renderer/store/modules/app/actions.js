@@ -225,12 +225,20 @@ export default {
    * @param {object} selectedDevices – selected devices
    * @returns {void}
    */
-  setSelectedDevices({ commit, state }, selectedDevices) {
+  setSelectedDevices({ commit, state, getters }, selectedDevices) {
     commit('SET_SELECTED_DEVICES', selectedDevices);
 
     heykaStore.set('selectedSpeaker', selectedDevices.speaker);
     heykaStore.set('selectedMicrophone', selectedDevices.microphone);
     heykaStore.set('selectedCamera', selectedDevices.camera);
+
+    const selectedSpeaker = getters['getDevice']('speakers', selectedDevices.speaker);
+    const selectedMicrophone = getters['getDevice']('microphones', selectedDevices.microphone);
+    const selectedCamera = getters['getDevice']('cameras', selectedDevices.camera);
+
+    heykaStore.set('selectedSpeakerLabel', selectedSpeaker?.rawLabel || '');
+    heykaStore.set('selectedMicrophoneLabel', selectedMicrophone?.rawLabel || '');
+    heykaStore.set('selectedCameraLabel', selectedCamera?.rawLabel || '');
 
     sounds.setSinkId(state.realSelectedDevices.speaker);
   },

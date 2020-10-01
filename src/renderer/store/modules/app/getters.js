@@ -40,12 +40,52 @@ export default {
   },
 
   /**
+   * Get specific device
+   *
+   * @param {ChannelState} state – channels module state
+   * @returns {object}
+   */
+  getDevice: state => (deviceType, deviceId) => {
+    const devices = state.devices[deviceType];
+
+    if (devices) {
+      const specificDevice = devices.find(d => d.id === deviceId);
+
+      if (specificDevice) {
+        return specificDevice;
+      }
+    }
+
+    return null;
+  },
+
+  /**
+   * Get specific device by label
+   *
+   * @param {ChannelState} state – channels module state
+   * @returns {object}
+   */
+  getDeviceByLabel: state => (deviceType, deviceLabel) => {
+    const devices = state.devices[deviceType];
+
+    if (devices) {
+      const specificDevice = devices.find(d => d.rawLabel === deviceLabel);
+
+      if (specificDevice) {
+        return specificDevice;
+      }
+    }
+
+    return null;
+  },
+
+  /**
    * Get selected devices
    *
    * @param {AppState} state – module app state
    * @returns {object}
    */
-  getSelectedDevices: (state) => state.realSelectedDevices,
+  getSelectedDevices: (state) => state.selectedDevices,
 
   /**
    * Get mic volume
