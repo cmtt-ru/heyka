@@ -147,10 +147,6 @@ export default {
    */
   SET_DEVICES(state, devices) {
     state.devices = devices;
-
-    // if (!state.selectedDevices.camera && devices.cameras.length > 0) {
-    // state.selectedDevices.camera = devices.cameras[0].id;
-    // }
   },
 
   /**
@@ -161,7 +157,38 @@ export default {
    * @constructor
    */
   SET_SELECTED_DEVICES(state, devices) {
+    const realDevices = { ...devices };
+
+    /** Search for real speaker device */
+    if (realDevices.speaker === 'default') {
+      const device = state.devices.speakers.find(d => d.id === 'default');
+
+      if (device) {
+        const realDevice = state.devices.speakers.find(d => device.rawLabel.indexOf(d.rawLabel) > 0);
+
+        if (realDevice) {
+          realDevices.speaker = realDevice.id;
+        }
+      }
+    }
+
+    /** Search for real microphone device */
+    if (realDevices.microphone === 'default') {
+      const device = state.devices.microphones.find(d => d.id === 'default');
+
+      if (device) {
+        const realDevice = state.devices.microphones.find(d => device.rawLabel.indexOf(d.rawLabel) > 0);
+
+        if (realDevice) {
+          realDevices.microphone = realDevice.id;
+        }
+      }
+    }
+
+    console.log('set real devices', realDevices);
+
     state.selectedDevices = devices;
+    state.realSelectedDevices = realDevices;
   },
 
   /**

@@ -215,10 +215,10 @@ export default {
   async setSocketConnected({ state, commit, getters, dispatch }, authData) {
     // Set socket disconnected
     if (!authData || !authData.connected) {
-      commit('SET_SOCKET_CONNECTED', false);
+      // commit('SET_SOCKET_CONNECTED', false);
     } else {
       // Handle socket connected
-      commit('SET_SOCKET_CONNECTED', true);
+      // commit('SET_SOCKET_CONNECTED', true);
 
       if (authData.reconnected) {
         // if server said that channel is selected
