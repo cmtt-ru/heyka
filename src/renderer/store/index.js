@@ -158,41 +158,84 @@ if (IS_MAIN_WINDOW) {
   });
 
   /**
-   * Listen for FIRST device change event to set selected devices
-   */
-  mediaDevices.once('change', (devices) => {
-    const selectedDevices = {
-      speaker: heykaStore.get('selectedSpeaker', 'default'),
-      microphone: heykaStore.get('selectedMicrophone', 'default'),
-      camera: heykaStore.get('selectedCamera', ''),
-    };
-
-    store.dispatch('app/setSelectedDevices', selectedDevices);
-  });
-
-  /**
    * Listen for device change event
    */
+  let selectedDevicesLoaded = false;
+
   mediaDevices.on('change', (devices) => {
     store.commit('app/SET_DEVICES', devices);
 
-    /* re-set default devices if previous id's are not found */
-    const data = { ...state.app.selectedDevices };
+    let selectedDevices;
 
+    if (!selectedDevicesLoaded) {
+      selectedDevices = {
+        // speaker: heykaStore.get('selectedSpeaker', 'default'),
+        // microphone: heykaStore.get('selectedMicrophone', 'default'),
+        // camera: heykaStore.get('selectedCamera', ''),
+        speaker: 0,
+        microphone: 0,
+        camera: 0,
+      };
+
+      let speakerDevice = store.getters['app/getDevice']('speakers', selectedDevices.speaker);
+      let microphoneDevice = store.getters['app/getDevice']('microphones', selectedDevices.microphone);
+      let cameraDevice = store.getters['app/getDevice']('cameras', selectedDevices.camera);
+
+      if (!speakerDevice) {
+        const speakerDeviceLabel = heykaStore.get('selectedSpeakerLabel', 'default');
+
+        speakerDevice = store.getters['app/getDeviceByLabel']('speakers', speakerDeviceLabel);
+
+        if (speakerDevice) {
+          selectedDevices.speaker = speakerDevice.id;
+        }
+      }
+
+      if (!microphoneDevice) {
+        const microphoneDeviceLabel = heykaStore.get('selectedMicrophoneLabel');
+
+        microphoneDevice = store.getters['app/getDeviceByLabel']('microphones', microphoneDeviceLabel);
+
+        if (microphoneDevice) {
+          selectedDevices.microphone = microphoneDevice.id;
+        }
+      }
+
+      if (!cameraDevice) {
+        const cameraDeviceLabel = heykaStore.get('selectedCameraLabel');
+
+        cameraDevice = store.getters['app/getDeviceByLabel']('cameras', cameraDeviceLabel);
+
+        if (cameraDevice) {
+          selectedDevices.camera = cameraDevice.id;
+        }
+      }
+
+      store.dispatch('app/setSelectedDevices', selectedDevices);
+
+      console.log('selectedDevices', selectedDevices);
+
+      selectedDevicesLoaded = true;
+    } else {
+      selectedDevices = { ...state.app.selectedDevices };
+    }
+
+    /* re-set default devices if previous id's are not found */
     if (!state.app.devices.speakers.map(el => el.id).includes(state.app.selectedDevices.speaker)) {
-      data.speaker = 'default';
+      selectedDevices.speaker = 'default';
     }
     if (!state.app.devices.microphones.map(el => el.id).includes(state.app.selectedDevices.microphone)) {
-      data.microphone = 'default';
+      selectedDevices.microphone = 'default';
     }
     if (!state.app.devices.cameras.map(el => el.id).includes(state.app.selectedDevices.camera)) {
       if (state.app.devices.cameras[0]) {
-        data.camera = state.app.devices.cameras[0].id;
+        selectedDevices.camera = state.app.devices.cameras[0].id;
       } else {
-        data.camera = '';
+        selectedDevices.camera = '';
       }
     }
-    store.dispatch('app/setSelectedDevices', data);
+
+    store.dispatch('app/setSelectedDevices', selectedDevices);
   });
 
   /** Listen for broadcasted actions and dispatch them */
