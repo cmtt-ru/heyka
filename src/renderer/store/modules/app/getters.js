@@ -45,7 +45,7 @@ export default {
    * @param {AppState} state – module app state
    * @returns {object}
    */
-  getSelectedDevices: (state) => state.selectedDevices,
+  getSelectedDevices: (state) => state.realSelectedDevices,
 
   /**
    * Get mic volume
