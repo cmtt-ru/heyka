@@ -25,6 +25,11 @@ import { heykaStore } from '@/store/localStore';
  * @property {string} selectedDevices.microphone – selected microphone
  * @property {string} selectedDevices.camera – selected camera
  *
+ * @property {object} realSelectedDevices – list of real selected devices
+ * @property {string} realSelectedDevices.speaker – selected speaker
+ * @property {string} realSelectedDevices.microphone – selected microphone
+ * @property {string} realSelectedDevices.camera – selected camera
+ *
  * @property {object} socket – current socket parameters
  * @property {string} socket.id – id
  * @property {number} socket.connectedAt – last time when socket was connected
@@ -61,6 +66,11 @@ const state = () => {
       cameras: [],
     },
     selectedDevices: {
+      speaker: null,
+      microphone: null,
+      camera: null,
+    },
+    realSelectedDevices: {
       speaker: null,
       microphone: null,
       camera: null,
