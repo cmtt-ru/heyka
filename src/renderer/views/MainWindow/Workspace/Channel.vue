@@ -51,7 +51,7 @@
       <list :filter-by="''">
         <list-item
           v-for="user in users"
-          :key="user.name"
+          :key="user.id"
           :filter-key="user.name"
           button
         >
@@ -80,6 +80,20 @@
           {{ texts.revokeInvite }}
         </ui-button>
       </div>
+
+      <div
+        v-if="selectedChannelId"
+        class="l-flex"
+      >
+        <ui-button
+          :type="14"
+          class="l-mr-4"
+          style="margin-left: auto"
+          @click="audioLagsHandler"
+        >
+          {{ texts.audioLags }}
+        </ui-button>
+      </div>
     </div>
   </div>
 </template>
@@ -88,6 +102,8 @@
 import { List, ListItem } from '@components/List';
 import ChannelUserItem from '@components/ChannelUserItem';
 import UiButton from '@components/UiButton';
+import JanusEvents from '@sdk/classes/janusEvents';
+import { mapGetters } from 'vuex';
 
 const ICON_MAP = {
   public: 'channel',
@@ -105,13 +121,11 @@ export default {
     UiButton,
   },
 
-  data: () => {
-    return {
-      showInviteButtons: false,
-    };
-  },
-
   computed: {
+    ...mapGetters({
+      selectedChannelId: 'me/getSelectedChannelId',
+    }),
+
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -173,14 +187,7 @@ export default {
 
   },
 
-  async mounted() {
-    const permissions = await this.$API.user.checkPermissions(this.$permissions.manageWorkspaces());
-
-    this.showInviteButtons = Object.values(permissions)[0];
-  },
-
   methods: {
-
     /**
      * Connect to channel
      * @returns {void}
@@ -212,6 +219,14 @@ export default {
     revokeInviteHandler() {
       this.$store.dispatch('channels/revokeInviteLinks', this.channelId);
     },
+
+    /**
+     * Audio lags handler
+     * @returns {void}
+     */
+    audioLagsHandler() {
+      JanusEvents.emit('submit-data');
+    },
   },
 };
 </script>
@@ -230,8 +245,8 @@ export default {
   justify-content flex-start
   background-color var(--app-bg)
 
-  &&.ui-sticked
-    box-shadow 0 0px 8px 0px #808080
+  &.ui-sticked
+    box-shadow 0 0 8px 0 #808080
 
   &__type
     margin 0 4px

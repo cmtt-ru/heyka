@@ -139,7 +139,7 @@ export default {
    * @returns {Promise<void>}
    */
   async revokeInviteLinks({ dispatch }, channelId) {
-    await API.channel.deleteAllInvites(channelId);
+    await API.channel.deleteAllInvites(channelId, true);
 
     const texts = i18n.t('workspace.channel');
 

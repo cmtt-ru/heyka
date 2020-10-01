@@ -143,7 +143,11 @@ class CallWindow {
         openDevTools: true,
         preventClose: true,
         onClose: () => {
+          this.gridWindow.removeAllListeners('blur');
+          this.gridWindow.removeAllListeners('focus');
+          this.gridWindow.removeAllListeners('hide');
           this.gridWindow = null;
+          broadcastEvents.removeAllListeners('exit-fullscreen');
         },
       });
 
@@ -151,7 +155,14 @@ class CallWindow {
 
       this.gridTimeout = null;
 
+      broadcastEvents.on('exit-fullscreen', () => {
+        if (this.gridWindow.isFullscreen()) {
+          this.gridWindow.action('fullscreen');
+        }
+      });
+
       this.gridWindow.on('blur', () => {
+        broadcastEvents.dispatch('grid-expanded-blur');
         this.gridTimeout = setTimeout(() => {
           if (this.overlayWindow) {
             this.showOverlay();
@@ -159,6 +170,7 @@ class CallWindow {
         }, gridBlurTime);
       });
       this.gridWindow.on('focus', () => {
+        broadcastEvents.dispatch('grid-expanded-focus');
         clearTimeout(this.gridTimeout);
         this.hideOverlay();
       });
