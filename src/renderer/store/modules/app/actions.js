@@ -221,18 +221,18 @@ export default {
   /**
    * Set selected devices
    *
-   * @param {function} commit – store commit
+   * @param {object} vuex context
    * @param {object} selectedDevices – selected devices
    * @returns {void}
    */
-  setSelectedDevices({ commit }, selectedDevices) {
+  setSelectedDevices({ commit, state }, selectedDevices) {
     commit('SET_SELECTED_DEVICES', selectedDevices);
 
     heykaStore.set('selectedSpeaker', selectedDevices.speaker);
     heykaStore.set('selectedMicrophone', selectedDevices.microphone);
     heykaStore.set('selectedCamera', selectedDevices.camera);
 
-    sounds.setSinkId(selectedDevices.speaker);
+    sounds.setSinkId(state.realSelectedDevices.speaker);
   },
 
   /**
