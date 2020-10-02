@@ -128,6 +128,7 @@ import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+import { WEB_URL } from '@sdk/Constants';
 
 export default {
   components: {
@@ -275,8 +276,7 @@ export default {
       }
 
       const { code } = await this.$API.auth.link();
-      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      const link = `${baseUrl}/auth/social/${socialName}/link/${code}`;
+      const link = `${WEB_URL}/auth/social/${socialName}/link/${code}`;
 
       window.open(link);
     },
