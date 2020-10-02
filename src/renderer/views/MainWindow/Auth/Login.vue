@@ -13,7 +13,7 @@
           {{ texts.welcome }}
         </p>
         <div class="page__content">
-          <div class="currently-not-needed">
+          <div>
             <ui-button
               :type="3"
               wide
