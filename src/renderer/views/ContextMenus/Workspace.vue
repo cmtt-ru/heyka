@@ -161,7 +161,7 @@ export default {
       const { code } = await this.$API.auth.link();
       const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
       // const baseUrl = 'http://localhost:8082';
-      const link = `${baseUrl}/workspace/create/${code}`;
+      const link = `${baseUrl}/ws/create/${code}`;
 
       window.open(link);
     },
