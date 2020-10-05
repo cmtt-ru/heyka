@@ -10,6 +10,13 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.MY_REPO_PAT }}
+        submodules: recursive
+    - name: Fix git config
+      run: |
+        git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
     - name: Cache node modules
       uses: actions/cache@v1
       with:
@@ -34,6 +41,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.MY_REPO_PAT }}
+        submodules: recursive
+    - name: Fix git config
+      run: |
+        git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
     - name: Cache node modules
       uses: actions/cache@v1
       with:
