@@ -1,5 +1,6 @@
 import OS from 'os';
 import i18n from '@sdk/translations/i18n';
+import { heykaStore } from '@/store/localStore';
 
 export default {
   /**
@@ -57,6 +58,30 @@ export default {
     }
 
     return null;
+  },
+
+  loadSelectedDevice: (state, getters) => (deviceType) => {
+    const deviceTypeCapitalized = deviceType.charAt(0).toUpperCase() + deviceType.slice(1);
+    let deviceId = heykaStore.get(`selected${deviceTypeCapitalized}`, 'default');
+    let device = getters['getDevice'](`${deviceType}s`, deviceId);
+
+    device = '';
+
+    if (!device) {
+      const deviceLabel = heykaStore.get(`selected${deviceTypeCapitalized}Label`, 'default');
+
+      device = getters['getDeviceByLabel'](`${deviceType}s`, deviceLabel);
+
+      if (device) {
+        deviceId = device.id;
+      } else {
+        deviceId = 'default';
+      }
+    }
+
+    console.log(deviceType, deviceId);
+
+    return deviceId;
   },
 
   /**
