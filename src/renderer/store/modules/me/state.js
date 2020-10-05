@@ -49,7 +49,7 @@ const state = () => {
     suspendState: false,
     lockScreenState: false,
     allowDraw: true,
-    socialAuth: {},
+    socialAuth: meStore.get('socialAuth'),
   };
 };
 

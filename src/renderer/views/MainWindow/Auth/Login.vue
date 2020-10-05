@@ -80,7 +80,7 @@
               {{ texts.login }}
             </ui-button>
             <div class="info">
-              <div class="info__text">
+              Reset"      <div class="info__text">
                 {{ texts.forgot }}
               </div>
               <div
@@ -328,9 +328,6 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-.currently-not-needed
-  opacity 0.5
-  pointer-events none
 
 .sidebar-image
     width 100%
