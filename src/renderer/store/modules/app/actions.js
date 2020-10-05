@@ -14,6 +14,8 @@ import sounds from '@sdk/classes/sounds';
  * @property {object} data – data sent, e.g. {userId: '...'}
  */
 
+let selectedDevicesLoaded = false;
+
 export default {
   /**
    * Add privacy log
@@ -222,25 +224,67 @@ export default {
    * Set selected devices
    *
    * @param {object} vuex context
-   * @param {object} selectedDevices – selected devices
+   * @param {object} devices – selected devices
    * @returns {void}
    */
-  setSelectedDevices({ commit, state, getters }, selectedDevices) {
+  setSelectedDevices({ commit, state, getters }, devices) {
+    const selectedDevices = devices ? { ...devices } : { ...state.selectedDevices };
+
+    /* re-set default devices if previous id's are not found */
+    if (!state.devices.speakers.map(el => el.id).includes(selectedDevices.speaker)) {
+      selectedDevices.speaker = 'default';
+    }
+    if (!state.devices.microphones.map(el => el.id).includes(selectedDevices.microphone)) {
+      selectedDevices.microphone = 'default';
+    }
+    if (!state.devices.cameras.map(el => el.id).includes(selectedDevices.camera)) {
+      if (state.devices.cameras[0]) {
+        selectedDevices.camera = state.devices.cameras[0].id;
+      } else {
+        selectedDevices.camera = '';
+      }
+    }
+
+    console.log('set', selectedDevices);
+
     commit('SET_SELECTED_DEVICES', selectedDevices);
 
     heykaStore.set('selectedSpeaker', selectedDevices.speaker);
     heykaStore.set('selectedMicrophone', selectedDevices.microphone);
     heykaStore.set('selectedCamera', selectedDevices.camera);
 
-    const selectedSpeaker = getters['getDevice']('speakers', selectedDevices.speaker);
-    const selectedMicrophone = getters['getDevice']('microphones', selectedDevices.microphone);
-    const selectedCamera = getters['getDevice']('cameras', selectedDevices.camera);
+    const selectedSpeaker = getters.getDevice('speakers', selectedDevices.speaker);
+    const selectedMicrophone = getters.getDevice('microphones', selectedDevices.microphone);
+    const selectedCamera = getters.getDevice('cameras', selectedDevices.camera);
 
     heykaStore.set('selectedSpeakerLabel', selectedSpeaker?.rawLabel || '');
     heykaStore.set('selectedMicrophoneLabel', selectedMicrophone?.rawLabel || '');
     heykaStore.set('selectedCameraLabel', selectedCamera?.rawLabel || '');
 
     sounds.setSinkId(state.realSelectedDevices.speaker);
+  },
+
+  loadSelectedDevices({ commit, state, getters, dispatch }) {
+    const selectedDevices = {
+      speaker: getters.loadSelectedDevice('speaker'),
+      microphone: getters.loadSelectedDevice('microphone'),
+      camera: getters.loadSelectedDevice('camera'),
+    };
+
+    console.log('loaded', selectedDevices);
+
+    dispatch('setSelectedDevices', selectedDevices);
+  },
+
+  setDevices({ commit, state, getters, dispatch }, devices) {
+    commit('SET_DEVICES', devices);
+
+    if (!selectedDevicesLoaded) {
+      dispatch('loadSelectedDevices');
+      selectedDevicesLoaded = true;
+    } else {
+      dispatch('setSelectedDevices');
+    }
   },
 
   /**
