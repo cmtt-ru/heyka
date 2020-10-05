@@ -41,13 +41,13 @@ export default {
   },
 
   /**
-   * Get specific device
+   * Get specific device by id
    *
    * @param {ChannelState} state – channels module state
    * @returns {object}
    */
   getDevice: state => (deviceType, deviceId) => {
-    const devices = state.devices[deviceType];
+    const devices = state.devices[`${deviceType}s`];
 
     if (devices) {
       const specificDevice = devices.find(d => d.id === deviceId);
@@ -60,30 +60,6 @@ export default {
     return null;
   },
 
-  loadSelectedDevice: (state, getters) => (deviceType) => {
-    const deviceTypeCapitalized = deviceType.charAt(0).toUpperCase() + deviceType.slice(1);
-    let deviceId = heykaStore.get(`selected${deviceTypeCapitalized}`, 'default');
-    let device = getters['getDevice'](`${deviceType}s`, deviceId);
-
-    device = '';
-
-    if (!device) {
-      const deviceLabel = heykaStore.get(`selected${deviceTypeCapitalized}Label`, 'default');
-
-      device = getters['getDeviceByLabel'](`${deviceType}s`, deviceLabel);
-
-      if (device) {
-        deviceId = device.id;
-      } else {
-        deviceId = 'default';
-      }
-    }
-
-    console.log(deviceType, deviceId);
-
-    return deviceId;
-  },
-
   /**
    * Get specific device by label
    *
@@ -91,7 +67,7 @@ export default {
    * @returns {object}
    */
   getDeviceByLabel: state => (deviceType, deviceLabel) => {
-    const devices = state.devices[deviceType];
+    const devices = state.devices[`${deviceType}s`];
 
     if (devices) {
       const specificDevice = devices.find(d => d.rawLabel === deviceLabel);
@@ -127,5 +103,32 @@ export default {
    * @returns {object}
    */
   getPushes: (state) => state.pushes,
+
+  /**
+   * Load specific device from storage and return it's value
+   *
+   * @param {AppState} state – vuex app state
+   * @param {object} getters – vuex getters
+   * @returns {function(*): any}
+   */
+  loadSelectedDevice: (state, getters) => (deviceType) => {
+    const deviceTypeCapitalized = deviceType.charAt(0).toUpperCase() + deviceType.slice(1);
+    let deviceId = heykaStore.get(`selected${deviceTypeCapitalized}`, 'default');
+    let device = getters.getDevice(deviceType, deviceId);
+
+    if (!device) {
+      const deviceLabel = heykaStore.get(`selected${deviceTypeCapitalized}Label`);
+
+      device = getters['getDeviceByLabel'](deviceType, deviceLabel);
+
+      if (device) {
+        deviceId = device.id;
+      } else {
+        deviceId = 'default';
+      }
+    }
+
+    return deviceId;
+  },
 
 };
