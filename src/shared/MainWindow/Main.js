@@ -2,7 +2,7 @@ import WindowManager from '../WindowManager/WindowManagerMain';
 import TrayManager from '../../main/classes/TrayManager';
 import DeepLink from '../DeepLink/DeepLinkMain';
 import Autoupdater from '../../main/classes/AutoUpdater';
-import { ipcMain, nativeTheme, powerMonitor, app } from 'electron';
+import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electron';
 import { heykaStore } from '../../renderer/store/localStore';
 import { IS_DEV, IS_MAC } from '../../sdk/Constants';
 
@@ -115,6 +115,14 @@ class MainWindow {
      */
     this.window.webContents.on('did-finish-load', () => {
       WindowManager.closeAll();
+    });
+
+    /**
+     * Register global shortcuts
+     */
+
+    globalShortcut.register('CommandOrControl+Shift+M', () => {
+      this.window.webContents.send('hotkey-mic');
     });
 
     /**
