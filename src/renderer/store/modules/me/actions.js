@@ -292,7 +292,7 @@ export default {
    * @param {object} data – me data
    * @returns {void}
    */
-  async update({ commit }, data) {
+  async updateSocial({ commit }, data) {
     const filteredData = {
       socialAuth: data.socialAuth,
     };

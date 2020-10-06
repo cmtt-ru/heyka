@@ -1,6 +1,3 @@
-import Vue from 'vue';
-import { meStore } from '@/store/localStore';
-
 export default {
 
   /**
@@ -101,23 +98,6 @@ export default {
    */
   SET_ALLOW_DRAW(state, value) {
     state.allowDraw = value;
-  },
-
-  /**
-   * Add or remove Social connection
-   *
-   * @param {MeState} state – module me state
-   * @param {boolean} value – payload (social name and whether we should add or remove connection)
-   * @constructor
-   */
-  MANAGE_SOCIAL(state, { social, remove = false }) {
-    if (!remove) {
-      Vue.set(state.socialAuth, social, true);
-      meStore.set('socialAuth', state.socialAuth);
-    } else {
-      delete state.socialAuth[social];
-      meStore.set('socialAuth', state.socialAuth);
-    }
   },
 
   /**

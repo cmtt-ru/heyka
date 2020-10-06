@@ -26,7 +26,7 @@ export default {
 
     if (userId) {
       commit('me/SET_USER_ID', userId);
-      dispatch('me/update', authenticatedUser);
+      dispatch('me/updateSocial', authenticatedUser);
 
       /** Update workspace list */
       await dispatch('workspaces/updateList');

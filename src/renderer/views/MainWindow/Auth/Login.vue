@@ -80,7 +80,7 @@
               {{ texts.login }}
             </ui-button>
             <div class="info">
-              Reset"      <div class="info__text">
+              <div class="info__text">
                 {{ texts.forgot }}
               </div>
               <div

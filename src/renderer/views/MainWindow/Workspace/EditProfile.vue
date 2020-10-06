@@ -197,8 +197,6 @@ export default {
             text: decodeURIComponent(param),
           },
         });
-      } else {
-        // this.$store.commit('MANAGE_SOCIAL', { social: param });
       }
     });
   },
