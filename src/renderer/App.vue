@@ -8,17 +8,11 @@
 import '@sdk/styles/fonts.styl';
 import '@sdk/styles/global.styl';
 import '@styles/global.styl';
-import { mapGetters } from 'vuex';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Mousetrap from 'mousetrap';
 require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
 
 export default {
-  computed: {
-    ...mapGetters({
-      mediaState: 'me/getMediaState',
-    }),
-  },
   created() {
     this.loadSvgSprite();
 
@@ -27,9 +21,6 @@ export default {
     });
     Mousetrap.bind(['command+r', 'ctrl+r'], () => {
       WindowManager.getCurrentWindow().action('reload');
-    });
-    Mousetrap.bind(['command+shift+m', 'ctrl+shift+m'], () => {
-      this.$store.dispatch('me/microphoneState', !this.mediaState.microphone);
     });
     Mousetrap.bind('up up down down left right left right b a enter', function () {
       console.log('%ckonami code!', 'color: green; font: 4rem/1 Tahoma;');
