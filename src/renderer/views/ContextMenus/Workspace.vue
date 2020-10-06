@@ -91,6 +91,7 @@ import UiButton from '@components/UiButton';
 import { ipcRenderer } from 'electron';
 import { mapGetters } from 'vuex';
 import { getUserAvatarUrl } from '@libs/image';
+import { WEB_URL } from '@sdk/Constants';
 
 export default {
   components: {
@@ -146,9 +147,7 @@ export default {
      */
     async openManageWorkspace() {
       const { code } = await this.$API.auth.link();
-      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      // const baseUrl = 'http://localhost:8082/';
-      const link = `${baseUrl}/manage/${code}`;
+      const link = `${WEB_URL}/manage/${code}`;
 
       window.open(link);
     },
@@ -159,9 +158,7 @@ export default {
      */
     async openWorkspaceCreation() {
       const { code } = await this.$API.auth.link();
-      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      // const baseUrl = 'http://localhost:8082';
-      const link = `${baseUrl}/ws/create/${code}`;
+      const link = `${WEB_URL}/ws/create/${code}`;
 
       window.open(link);
     },
