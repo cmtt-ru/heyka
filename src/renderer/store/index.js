@@ -14,7 +14,6 @@ import isMainWindow from '@shared/WindowManager/isMainWindow';
 import broadcastState from '@sdk/classes/broadcastState';
 import { ipcRenderer } from 'electron';
 import createPersistedState from 'vuex-persistedstate';
-import { heykaStore } from '@/store/localStore';
 import cloneDeep from 'clone-deep';
 import { throttle } from 'throttle-debounce';
 import Logger from '@sdk/classes/logger';
@@ -159,42 +158,8 @@ if (IS_MAIN_WINDOW) {
     cnsl.log('bluetooth microphone detected', microphone);
   });
 
-  /**
-   * Listen for FIRST device change event to set selected devices
-   */
-  mediaDevices.once('change', (devices) => {
-    const selectedDevices = {
-      speaker: heykaStore.get('selectedSpeaker', 'default'),
-      microphone: heykaStore.get('selectedMicrophone', 'default'),
-      camera: heykaStore.get('selectedCamera', ''),
-    };
-
-    store.dispatch('app/setSelectedDevices', selectedDevices);
-  });
-
-  /**
-   * Listen for device change event
-   */
   mediaDevices.on('change', (devices) => {
-    store.commit('app/SET_DEVICES', devices);
-
-    /* re-set default devices if previous id's are not found */
-    const data = { ...state.app.selectedDevices };
-
-    if (!state.app.devices.speakers.map(el => el.id).includes(state.app.selectedDevices.speaker)) {
-      data.speaker = 'default';
-    }
-    if (!state.app.devices.microphones.map(el => el.id).includes(state.app.selectedDevices.microphone)) {
-      data.microphone = 'default';
-    }
-    if (!state.app.devices.cameras.map(el => el.id).includes(state.app.selectedDevices.camera)) {
-      if (state.app.devices.cameras[0]) {
-        data.camera = state.app.devices.cameras[0].id;
-      } else {
-        data.camera = '';
-      }
-    }
-    store.dispatch('app/setSelectedDevices', data);
+    store.dispatch('app/setDevices', devices);
   });
 
   /** Listen for broadcasted actions and dispatch them */
