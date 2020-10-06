@@ -194,6 +194,7 @@ export default {
    * @returns {void}
    */
   async openGrid({ state }, userId) {
+    callWindow.hideOverlay();
     callWindow.showGrid(userId);
   },
 
