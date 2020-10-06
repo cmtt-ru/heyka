@@ -93,6 +93,7 @@ import { Tabs, Tab } from '@components/Tabs';
 import EditableList from '@components/List/EditableList';
 import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
+import { WEB_URL } from '@sdk/Constants';
 
 export default {
   components: {
@@ -132,8 +133,7 @@ export default {
       try {
         const codeData = await this.$API.workspace.inviteByCode(this.selectedWorkspaceId);
 
-        const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-        const link = `${baseUrl}/auth?invite=${codeData.code}`;
+        const link = `${WEB_URL}/auth?invite=${codeData.code}`;
 
         navigator.clipboard.writeText(link);
         this.linkCopied = true;
