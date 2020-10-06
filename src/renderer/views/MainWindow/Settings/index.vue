@@ -60,7 +60,7 @@
           Test Zone
         </router-link>
         <router-link
-          class="link"
+          class="settings-link"
           :to="{name: 'stats'}"
           replace
         >
