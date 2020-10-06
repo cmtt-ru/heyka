@@ -197,6 +197,7 @@ export default {
      */
     expandHandler() {
       if (this.getUserWhoSharesMedia) {
+        broadcastEvents.removeAllListeners('grid-expanded-ready');
         /** Wait until expanded grid appears and send video frame */
         broadcastEvents.once('grid-expanded-ready', () => {
           broadcastEvents.dispatch('grid-expanded-set-video-frame', this.getFrameFromVideo());

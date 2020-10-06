@@ -17,6 +17,8 @@ import createPersistedState from 'vuex-persistedstate';
 import cloneDeep from 'clone-deep';
 import { throttle } from 'throttle-debounce';
 import Logger from '@sdk/classes/logger';
+import router from '@/router';
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
 const cnsl = new Logger('Vuex index', '#17A589');
 
@@ -194,6 +196,11 @@ if (IS_MAIN_WINDOW) {
 
 broadcastEvents.on('shared-action', ({ action, data }) => {
   store.dispatch(action, data);
+});
+
+/** Listen specific window event and navigate with router */
+broadcastEvents.on(`window-router-push-${WindowManager.getCurrentWindowId()}`, routerParams => {
+  router.push(routerParams).catch(() => {});
 });
 
 export default store;
