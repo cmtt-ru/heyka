@@ -1,7 +1,7 @@
 import API from '@api';
 import i18n from '@sdk/translations/i18n';
 import router from '@/router';
-import { IS_DEV } from '@sdk/Constants';
+import { WEB_URL } from '@sdk/Constants';
 
 export default {
   /**
@@ -111,13 +111,7 @@ export default {
     const { token } = await API.channel.invite(channelId);
 
     if (token) {
-      let domain = process.env.VUE_APP_PROD_URL;
-
-      if (IS_DEV) {
-        domain = process.env.VUE_APP_DEV_URL;
-      }
-
-      navigator.clipboard.writeText(`${domain}/guest/${token}`);
+      navigator.clipboard.writeText(`${WEB_URL}/guest/${token}`);
 
       const texts = i18n.t('workspace.channel');
 
