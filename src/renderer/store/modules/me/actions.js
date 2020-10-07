@@ -258,7 +258,7 @@ export default {
    * @param {function} dispatch – vuex dispatch
    * @returns {void}
    */
-  microphoneState({ state, dispatch }, micState) {
+  microphoneState({ state, dispatch }, micState = !state.mediaState.microphone) {
     const newState = { ...state.mediaState };
 
     newState.microphone = micState;
