@@ -6,6 +6,9 @@ import { ipcRenderer } from 'electron';
 import router from '@/router';
 import sounds from '@sdk/classes/sounds';
 import connectionCheck from '@classes/connectionCheck';
+import Logger from '@sdk/classes/logger';
+
+const cnsl = new Logger('Initial', '#db580e');
 
 export default {
 
@@ -15,6 +18,7 @@ export default {
    * @returns {void}
    */
   async initial({ commit, dispatch, getters }) {
+    cnsl.log('start');
     /** Wait until internet goes online */
     await connectionCheck.waitUntilOnline();
 
@@ -40,6 +44,8 @@ export default {
     } else {
       console.error('AUTH REQUIRED');
     }
+
+    cnsl.log('finish');
   },
 
   /**
@@ -108,7 +114,7 @@ export default {
    * @param {object} connectionOptions Connection options object
    * @returns {object} selected channel
    */
-  selectChannelWithoutAPICall({ commit, getters, state }, { id, connectionOptions }) {
+  selectChannelWithoutAPICall({ commit, dispatch, getters, state }, { id, connectionOptions }) {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
@@ -138,7 +144,7 @@ export default {
       },
     });
 
-    commit('me/SET_CHANNEL_ID', id);
+    dispatch('me/setChannelId', id);
 
     callWindow.showOverlay();
 
@@ -178,7 +184,7 @@ export default {
       channelId: id,
     });
 
-    commit('me/SET_CHANNEL_ID', null);
+    dispatch('me/setChannelId', null);
 
     dispatch('me/setDefaultMediaState');
 
