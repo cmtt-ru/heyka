@@ -10,6 +10,8 @@ import Logger from '@sdk/classes/logger';
 
 const cnsl = new Logger('Initial', '#db580e');
 
+let initialInProgress = false;
+
 export default {
 
   /**
@@ -18,32 +20,45 @@ export default {
    * @returns {void}
    */
   async initial({ commit, dispatch, getters }) {
-    cnsl.log('start');
-    /** Wait until internet goes online */
-    await connectionCheck.waitUntilOnline();
-
-    /** Get authenticated user */
-    const authenticatedUser = await API.user.getAuthenticatedUser();
-
-    /** Authenticated user id */
-    const userId = authenticatedUser.id;
-
-    if (userId) {
-      commit('me/SET_USER_ID', userId);
-      dispatch('me/update', authenticatedUser);
-
-      /** Update workspace list */
-      await dispatch('workspaces/updateList');
-
-      /** Get specific workspace data */
-      await dispatch('updateCurrentWorkspaceState');
-
-      await sockets.init();
-
-      dispatch('me/setOnlineStatus', 'online');
+    if (initialInProgress) {
+      return;
     } else {
-      console.error('AUTH REQUIRED');
+      initialInProgress = true;
     }
+
+    cnsl.log('start');
+
+    try {
+      /** Wait until internet goes online */
+      await connectionCheck.waitUntilOnline();
+
+      /** Get authenticated user */
+      const authenticatedUser = await API.user.getAuthenticatedUser();
+
+      /** Authenticated user id */
+      const userId = authenticatedUser.id;
+
+      if (userId) {
+        commit('me/SET_USER_ID', userId);
+        dispatch('me/update', authenticatedUser);
+
+        /** Update workspace list */
+        await dispatch('workspaces/updateList');
+
+        /** Get specific workspace data */
+        await dispatch('updateCurrentWorkspaceState');
+
+        await sockets.init();
+
+        dispatch('me/setOnlineStatus', 'online');
+      } else {
+        console.error('AUTH REQUIRED');
+      }
+    } catch (err) {
+      cnsl.log('error', err);
+    }
+
+    initialInProgress = false;
 
     cnsl.log('finish');
   },
