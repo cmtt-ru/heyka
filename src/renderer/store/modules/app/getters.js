@@ -97,6 +97,14 @@ export default {
   getMicrophoneVolume: (state) => state.microphoneVolume,
 
   /**
+   * Get fluent channel id (for animations!)
+   *
+   * @param {AppState} state – module app state
+   * @returns {object}
+   */
+  getAnimationChannel: (state) => state.animationChannel,
+
+  /**
    * Get pushes
    *
    * @param {AppState} state – module app state
