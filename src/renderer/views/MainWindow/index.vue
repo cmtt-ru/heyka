@@ -18,6 +18,7 @@ import mediaCapturer from '@classes/mediaCapturer';
 import Logger from '@sdk/classes/logger';
 import { prepareTokens } from '@api/tokens';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+import { mapGetters } from 'vuex';
 
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
@@ -31,6 +32,12 @@ export default {
     return {
       updateNotificationShown: false,
     };
+  },
+
+  computed: {
+    ...mapGetters({
+      mediaState: 'me/getMediaState',
+    }),
   },
 
   async created() {
@@ -51,6 +58,13 @@ export default {
         name: 'channel',
         params: { id },
       });
+    });
+
+    /**
+     * Global Shortcuts stuff
+    */
+    ipcRenderer.on('hotkey-mic', (event, state) => {
+      this.$store.dispatch('me/microphoneState', !this.mediaState.microphone);
     });
 
     /**
@@ -102,6 +116,7 @@ export default {
     broadcastEvents.removeAllListeners('open-channel');
     ipcRenderer.removeAllListeners('update-error');
     ipcRenderer.removeAllListeners('update-downloaded');
+    ipcRenderer.removeAllListeners('hotkey-mic');
   },
 
   methods: {
