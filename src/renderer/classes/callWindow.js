@@ -136,6 +136,7 @@ class CallWindow {
       if (userId) {
         route = `/call-window/expanded/${userId}`;
       }
+
       this.gridWindow = WindowManager.create({
         route: route,
         position: 'center',
@@ -169,11 +170,13 @@ class CallWindow {
           }
         }, gridBlurTime);
       });
+
       this.gridWindow.on('focus', () => {
         broadcastEvents.dispatch('grid-expanded-focus');
         clearTimeout(this.gridTimeout);
         this.hideOverlay();
       });
+
       this.gridWindow.on('hide', () => {
         clearTimeout(this.gridTimeout);
         if (this.overlayWindow) {
@@ -182,8 +185,12 @@ class CallWindow {
       });
     } else {
       this.gridWindow.action('show');
+
       if (userId) {
-        this.gridWindow.openUrl(`/call-window/expanded/${userId}`);
+        this.gridWindow.routerPush({
+          name: 'expanded',
+          params: { id: userId },
+        });
       }
     }
   }
