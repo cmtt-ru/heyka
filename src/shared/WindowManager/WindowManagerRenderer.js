@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { EventEmitter } from 'events';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 /**
  * A class that tells info to main window manager upon window creation
@@ -105,6 +106,15 @@ class Window extends EventEmitter {
       url,
       route,
     });
+  }
+
+  /**
+   * Navigate with window's router
+   * @param {object} routerParams – router params, like, `url`, or `name`
+   * @returns {void}
+   */
+  routerPush(routerParams) {
+    broadcastEvents.dispatch(`window-router-push-${this.windowId}`, routerParams);
   }
 
   /**
