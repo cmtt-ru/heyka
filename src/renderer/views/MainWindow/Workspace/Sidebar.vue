@@ -10,6 +10,7 @@
       >
         <channel-item
           :channel="selectedChannel"
+          top-channel
         />
       </div>
     </transition>
@@ -45,7 +46,6 @@
           <channel-item
             v-show="notSelected(channel.id)"
             :channel="channel"
-            exclude-me
             class="list-channel"
           />
         </transition>
@@ -182,6 +182,8 @@ export default {
 
 <style lang="stylus" scoped>
 
+$ANIM = 250ms
+
 .channel-header
   display flex
   background-color var(--app-bg)
@@ -202,8 +204,6 @@ export default {
 
 .user-anchor
   transform translateY(-25px)
-
-$ANIM = 250ms
 
 .connected-channel
   overflow hidden
