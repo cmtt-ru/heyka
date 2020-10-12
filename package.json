@@ -37,7 +37,6 @@
     "fast-levenshtein": "^2.0.6",
     "getusermedia": "^2.0.1",
     "hark": "^1.2.3",
-    "is-online": "^8.4.0",
     "mousetrap": "^1.6.5",
     "open": "^7.1.0",
     "os": "^0.1.1",
