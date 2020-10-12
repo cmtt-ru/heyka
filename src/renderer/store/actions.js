@@ -5,7 +5,7 @@ import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
 import router from '@/router';
 import sounds from '@sdk/classes/sounds';
-import connectionCheck from '@classes/connectionCheck';
+import connectionCheck from '@sdk/classes/connectionCheck';
 import Logger from '@sdk/classes/logger';
 
 const cnsl = new Logger('Initial', '#db580e');
