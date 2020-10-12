@@ -62,7 +62,7 @@
         </list-item>
       </list>
 
-      <div class="l-flex">
+      <div class="l-flex last-block">
         <ui-button
           :type="9"
           icon="add"
@@ -83,12 +83,11 @@
 
       <div
         v-if="selectedChannelId"
-        class="l-flex"
+        class="l-flex bottom-block"
       >
         <ui-button
           :type="14"
           class="l-mr-4"
-          style="margin-left: auto"
           @click="audioLagsHandler"
         >
           {{ texts.audioLags }}
@@ -263,5 +262,15 @@ export default {
 
   &__connect
     flex-shrink 0
+
+.last-block
+  margin-bottom 48px
+
+.bottom-block
+  position absolute
+  bottom 0
+  padding 8px 0
+  box-sizing border-box
+  width 100%
 
 </style>

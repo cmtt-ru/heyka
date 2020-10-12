@@ -146,6 +146,7 @@ import Layout from './../Layout';
 import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
+import { WEB_URL } from '@sdk/Constants';
 
 const http = require('http');
 
@@ -254,8 +255,7 @@ export default {
      * @returns {void}
      */
     async socialHandler(socialName) {
-      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      const link = `${baseUrl}/auth/social/${socialName}/login`;
+      const link = `${WEB_URL}/auth/social/${socialName}/login`;
 
       window.open(link);
     },
@@ -267,8 +267,7 @@ export default {
      * @returns {void}
      */
     async registerHandler() {
-      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      const link = `${baseUrl}/auth/register`;
+      const link = `${WEB_URL}/auth/register`;
 
       window.open(link);
     },

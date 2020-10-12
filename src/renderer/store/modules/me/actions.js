@@ -309,4 +309,9 @@ export default {
   async detachSocial({ dispatch }, socialName) {
     await API.auth.detachSocial(socialName);
   },
+
+  setChannelId({ commit }, id) {
+    commit('app/ANIMATION_CHANNEL_ID', id, { root: true });
+    commit('SET_CHANNEL_ID', id);
+  },
 };
