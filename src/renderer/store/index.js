@@ -62,7 +62,7 @@ const plugins = [
 /**
  * Vuex logger plugin
  */
-if (IS_DEV) {
+if (!IS_DEV) {
   plugins.push(createLogger({
     /**
      * Filter mutations to be logged
