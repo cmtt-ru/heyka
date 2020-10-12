@@ -1,21 +1,13 @@
 import store from '@/store';
 import i18n from '@sdk/translations/i18n';
-import isOnline from 'is-online';
-import sleep from 'es7-sleep';
-import isMainWindow from '@shared/WindowManager/isMainWindow';
 import { EventEmitter } from 'events';
+import network from '@sdk/classes/network';
 
 /**
  * Used for make some debounce for slow internet event
  * @type {number}
  */
 const SLOW_INTERNET_INTERVAL = 2000;
-
-/**
- * Used for internet connection check
- * @type {number}
- */
-const INTERNET_CONNECTION_CHECK_INTERVAL = 5000;
 
 /**
  * Connection checking class
@@ -40,31 +32,34 @@ class ConnectionCheck extends EventEmitter {
 
     this.onlineState = true;
 
-    if (isMainWindow()) {
-      this.startInternetConnectionChecker();
-    }
+    network.on('internet-state', this.internetStateHandler.bind(this));
+
+    window.checker = this;
   }
 
   /**
-   * Connection checker
-   * @returns {Promise<void>}
+   * Internet state event handler
+   * @param {boolean} state – current internet state
+   * @return {Promise<void>}
    */
-  async startInternetConnectionChecker() {
-    while (true) {
-      await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
-      const state = await isOnline();
+  async internetStateHandler(state) {
+    this.onlineState = state;
 
-      this.onlineState = state;
-
-      if (state === false) {
-        this.internetTryingToReconnect = true;
-      } else if (this.internetTryingToReconnect === true) {
-        this.internetTryingToReconnect = false;
-        this.emit('internet-reconnected');
-      }
-
-      this.handleOnlineStatus(state);
+    if (state === false) {
+      this.internetTryingToReconnect = true;
+    } else if (this.internetTryingToReconnect === true) {
+      this.internetTryingToReconnect = false;
+      this.emit('internet-reconnected');
+      console.log('========internet - reconnected');
     }
+
+    if (state === true && this.onlineStatePromiseResole) {
+      this.onlineStatePromiseResole(true);
+      this.onlineStatePromise = null;
+      this.onlineStatePromiseResole = null;
+    }
+
+    this.handleOnlineStatus(state);
   }
 
   /**
@@ -72,20 +67,18 @@ class ConnectionCheck extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async waitUntilOnline() {
-    let state = await isOnline();
+    if (this.onlineStatePromise) {
+      return this.onlineStatePromise;
+    }
 
-    if (state) {
+    if (this.onlineState) {
       return true;
     } else {
-      while (state === false) {
-        state = await isOnline();
+      this.onlineStatePromise = new Promise(resolve => {
+        this.onlineStatePromiseResole = resolve;
+      });
 
-        if (state) {
-          return true;
-        }
-
-        await sleep(INTERNET_CONNECTION_CHECK_INTERVAL);
-      }
+      return this.onlineStatePromise;
     }
   }
 
