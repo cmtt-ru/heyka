@@ -338,8 +338,14 @@ export default {
    * @param {string} workspaceId – workspace id
    * @returns {Promise<void>}
    */
-  async changeWorkspace({ dispatch }, workspaceId) {
-    dispatch('me/setSelectedWorkspaceId', workspaceId);
+  async changeWorkspace({ dispatch, getters }, workspaceId) {
+    const selectedChannelId = getters['me/getSelectedChannelId'];
+
+    if (selectedChannelId) {
+      await dispatch('unselectChannel', selectedChannelId);
+    }
+
+    await dispatch('me/setSelectedWorkspaceId', workspaceId);
     await dispatch('initial');
   },
 };
