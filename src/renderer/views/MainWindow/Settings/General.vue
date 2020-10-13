@@ -14,12 +14,6 @@
       v-model="localSettings.mode"
       :data="modes"
     />
-    <div
-      v-if="settingsWillChange"
-      class="extra-info"
-    >
-      {{ texts.behaviourWillChange }}
-    </div>
     <div class="settings__label">
       {{ texts.autorunLabel }}
     </div>
@@ -49,40 +43,17 @@
         v-model="localSettings.resizeWindow"
         :text="texts.resize"
       />
-      <div
-        v-if="settingsWillChange"
-        class="extra-info"
-      >
-        {{ texts.behaviourWillChange }}
-      </div>
       <ui-switch
         v-model="muteMic"
         :text="texts.nomic"
       />
-      <!-- <ui-switch
-        v-model="closeOverlayButton"
-        :text="texts.closeOverlay"
-      /> -->
     </details>
-
-    <div
-      v-if="settingsWillChange"
-      class="restart-container"
-    >
-      <ui-button
-        :type="1"
-        @click="restartHandler"
-      >
-        {{ texts.restartNow }}
-      </ui-button>
-    </div>
   </div>
 </template>
 
 <script>
 
 import { UiSelect, UiSwitch } from '@components/Form';
-import UiButton from '@components/UiButton';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import { ipcRenderer } from 'electron';
 import { heykaStore } from '@/store/localStore';
@@ -91,7 +62,6 @@ export default {
   components: {
     UiSwitch,
     UiSelect,
-    UiButton,
   },
 
   data() {
@@ -259,18 +229,6 @@ export default {
     },
 
     /**
-     * Display "close" button in call overlay
-     */
-    closeOverlayButton: {
-      get() {
-        return this.$store.state.app.closeOverlayButton;
-      },
-      set(value) {
-        this.$store.dispatch('app/setCloseOverlayButton', value);
-      },
-    },
-
-    /**
      * Flag for "restart app to see changes" text
      * @returns {boolean}
      */
@@ -287,12 +245,49 @@ export default {
     resizeWindow(val) {
       this.$set(this.localSettings, 'resizeWindow', val);
     },
+
+    settingsWillChange(val) {
+      if (val) {
+        this.importantSetting();
+      }
+    },
   },
 
   methods: {
+    async importantSetting() {
+      const texts = this.$i18n.t('notifications.importantSetting');
+
+      const notification = {
+        modal: true,
+        data: {
+          text: texts.text,
+          buttons: [
+            {
+              text: texts.yes,
+              type: 12,
+              action: this.restartHandler,
+            },
+            {
+              text: texts.no,
+              close: true,
+              action: this.cancelImportantSetting,
+            },
+          ],
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
+    },
+
+    cancelImportantSetting() {
+      this.$set(this.localSettings, 'mode', this.mode);
+      this.$set(this.localSettings, 'resizeWindow', this.resizeWindow);
+    },
+
     restartHandler() {
       heykaStore.set('runAppFrom', this.localSettings.mode);
       heykaStore.set('resizeWindow', this.localSettings.resizeWindow);
+      heykaStore.set('openSettings', true);
       ipcRenderer.send('remote-restart');
     },
   },
