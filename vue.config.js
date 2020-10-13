@@ -32,7 +32,6 @@ module.exports = {
         '@sdk': path.resolve(__dirname, 'src/sdk'),
         '@assets': path.resolve(__dirname, 'src/sdk/assets'),
         '@styles': path.resolve(__dirname, 'src/renderer/styles'),
-        '@icons': path.resolve(__dirname, 'src/renderer/components/icons'),
         '@views': path.resolve(__dirname, 'src/renderer/views'),
         '@components': path.resolve(__dirname, 'src/sdk/components'),
         '@libs': path.resolve(__dirname, 'src/sdk/libs'),

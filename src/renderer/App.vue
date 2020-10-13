@@ -6,7 +6,6 @@
 
 <script>
 import '@sdk/styles/fonts.styl';
-import '@sdk/styles/global.styl';
 import '@styles/global.styl';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Mousetrap from 'mousetrap';
