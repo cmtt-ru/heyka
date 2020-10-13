@@ -19,6 +19,7 @@ import Logger from '@sdk/classes/logger';
 import { prepareTokens } from '@api/tokens';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { mapGetters } from 'vuex';
+import { heykaStore } from '@/store/localStore';
 
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
@@ -42,6 +43,12 @@ export default {
 
   async created() {
     try {
+      /** Open settings if after crucial settings changed */
+      if (heykaStore.get('openSettings')) {
+        this.$router.push({ name: 'settings' });
+        heykaStore.set('openSettings', null);
+      }
+
       /** Prepare tokens */
       await prepareTokens();
 
