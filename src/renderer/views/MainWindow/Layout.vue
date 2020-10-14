@@ -1,46 +1,79 @@
 <template>
-  <div>
-    <div class="layout">
+  <div class="main-app">
+    <div class="shadow-wrapper">
       <div
         :style="$themes.getColors('navbar')"
-        class="layout__column layout__column--sidebar"
+        class="layout__appbar"
       >
-        <div
-          v-if="$slots['sidebar-header']"
-          class="layout__row layout__row--header"
-        >
-          <slot name="sidebar-header" />
-        </div>
-
-        <div class="layout__row layout__row--body scroll">
-          <slot name="sidebar-body" />
-        </div>
+        <appbar />
       </div>
-
-      <div
-        :style="$themes.getColors('content')"
-        class="layout__column layout__column--content"
-      >
+      <div class="layout">
         <div
-          v-if="$slots['content-header']"
-          class="layout__row layout__row--header"
+          :style="$themes.getColors('navbar')"
+          class="layout__column layout__column--sidebar"
         >
-          <slot name="content-header" />
+          <div
+            v-if="$slots['sidebar-header']"
+            class="layout__row layout__row--header"
+          >
+            <slot name="sidebar-header" />
+          </div>
+
+          <div class="layout__row layout__row--body scroll">
+            <slot name="sidebar-body" />
+          </div>
         </div>
 
-        <div class="layout__row layout__row--body scroll">
-          <slot name="content-body" />
+        <div
+          :style="$themes.getColors('content')"
+          class="layout__column layout__column--content"
+        >
+          <div class="layout__row layout__row--body scroll">
+            <slot name="content-body" />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
+<script>
+import Appbar from './Appbar';
+export default {
+  components: {
+    Appbar,
+  },
+
+};
+</script>
+
 <style lang="stylus">
+  .main-app
+    padding 8px
+
+  .shadow-wrapper
+    box-shadow 0px 0px 8px 0px rgba(0, 0, 0, 0.25)
+    border-radius 10px
+    overflow hidden
+
   .layout
     display flex
     width 100%
-    height 100vh
+    height calc(100vh - 68px)
+    box-shadow 0px -1px 12px rgba(0, 0, 0, 0.12);
+
+    &__appbar
+      width 100%
+      height 48px
+      padding 8px
+      box-sizing border-box
+      background-color var(--new-appbar)
+      color var(--text-0)
+      -webkit-app-region drag
+      display flex
+      flex-direction row
+      justify-content stretch
+      align-items center
 
     &__column
       display flex
@@ -59,8 +92,6 @@
 
       &--header
         flex 0 0 39px
-        border-bottom 1px solid var(--line-stroke)
-        -webkit-app-region drag
 
       &--body
         flex 1 1 auto
