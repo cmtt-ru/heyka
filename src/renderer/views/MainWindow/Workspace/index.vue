@@ -9,10 +9,6 @@
       <sidebar />
     </template>
 
-    <template #content-header>
-      <workspace-header />
-    </template>
-
     <template #content-body>
       <router-view />
     </template>
@@ -23,7 +19,6 @@
 import Layout from './../Layout';
 import Sidebar from './Sidebar';
 import SidebarHeader from './SidebarHeader';
-import WorkspaceHeader from './WorkspaceHeader';
 import PerformanceMonitor from '@components/PerformanceMonitor';
 
 export default {
@@ -31,7 +26,6 @@ export default {
     Layout,
     Sidebar,
     SidebarHeader,
-    WorkspaceHeader,
     PerformanceMonitor,
   },
   data() {

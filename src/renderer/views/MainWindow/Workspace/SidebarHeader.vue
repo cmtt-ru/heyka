@@ -1,62 +1,43 @@
 <template>
-  <div class="l-p-8 l-fw-m">
+  <div class="workspace">
     <div
-      v-if="myWorkspace"
-      class="workspace"
+      v-click-outside="deactivateInput"
+      class="workspace__search"
     >
-      <div
-        v-click-outside="deactivateInput"
-        class="workspace__search"
-      >
-        <ui-input
-          v-show="inputActive"
-          ref="globalSearch"
-          v-model="searchText"
-          class="workspace__search__input"
-          placeholder="Search"
-          icon="search"
-          @keydown.native.esc="closeInput()"
-        />
-        <ui-button
-          v-show="inputActive"
-          :type="7"
-          class="workspace__search__icon workspace__search__icon--close"
-          size="small"
-          height="16"
-          icon="close"
-          @click.native="closeInput()"
-        />
-        <ui-button
-          v-show="!inputActive"
-          v-tooltip="$t('tooltips.search')"
-          :type="7"
-          class="workspace__search__icon"
-          size="small"
-          icon="search"
-          @click.native="activateInput()"
-        />
-      </div>
+      <ui-input
+        v-show="inputActive"
+        ref="globalSearch"
+        v-model="searchText"
+        class="workspace__search__input"
+        placeholder="Search"
+        icon="search"
+        @keydown.native.esc="closeInput()"
+      />
+      <ui-button
+        v-show="inputActive"
+        :type="7"
+        class="workspace__search__icon workspace__search__icon--close"
+        size="small"
+        height="16"
+        icon="close"
+        @click.native="closeInput()"
+      />
+    </div>
 
-      <div
-        v-popover.click="{name: 'Workspace', permissions: $permissions.manageWorkspaces()}"
-        class="workspace__wrapper"
-      >
-        <avatar
-          class="workspace__avatar"
-          :user-id="myWorkspace.id"
-          :image="userAvatar(myWorkspace, 14)"
-          :size="14"
-          :border-radius="2"
-        />
-        <div>{{ myWorkspace.name }}</div>
-        <ui-button
-          :type="7"
-          class="workspace__expand"
-          size="small"
-          height="16"
-          icon="arrow-down"
-        />
-      </div>
+    <div
+      v-show="!inputActive"
+      class="workspace__wrapper"
+    >
+      <ui-button
+
+        v-tooltip="$t('tooltips.search')"
+        :type="7"
+        class="workspace__search__icon"
+        size="small"
+        icon="search"
+        @click.native="activateInput()"
+      />
+      <div>Search</div>
     </div>
   </div>
 </template>
@@ -65,14 +46,11 @@
 import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import { mapGetters } from 'vuex';
-import { getUserAvatarUrl } from '@libs/image';
-import Avatar from '@components/Avatar';
 
 export default {
   components: {
     UiButton,
     UiInput,
-    Avatar,
   },
 
   data() {
@@ -101,13 +79,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Popover creation
-     * @returns {void}
-     */
-    dropdownHandler() {
-      this.$router.push('/main-window/settings/');
-    },
 
     /**
      * Show searchbar
@@ -140,7 +111,6 @@ export default {
       this.inputActive = false;
     },
 
-    userAvatar: getUserAvatarUrl,
   },
 
 };
@@ -153,7 +123,7 @@ export default {
     flex-direction row
     justify-content space-between
     align-items center
-    padding 0 4px
+    margin 4px
     position relative
     height 24px
 
@@ -177,8 +147,7 @@ export default {
 
     &__search
         position absolute
-        top -4px
-        bottom 0
+        top 0
         width 100%
         height 100%
         right 0
@@ -190,10 +159,6 @@ export default {
           -webkit-app-region no-drag
 
         &__icon
-          pointer-events auto
-          position absolute
-          right 0
-          top 4px
 
           &--close
             top 8px

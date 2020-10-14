@@ -223,6 +223,7 @@ class WindowManager {
       } else {
         browserWindow.show();
       }
+      browserWindow.setHasShadow(true);
     });
 
     // tell renderer about blur, focus and hide events
