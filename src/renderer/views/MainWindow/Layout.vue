@@ -1,36 +1,34 @@
 <template>
-  <div class="main-app">
-    <div class="shadow-wrapper">
+  <div>
+    <div
+      :style="$themes.getColors('navbar')"
+      class="layout__appbar"
+    >
+      <appbar />
+    </div>
+    <div class="layout">
       <div
         :style="$themes.getColors('navbar')"
-        class="layout__appbar"
+        class="layout__column layout__column--sidebar"
       >
-        <appbar />
-      </div>
-      <div class="layout">
         <div
-          :style="$themes.getColors('navbar')"
-          class="layout__column layout__column--sidebar"
+          v-if="$slots['sidebar-header']"
+          class="layout__row layout__row--header"
         >
-          <div
-            v-if="$slots['sidebar-header']"
-            class="layout__row layout__row--header"
-          >
-            <slot name="sidebar-header" />
-          </div>
-
-          <div class="layout__row layout__row--body scroll">
-            <slot name="sidebar-body" />
-          </div>
+          <slot name="sidebar-header" />
         </div>
 
-        <div
-          :style="$themes.getColors('content')"
-          class="layout__column layout__column--content"
-        >
-          <div class="layout__row layout__row--body scroll">
-            <slot name="content-body" />
-          </div>
+        <div class="layout__row layout__row--body scroll">
+          <slot name="sidebar-body" />
+        </div>
+      </div>
+
+      <div
+        :style="$themes.getColors('content')"
+        class="layout__column layout__column--content"
+      >
+        <div class="layout__row layout__row--body scroll">
+          <slot name="content-body" />
         </div>
       </div>
     </div>
@@ -48,18 +46,11 @@ export default {
 </script>
 
 <style lang="stylus">
-  .main-app
-    padding 8px
-
-  .shadow-wrapper
-    box-shadow 0px 0px 8px 0px rgba(0, 0, 0, 0.25)
-    border-radius 10px
-    overflow hidden
 
   .layout
     display flex
     width 100%
-    height calc(100vh - 68px)
+    height calc(100vh - 48px)
     box-shadow 0px -1px 12px rgba(0, 0, 0, 0.12);
 
     &__appbar

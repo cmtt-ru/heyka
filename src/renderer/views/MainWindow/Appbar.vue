@@ -1,9 +1,8 @@
 <template>
-  <div class="appbar">
-    <div>
-      Appbar
-    </div>
-
+  <div
+    class="appbar"
+    :class="{'appbar--mac': IS_MAC}"
+  >
     <div
       v-if="myWorkspace"
       class="workspace"
@@ -15,17 +14,16 @@
         <avatar
           class="workspace__avatar"
           :user-id="myWorkspace.id"
-          :image="workspaceAvatar(myWorkspace, 14)"
-          :size="14"
-          :border-radius="2"
+          :image="workspaceAvatar(myWorkspace, 20)"
+          :size="20"
+          :border-radius="6"
         />
         <div>{{ myWorkspace.name }}</div>
-        <ui-button
-          :type="7"
+        <svg-icon
           class="workspace__expand"
-          size="small"
+          name="arrow-down"
+          width="16"
           height="16"
-          icon="arrow-down"
         />
       </div>
     </div>
@@ -34,21 +32,29 @@
       v-if="myInfo"
       class="user"
     >
-      <microphone
-        v-tooltip="microphoneTooltip"
-        class="user__status"
-        :active="myInfo.microphone"
-        @click.native="switchProp('microphone')"
-      />
+      <div class="user__button-group">
+        <ui-button
+          v-tooltip="microphoneTooltip"
+          :type="7"
+          class="user__button"
+          size="small"
+          :icon="icons.microphone"
+          header
+          square
+          @click="switchProp('microphone')"
+        />
 
-      <ui-button
-        v-tooltip="speakerTooltip"
-        :type="7"
-        class="user__status"
-        size="small"
-        :icon="icons.speakers"
-        @click="switchProp('speakers')"
-      />
+        <ui-button
+          v-tooltip="speakerTooltip"
+          :type="7"
+          class="user__button"
+          size="small"
+          :icon="icons.speakers"
+          header
+          square
+          @click="switchProp('speakers')"
+        />
+      </div>
 
       <avatar
         v-popover.click="{name: 'UserProfile'}"
@@ -59,15 +65,37 @@
         :size="24"
       />
     </div>
+
+    <div v-if="!IS_MAC">
+      <ui-button
+        :type="7"
+        class="user__button"
+        size="medium"
+        icon="collapse"
+        header
+        square
+        @click="minimizeWindowHandler"
+      />
+      <ui-button
+        :type="7"
+        class="user__button"
+        size="medium"
+        icon="close"
+        header
+        square
+        @click="closeWindowHandler"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import UiButton from '@components/UiButton';
-import Microphone from '@components/Microphone';
+// import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 import { getUserAvatarUrl } from '@libs/image';
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
 /**
  * Map media state points to corresponding icons
@@ -87,7 +115,13 @@ export default {
   components: {
     UiButton,
     Avatar,
-    Microphone,
+    // Microphone,
+  },
+
+  data() {
+    return {
+      IS_MAC,
+    };
   },
 
   computed: {
@@ -140,6 +174,14 @@ export default {
 
     workspaceAvatar: getUserAvatarUrl,
 
+    closeWindowHandler() {
+      WindowManager.getCurrentWindow().action('hide');
+    },
+
+    minimizeWindowHandler() {
+      WindowManager.getCurrentWindow().action('minimize');
+    },
+
     /**
      * Change our media state depending on which button was clicked
      * @param {string} property mediastate's property name
@@ -164,13 +206,16 @@ export default {
 <style lang="stylus" scoped>
 
 .workspace
+    position absolute
+    left 0
+    right 0
+    margin 0 auto
     display flex
     flex-direction row
-    justify-content space-between
+    justify-content center
     align-items center
-    padding 0 4px
-    position relative
-    height 24px
+    height 32px
+    pointer-events none
 
     &__wrapper
         cursor pointer
@@ -179,6 +224,17 @@ export default {
         justify-content space-between
         align-items center
         -webkit-app-region no-drag
+        border-radius 8px
+        height 32px
+        padding 0 6px
+        pointer-events initial
+        font-weight bold
+
+        &:hover
+          background var(--new-button-appbar-hover)
+
+        &:active
+          background var(--new-button-appbar-active)
 
     &__expand
         margin-left 4px
@@ -190,39 +246,13 @@ export default {
         border-radius 2px
         margin-right 6px
 
-    &__search
-        position absolute
-        top -4px
-        bottom 0
-        width 100%
-        height 100%
-        right 0
-        pointer-events none
-
-        &__input
-          pointer-events auto
-          background-color var(--button-bg-3)
-          -webkit-app-region no-drag
-
-        &__icon
-          pointer-events auto
-          position absolute
-          right 0
-          top 4px
-
-          &--close
-            top 8px
-            right 8px
-
-/deep/ .input
-  padding-right 26px
-
 .appbar
     width 100%
     display flex
     flex-direction row
     justify-content space-between
     align-items center
+    position relative
 
 .user
     display flex
@@ -230,12 +260,14 @@ export default {
     justify-content flex-end
     align-items center
 
-    &__status
-        margin-left 8px
+    &__button
+        margin-right 4px
+
+     &__button-group
+        margin 0 4px
 
     &__avatar
-        margin-left 12px
-        margin-right 4px
+        margin 0 8px 0 4px
         cursor pointer
         border-radius 50%
         -webkit-app-region no-drag
