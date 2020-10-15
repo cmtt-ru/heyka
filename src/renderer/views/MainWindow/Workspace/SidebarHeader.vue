@@ -19,7 +19,7 @@
         class="workspace__search__icon workspace__search__icon--close"
         size="small"
         height="16"
-        icon="close"
+        icon="clear"
         @click.native="closeInput()"
       />
     </div>

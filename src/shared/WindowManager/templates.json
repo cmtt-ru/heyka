@@ -3,14 +3,12 @@
     "minWidth": 500,
     "minHeight": 500,
     "width": 500,
-    "height": 600,
-    "transparent": true
+    "height": 600
   },
   "main": {
     "width": 500,
     "height": 600,
-    "resizable": false,
-    "transparent": true
+    "resizable": false
   },
   "maintray": {
     "width": 500,
