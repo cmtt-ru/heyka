@@ -2,12 +2,12 @@
   "mainDev": {
     "minWidth": 500,
     "minHeight": 500,
-    "width": 500,
-    "height": 600
+    "width": 520,
+    "height": 520
   },
   "main": {
-    "width": 500,
-    "height": 600,
+    "width": 520,
+    "height": 520,
     "resizable": false
   },
   "maintray": {

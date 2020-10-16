@@ -31,67 +31,100 @@
     <div
       v-if="myInfo"
       class="user"
+      :class="{'user--mac': IS_MAC}"
     >
-      <div class="user__button-group">
-        <ui-button
-          v-tooltip="microphoneTooltip"
-          :type="7"
-          class="user__button"
-          size="small"
-          :icon="icons.microphone"
-          header
-          square
-          @click="switchProp('microphone')"
-        />
-
-        <ui-button
-          v-tooltip="speakerTooltip"
-          :type="7"
-          class="user__button"
-          size="small"
-          :icon="icons.speakers"
-          header
-          square
-          @click="switchProp('speakers')"
-        />
-      </div>
+      <ui-button
+        v-tooltip="speakerTooltip"
+        :type="7"
+        class="user__button"
+        size="medium"
+        :icon="icons.speakers"
+        header
+        square
+        @click="switchProp('speakers')"
+      />
+      <ui-button
+        v-tooltip="microphoneTooltip"
+        :type="7"
+        class="user__button"
+        size="medium"
+        :icon="icons.microphone"
+        header
+        square
+        @click="switchProp('microphone')"
+      />
 
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
-        :image="userAvatar(myInfo.id, 24)"
+        :image="userAvatar(myInfo.id, 32)"
         :user-id="myInfo.id"
         :status="myInfo.onlineStatus"
-        :size="24"
+        :size="32"
       />
     </div>
 
     <div v-if="!IS_MAC">
       <ui-button
         :type="7"
-        class="user__button"
+        class="control__button"
         size="medium"
         icon="collapse"
         header
-        square
         @click="minimizeWindowHandler"
       />
       <ui-button
         :type="7"
-        class="user__button"
+        class="control__button control__button--win-close"
+        size="medium"
+        icon="close"
+        header
+        @click="closeWindowHandler"
+      />
+    </div>
+
+    <div
+      v-if="IS_MAC"
+      class="mac-controls-wrapper"
+    >
+      <div
+        :type="7"
+        class="mac-controls mac-controls--close"
+        size="medium"
+        icon="collapse"
+        header
+        square
+        @click="closeWindowHandler"
+      >
+        <svg-icon
+          class="mac-controls__icon"
+          name="close"
+          width="8"
+          height="8"
+        />
+      </div>
+      <div
+        :type="7"
+        class="mac-controls mac-controls--collapse"
         size="medium"
         icon="close"
         header
         square
-        @click="closeWindowHandler"
-      />
+        @click="minimizeWindowHandler"
+      >
+        <svg-icon
+          class="mac-controls__icon"
+          name="collapse"
+          width="8"
+          height="8"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import UiButton from '@components/UiButton';
-// import Microphone from '@components/Microphone';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 import { getUserAvatarUrl } from '@libs/image';
@@ -115,12 +148,11 @@ export default {
   components: {
     UiButton,
     Avatar,
-    // Microphone,
   },
 
   data() {
     return {
-      IS_MAC,
+      IS_MAC: IS_MAC,
     };
   },
 
@@ -206,73 +238,127 @@ export default {
 <style lang="stylus" scoped>
 
 .workspace
-    position absolute
-    left 0
-    right 0
-    margin 0 auto
-    display flex
-    flex-direction row
-    justify-content center
-    align-items center
-    height 32px
-    pointer-events none
+  position absolute
+  left 0
+  right 0
+  margin 0 auto
+  display flex
+  flex-direction row
+  justify-content center
+  align-items center
+  height 32px
+  pointer-events none
 
-    &__wrapper
-        cursor pointer
-        display flex
-        flex-direction row
-        justify-content space-between
-        align-items center
-        -webkit-app-region no-drag
-        border-radius 8px
-        height 32px
-        padding 0 6px
-        pointer-events initial
-        font-weight bold
-
-        &:hover
-          background var(--new-button-appbar-hover)
-
-        &:active
-          background var(--new-button-appbar-active)
-
-    &__expand
-        margin-left 4px
-        margin-top 1px
-
-    &__avatar
-        width 14px
-        height 14px
-        border-radius 2px
-        margin-right 6px
-
-.appbar
-    width 100%
+  &__wrapper
+    cursor pointer
     display flex
     flex-direction row
     justify-content space-between
     align-items center
-    position relative
+    -webkit-app-region no-drag
+    border-radius 8px
+    height 32px
+    padding 0 6px
+    pointer-events initial
+    font-weight bold
+
+    &:hover
+      background var(--new-button-appbar-hover)
+
+    &:active
+      background var(--new-button-appbar-active)
+
+    &.context-menu--opened .workspace__expand
+      color var(--new-UI-01)
+
+  &__expand
+    margin-left 4px
+    margin-top 1px
+
+  &__avatar
+    width 14px
+    height 14px
+    border-radius 2px
+    margin-right 6px
+
+.appbar
+  width 100%
+  display flex
+  flex-direction row
+  justify-content space-between
+  align-items center
+  position relative
+
+  &--mac
+    flex-direction row-reverse
 
 .user
-    display flex
+  display flex
+  flex-direction row-reverse
+  justify-content flex-end
+  align-items center
+
+  &--mac
     flex-direction row
-    justify-content flex-end
-    align-items center
 
-    &__button
-        margin-right 4px
+    & .user__avatar
+      margin 0 4px 0 7px
 
-     &__button-group
-        margin 0 4px
+  &__button
+    margin-right 4px
 
-    &__avatar
-        margin 0 8px 0 4px
-        cursor pointer
-        border-radius 50%
-        -webkit-app-region no-drag
+  &__avatar
+    margin 0 11px 0 4px
+    cursor pointer
+    border-radius 50%
+    -webkit-app-region no-drag
 
-        &:hover
-            opacity 0.8
+    &:hover
+      opacity 0.8
+
+    &:active
+      opacity 0.7
+
+.control__button
+  margin-left 4px
+
+  &--win-close
+
+    &:hover, &:active
+      mix-blend-mode initial
+      background var(--new-system-02)
+      color var(--new-UI-08)
+
+.mac-controls-wrapper
+  margin-left 10px
+  -webkit-app-region no-drag
+
+.mac-controls
+  margin-right 8px
+  width 12px
+  height 12px
+  border-radius 50%
+  box-sizing border-box
+  display inline-flex
+  flex-direction row
+  justify-content center
+  align-items center
+
+  &--close
+    background var(--new-system-02)
+    border 0.5px solid var(--new-system-02-2)
+
+  &--collapse
+    background var(--new-system-01)
+    border 0.5px solid var(--new-system-01-2)
+
+  &__icon
+    opacity 0
+
+  &:hover .mac-controls__icon
+    opacity 1
+
+  &:active
+    opacity 0.5
 
 </style>
