@@ -1,8 +1,58 @@
 <template>
   <div
     id="sidebar_channel_anchor"
-    class="l-p-8"
+    class="l-p-12"
   >
+    <div
+      v-click-outside="deactivateInput"
+      class="search-wrapper"
+    >
+      <div
+        v-show="inputActive"
+
+        class="search"
+      >
+        <ui-input
+
+          ref="globalSearch"
+          v-model="searchText"
+          class="search__input"
+          placeholder="Search"
+          @keydown.native.esc="closeInput"
+        />
+        <svg-icon
+          class="search__icon__absolute"
+          name="search"
+          color="var(--new-UI-01)"
+          width="20"
+          height="20"
+        />
+        <svg-icon
+          v-show="searchText"
+          class="search__icon__absolute search__icon__absolute--close"
+          name="clear"
+          width="16"
+          height="16"
+          @click.native="closeInput"
+        />
+      </div>
+
+      <div
+        v-show="!inputActive"
+        class="search"
+        @click="activateInput"
+      >
+        <svg-icon
+          class="search__icon"
+          name="search"
+          color="var(--new-UI-01)"
+          width="20"
+          height="20"
+        />
+        <div>Search</div>
+      </div>
+    </div>
+
     <transition name="connected-channel">
       <div
         v-if="selectedChannel"
@@ -18,14 +68,13 @@
     <div class="channel-header">
       <a
         href="#sidebar_channel_anchor"
-        class="channel-header__label l-ml-4"
+        class="channel-header__label"
       >{{ texts.channelsHeader }}</a>
       <ui-button
         v-tooltip="$t('tooltips.newChannel')"
         :type="7"
         class="channel-header__add"
         size="small"
-        height="16"
         icon="add"
         @click.native="createChannelHandler"
       />
@@ -59,7 +108,7 @@
     <div class="channel-header user-header">
       <a
         href="#sidebar_user_anchor"
-        class="channel-header__label l-ml-4"
+        class="channel-header__label"
       >{{ texts.usersHeader }}</a>
       <router-link :to="{name: 'invite'}">
         <ui-button
@@ -67,7 +116,6 @@
           :type="7"
           class="channel-header__add"
           size="small"
-          height="16"
           icon="add"
         />
       </router-link>
@@ -96,6 +144,7 @@
 import ChannelItem from '@components/ChannelItem';
 import { List, ListItem } from '@components/List';
 import UiButton from '@components/UiButton';
+import { UiInput } from '@components/Form';
 import SidebarUserItem from '@components/SidebarUserItem';
 import { mapGetters } from 'vuex';
 
@@ -105,7 +154,15 @@ export default {
     ListItem,
     ChannelItem,
     UiButton,
+    UiInput,
     SidebarUserItem,
+  },
+
+  data() {
+    return {
+      inputActive: false,
+      searchText: '',
+    };
   },
 
   computed: {
@@ -124,14 +181,6 @@ export default {
     },
 
     /**
-     * Get search string from header
-     * @returns {string}
-     */
-    searchText() {
-      return this.$store.state.app.search;
-    },
-
-    /**
      * Get pseudo-selected channel for faster bubbling animation
      * @returns {object} - channel
      */
@@ -141,9 +190,19 @@ export default {
       return this.$store.getters['channels/getChannelById'](selectedChannelId);
     },
 
-  },
-
-  created() {
+    /**
+     * Search string in vuex
+     *
+     * @returns {string}
+     */
+    // searchText: {
+    //   get() {
+    //     return this.$store.state.app.search;
+    //   },
+    //   set(value) {
+    //     this.$store.commit('app/SET_SEARCH_TEXT', value);
+    //   },
+    // },
 
   },
 
@@ -175,6 +234,37 @@ export default {
       this.$router.push({ name: 'create-channel' });
     },
 
+    /**
+     * Show searchbar
+     * @returns {void}
+     */
+    activateInput() {
+      this.searchText = '';
+      this.inputActive = true;
+      this.$nextTick(() => {
+        this.$refs.globalSearch.focusInput();
+      });
+    },
+
+    /**
+     * Close searchbar if it is empty
+     * @returns {void}
+     */
+    deactivateInput() {
+      if (this.searchText === '') {
+        this.inputActive = false;
+      }
+    },
+
+    /**
+     * Close searchbar
+     * @returns {void}
+     */
+    async closeInput() {
+      this.searchText = '';
+      this.inputActive = false;
+    },
+
   },
 
 };
@@ -184,6 +274,50 @@ export default {
 
 $ANIM = 250ms
 
+/deep/ .input
+  padding-right 26px
+  padding-left 33px
+  height 28px
+  min-height 28px
+  box-sizing border-box
+  border-radius 6px
+  font-weight 500
+
+  &::placeholder
+    font-weight 500
+
+.search
+  height 28px
+  display flex
+  flex-direction row
+  justify-content flex-start
+  align-items center
+  border-radius 6px
+  cursor pointer
+  position relative
+
+  &:hover
+    background-color var(--new-UI-07)
+
+  &:active
+    background-color var(--new-UI-08)
+
+  &__icon
+    margin 0 8px 0 6px
+
+    &__absolute
+      position absolute
+      top 4px
+      left 6px
+
+      &--close
+        left initial
+        right 6px
+        top 6px
+
+        &:hover
+          color var(--new-UI-04)
+
 .channel-header
   display flex
   background-color var(--new-app-bg)
@@ -192,11 +326,12 @@ $ANIM = 250ms
   align-items center
   color var(--text-1)
   font-size 12px
+  font-weight bold
   position sticky
   top 0
   z-index 1
-  padding 5px 4px
-  margin-top 7px
+  padding 2px 0 2px 8px
+  margin-top 14px
 
 .user-header
   top 27px
