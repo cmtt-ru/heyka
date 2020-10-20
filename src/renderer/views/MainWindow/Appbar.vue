@@ -152,7 +152,7 @@ export default {
 
   data() {
     return {
-      IS_MAC: IS_MAC,
+      IS_MAC,
     };
   },
 
@@ -327,7 +327,10 @@ export default {
     &:hover, &:active
       mix-blend-mode initial
       background var(--new-system-02)
-      color var(--new-UI-08)
+      color var(--new-UI-09)
+
+     &:active
+      background var(--new-system-02-2)
 
 .mac-controls-wrapper
   margin-left 10px

@@ -1,12 +1,15 @@
 <template>
-  <div>
+  <div class="mainwindow-wrapper">
     <div
       :style="$themes.getColors('navbar')"
       class="layout__appbar"
     >
       <appbar />
     </div>
-    <div class="layout">
+    <div
+      class="layout"
+      :class="{'layout--mac': IS_MAC}"
+    >
       <div
         :style="$themes.getColors('navbar')"
         class="layout__column layout__column--sidebar"
@@ -41,24 +44,37 @@ export default {
   components: {
     Appbar,
   },
+  data() {
+    return {
+      IS_MAC,
+    };
+  },
 
 };
 </script>
 
 <style lang="stylus">
 
+  .mainwindow-wrapper
+    background-color var(--new-bg-03)
+
   .layout
     display flex
     width 100%
     height calc(100vh - 48px)
-    box-shadow 0px -1px 12px rgba(0, 0, 0, 0.12);
+    box-shadow 0px -1px 12px rgba(0, 0, 0, 0.12)
+
+    &--mac
+      border-top-left-radius 10px
+      border-top-right-radius 10px
+      overflow hidden
 
     &__appbar
       width 100%
       height 48px
       padding 8px
       box-sizing border-box
-      background-color var(--new-appbar)
+      background-color var(--new-bg-03)
       color var(--text-0)
       -webkit-app-region drag
       display flex
