@@ -3,6 +3,7 @@
     id="sidebar_channel_anchor"
     class="l-p-12"
   >
+    <!------ search ------>
     <div
       v-click-outside="deactivateInput"
       class="search-wrapper"
@@ -17,7 +18,7 @@
           ref="globalSearch"
           v-model="searchText"
           class="search__input"
-          placeholder="Search"
+          :placeholder="texts.search"
           @keydown.native.esc="closeInput"
         />
         <svg-icon
@@ -49,10 +50,11 @@
           width="20"
           height="20"
         />
-        <div>Search</div>
+        <div>{{ texts.search }}</div>
       </div>
     </div>
 
+    <!------ channels ------>
     <transition name="connected-channel">
       <div
         v-if="selectedChannel"
@@ -85,7 +87,7 @@
       :filter-by="searchText"
     >
       <list-item
-        v-for="channel in channels"
+        v-for="channel in showedChannels"
         :key="channel.name"
         :filter-key="channel.name"
         button
@@ -99,8 +101,35 @@
           />
         </transition>
       </list-item>
+      <div
+        v-if="channels.length<=MANY_CHANNELS"
+        class="action-button"
+        @click="createChannelHandler"
+      >
+        <svg-icon
+          class="action-button__icon"
+          name="add"
+          size="medium"
+        />
+        <div>{{ texts.createChannel }}</div>
+      </div>
+      <a
+        v-else
+        class="action-button"
+        :href="showMore && '#sidebar_channel_anchor'"
+        @click="toggleChannelsHandler"
+      >
+        <svg-icon
+          class="action-button__icon"
+          name="arrow-down"
+          :class="{'action-button__icon--flipped': !showMore}"
+          size="medium"
+        />
+        <div>{{ toggleChannelText }}</div>
+      </a>
     </list>
 
+    <!------ users ------>
     <div
       id="sidebar_user_anchor"
       class="user-anchor"
@@ -148,6 +177,8 @@ import { UiInput } from '@components/Form';
 import SidebarUserItem from '@components/SidebarUserItem';
 import { mapGetters } from 'vuex';
 
+const MANY_CHANNELS = 4;
+
 export default {
   components: {
     List,
@@ -160,8 +191,10 @@ export default {
 
   data() {
     return {
+      MANY_CHANNELS,
       inputActive: false,
       searchText: '',
+      showMore: true,
     };
   },
 
@@ -188,6 +221,26 @@ export default {
       const selectedChannelId = this.$store.state.app.animationChannel || '';
 
       return this.$store.getters['channels/getChannelById'](selectedChannelId);
+    },
+
+    showedChannels() {
+      if (this.searchText === '' && this.showMore) {
+        return this.channels.slice(0, MANY_CHANNELS);
+      }
+
+      return this.channels;
+    },
+
+    showAll() {
+      return (this.showMore && !!this.searchText);
+    },
+
+    toggleChannelText() {
+      if (this.showMore) {
+        return this.texts.showChannels;
+      } else {
+        return this.texts.hideChannels;
+      }
     },
 
     /**
@@ -232,6 +285,10 @@ export default {
      */
     createChannelHandler() {
       this.$router.push({ name: 'create-channel' });
+    },
+
+    toggleChannelsHandler() {
+      this.showMore = !this.showMore;
     },
 
     /**
@@ -318,13 +375,41 @@ $ANIM = 250ms
         &:hover
           color var(--new-UI-04)
 
+.action-button
+  padding 4px 8px
+  margin 2px 0
+  width 100%
+  height 24px
+  box-sizing border-box
+  border-radius 6px
+  color var(--new-UI-04)
+  font-weight bold
+  display flex
+  flex-direction row
+  align-items center
+  justify-content flex-start
+  cursor pointer
+
+  &:hover
+    background-color var(--new-UI-07)
+
+  &:active
+    background-color var(--new-UI-08)
+
+  &__icon
+    margin-right 10px
+    transition all 0.1s ease
+
+    &--flipped
+      transform rotate(180deg)
+
 .channel-header
   display flex
   background-color var(--new-app-bg)
   flex-direction row
   justify-content space-between
   align-items center
-  color var(--text-1)
+  color var(--new-UI-04)
   font-size 12px
   font-weight bold
   position sticky
@@ -339,9 +424,6 @@ $ANIM = 250ms
 
 .user-anchor
   transform translateY(-25px)
-
-.connected-channel
-  overflow hidden
 
 .connected-channel-enter
   height 0
