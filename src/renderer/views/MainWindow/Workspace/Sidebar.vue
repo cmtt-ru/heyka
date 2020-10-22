@@ -107,7 +107,7 @@
       </list-item>
       <div v-if="!searchText">
         <router-link
-          v-if="channels.length>=MANY_CHANNELS"
+          v-if="channels.length<=MANY_CHANNELS"
           :to="{name: 'create-channel'}"
           class="action-button"
           @click="createChannelHandler"
