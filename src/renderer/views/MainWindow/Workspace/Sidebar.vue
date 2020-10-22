@@ -72,14 +72,18 @@
         href="#sidebar_channel_anchor"
         class="channel-header__label"
       >{{ texts.channelsHeader }}</a>
-      <ui-button
-        v-tooltip="$t('tooltips.newChannel')"
-        :type="7"
-        class="channel-header__add"
-        size="small"
-        icon="add"
-        @click.native="createChannelHandler"
-      />
+      <router-link
+        :to="{name: 'create-channel'}"
+      >
+        <ui-button
+          v-tooltip="$t('tooltips.newChannel')"
+          :type="7"
+          class="channel-header__add"
+          size="small"
+          icon="add"
+          @click.native="createChannelHandler"
+        />
+      </router-link>
     </div>
 
     <list
@@ -101,32 +105,35 @@
           />
         </transition>
       </list-item>
-      <div
-        v-if="channels.length<=MANY_CHANNELS"
-        class="action-button"
-        @click="createChannelHandler"
-      >
-        <svg-icon
-          class="action-button__icon"
-          name="add"
-          size="medium"
-        />
-        <div>{{ texts.createChannel }}</div>
+      <div v-if="!searchText">
+        <router-link
+          v-if="channels.length>=MANY_CHANNELS"
+          :to="{name: 'create-channel'}"
+          class="action-button"
+          @click="createChannelHandler"
+        >
+          <svg-icon
+            class="action-button__icon"
+            name="add"
+            size="medium"
+          />
+          <div>{{ texts.createChannel }}</div>
+        </router-link>
+        <a
+          v-else
+          class="action-button"
+          :href="showMore && '#sidebar_channel_anchor'"
+          @click="toggleChannelsHandler"
+        >
+          <svg-icon
+            class="action-button__icon"
+            name="arrow-down"
+            :class="{'action-button__icon--flipped': !showMore}"
+            size="medium"
+          />
+          <div>{{ toggleChannelText }}</div>
+        </a>
       </div>
-      <a
-        v-else
-        class="action-button"
-        :href="showMore && '#sidebar_channel_anchor'"
-        @click="toggleChannelsHandler"
-      >
-        <svg-icon
-          class="action-button__icon"
-          name="arrow-down"
-          :class="{'action-button__icon--flipped': !showMore}"
-          size="medium"
-        />
-        <div>{{ toggleChannelText }}</div>
-      </a>
     </list>
 
     <!------ users ------>
@@ -165,6 +172,17 @@
           :user="user"
         />
       </list-item>
+      <router-link
+        :to="{name: 'invite'}"
+        class="action-button"
+      >
+        <svg-icon
+          class="action-button__icon"
+          name="add"
+          size="medium"
+        />
+        <div>{{ texts.inviteUser }}</div>
+      </router-link>
     </list>
   </div>
 </template>
@@ -396,6 +414,9 @@ $ANIM = 250ms
   &:active
     background-color var(--new-UI-08)
 
+  &.router-link-active .action-button__icon
+    color var(--new-UI-01)
+
   &__icon
     margin-right 10px
     transition all 0.1s ease
@@ -418,7 +439,11 @@ $ANIM = 250ms
   padding 2px 0 2px 8px
   margin-top 14px
 
+.router-link-active .channel-header__add
+  color var(--new-UI-01)
+
 .user-header
+  margin-top 22px
   top 27px
   bottom 0
 
