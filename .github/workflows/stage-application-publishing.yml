@@ -19,7 +19,6 @@ jobs:
       with:
         path: 'package.json'
         prop_path: 'version'
-      run: echo "RELEASE_VERSION=${{ steps.version.outputs.prop }}" >> $GITHUB_ENV
     - name: Fix git config
       run: |
         git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
@@ -37,7 +36,7 @@ jobs:
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
     - name: create specific package.json file for test build
-      run: echo '{"name":"heyka-stage","version":"${{ env.RELEASE_VERSION }}"}' > package.json
+      run: echo '{"name":"heyka-stage","version":"${{ steps.version.outputs.prop }}"}' > package.json
     - name: build for mac os
       run: npm run electron:build -- --mac --publish always
       env:
@@ -58,7 +57,6 @@ jobs:
       with:
         path: 'package.json'
         prop_path: 'version'
-      run: echo "RELEASE_VERSION=${{ steps.version.outputs.prop }}" >> $GITHUB_ENV
     - name: Fix git config
       run: |
         git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
@@ -78,7 +76,7 @@ jobs:
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
     - name: create specific package.json file for test build
-      run: echo '{"name":"heyka-stage","version":"${{ env.RELEASE_VERSION }}"}' > package.json
+      run: echo '{"name":"heyka-stage","version":"${{ steps.version.outputs.prop }}"}' > package.json
     - name: build for win and linux (without certificates)
       run: npm run electron:build -- --win --linux --publish always
       env:
