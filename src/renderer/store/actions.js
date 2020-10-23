@@ -184,6 +184,8 @@ export default {
       }
     }
 
+    await dispatch('app/removePushByName', 'noSound');
+
     dispatch('unselectChannelWithoutAPICall', id);
   },
 
