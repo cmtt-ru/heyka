@@ -199,10 +199,11 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  addPush({ commit }, { inviteId, userId, message }) {
+  addPush({ commit }, { inviteId, userId, message, name }) {
     const push = {
       inviteId,
       userId,
+      name,
       ...message,
     }; // TODO: брать workspaceId из пришедшего пуша
 
@@ -218,6 +219,22 @@ export default {
    */
   removePush({ commit }, id) {
     commit('REMOVE_PUSH', id);
+  },
+
+  /**
+   * Remove pushes by name
+   *
+   * @param {function} commit – store commit
+   * @param {string} name – push's name
+   * @returns {void}
+  */
+  removePushByName({ commit, state }, name) {
+    console.log('app/removePushByName', state.pushes);
+    for (const push of state.pushes) {
+      if (push.name === name) {
+        commit('REMOVE_PUSH', push.inviteId);
+      }
+    }
   },
 
   /**

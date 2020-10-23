@@ -95,6 +95,10 @@ export default {
       sounds.play('microphone-toggle');
     }
 
+    if (mediaState.microphone) {
+      await dispatch('app/removePushByName', 'noSound', { root: true });
+    }
+
     commit('SET_MEDIA_STATE', mediaState);
 
     if (selectedChannelId) {

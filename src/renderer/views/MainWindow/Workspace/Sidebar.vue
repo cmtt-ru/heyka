@@ -74,11 +74,11 @@
     </div>
 
     <list
-      v-if="users.length"
+      v-if="sidebarUsers.length"
       :filter-by="searchText"
     >
       <list-item
-        v-for="user in users"
+        v-for="user in sidebarUsers"
         :key="user.id"
         :filter-key="user.name"
         button
@@ -112,7 +112,7 @@ export default {
 
     ...mapGetters({
       channels: 'channels/getChannels',
-      users: 'users/getAllUsers',
+      getAllUsers: 'users/getAllUsers',
     }),
 
     /**
@@ -141,9 +141,9 @@ export default {
       return this.$store.getters['channels/getChannelById'](selectedChannelId);
     },
 
-  },
-
-  created() {
+    sidebarUsers() {
+      return this.getAllUsers.filter(user => user.role !== 'guest');
+    },
 
   },
 
