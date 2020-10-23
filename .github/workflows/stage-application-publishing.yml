@@ -67,49 +67,8 @@ jobs:
       run: cp ./electron-builder-stage.json ./electron-builder.json
     - name: create specific package.json file for test build
       run: cat package.json | sed 's/heyka/heyka-stage/' > tmp && mv tmp package.json
-    - name: test
-      run: cat package.json
     - name: build for win and linux (without certificates)
       run: npm run electron:build -- --win --linux --publish always
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        CI: true
-
-  build-win-arm64:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.MY_REPO_PAT }}
-        submodules: recursive
-    - name: Fix git config
-      run: |
-        git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
-    - name: Cache node modules
-      uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.OS }}-build-${{ env.cache-name }}-
-          ${{ runner.OS }}-build-
-          ${{ runner.OS }}-
-    - name: install wine
-      run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install wine32 && sudo apt-get install wine-stable
-    - name: set config for arm64
-      run: set npm_config_arch=arm64
-    - name: install dependencies
-      run: npm install
-    - name: set configuration
-      run: cp ./electron-builder-stage.json ./electron-builder.json
-    - name: create specific package.json file for test build
-      run: cat package.json | sed 's/heyka/heyka-stage/' > tmp && mv tmp package.json
-    - name: test
-      run: cat package.json
-    - name: build for win arm 64
-      run: npm run electron:build -- --arm64 --win --publish always
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
