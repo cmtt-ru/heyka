@@ -36,7 +36,7 @@ jobs:
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
     - name: create specific package.json file for test build
-      run: echo '{"name":"heyka-stage","version":"${{ steps.version.outputs.prop }}","scripts":{"electron:build": "vue-cli-service electron:build"}}' > package.json
+      run: echo '{"name":"heyka-stage","version":"${{ steps.version.outputs.prop }}","scripts":{"electron:build":"vue-cli-service electron:build"}}' > package.json
     - name: build for mac os
       run: npm run electron:build -- --mac --publish always
       env:
@@ -76,7 +76,7 @@ jobs:
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
     - name: create specific package.json file for test build
-      run: echo '{"name":"heyka-stage","version":"${{ steps.version.outputs.prop }}","scripts":{"electron:build": "vue-cli-service electron:build"}}' > package.json
+      run: echo '{"name":"heyka-stage","version":"${{ steps.version.outputs.prop }}","scripts":{"electron:build":"vue-cli-service electron:build"}}' > package.json
     - name: build for win and linux (without certificates)
       run: npm run electron:build -- --win --linux --publish always
       env:
