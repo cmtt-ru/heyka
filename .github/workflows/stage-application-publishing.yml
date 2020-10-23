@@ -14,6 +14,12 @@ jobs:
         fetch-depth: 0
         token: ${{ secrets.MY_REPO_PAT }}
         submodules: recursive
+    - name: Set version in env
+      uses: notiz-dev/github-action-json-property@release
+      with:
+        path: 'package.json'
+        prop_path: 'version'
+      run: echo "RELEASE_VERSION=${{ steps.version.outputs.prop }}" >> $GITHUB_ENV
     - name: Fix git config
       run: |
         git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
@@ -30,6 +36,8 @@ jobs:
       run: npm install
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
+    - name: create specific package.json file for test build
+      run: echo '{"name":"heyka-stage","version":"${{ env.RELEASE_VERSION }}"}' > package.json
     - name: build for mac os
       run: npm run electron:build -- --mac --publish always
       env:
@@ -45,6 +53,12 @@ jobs:
         fetch-depth: 0
         token: ${{ secrets.MY_REPO_PAT }}
         submodules: recursive
+    - name: Set version in env
+      uses: notiz-dev/github-action-json-property@release
+      with:
+        path: 'package.json'
+        prop_path: 'version'
+      run: echo "RELEASE_VERSION=${{ steps.version.outputs.prop }}" >> $GITHUB_ENV
     - name: Fix git config
       run: |
         git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
@@ -63,8 +77,16 @@ jobs:
       run: npm install
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
+    - name: create specific package.json file for test build
+      run: echo '{"name":"heyka-stage","version":"${{ env.RELEASE_VERSION }}"}' > package.json
     - name: build for win and linux (without certificates)
       run: npm run electron:build -- --win --linux --publish always
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        CI: true
+    - name: build for arm64 win
+      run: npm run electron:build -- --arm64 --win --publish always
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
