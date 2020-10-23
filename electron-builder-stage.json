@@ -12,7 +12,7 @@
       }
   },
   "win": {
-      "target": ["nsis", "appx"],
+      "target": "nsis",
       "icon": "public/icon.ico",
       "legalTrademarks": "Heyka"
   },
