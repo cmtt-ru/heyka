@@ -174,7 +174,7 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ commit, dispatch }, id) {
+  async unselectChannel({ commit, dispatch, state }, id = state.me.selectedChannelId) {
     commit('app/ANIMATION_CHANNEL_ID', null);
     try {
       await API.channel.unselect(id);
@@ -195,7 +195,7 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  unselectChannelWithoutAPICall({ commit, dispatch, state }, id) {
+  unselectChannelWithoutAPICall({ commit, dispatch, state }, id = state.me.selectedChannelId) {
     commit('channels/REMOVE_USER', {
       userId: state.me.id,
       channelId: id,
@@ -340,8 +340,13 @@ export default {
    * @param {string} workspaceId – workspace id
    * @returns {Promise<void>}
    */
-  async changeWorkspace({ dispatch }, workspaceId) {
-    dispatch('me/setSelectedWorkspaceId', workspaceId);
+  async changeWorkspace({ dispatch, getters }, workspaceId) {
+    const selectedChannelId = getters['me/getSelectedChannelId'];
+
+    if (selectedChannelId) {
+      await dispatch('unselectChannel', selectedChannelId);
+    }
+
     sockets.destroy();
     await dispatch('initial');
   },
