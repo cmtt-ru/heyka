@@ -45,6 +45,7 @@ class WindowManager {
       show: this.showWindow,
       hide: this.hideWindow,
       close: this.closeWindow,
+      minimize: this.minimizeWindow,
       showInactive: this.showInactiveWindow,
       focus: this.focusWindow,
       blur: this.blurWindow,
@@ -296,6 +297,17 @@ class WindowManager {
       } catch (e) {
         console.error('window already closed');
       }
+    }
+  }
+
+  /**
+   * Minimize window
+   * @param {string} id - ID of window in question
+   * @returns {void}
+   */
+  minimizeWindow({ id }) {
+    if (this.windows[id] !== undefined) {
+      this.windows[id].browserWindow.minimize();
     }
   }
 
