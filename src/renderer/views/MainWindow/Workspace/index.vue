@@ -1,10 +1,5 @@
 <template>
   <layout>
-    <template #sidebar-header>
-      <performance-monitor />
-      <sidebar-header />
-    </template>
-
     <template #sidebar-body>
       <sidebar />
     </template>
@@ -18,15 +13,13 @@
 <script>
 import Layout from './../Layout';
 import Sidebar from './Sidebar';
-import SidebarHeader from './SidebarHeader';
-import PerformanceMonitor from '@components/PerformanceMonitor';
+// import PerformanceMonitor from '@components/PerformanceMonitor';
 
 export default {
   components: {
     Layout,
     Sidebar,
-    SidebarHeader,
-    PerformanceMonitor,
+    // PerformanceMonitor,
   },
   data() {
     return {
