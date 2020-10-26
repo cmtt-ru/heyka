@@ -30,6 +30,8 @@ jobs:
       run: npm install
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
+    - name: create specific package.json file for test build
+      run: cat package.json | sed 's/heyka/heyka-stage/' > tmp && mv tmp package.json
     - name: build for mac os
       run: npm run electron:build -- --mac --publish always
       env:
@@ -63,6 +65,8 @@ jobs:
       run: npm install
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
+    - name: create specific package.json file for test build
+      run: cat package.json | sed 's/heyka/heyka-stage/' > tmp && mv tmp package.json
     - name: build for win and linux (without certificates)
       run: npm run electron:build -- --win --linux --publish always
       env:
