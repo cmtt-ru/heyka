@@ -1,8 +1,12 @@
 <template>
-  <div class="mainwindow-wrapper">
+  <div
+    class="mainwindow-wrapper"
+    :class="{'mainwindow-wrapper--mac': IS_MAC}"
+  >
     <div
       :style="$themes.getColors('navbar')"
       class="layout__appbar"
+      :class="{'layout__appbar--mac': IS_MAC}"
     >
       <appbar />
     </div>
@@ -58,6 +62,10 @@ export default {
   .mainwindow-wrapper
     background-color var(--new-bg-03)
 
+    &--mac
+      background-color rgba(249,249,249,0.6)
+      background-blend-mode hard-light
+
   .layout
     display flex
     width 100%
@@ -81,6 +89,9 @@ export default {
       flex-direction row
       justify-content stretch
       align-items center
+
+      &--mac
+        background-color transparent
 
     &__column
       display flex

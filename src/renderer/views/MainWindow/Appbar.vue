@@ -263,10 +263,10 @@ export default {
     font-weight bold
 
     &:hover
-      background var(--new-button-appbar-hover)
+      background var(--new-UI-07)
 
     &:active
-      background var(--new-button-appbar-active)
+      background var(--new-UI-08)
 
     &.context-menu--opened .workspace__expand
       color var(--new-UI-01)
@@ -303,6 +303,9 @@ export default {
 
     & .user__avatar
       margin 0 4px 0 7px
+
+    & .user__button
+      mix-blend-mode luminosity
 
   &__button
     margin-right 4px
