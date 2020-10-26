@@ -2,15 +2,18 @@
   "mainDev": {
     "minWidth": 500,
     "minHeight": 500,
-    "width": 1200,
-    "height": 1000,
-    "frame": true
+    "width": 520,
+    "height": 520,
+    "vibrancy": "light",
+    "titleBarStyle": "hidden"
   },
   "main": {
-    "width": 500,
-    "height": 600,
-    "frame": true,
-    "resizable": false
+    "width": 520,
+    "height": 520,
+    "resizable": false,
+    "fullscreenable": false,
+    "vibrancy": "light",
+    "titleBarStyle": "hidden"
   },
   "maintray": {
     "width": 500,
