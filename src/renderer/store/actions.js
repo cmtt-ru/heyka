@@ -342,6 +342,7 @@ export default {
    */
   async changeWorkspace({ dispatch }, workspaceId) {
     dispatch('me/setSelectedWorkspaceId', workspaceId);
+    sockets.destroy();
     await dispatch('initial');
   },
 };
