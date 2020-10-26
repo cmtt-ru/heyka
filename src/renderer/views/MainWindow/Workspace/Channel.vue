@@ -271,6 +271,7 @@ export default {
   bottom 0
   padding 8px 0
   box-sizing border-box
+  background-color var(--app-bg)
   width 100%
 
 </style>
