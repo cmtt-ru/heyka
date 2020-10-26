@@ -5,14 +5,17 @@
     "width": 520,
     "height": 520,
     "vibrancy": "light",
+    "trafficLightPosition": {"x": 18, "y": 36},
     "titleBarStyle": "hidden"
   },
   "main": {
     "width": 520,
     "height": 520,
+    "vibrancy": "light",
     "resizable": false,
     "fullscreenable": false,
-    "vibrancy": "light",
+    "maximizable": false,
+    "trafficLightPosition": {"x": 18, "y": 36},
     "titleBarStyle": "hidden"
   },
   "maintray": {
