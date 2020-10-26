@@ -287,7 +287,7 @@ export default {
     restartHandler() {
       heykaStore.set('runAppFrom', this.localSettings.mode);
       heykaStore.set('resizeWindow', this.localSettings.resizeWindow);
-      heykaStore.set('openSettings', true);
+      heykaStore.set('openPage', 'settings');
       ipcRenderer.send('remote-restart');
     },
   },
