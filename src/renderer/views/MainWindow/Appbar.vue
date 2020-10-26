@@ -306,7 +306,7 @@ export default {
       background var(--new-system-02-2)
 
 .mac-controls-wrapper
-  margin-left 11px
+  margin-left 10px
 
 .mac-controls
   margin-right 8px
