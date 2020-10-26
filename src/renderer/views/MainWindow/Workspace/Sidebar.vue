@@ -450,7 +450,7 @@ $ANIM = 250ms
 
 .channel-header
   display flex
-  background-color var(--new-app-bg)
+  background-color var(--new-bg-01)
   flex-direction row
   justify-content space-between
   align-items center
