@@ -184,6 +184,8 @@ export default {
       }
     }
 
+    await dispatch('app/removePushByName', 'noSound');
+
     dispatch('unselectChannelWithoutAPICall', id);
   },
 
@@ -345,7 +347,7 @@ export default {
       await dispatch('unselectChannel', selectedChannelId);
     }
 
-    await dispatch('me/setSelectedWorkspaceId', workspaceId);
+    sockets.destroy();
     await dispatch('initial');
   },
 };
