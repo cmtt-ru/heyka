@@ -105,36 +105,36 @@
           />
         </transition>
       </list-item>
-      <div v-if="!searchText">
-        <router-link
-          v-if="channels.length<=MANY_CHANNELS"
-          :to="{name: 'create-channel'}"
-          class="action-button"
-          @click="createChannelHandler"
-        >
-          <svg-icon
-            class="action-button__icon"
-            name="add"
-            size="medium"
-          />
-          <div>{{ texts.createChannel }}</div>
-        </router-link>
-        <a
-          v-else
-          class="action-button"
-          :href="showMore && '#sidebar_channel_anchor'"
-          @click="toggleChannelsHandler"
-        >
-          <svg-icon
-            class="action-button__icon"
-            name="arrow-down"
-            :class="{'action-button__icon--flipped': !showMore}"
-            size="medium"
-          />
-          <div>{{ toggleChannelText }}</div>
-        </a>
-      </div>
     </list>
+    <div v-if="!searchText">
+      <router-link
+        v-if="channels.length<=MANY_CHANNELS"
+        :to="{name: 'create-channel'}"
+        class="action-button"
+        @click="createChannelHandler"
+      >
+        <svg-icon
+          class="action-button__icon"
+          name="add"
+          size="medium"
+        />
+        <div>{{ texts.createChannel }}</div>
+      </router-link>
+      <a
+        v-else
+        class="action-button"
+        :href="showMore && '#sidebar_channel_anchor'"
+        @click="toggleChannelsHandler"
+      >
+        <svg-icon
+          class="action-button__icon"
+          name="arrow-down"
+          :class="{'action-button__icon--flipped': !showMore}"
+          size="medium"
+        />
+        <div>{{ toggleChannelText }}</div>
+      </a>
+    </div>
 
     <!------ users ------>
     <div
@@ -172,18 +172,18 @@
           :user="user"
         />
       </list-item>
-      <router-link
-        :to="{name: 'invite'}"
-        class="action-button"
-      >
-        <svg-icon
-          class="action-button__icon"
-          name="add"
-          size="medium"
-        />
-        <div>{{ texts.inviteUser }}</div>
-      </router-link>
     </list>
+    <router-link
+      :to="{name: 'invite'}"
+      class="action-button"
+    >
+      <svg-icon
+        class="action-button__icon"
+        name="add"
+        size="medium"
+      />
+      <div>{{ texts.inviteUser }}</div>
+    </router-link>
   </div>
 </template>
 
@@ -241,18 +241,30 @@ export default {
       return this.$store.getters['channels/getChannelById'](selectedChannelId);
     },
 
+    /**
+     * Show either all or onlyfirst 4 channels
+     * @returns {object}
+     */
     showedChannels() {
-      if (this.searchText === '' && this.showMore) {
+      if (this.showAll) {
         return this.channels.slice(0, MANY_CHANNELS);
       }
 
       return this.channels;
     },
 
+    /**
+     * True if we should display all channels
+     * @returns {boolean}
+     */
     showAll() {
       return (this.showMore && !!this.searchText);
     },
 
+    /**
+     * Dynamic "Show more"/"Show less" text
+     * @returns {string}
+     */
     toggleChannelText() {
       if (this.showMore) {
         return this.texts.showChannels;
@@ -305,6 +317,10 @@ export default {
       this.$router.push({ name: 'create-channel' });
     },
 
+    /**
+     * "Show more"/"Show less" state
+     * @returns {void}
+     */
     toggleChannelsHandler() {
       this.showMore = !this.showMore;
     },
