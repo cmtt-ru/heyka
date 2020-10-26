@@ -44,9 +44,9 @@ export default {
   async created() {
     try {
       /** Open settings if after crucial settings changed */
-      if (heykaStore.get('openSettings')) {
-        this.$router.push({ name: 'settings' });
-        heykaStore.set('openSettings', null);
+      if (heykaStore.get('openPage')) {
+        this.$router.push({ name: heykaStore.get('openPage') });
+        heykaStore.set('openPage', null);
       }
 
       /** Prepare tokens */
