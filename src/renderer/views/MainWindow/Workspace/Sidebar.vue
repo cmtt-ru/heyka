@@ -254,7 +254,7 @@ export default {
      * @returns {object}
      */
     showedChannels() {
-      if (this.showAll) {
+      if (!this.showAll) {
         return this.channels.slice(0, MANY_CHANNELS);
       }
 
@@ -266,7 +266,7 @@ export default {
      * @returns {boolean}
      */
     showAll() {
-      return (this.showMore && !!this.searchText);
+      return (!this.showMore || !!this.searchText);
     },
 
     /**
