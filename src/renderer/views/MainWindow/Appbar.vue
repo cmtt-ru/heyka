@@ -87,38 +87,8 @@
       v-if="IS_MAC"
       class="mac-controls-wrapper"
     >
-      <div
-        :type="7"
-        class="mac-controls mac-controls--close"
-        size="medium"
-        icon="collapse"
-        header
-        square
-        @click="closeWindowHandler"
-      >
-        <svg-icon
-          class="mac-controls__icon"
-          name="close"
-          width="8"
-          height="8"
-        />
-      </div>
-      <div
-        :type="7"
-        class="mac-controls mac-controls--collapse"
-        size="medium"
-        icon="close"
-        header
-        square
-        @click="minimizeWindowHandler"
-      >
-        <svg-icon
-          class="mac-controls__icon"
-          name="collapse"
-          width="8"
-          height="8"
-        />
-      </div>
+      <div class="mac-controls" />
+      <div class="mac-controls" />
     </div>
   </div>
 </template>
@@ -337,7 +307,6 @@ export default {
 
 .mac-controls-wrapper
   margin-left 10px
-  -webkit-app-region no-drag
 
 .mac-controls
   margin-right 8px
@@ -349,14 +318,7 @@ export default {
   flex-direction row
   justify-content center
   align-items center
-
-  &--close
-    background var(--new-system-02)
-    border 0.5px solid var(--new-system-02-2)
-
-  &--collapse
-    background var(--new-system-01)
-    border 0.5px solid var(--new-system-01-2)
+  background var(--new-UI-07)
 
   &__icon
     opacity 0
