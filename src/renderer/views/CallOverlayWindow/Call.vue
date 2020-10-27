@@ -5,7 +5,16 @@
       class="call-window__media"
       @dblclick="expandHandler"
     >
-      <video ref="video" />
+      <video
+        ref="preloader"
+        :src="preloaderSrc"
+        class="call-window__media__preloader"
+        :class="{'call-window__media__preloader--hidden': !preloaderShown}"
+      />
+      <video
+        ref="video"
+        class="call-window__media__video"
+      />
       <div
         class="call-window__media__expand"
         @click="expandHandler"
@@ -45,6 +54,8 @@ export default {
     return {
       videoRoomState: 'closed',
       isMyMedia: false,
+      preloaderSrc: require('@assets/mp4/video-preloader.mp4'),
+      preloaderShown: false,
     };
   },
   computed: {
@@ -78,6 +89,8 @@ export default {
   watch: {
     isMediaSharing() {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+
+      this.showPreloader(this.isMediaSharing);
     },
 
     selectedChannelId(newChannelId, oldChannelId) {
@@ -99,10 +112,6 @@ export default {
   },
 
   async created() {
-    if (this.isMediaSharing) {
-      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
-    }
-
     janusVideoroomWrapper.on('joined', this.onSingleSubscriptionReady.bind(this));
     janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
     janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
@@ -115,26 +124,32 @@ export default {
     });
 
     await janusVideoroomWrapper.init();
+
     if (this.selectedChannelId) {
       this.videoRoomState = 'joining';
       await janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
   },
+
   mounted() {
     janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
     janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
+
+    this.showPreloader(this.isMediaSharing);
   },
+
   beforeDestroy() {
     janusVideoroomWrapper.removeAllListeners('single-sub-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },
+
   destroyed() {
 
   },
+
   methods: {
     /**
      * Loads user video of current user if it possible
-     * @param {string} userId User id
      * @returns {void}
      */
     loadCurrentVideo() {
@@ -236,8 +251,10 @@ export default {
       const el = this.$refs.video;
 
       el.srcObject = stream;
+
       el.onloadedmetadata = () => {
         el.play();
+        this.showPreloader(false);
       };
     },
 
@@ -249,6 +266,33 @@ export default {
       const frameBuffer = captureFrame(this.$refs.video, 'jpeg');
 
       return 'data:image/jpeg;base64,' + frameBuffer.toString('base64');
+    },
+
+    /**
+     * Show or hide video preloader
+     * @param {boolean} state – state
+     * @returns {string}
+     */
+    showPreloader(state = true) {
+      if (this.$refs.preloader) {
+        if (state === true) {
+          this.$refs.preloader.currentTime = 0;
+          this.$refs.preloader.play();
+
+          this.$refs.preloader.onended = () => {
+            this.$refs.preloader.currentTime = 1.5;
+            this.$refs.preloader.play();
+          };
+        } else {
+          this.$refs.preloader.ontransitionend = () => {
+            this.$refs.preloader.pause();
+            this.$refs.preloader.ontransitionend = null;
+            this.$refs.preloader.onended = null;
+          };
+        }
+
+        this.preloaderShown = state;
+      }
     },
   },
 };
@@ -269,13 +313,24 @@ export default {
         height 213px
         object-fit cover
 
+      &__preloader
+        position absolute
+        z-index 1
+        background var(--app-bg)
+        opacity 1
+
+        &--hidden
+          transition opacity 2s ease
+          opacity 0
+
       &__expand
         position absolute
-        bottom 0px
-        right 0px
+        bottom 0
+        right 0
         padding 32px 8px 8px 24px
         cursor pointer
         -webkit-app-region no-drag
+        z-index 2
 
 .close-button
   position absolute

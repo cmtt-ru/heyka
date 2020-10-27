@@ -161,7 +161,10 @@ export default {
 
     dispatch('me/setChannelId', id);
 
-    callWindow.showOverlay();
+    const isAnybodySharingMedia = getters['isAnybodySharingMedia'];
+    const isMediaSharing = isAnybodySharingMedia && !state.me.mediaState.screen;
+
+    callWindow.showOverlay(isMediaSharing);
 
     if (state.me.mediaState.microphone === true) {
       ipcRenderer.send('tray-animation', true);
