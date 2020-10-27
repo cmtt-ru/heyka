@@ -93,6 +93,7 @@ export default {
 
     if (state.mediaState.microphone !== mediaState.microphone) {
       sounds.play('microphone-toggle');
+      meStore.set('microphone', mediaState.microphone);
     }
 
     if (mediaState.microphone) {

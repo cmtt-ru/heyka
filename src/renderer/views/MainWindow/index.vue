@@ -43,7 +43,7 @@ export default {
 
   async created() {
     try {
-      /** Open settings if after crucial settings changed */
+      /** Open specific page if it was cached before restart */
       if (heykaStore.get('openPage')) {
         this.$router.push({ name: heykaStore.get('openPage') });
         heykaStore.set('openPage', null);

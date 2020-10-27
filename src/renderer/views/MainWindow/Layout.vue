@@ -63,8 +63,7 @@ export default {
     background-color var(--new-bg-03)
 
     &--mac
-      background-color rgba(249,249,249,0.6)
-      background-blend-mode hard-light
+      background-color var(--new-bg-02)
 
   .layout
     display flex
