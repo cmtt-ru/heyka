@@ -25,7 +25,7 @@ const state = () => {
    * @type MediaState
    */
   const initialMediaState = {
-    microphone: false,
+    microphone: meStore.get('microphone', false),
     speakers: true,
     screen: false,
     camera: false,
