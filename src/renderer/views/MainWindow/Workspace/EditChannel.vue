@@ -80,6 +80,7 @@ import { UiInput, UiSwitch } from '@components/Form';
 import PseudoPopup from '@components/PseudoPopup';
 import cloneDeep from 'clone-deep';
 import { mapGetters } from 'vuex';
+import { obj2hash } from '@libs/utils';
 
 /**
  * Default channel model
@@ -89,27 +90,6 @@ const CHANNEL_MODEL = {
   description: '',
   isPrivate: false,
 };
-
-/**
- * String to hash
- * @param {string} object – js object
- * @returns {number}
- */
-function obj2hash(object) {
-  const str = JSON.stringify(object);
-
-  let hash = 0,
-      i, chr;
-
-  for (i = 0; i < str.length; i++) {
-    chr = str.charCodeAt(i);
-    // eslint-disable-next-line no-magic-numbers
-    hash = ((hash << 5) - hash) + chr;
-    hash |= 0;
-  }
-
-  return hash;
-}
 
 export default {
   components: {
