@@ -229,7 +229,6 @@ export default {
    * @returns {void}
   */
   removePushByName({ commit, state }, name) {
-    console.log('app/removePushByName', state.pushes);
     for (const push of state.pushes) {
       if (push.name === name) {
         commit('REMOVE_PUSH', push.inviteId);
