@@ -14,23 +14,16 @@
         class="search"
       >
         <ui-input
-
           ref="globalSearch"
           v-model="searchText"
+          icon="search"
           class="search__input"
           :placeholder="texts.search"
           @keydown.native.esc="closeInput"
         />
         <svg-icon
-          class="search__icon__absolute"
-          name="search"
-          color="var(--new-UI-01)"
-          width="20"
-          height="20"
-        />
-        <svg-icon
           v-show="searchText"
-          class="search__icon__absolute search__icon__absolute--close"
+          class="search__icon--close"
           name="clear"
           width="16"
           height="16"
@@ -40,7 +33,7 @@
 
       <div
         v-show="!inputActive"
-        class="search"
+        class="search search--mockup"
         @click="activateInput"
       >
         <svg-icon
@@ -376,10 +369,9 @@ $ANIM = 250ms
 /deep/ .input
   padding-right 26px
   padding-left 33px
-  height 28px
-  min-height 28px
+  height 26px
+  min-height 26px
   box-sizing border-box
-  border-radius 6px
   font-weight 500
 
   &::placeholder
@@ -395,27 +387,26 @@ $ANIM = 250ms
   cursor pointer
   position relative
 
-  &:hover
-    background-color var(--new-UI-07)
+  &--mockup
 
-  &:active
-    background-color var(--new-UI-08)
+    &:hover
+      background-color var(--new-UI-07)
+
+    &:active
+      background-color var(--new-UI-08)
 
   &__icon
-    margin 0 8px 0 6px
+    margin 0 7px
 
-    &__absolute
+    &--close
       position absolute
-      top 4px
-      left 6px
+      right 6px
+      top 0
+      bottom 0
+      margin auto 0
 
-      &--close
-        left initial
-        right 6px
-        top 6px
-
-        &:hover
-          color var(--new-UI-04)
+      &:hover
+        color var(--new-UI-04)
 
 .action-button
   padding 4px 8px
