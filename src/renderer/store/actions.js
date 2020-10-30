@@ -1,6 +1,7 @@
 import API from '@api';
 import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
+import initialProcess from '@api/initialProcess';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
 import router from '@/router';
@@ -10,8 +11,6 @@ import Logger from '@sdk/classes/logger';
 
 const cnsl = new Logger('Initial', '#db580e');
 
-let initialInProgress = false;
-
 export default {
 
   /**
@@ -20,10 +19,10 @@ export default {
    * @returns {void}
    */
   async initial({ commit, dispatch, getters }) {
-    if (initialInProgress) {
+    if (initialProcess.getState()) {
       return;
     } else {
-      initialInProgress = true;
+      initialProcess.setState(true);
     }
 
     cnsl.log('start');
@@ -58,7 +57,7 @@ export default {
       cnsl.log('error', err);
     }
 
-    initialInProgress = false;
+    initialProcess.setState(false);
 
     cnsl.log('finish');
   },
