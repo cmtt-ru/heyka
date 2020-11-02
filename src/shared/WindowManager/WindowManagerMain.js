@@ -218,6 +218,12 @@ class WindowManager {
         browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
       }
 
+      if (options.windowPosition) {
+        const positioner = new Positioner(browserWindow);
+
+        positioner.moveXYscreen(options.windowPosition);
+      }
+
       // "show window" stuff
       if (options.showInactive) {
         browserWindow.showInactive();
