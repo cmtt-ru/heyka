@@ -1,6 +1,7 @@
 import WindowManager from '../WindowManager/WindowManagerMain';
 import TrayManager from '../../main/classes/TrayManager';
 import DeepLink from '../DeepLink/DeepLinkMain';
+import Positioner from '../WindowManager/Positioner';
 import Autoupdater from '../../main/classes/AutoUpdater';
 import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electron';
 import { heykaStore } from '../../renderer/store/localStore';
@@ -23,6 +24,7 @@ if (TrayManager.isInTray()) {
 } else {
   params = {
     position: 'center',
+    windowPosition: heykaStore.get('windowPosition'),
     template: resizeable ? 'mainDev' : 'main',
     preventClose: true,
   };
@@ -38,11 +40,12 @@ class MainWindow {
   constructor() {
     this.window = null;
     this.windowId = null;
+    this.Positioner = null;
   }
 
   /**
-   * Show frame window
-   * @param {string} displayId – display id
+   * Show main window
+   *
    * @returns {void}
    */
   show() {
@@ -74,6 +77,7 @@ class MainWindow {
 
     DeepLink.bindMainWindow(this.window);
     TrayManager.bindMainWindow(this.window);
+    this.Positioner = new Positioner(this.window);
 
     this._eventsSubscribe();
 
@@ -101,6 +105,20 @@ class MainWindow {
         TrayManager.setLastBlurTime();
       });
     }
+
+    this.window.on('close', () => {
+      const newPos = {
+        x: this.window.getPosition()[0],
+        y: this.window.getPosition()[1],
+      };
+
+      const newInfo = this.Positioner.getCoordsAndScreen(newPos);
+
+      console.log('saving:', newInfo);
+      heykaStore.set('windowPosition', newInfo);
+    }
+
+    );
 
     nativeTheme.on('updated', () => {
       WindowManager.sendAll('native-theme-updated');
