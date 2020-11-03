@@ -224,6 +224,12 @@ export default {
       return this.$t('workspace.navbar');
     },
 
+    sortedChannels() {
+      return [ ...this.channels ].sort((a, b) =>
+        b.userRelation.usageCount - a.userRelation.usageCount
+      );
+    },
+
     /**
      * Get pseudo-selected channel for faster bubbling animation
      * @returns {object} - channel
@@ -248,10 +254,10 @@ export default {
      */
     showedChannels() {
       if (!this.showAll) {
-        return this.channels.slice(0, MANY_CHANNELS);
+        return this.sortedChannels.slice(0, MANY_CHANNELS);
       }
 
-      return this.channels;
+      return this.sortedChannels;
     },
 
     /**
