@@ -21,6 +21,7 @@ protocol.registerSchemesAsPrivileged([ {
     secure: true,
     standard: true,
     corsEnabled: true,
+    supportFetchAPI: true,
   },
 } ]);
 app.setAsDefaultProtocolClient('heyka');
