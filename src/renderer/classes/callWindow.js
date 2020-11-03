@@ -31,9 +31,10 @@ class CallWindow {
 
   /**
    * Show call overlay
+   * @param {boolean} mediaSharingMode - media sharing Mode
    * @returns {void}
    */
-  showOverlay() {
+  showOverlay(mediaSharingMode = false) {
     if (this.overlayWindow === null) {
       this.overlayWindow = WindowManager.create({
         route: '/call-overlay',
@@ -42,7 +43,7 @@ class CallWindow {
         position: 'bottomRight',
         visibleOnAllWorkspaces: true,
         window: {
-          ...OVERLAY_WINDOW_SIZES['default'],
+          ...OVERLAY_WINDOW_SIZES[mediaSharingMode ? 'mediaSharing' : 'default'],
         },
         onClose: () => {
           this.overlayWindow = null;
