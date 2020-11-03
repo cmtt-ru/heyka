@@ -20,6 +20,8 @@ export default {
    */
   async initial({ commit, dispatch, getters }) {
     if (initialProcess.getState()) {
+      cnsl.log('ignore... initial in progress');
+
       return;
     } else {
       initialProcess.setState(true);
@@ -32,6 +34,7 @@ export default {
       await connectionCheck.waitUntilOnline();
 
       /** Get authenticated user */
+      cnsl.log('...wait for authenticated user');
       const authenticatedUser = await API.user.getAuthenticatedUser();
 
       /** Authenticated user id */
@@ -42,11 +45,14 @@ export default {
         dispatch('me/update', authenticatedUser);
 
         /** Update workspace list */
+        cnsl.log('...wait for workspace list');
         await dispatch('workspaces/updateList');
 
         /** Get specific workspace data */
+        cnsl.log('...wait for current workspace');
         await dispatch('updateCurrentWorkspaceState');
 
+        cnsl.log('...wait for sockets init');
         await sockets.init();
 
         dispatch('me/setOnlineStatus', 'online');
@@ -55,11 +61,10 @@ export default {
       }
     } catch (err) {
       cnsl.log('error', err);
+    } finally {
+      initialProcess.setState(false);
+      cnsl.log('finish');
     }
-
-    initialProcess.setState(false);
-
-    cnsl.log('finish');
   },
 
   /**
