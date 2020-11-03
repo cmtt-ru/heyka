@@ -185,8 +185,6 @@ export default {
       }
     }
 
-    console.log('set real devices', realDevices);
-
     state.selectedDevices = devices;
     state.realSelectedDevices = realDevices;
   },
