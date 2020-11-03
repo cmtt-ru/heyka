@@ -20,6 +20,7 @@ protocol.registerSchemesAsPrivileged([ {
   privileges: {
     secure: true,
     standard: true,
+    corsEnabled: true,
   },
 } ]);
 app.setAsDefaultProtocolClient('heyka');
