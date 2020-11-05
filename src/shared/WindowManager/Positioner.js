@@ -4,7 +4,7 @@ import { screen } from 'electron';
 import TrayManager from '../../main/classes/TrayManager';
 import { IS_LINUX } from '../../sdk/Constants';
 
-const DEFAULT_MARGIN = 20;
+const DEFAULT_MARGIN = 0;
 
 /**
  * Сlass that handles window position
@@ -32,17 +32,6 @@ export default class Positioner {
   }
 
   /**
-   * move window to XY coordinates
-   * @param {object} position - {x,y}
-   * @return {void}
-   */
-  moveXY(position) {
-    const coords = this._getCoordsXY(position);
-
-    this.browserWindow.setPosition(coords.x, coords.y);
-  }
-
-  /**
    * move window to XY coordinateson screen with id
    * @param {object} params - {x,y, id}
    * @return {void}
@@ -59,6 +48,19 @@ export default class Positioner {
 
     this.browserWindow.setPosition(display.workArea.x, display.workArea.y);
     this.browserWindow.setPosition(finalPos.x, finalPos.y);
+  }
+
+  /**
+   * reise screen (make it not bigget than screen)
+   * @param {object} params - {size, id}
+   * @return {void}
+   */
+  resize(params) {
+    const display = screen.getAllDisplays().find(el => el.id === params.id) || screen.getPrimaryDisplay();
+    const width = Math.min(display.workArea.width, params.size[0]);
+    const height = Math.min(display.workArea.height, params.size[1]);
+
+    this.browserWindow.setSize(width, height);
   }
 
   /**
