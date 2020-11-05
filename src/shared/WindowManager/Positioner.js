@@ -32,7 +32,7 @@ export default class Positioner {
   }
 
   /**
-   * move window to XY coordinateson screen with id
+   * move window to XY coordinates on screen with id
    * @param {object} params - {x,y, id}
    * @return {void}
    */
@@ -51,7 +51,7 @@ export default class Positioner {
   }
 
   /**
-   * reise screen (make it not bigget than screen)
+   * resize window (make it not bigget than screen)
    * @param {object} params - {size, id}
    * @return {void}
    */
@@ -151,7 +151,7 @@ export default class Positioner {
   }
 
   /**
- * calculate window position according to saves x-y coords (with margin in mind)
+ * calculate window position according to saved x-y coords (with margin in mind)
  * @param {string} position - {x, y}
  * @return {object} final coordinates of window: {x, y}
  */
@@ -285,5 +285,18 @@ export default class Positioner {
    */
   getScreenXY(position) {
     return screen.getDisplayNearestPoint(position);
+  }
+
+  /**
+   * true if window is on specific display
+   * @param {object} display - display in question
+   * @return {boolean}
+   */
+  isOnScreen(display) {
+    if (display.id === screen.getDisplayMatching(this.browserWindow.getBounds()).id) {
+      return true;
+    }
+
+    return false;
   }
 };
