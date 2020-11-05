@@ -221,6 +221,9 @@ class WindowManager {
       if (options.windowPosition) {
         const positioner = new Positioner(browserWindow);
 
+        if (options.windowPosition.size) {
+          positioner.resize(options.windowPosition);
+        }
         positioner.moveXYscreen(options.windowPosition);
       }
 

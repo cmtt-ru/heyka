@@ -114,6 +114,8 @@ class MainWindow {
 
       const newInfo = this.Positioner.getCoordsAndScreen(newPos);
 
+      newInfo.size = this.window.getSize();
+
       console.log('saving:', newInfo);
       heykaStore.set('windowPosition', newInfo);
     }
