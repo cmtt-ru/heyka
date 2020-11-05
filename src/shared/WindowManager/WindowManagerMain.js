@@ -1,12 +1,11 @@
 import path from 'path';
-import { ipcMain, BrowserWindow, screen, Menu, nativeImage } from 'electron';
+import { ipcMain, BrowserWindow, screen, Menu, nativeImage, app } from 'electron';
 import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
 import { IS_WIN, IS_DEV, IS_LINUX } from '../../sdk/Constants';
-
 let icon;
 
 if (IS_WIN) {
@@ -80,6 +79,20 @@ class WindowManager {
     ipcMain.on('window-manager-is-fullscreen', (event, options) => {
       event.returnValue = this.getWindow(options.id).isFullScreen();
     });
+
+    app.on('ready', () => {
+      screen.on('display-removed', (event, oldDisplay) => {
+        for (const window in this.windows) {
+          this.windows[window].positioner.resize({
+            size: this.windows[window].browserWindow.getSize(),
+            id: window.id,
+          });
+          if (this.windows[window].positioner.isOnScreen(oldDisplay)) {
+            this.windows[window].positioner.move('center');
+          }
+        }
+      });
+    });
   }
 
   /**
@@ -144,6 +157,7 @@ class WindowManager {
     this.windows[windowId] = {
       browserWindow,
       options,
+      positioner: new Positioner(browserWindow),
     };
 
     // remove menu in prod
@@ -218,13 +232,12 @@ class WindowManager {
         browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
       }
 
+      // retrieve window position and size
       if (options.windowPosition) {
-        const positioner = new Positioner(browserWindow);
-
         if (options.windowPosition.size) {
-          positioner.resize(options.windowPosition);
+          this.windows[windowId].positioner.resize(options.windowPosition);
         }
-        positioner.moveXYscreen(options.windowPosition);
+        this.windows[windowId].positioner.moveXYscreen(options.windowPosition);
       }
 
       // "show window" stuff
@@ -283,14 +296,14 @@ class WindowManager {
 
   /**
    * Set window position
-   * @param {object} wnd - window instance
+   * @param {object} window - window instance
    * @param {string} pos - position of window
    * @returns {string} ID of created window
    */
-  setPosition(wnd, pos = 'center') {
-    const position = this.__getWindowPosition(wnd, pos);
+  setPosition(window, pos = 'center') {
+    const position = this.__getWindowPosition(window, pos);
 
-    wnd.setPosition(position.x, position.y);
+    window.setPosition(position.x, position.y);
   }
 
   /**
