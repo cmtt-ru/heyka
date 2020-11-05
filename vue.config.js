@@ -50,8 +50,6 @@ module.exports = {
       customFileProtocol: 'heyka://./',
       mainProcessFile: 'src/main/index.js',
       builderOptions: {
-        productName: 'Heyka',
-        appId: 'app.live.hejka',
         protocols: {
           name: 'Heyka',
           schemes: [
