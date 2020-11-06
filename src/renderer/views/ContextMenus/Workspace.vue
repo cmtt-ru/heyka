@@ -149,6 +149,10 @@ export default {
       const { code } = await this.$API.auth.link();
       const link = `${WEB_URL}/manage/${code}`;
 
+      if (IS_DEV) {
+        navigator.clipboard.writeText(link);
+      }
+
       window.open(link);
     },
 
