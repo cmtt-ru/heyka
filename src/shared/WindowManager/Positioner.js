@@ -293,7 +293,7 @@ export default class Positioner {
    * @return {boolean}
    */
   isOnScreen(display) {
-    if (display.id === screen.getDisplayMatching(this.browserWindow.getBounds()).id) {
+    if (display.id === screen.getDisplayMatching(this.browserWindow.getBounds()).id) { //! проверять положение руками
       return true;
     }
 
