@@ -49,7 +49,7 @@
       </ui-button>
     </div>
 
-    <div class="l-p-8">
+    <div class="l-pl-12 l-pr-12">
       <list :filter-by="''">
         <list-item
           v-for="user in users"
@@ -64,11 +64,11 @@
         </list-item>
       </list>
 
-      <div class="l-flex last-block">
+      <div class="l-flex last-block l-mt-24">
         <ui-button
           :type="9"
           icon="add"
-          class="l-ml-4"
+          style="margin-left: 6px"
           @click="inviteLinkHandler"
         >
           {{ texts.invite }}
@@ -249,7 +249,6 @@ export default {
 .channel-info
   height 52px
   padding 0 12px 0 8px
-  margin-bottom 8px
   width 100%
   box-sizing border-box
   display flex
