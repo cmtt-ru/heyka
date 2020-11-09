@@ -76,6 +76,31 @@ module.exports = {
   },
 
   chainWebpack: config => {
+    const mediaRule = config.module.rule('media');
+
+    mediaRule.uses.clear();
+    mediaRule
+      .test(/\.(ogg|mp3|wav|flac|aac)(\?.*)?$/)
+      .use('url-loader')
+      .loader('url-loader')
+      .tap(options => {
+        return {
+          limit: 4096,
+          fallback: {
+            loader: 'file-loader',
+            options: {
+              name: 'media/[name].[hash:8].[ext]',
+            },
+          },
+        };
+      });
+
+    config.module
+      .rule('video')
+      .test(/\.(mp4|webp)?$/)
+      .use('url-loader')
+      .loader('url-loader');
+
     config.module
       .rule('svg-sprite')
       .use('svgo-loader')
