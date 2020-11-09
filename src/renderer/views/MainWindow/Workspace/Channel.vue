@@ -64,7 +64,7 @@
         </list-item>
       </list>
 
-      <div class="l-flex last-block l-mt-24">
+      <div class="l-flex last-block l-mt-4">
         <ui-button
           :type="9"
           icon="add"
