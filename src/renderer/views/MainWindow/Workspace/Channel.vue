@@ -261,7 +261,7 @@ export default {
     box-shadow 0 0 8px 0 #808080
 
   &__type
-    margin-left 4px
+    margin-left 3px
     flex-shrink 0
 
   &__name
