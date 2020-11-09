@@ -99,12 +99,7 @@ module.exports = {
       .rule('video')
       .test(/\.(mp4|webp)?$/)
       .use('url-loader')
-      .loader('url-loader')
-      .tap(options => {
-        return {
-          limit: Infinity,
-        };
-      });
+      .loader('url-loader');
 
     config.module
       .rule('svg-sprite')

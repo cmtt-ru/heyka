@@ -54,7 +54,7 @@ export default {
     return {
       videoRoomState: 'closed',
       isMyMedia: false,
-      preloaderSrc: require('@assets/mp4/video-preloader.mp4'),
+      preloaderSrc: null,
       preloaderShown: false,
     };
   },
@@ -131,11 +131,13 @@ export default {
     }
   },
 
-  mounted() {
+  async mounted() {
     janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
     janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
 
     this.showPreloader(this.isMediaSharing);
+
+    this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
   },
 
   beforeDestroy() {
