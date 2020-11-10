@@ -22,7 +22,7 @@ export default class Positioner {
 
   /**
    * move window to position
-   * @param {object} position - position
+   * @param {object} position - position string
    * @return {void}
    */
   move(position) {
@@ -46,17 +46,40 @@ export default class Positioner {
 
     console.log('retrieving:', finalPos);
 
-    this.browserWindow.setPosition(display.workArea.x, display.workArea.y);
+    this.browserWindow.setPosition(display.workArea.x, display.workArea.y); // we need two moves cause of different dpi
     this.browserWindow.setPosition(finalPos.x, finalPos.y);
   }
 
   /**
+   * Make sure window is visible on screen and not bigger than this screen
+   * @param {array} size - [w, h]
+   * @param {string} displayId - display id
+   * @return {void}
+   */
+  bringWindowInView() {
+    const windowBounds = this.browserWindow.getBounds();
+    const position = {
+      x: windowBounds.x,
+      y: windowBounds.y,
+    };
+    const size = [windowBounds.width, windowBounds.height];
+    const display = screen.getDisplayNearestPoint(position);
+    const screenBounds = display.workArea;
+
+    this.resize({
+      size,
+      displayId: display.id,
+    });
+    this._marginAdjust(position, windowBounds, screenBounds);
+  }
+
+  /**
    * resize window (make it not bigget than screen)
-   * @param {object} params - {size, id}
+   * @param {object} params - {size, displayId} (id - display ID)
    * @return {void}
    */
   resize(params) {
-    const display = screen.getAllDisplays().find(el => el.id === params.id) || screen.getPrimaryDisplay();
+    const display = screen.getAllDisplays().find(el => el.id === params.displayId) || screen.getPrimaryDisplay();
     const width = Math.min(display.workArea.width, params.size[0]);
     const height = Math.min(display.workArea.height, params.size[1]);
 
@@ -274,7 +297,7 @@ export default class Positioner {
     return {
       x: position.x - display.workArea.x,
       y: position.y - display.workArea.y,
-      id: display.id,
+      displayId: display.id,
     };
   }
 
