@@ -81,15 +81,15 @@ class WindowManager {
     });
 
     app.on('ready', () => {
-      screen.on('display-removed', (event, oldDisplay) => {
+      screen.on('display-removed', () => {
         for (const window in this.windows) {
-          this.windows[window].positioner.resize({
-            size: this.windows[window].browserWindow.getSize(),
-            id: window.id,
-          });
-          if (this.windows[window].positioner.isOnScreen(oldDisplay)) {
-            this.windows[window].positioner.move('center');
-          }
+          this.windows[window].positioner.bringWindowInView();
+        }
+      });
+
+      screen.on('display-metrics-changed', () => {
+        for (const window in this.windows) {
+          this.windows[window].positioner.bringWindowInView();
         }
       });
     });
