@@ -4,10 +4,7 @@
       {{ texts.edit }}
     </template>
 
-    <template
-      #body
-      class="lol"
-    >
+    <template #body>
       <div
         v-if="me"
         class="edit-profile-page"
@@ -106,7 +103,7 @@
     <template #footer>
       <ui-button
         :type="1"
-        class="l-mr-8"
+        size="small"
         @click="submit"
       >
         {{ $t('workspace.editChannel.buttonSave') }}
@@ -114,6 +111,8 @@
 
       <ui-button
         :type="2"
+        class="l-mr-6"
+        size="small"
         @click="closeHandler"
       >
         {{ $t('workspace.editChannel.buttonCancel') }}
@@ -315,7 +314,7 @@ $SAVE_FADE_TIME = 2s
 
 .user
   padding 0
-  margin 10px 0 12px
+  margin 0 0 12px 0
   box-sizing border-box
   display flex
   flex-direction row

@@ -7,7 +7,7 @@
     <template #body>
       <ui-input
         v-model="channelModel.name"
-        class="l-mt-16 l-mb-12"
+        class="l-mt-6 l-mb-12"
         icon="channel"
         :placeholder="texts.name"
       />
@@ -36,7 +36,6 @@
       <ui-button
         v-if="isEditMode"
         :type="14"
-        class="l-mr-8"
         @click="deleteHandler"
       >
         {{ texts.buttonDelete }}
@@ -66,7 +65,7 @@
 
       <ui-button
         :type="2"
-        class="l-mr-8"
+        class="l-mr-6"
         size="small"
         @click="cancelHandler"
       >
