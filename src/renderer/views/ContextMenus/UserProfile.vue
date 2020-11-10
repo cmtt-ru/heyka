@@ -1,5 +1,5 @@
 <template>
-  <popover>
+  <popover :min-width="200">
     <div class="buttons">
       <router-link :to="{ name: 'user', params: { id: myId }}">
         <ui-button
@@ -11,8 +11,19 @@
         </ui-button>
       </router-link>
 
-      <div class="delimiter" />
+      <router-link :to="{name: 'settings'}">
+        <ui-button
+          :type="11"
+          icon="settings"
+        >
+          {{ texts.settings }}
+        </ui-button>
+      </router-link>
+    </div>
 
+    <div class="delimiter" />
+
+    <div class="buttons">
       <ui-button
         data-popover-close
         :type="11"
@@ -39,15 +50,26 @@
       >
         {{ texts.offline }}
       </ui-button>
+    </div>
 
-      <div class="delimiter" />
+    <div class="delimiter" />
 
+    <div class="buttons">
       <ui-button
         :type="11"
         icon="disconnect"
         @click="logoutHandler"
       >
         Logout
+      </ui-button>
+
+      <ui-button
+        :type="11"
+        icon="quit"
+        class="quit-button"
+        @click.native="quitAppHandler"
+      >
+        {{ texts.quit }}
       </ui-button>
     </div>
   </popover>
@@ -99,3 +121,9 @@ export default {
   },
 };
 </script>
+
+<style lang="stylus" scoped>
+  .quit-button
+    svg
+      color var(--new-signal-03)
+</style>

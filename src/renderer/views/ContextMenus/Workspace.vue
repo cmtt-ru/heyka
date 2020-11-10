@@ -7,7 +7,7 @@
       >
         <ui-button
           :type="11"
-          icon="add"
+          icon="user-plus"
           data-popover-close
         >
           {{ texts.invite }}
@@ -17,7 +17,7 @@
       <ui-button
         v-if="permissions['workspaces.manage']"
         :type="11"
-        icon="edit"
+        icon="manage"
         data-popover-close
         @click="openManageWorkspace"
       >
@@ -51,34 +51,18 @@
           name="check"
         />
       </ui-button>
-
-      <ui-button
-        :type="11"
-        icon="workspace"
-        data-popover-close
-        @click="openWorkspaceCreation"
-      >
-        {{ texts.new }}
-      </ui-button>
     </div>
 
     <div class="delimiter" />
 
     <div class="buttons">
-      <router-link :to="{name: 'settings'}">
-        <ui-button
-          :type="11"
-          icon="settings"
-        >
-          {{ texts.settings }}
-        </ui-button>
-      </router-link>
       <ui-button
         :type="11"
-        icon="disconnect"
-        @click.native="quitAppHandler"
+        icon="plus"
+        data-popover-close
+        @click="openWorkspaceCreation"
       >
-        {{ texts.quit }}
+        {{ texts.new }}
       </ui-button>
     </div>
   </popover>
