@@ -72,7 +72,6 @@
 import Avatar from '@components/Avatar';
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
-import { ipcRenderer } from 'electron';
 import { mapGetters } from 'vuex';
 import { getUserAvatarUrl } from '@libs/image';
 import { WEB_URL } from '@sdk/Constants';
@@ -117,14 +116,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Quit app handler
-     * @returns {void}
-     */
-    quitAppHandler() {
-      ipcRenderer.send('remote-quit');
-    },
-
     /**
      * Open manage workspace
      * @returns {void}

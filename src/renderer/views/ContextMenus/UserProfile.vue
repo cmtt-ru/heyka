@@ -80,6 +80,7 @@ import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import logout from '@api/auth/logout';
 import { mapGetters } from 'vuex';
+import { ipcRenderer } from 'electron';
 
 export default {
   components: {
@@ -118,12 +119,25 @@ export default {
     logoutHandler() {
       logout();
     },
+
+    /**
+     * Quit app handler
+     * @returns {void}
+     */
+    quitAppHandler() {
+      ipcRenderer.send('remote-quit');
+    },
   },
 };
 </script>
 
 <style lang="stylus" scoped>
   .quit-button
-    svg
+    color var(--new-signal-03)
+
+    &:hover
+      background var(--new-signal-03-3)
+
+    /deep/ svg
       color var(--new-signal-03)
 </style>
