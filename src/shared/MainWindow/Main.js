@@ -40,7 +40,7 @@ class MainWindow {
   constructor() {
     this.window = null;
     this.windowId = null;
-    this.Positioner = null;
+    this.positioner = null;
   }
 
   /**
