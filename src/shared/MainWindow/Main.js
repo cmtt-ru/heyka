@@ -77,7 +77,7 @@ class MainWindow {
 
     DeepLink.bindMainWindow(this.window);
     TrayManager.bindMainWindow(this.window);
-    this.Positioner = new Positioner(this.window);
+    this.positioner = new Positioner(this.window);
 
     this._eventsSubscribe();
 
