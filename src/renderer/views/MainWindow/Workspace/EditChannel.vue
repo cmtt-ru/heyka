@@ -47,7 +47,7 @@
       <ui-button
         v-if="!isEditMode"
         :type="1"
-        class="l-mr-8"
+        size="small"
         :disabled="!isAnyChanges"
         @click="createHandler"
       >
@@ -57,7 +57,7 @@
       <ui-button
         v-if="isEditMode"
         :type="1"
-        class="l-mr-8"
+        size="small"
         :disabled="!isAnyChanges"
         @click="saveHandler"
       >
@@ -66,6 +66,8 @@
 
       <ui-button
         :type="2"
+        class="l-mr-8"
+        size="small"
         @click="cancelHandler"
       >
         {{ texts.buttonCancel }}
