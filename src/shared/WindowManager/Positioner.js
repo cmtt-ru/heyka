@@ -33,11 +33,11 @@ export default class Positioner {
 
   /**
    * move window to XY coordinates on screen with id
-   * @param {object} params - {x,y, id}
+   * @param {object} params - {x,y, displayId}
    * @return {void}
    */
   moveXYscreen(params) {
-    const display = screen.getAllDisplays().find(el => el.id === params.id) || screen.getPrimaryDisplay();
+    const display = screen.getAllDisplays().find(el => el.id === params.displayId) || screen.getPrimaryDisplay();
 
     const finalPos = this._marginAdjust({
       x: params.x + display.workArea.x,
