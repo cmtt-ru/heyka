@@ -40,7 +40,7 @@
 
       <ui-button
         v-if="isConnected"
-        :type="12"
+        :type="4"
         class="channel-info__connect"
         size="small"
         @click.native="clickDisconnectHandler()"
