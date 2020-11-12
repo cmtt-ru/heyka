@@ -394,7 +394,7 @@ class WindowManager {
    * @returns {void}
    */
   toggleFullscreenWindow({ id }) {
-    this.windows[id].browserWindow.setFullScreen(!this.windows[id].isFullScreen());
+    this.windows[id].browserWindow.setFullScreen(!this.windows[id].browserWindow.isFullScreen());
   }
 
   /**
