@@ -38,9 +38,9 @@
         <avatar
           class="workspace-avatar"
           :user-id="workspace.id"
-          :image="userAvatar(workspace, 14)"
-          :size="14"
-          :border-radius="2"
+          :image="userAvatar(workspace, 18)"
+          :size="18"
+          :border-radius="6"
         />
 
         {{ workspace.name }}
@@ -153,7 +153,7 @@ export default {
 
 <style lang="stylus">
   .workspace-avatar
-    margin-right 7px
+    margin-right 8px
 
   .workspace--checked
     color var(--color-1)
