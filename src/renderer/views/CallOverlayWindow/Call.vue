@@ -20,12 +20,16 @@
         @click="expandHandler"
       >
         <ui-button
-          v-if="!isMyMedia"
           :type="7"
+          square
+          popover
+          class="call-window__media__expand__button"
+          :height="44"
           size="medium"
           icon="fullscreen"
           @click="expandHandler"
         />
+        <!-- v-if="!isMyMedia" -->
       </div>
     </div>
 
@@ -312,7 +316,7 @@ export default {
       video
         display block
         width 100%
-        height 213px
+        height 196px
         object-fit cover
 
       &__preloader
@@ -329,10 +333,13 @@ export default {
         position absolute
         bottom 0
         right 0
-        padding 32px 8px 8px 24px
+        padding 32px 12px 12px 24px
         cursor pointer
         -webkit-app-region no-drag
         z-index 2
+
+        &__button
+          border-radius 11px
 
 .close-button
   position absolute

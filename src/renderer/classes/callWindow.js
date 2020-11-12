@@ -3,12 +3,12 @@ import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
-    width: 228,
-    height: 96,
+    width: 292,
+    height: 124,
   },
   mediaSharing: {
-    width: 340,
-    height: 265,
+    width: 348,
+    height: 264,
   },
 };
 
