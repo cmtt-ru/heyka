@@ -27,28 +27,58 @@
       <ui-button
         data-popover-close
         :type="11"
-        icon="user-online"
         @click="changeStatus('online')"
       >
+        <svg-icon
+          class="l-mr-8"
+          name="user-online"
+        />
+
         {{ texts.online }}
+
+        <svg-icon
+          v-if="onlineStatus === 'online'"
+          class="status--checked"
+          name="check"
+        />
       </ui-button>
 
       <ui-button
         data-popover-close
         :type="11"
-        icon="user-idle"
         @click="changeStatus('idle')"
       >
+        <svg-icon
+          class="l-mr-8"
+          name="user-idle"
+        />
+
         {{ texts.idle }}
+
+        <svg-icon
+          v-if="onlineStatus === 'idle'"
+          class="status--checked"
+          name="check"
+        />
       </ui-button>
 
       <ui-button
         data-popover-close
         :type="11"
-        icon="user-offline"
         @click="changeStatus('offline')"
       >
+        <svg-icon
+          class="l-mr-8"
+          name="user-offline"
+        />
+
         {{ texts.offline }}
+
+        <svg-icon
+          v-if="onlineStatus === 'offline'"
+          class="status--checked"
+          name="check"
+        />
       </ui-button>
     </div>
 
@@ -79,7 +109,7 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import logout from '@api/auth/logout';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { ipcRenderer } from 'electron';
 
 export default {
@@ -91,6 +121,10 @@ export default {
   computed: {
     ...mapGetters({
       myId: 'me/getMyId',
+    }),
+
+    ...mapState('me', {
+      onlineStatus: 'onlineStatus',
     }),
     /**
      * Get needed texts from I18n-locale file
@@ -140,4 +174,8 @@ export default {
 
     /deep/ svg
       color var(--new-signal-03)
+
+  .status--checked
+    color var(--new-UI-01)
+    margin-left auto
 </style>

@@ -151,11 +151,11 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   .workspace-avatar
     margin-right 8px
 
   .workspace--checked
-    color var(--color-1)
+    color var(--new-UI-01)
     margin-left auto
 </style>
