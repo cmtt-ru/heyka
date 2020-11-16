@@ -1,4 +1,4 @@
-const { IS_DEV } = require('./src/shared/Constants');
+const { IS_DEV } = require('./src/sdk/Constants');
 const path = require('path');
 const HawkWebpackPlugin = require('@hawk.so/webpack-plugin');
 const buildRevision = Date.now();

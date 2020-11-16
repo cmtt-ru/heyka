@@ -1,12 +1,11 @@
 import path from 'path';
-import { ipcMain, BrowserWindow, screen, Menu, nativeImage } from 'electron';
+import { ipcMain, BrowserWindow, screen, Menu, nativeImage, app } from 'electron';
 import Positioner from './Positioner';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
 import { IS_WIN, IS_DEV, IS_LINUX } from '../../sdk/Constants';
-
 let icon;
 
 if (IS_WIN) {
@@ -80,6 +79,20 @@ class WindowManager {
     ipcMain.on('window-manager-is-fullscreen', (event, options) => {
       event.returnValue = this.getWindow(options.id).isFullScreen();
     });
+
+    app.on('ready', () => {
+      screen.on('display-removed', () => {
+        for (const window in this.windows) {
+          this.windows[window].positioner.bringWindowInView();
+        }
+      });
+
+      screen.on('display-metrics-changed', () => {
+        for (const window in this.windows) {
+          this.windows[window].positioner.bringWindowInView();
+        }
+      });
+    });
   }
 
   /**
@@ -144,6 +157,7 @@ class WindowManager {
     this.windows[windowId] = {
       browserWindow,
       options,
+      positioner: new Positioner(browserWindow),
     };
 
     // remove menu in prod
@@ -218,6 +232,14 @@ class WindowManager {
         browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
       }
 
+      // retrieve window position and size
+      if (options.windowPosition) {
+        if (options.windowPosition.size && browserWindow.resizable) {
+          this.windows[windowId].positioner.resize(options.windowPosition);
+        }
+        this.windows[windowId].positioner.moveXYscreen(options.windowPosition);
+      }
+
       // "show window" stuff
       if (options.showInactive) {
         browserWindow.showInactive();
@@ -274,14 +296,14 @@ class WindowManager {
 
   /**
    * Set window position
-   * @param {object} wnd - window instance
+   * @param {object} window - window instance
    * @param {string} pos - position of window
    * @returns {string} ID of created window
    */
-  setPosition(wnd, pos = 'center') {
-    const position = this.__getWindowPosition(wnd, pos);
+  setPosition(window, pos = 'center') {
+    const position = this.__getWindowPosition(window, pos);
 
-    wnd.setPosition(position.x, position.y);
+    window.setPosition(position.x, position.y);
   }
 
   /**
@@ -372,7 +394,7 @@ class WindowManager {
    * @returns {void}
    */
   toggleFullscreenWindow({ id }) {
-    this.windows[id].browserWindow.setFullScreen(!this.windows[id].isFullScreen());
+    this.windows[id].browserWindow.setFullScreen(!this.windows[id].browserWindow.isFullScreen());
   }
 
   /**
