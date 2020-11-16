@@ -257,10 +257,18 @@ class CallWindow {
    * @returns {void}
    */
   closeFrame() {
-    this.closeOverlay();
-    this.showOverlay();
     if (this.frameWindow) {
       this.frameWindow.action('close');
+
+      // small trick ahead.
+      // we don't know which size to resize to.
+      // and also there ae some phantom resize events on closing streaming
+      this.closeOverlay();
+      const SAFE_TIMEOUT = 50;
+
+      setTimeout(() => {
+        this.showOverlay();
+      }, SAFE_TIMEOUT);
     }
   }
 

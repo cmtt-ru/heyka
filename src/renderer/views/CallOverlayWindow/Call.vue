@@ -16,6 +16,20 @@
         class="call-window__media__video"
       />
       <div
+        v-if="sharingUser"
+        class="sharing-user"
+      >
+        <avatar
+          class="sharing-user__avatar"
+          :image="userAvatar(sharingUser.id, 12)"
+          :user-id="sharingUser.id"
+          :size="12"
+        />
+        <div>
+          {{ sharingUser.name }}
+        </div>
+      </div>
+      <div
         v-if="!isMyMedia"
         class="call-window__media__expand"
         @click="expandHandler"
@@ -47,6 +61,7 @@ import { mapGetters, mapState } from 'vuex';
 import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
+import Avatar from '@components/Avatar';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 
 const BUTTON_SETUPS = {
@@ -58,6 +73,7 @@ export default {
   components: {
     CallControls,
     UiButton,
+    Avatar,
   },
   data() {
     return {
@@ -80,6 +96,7 @@ export default {
       mediaState: 'me/getMediaState',
       selectedChannelId: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
     amIStreaming() {
@@ -106,6 +123,10 @@ export default {
       }
 
       return false;
+    },
+
+    sharingUser() {
+      return this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
     },
   },
 
@@ -365,5 +386,21 @@ export default {
   top 0
   right 0
   border-radius 0
+
+.sharing-user
+  position absolute
+  top 12px
+  left 12px
+  display flex
+  flex-direction row
+  background-color #000000
+  padding 4px
+  border-radius 4px
+  font-size 12px
+  line-height 12px
+  align-items center
+
+  &__avatar
+    margin-right 4px
 
 </style>
