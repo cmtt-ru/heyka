@@ -292,7 +292,6 @@ class CallWindow {
     }
     const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
 
-    console.log('window got', state);
     if (this.overlayWindow !== null) {
       this.overlayWindow.setSize(width, height);
     }
