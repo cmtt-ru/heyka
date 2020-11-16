@@ -16,12 +16,30 @@
         class="call-window__media__video"
       />
       <div
+        v-if="sharingUser"
+        class="sharing-user"
+      >
+        <avatar
+          class="sharing-user__avatar"
+          :image="userAvatar(sharingUser.id, 12)"
+          :user-id="sharingUser.id"
+          :size="12"
+        />
+        <div>
+          {{ sharingUser.name }}
+        </div>
+      </div>
+      <div
+        v-if="!isMyMedia"
         class="call-window__media__expand"
         @click="expandHandler"
       >
         <ui-button
-          v-if="!isMyMedia"
           :type="7"
+          square
+          popover
+          class="call-window__media__expand__button"
+          :height="44"
           size="medium"
           icon="fullscreen"
           @click="expandHandler"
@@ -30,8 +48,8 @@
     </div>
 
     <call-controls
-      :row="isMediaSharing"
-      :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
+      :row="isMediaSharing || amIStreaming"
+      :buttons="buttonsSetup"
     />
   </div>
 </template>
@@ -43,12 +61,19 @@ import { mapGetters, mapState } from 'vuex';
 import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
+import Avatar from '@components/Avatar';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
+
+const BUTTON_SETUPS = {
+  default: ['screen', 'camera', 'microphone', 'grid', 'leave'],
+  streaming: ['screen', 'microphone', 'grid', 'leave'],
+};
 
 export default {
   components: {
     CallControls,
     UiButton,
+    Avatar,
   },
   data() {
     return {
@@ -65,16 +90,30 @@ export default {
     ...mapGetters({
       getUserWhoSharesMedia: 'getUserWhoSharesMedia',
       getUsersWhoShareMedia: 'getUsersWhoShareMedia',
+      getUsersWhoShareScreen: 'getUsersWhoShareScreen',
       amISharingMedia: 'amISharingMedia',
       isAnybodySharingMedia: 'isAnybodySharingMedia',
       getSpeakingUser: 'getSpeakingUser',
       mediaState: 'me/getMediaState',
       selectedChannelId: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
+    amIStreaming() {
+      return !!this.getUsersWhoShareScreen.find(userId => this.myId === userId);
+    },
+
+    buttonsSetup() {
+      if (this.amIStreaming) {
+        return BUTTON_SETUPS.streaming;
+      }
+
+      return BUTTON_SETUPS.default;
+    },
+
     isMediaSharing() {
-      return this.isAnybodySharingMedia && !this.mediaState.screen;
+      return this.isAnybodySharingMedia && !this.amIStreaming;
     },
 
     getSpeakingUserId() {
@@ -83,6 +122,10 @@ export default {
       }
 
       return false;
+    },
+
+    sharingUser() {
+      return this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
     },
   },
 
@@ -312,7 +355,7 @@ export default {
       video
         display block
         width 100%
-        height 213px
+        height 196px
         object-fit cover
 
       &__preloader
@@ -329,15 +372,34 @@ export default {
         position absolute
         bottom 0
         right 0
-        padding 32px 8px 8px 24px
+        padding 32px 12px 12px 24px
         cursor pointer
         -webkit-app-region no-drag
         z-index 2
+
+        &__button
+          border-radius 11px
 
 .close-button
   position absolute
   top 0
   right 0
   border-radius 0
+
+.sharing-user
+  position absolute
+  top 12px
+  left 12px
+  display flex
+  flex-direction row
+  background-color #000000
+  padding 4px
+  border-radius 4px
+  font-size 12px
+  line-height 12px
+  align-items center
+
+  &__avatar
+    margin-right 4px
 
 </style>
