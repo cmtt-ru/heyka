@@ -8,6 +8,7 @@
       class="layout__appbar"
       :class="{'layout__appbar--mac': IS_MAC}"
     >
+      <div class="resizing-padding" />
       <appbar />
     </div>
     <div
@@ -58,6 +59,16 @@ export default {
 </script>
 
 <style lang="stylus">
+  .resizing-padding
+    position absolute
+    top 0
+    right 0
+    left 0
+    width 100%
+    height 6px
+    z-index 5
+    opacity 0
+    -webkit-app-region no-drag
 
   .mainwindow-wrapper
     background-color var(--new-bg-03)

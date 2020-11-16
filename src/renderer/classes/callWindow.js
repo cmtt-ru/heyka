@@ -45,6 +45,7 @@ class CallWindow {
         route: '/call-overlay',
         template: 'overlay',
         showInactive: true,
+        margin: 20,
         position: 'bottomRight',
         visibleOnAllWorkspaces: true,
         window: {
