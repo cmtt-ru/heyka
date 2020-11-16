@@ -90,6 +90,7 @@ export default {
     ...mapGetters({
       getUserWhoSharesMedia: 'getUserWhoSharesMedia',
       getUsersWhoShareMedia: 'getUsersWhoShareMedia',
+      getUsersWhoShareScreen: 'getUsersWhoShareScreen',
       amISharingMedia: 'amISharingMedia',
       isAnybodySharingMedia: 'isAnybodySharingMedia',
       getSpeakingUser: 'getSpeakingUser',
@@ -100,9 +101,9 @@ export default {
     }),
 
     amIStreaming() {
-      console.log(this.mediaState);
+      console.log(this.getUsersWhoShareScreen, this.getUsersWhoShareScreen.find(userId => this.myId === userId));
 
-      return this.mediaState.screen;
+      return !!this.getUsersWhoShareScreen.find(userId => this.myId === userId);
     },
 
     buttonsSetup() {
@@ -114,7 +115,7 @@ export default {
     },
 
     isMediaSharing() {
-      return this.isAnybodySharingMedia && !this.mediaState.screen;
+      return this.isAnybodySharingMedia && !this.amIStreaming;
     },
 
     getSpeakingUserId() {
