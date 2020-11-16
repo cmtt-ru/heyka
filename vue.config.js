@@ -1,4 +1,4 @@
-const { IS_DEV } = require('./src/sdk/Constants');
+const IS_DEV = process.env.NODE_ENV === 'development';
 const path = require('path');
 const HawkWebpackPlugin = require('@hawk.so/webpack-plugin');
 const buildRevision = Date.now();
