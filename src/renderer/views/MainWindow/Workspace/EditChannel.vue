@@ -5,12 +5,18 @@
     </template>
 
     <template #body>
-      <ui-input
-        v-model="channelModel.name"
-        class="l-mt-6 l-mb-12"
-        icon="channel"
-        :placeholder="texts.name"
-      />
+      <ui-form
+        ref="form"
+        @submit="formSubmitHandler"
+      >
+        <ui-input
+          v-model="channelModel.name"
+          class="l-mt-6 l-mb-12"
+          icon="channel"
+          :placeholder="texts.name"
+          required
+        />
+      </ui-form>
 
       <ui-input
         v-model="channelModel.description"
@@ -47,8 +53,7 @@
         v-if="!isEditMode"
         :type="1"
         size="small"
-        :disabled="!isAnyChanges"
-        @click="createHandler"
+        @click="submitHandler"
       >
         {{ texts.buttonCreate }}
       </ui-button>
@@ -57,8 +62,7 @@
         v-if="isEditMode"
         :type="1"
         size="small"
-        :disabled="!isAnyChanges"
-        @click="saveHandler"
+        @click="submitHandler"
       >
         {{ texts.buttonSave }}
       </ui-button>
@@ -77,11 +81,10 @@
 
 <script>
 import UiButton from '@components/UiButton';
-import { UiInput, UiSwitch } from '@components/Form';
+import { UiForm, UiInput, UiSwitch } from '@components/Form';
 import PseudoPopup from '@components/PseudoPopup';
 import cloneDeep from 'clone-deep';
 import { mapGetters } from 'vuex';
-import { obj2hash } from '@libs/utils';
 
 /**
  * Default channel model
@@ -94,6 +97,7 @@ const CHANNEL_MODEL = {
 
 export default {
   components: {
+    UiForm,
     UiInput,
     UiSwitch,
     UiButton,
@@ -102,7 +106,6 @@ export default {
   data() {
     return {
       channelModel: {},
-      channelModelHash: 0,
     };
   },
   computed: {
@@ -145,16 +148,6 @@ export default {
         return this.texts.createTitle;
       }
     },
-
-    /**
-     * Detect's changes in channel model
-     * @returns {boolean}
-     */
-    isAnyChanges() {
-      const hash = obj2hash(this.channelModel);
-
-      return hash !== this.channelModelHash;
-    },
   },
 
   watch: {
@@ -175,10 +168,8 @@ export default {
     updateChannelModel() {
       if (this.isEditMode) {
         this.channelModel = cloneDeep(this.getChannelById(this.channelId));
-        this.channelModelHash = obj2hash(this.channelModel);
       } else {
         this.channelModel = cloneDeep(CHANNEL_MODEL);
-        this.channelModelHash = obj2hash(this.channelModel);
       }
     },
     /**
@@ -237,6 +228,22 @@ export default {
      */
     deleteHandler() {
       this.$store.dispatch('channels/deleteChannel', this.channelId);
+    },
+
+    /**
+     * Submit form handler
+     * @returns {void}
+     */
+    submitHandler() {
+      this.$refs.form.submitHandler();
+    },
+
+    formSubmitHandler() {
+      if (this.isEditMode) {
+        this.saveHandler();
+      } else {
+        this.createHandler();
+      }
     },
   },
 };
