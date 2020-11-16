@@ -8,22 +8,22 @@
       <svg-icon
         class="channel-info__type"
         :name="dynamicIcon"
-        size="medium"
-        stroke="var(--icon-1)"
+        :color="dynamicIconColor"
+        size="large"
       />
+
       <div
         v-textfade
         class="channel-info__name"
       >
         {{ channel.name }}
       </div>
+
       <ui-button
         :key="channel.id"
         v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
-        :type="7"
+        :type="16"
         class="channel-info__more"
-        size="small"
-        height="16"
         icon="more"
       />
 
@@ -37,6 +37,7 @@
       >
         {{ texts.join }}
       </ui-button>
+
       <ui-button
         v-if="isConnected"
         :type="4"
@@ -47,7 +48,8 @@
         {{ texts.disconnect }}
       </ui-button>
     </div>
-    <div class="l-p-8">
+
+    <div class="l-pl-12 l-pr-12">
       <list :filter-by="''">
         <list-item
           v-for="user in users"
@@ -62,11 +64,11 @@
         </list-item>
       </list>
 
-      <div class="l-flex last-block">
+      <div class="l-flex last-block l-mt-4">
         <ui-button
           :type="9"
           icon="add"
-          class="l-ml-4"
+          style="margin-left: 6px"
           @click="inviteLinkHandler"
         >
           {{ texts.invite }}
@@ -180,6 +182,18 @@ export default {
       }
     },
 
+    /**
+     * Color icon corresponding to selected channel
+     * @returns {string}
+     */
+    dynamicIconColor() {
+      if (this.selectedChannelId === this.channel.id) {
+        return 'var(--new-signal-02)';
+      } else {
+        return 'var(--new-UI-01)';
+      }
+    },
+
     janusInProgress() {
       return this.$store.getters['janus/inProgress'];
     },
@@ -233,9 +247,8 @@ export default {
 <style lang="stylus" scoped>
 
 .channel-info
-  height 40px
+  height 52px
   padding 0 12px 0 8px
-  margin-bottom 8px
   width 100%
   box-sizing border-box
   display flex
@@ -248,16 +261,18 @@ export default {
     box-shadow 0 0 8px 0 #808080
 
   &__type
-    margin 0 4px
+    margin-left 3px
     flex-shrink 0
 
   &__name
     font-weight 500
     flex-grow 1
+    line-height 20px
+    margin-left 8px
 
   &__more
     color var(--icon-1)
-    margin 0 8px
+    margin 0 6px
     flex-shrink 0
 
   &__connect

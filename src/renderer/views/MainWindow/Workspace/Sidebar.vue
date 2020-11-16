@@ -82,6 +82,7 @@
     <list
       v-if="channels.length"
       :filter-by="searchText"
+      class="channels-list"
     >
       <list-item
         v-for="channel in showedChannels"
@@ -167,6 +168,7 @@
       </list-item>
     </list>
     <router-link
+      v-if="!searchText"
       :to="{name: 'invite'}"
       class="action-button"
     >
@@ -226,7 +228,8 @@ export default {
 
     sortedChannels() {
       return [ ...this.channels ].sort((a, b) =>
-        b.userRelation.usageCount - a.userRelation.usageCount
+        (typeof b?.userRelation?.usageCount === 'undefined' ? Infinity : b.userRelation.usageCount) -
+        (typeof a?.userRelation?.usageCount === 'undefined' ? Infinity : a.userRelation.usageCount)
       );
     },
 
@@ -458,7 +461,7 @@ $ANIM = 250ms
   top 0
   z-index 1
   padding 2px 0 2px 8px
-  margin-top 14px
+  margin-top 16px
 
 .router-link-active .channel-header__add
   color var(--new-UI-01)
@@ -471,32 +474,41 @@ $ANIM = 250ms
 .user-anchor
   transform translateY(-25px)
 
+.channels-list
+  background-color var(--new-bg-01)
+  position relative
+
+.connected-channel
+  margin-top 16px
+  margin-bottom 0px
+
 .connected-channel-enter
-  height 0
   opacity 0
-  transform translateY(50px)
+  transform translateY(45px)
+  margin-bottom -45px
+  margin-top 0px
 
 .connected-channel-enter-to
-  height 43px
-  transition opacity $ANIM ease, height $ANIM ease, transform $ANIM ease
+  margin-top 16px
+  transition all $ANIM ease
 
 .connected-channel-leave
-  height 43px
+  margin-top 16px
 
 .connected-channel-leave-to
   opacity 0
-  height 0
-  transform translateY(50px)
-  transition opacity $ANIM ease, height $ANIM ease, transform $ANIM ease
+  transform translateY(45px)
+  margin-bottom -45px
+  margin-top 0px
+  transition all $ANIM ease
 
 .list-channel-enter
   opacity 0
-  max-height 0
   transform translateY(-40px)
   margin-top -45px
 
 .list-channel-enter-to
-  transition opacity $ANIM ease, transform $ANIM ease, margin-top $ANIM ease
+  transition all $ANIM ease
 
 .list-channel-leave
   margin-top 2px
@@ -505,6 +517,6 @@ $ANIM = 250ms
   opacity 0
   transform translateY(-40px)
   margin-top -45px
-  transition opacity $ANIM ease, transform $ANIM ease, margin-top $ANIM ease
+  transition all $ANIM ease
 
 </style>
