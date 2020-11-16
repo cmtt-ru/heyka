@@ -28,6 +28,7 @@ class CallWindow {
     this.sharingWindow = null;
     this.gridWindow = null;
     this.frameWindow = null;
+    this.lastMediaSharingMode = null;
     broadcastEvents.on('closeOverlay', () => {
       this.closeOverlay();
     });
@@ -260,15 +261,21 @@ class CallWindow {
     if (this.frameWindow) {
       this.frameWindow.action('close');
 
+      const { width, height } = OVERLAY_WINDOW_SIZES[this.lastMediaSharingMode ? 'mediaSharing' : 'default'];
+
+      if (this.overlayWindow !== null) {
+        this.overlayWindow.setSize(width, height);
+      }
+
       // small trick ahead.
       // we don't know which size to resize to.
       // and also there ae some phantom resize events on closing streaming
-      this.closeOverlay();
-      const SAFE_TIMEOUT = 50;
+      // this.closeOverlay();
+      // const SAFE_TIMEOUT = 50;
 
-      setTimeout(() => {
-        this.showOverlay();
-      }, SAFE_TIMEOUT);
+      // setTimeout(() => {
+      //   this.showOverlay();
+      // }, SAFE_TIMEOUT);
     }
   }
 
@@ -289,25 +296,13 @@ class CallWindow {
    * @returns {void}
    */
   setMediaSharingMode(state) {
-    const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
-
-    console.log('window got', state);
-    if (this.overlayWindow !== null) {
-      this.overlayWindow.setSize(width, height);
-    }
-  }
-
-  /**
-   * Enable or disable streaming mode (this user is streaming screen)
-   * @param {boolean} state – enable or disable
-   * @returns {void}
-   */
-  setStreamingMode(state) {
+    this.lastMediaSharingMode = state;
     if (this.frameWindow) {
       return;
     }
     const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
 
+    console.log('window got', state);
     if (this.overlayWindow !== null) {
       this.overlayWindow.setSize(width, height);
     }
