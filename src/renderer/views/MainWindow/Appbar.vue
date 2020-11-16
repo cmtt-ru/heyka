@@ -274,9 +274,6 @@ export default {
     & .user__avatar
       margin 0 4px 0 7px
 
-    & .user__button
-      mix-blend-mode luminosity
-
   &__button
     margin-right 4px
 

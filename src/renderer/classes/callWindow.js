@@ -3,12 +3,16 @@ import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
-    width: 228,
-    height: 96,
+    width: 292,
+    height: 124,
   },
   mediaSharing: {
-    width: 340,
-    height: 265,
+    width: 348,
+    height: 264,
+  },
+  streaming: {
+    width: 292,
+    height: 68,
   },
 };
 
@@ -24,6 +28,7 @@ class CallWindow {
     this.sharingWindow = null;
     this.gridWindow = null;
     this.frameWindow = null;
+    this.lastMediaSharingMode = null;
     broadcastEvents.on('closeOverlay', () => {
       this.closeOverlay();
     });
@@ -241,6 +246,12 @@ class CallWindow {
     } else {
       this.frameWindow.action('showInactive');
     }
+
+    if (this.overlayWindow !== null) {
+      const { width, height } = OVERLAY_WINDOW_SIZES['streaming'];
+
+      this.overlayWindow.setSize(width, height);
+    }
   }
 
   /**
@@ -250,6 +261,12 @@ class CallWindow {
   closeFrame() {
     if (this.frameWindow) {
       this.frameWindow.action('close');
+
+      const { width, height } = OVERLAY_WINDOW_SIZES[this.lastMediaSharingMode ? 'mediaSharing' : 'default'];
+
+      if (this.overlayWindow !== null) {
+        this.overlayWindow.setSize(width, height);
+      }
     }
   }
 
@@ -270,6 +287,10 @@ class CallWindow {
    * @returns {void}
    */
   setMediaSharingMode(state) {
+    this.lastMediaSharingMode = state;
+    if (this.frameWindow) {
+      return;
+    }
     const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
 
     if (this.overlayWindow !== null) {

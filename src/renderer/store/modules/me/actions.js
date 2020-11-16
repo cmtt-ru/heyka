@@ -103,6 +103,11 @@ export default {
     commit('SET_MEDIA_STATE', mediaState);
 
     if (selectedChannelId) {
+      commit('channels/SET_USER_MEDIA_STATE', {
+        userId: state.id,
+        channelId: selectedChannelId,
+        userMediaState: mediaState,
+      }, { root: true });
       await API.user.setMediaState(mediaState);
 
       if (mediaState.microphone === true) {

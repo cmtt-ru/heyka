@@ -111,6 +111,28 @@ export default {
   },
 
   /**
+   * Get user who share's screen
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {null|string}
+   */
+  getUsersWhoShareScreen: (state, getters) => {
+    const selectedChannelId = getters['me/getSelectedChannelId'];
+    const selectedChannel = getters['channels/getChannelById'](selectedChannelId);
+
+    if (selectedChannel) {
+      const usersWhoSharesScreen = selectedChannel.users.filter(user => user.screen).map(user => user.userId);
+
+      return [
+        ...usersWhoSharesScreen,
+      ];
+    }
+
+    return [];
+  },
+
+  /**
    * Check's that I'am sharing screen or camera
    *
    * @param {object} state – global state

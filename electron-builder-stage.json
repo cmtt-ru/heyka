@@ -1,5 +1,5 @@
 {
-  "appId": "app.live.hejka",
+  "appId": "app.live.hejkastage",
   "productName": "HeykaStage",
   "mac": {
       "category": "public.app-category.productivity",
@@ -14,7 +14,7 @@
   "win": {
       "target": "nsis",
       "icon": "public/icon.ico",
-      "legalTrademarks": "Heyka"
+      "legalTrademarks": "HeykaStage"
   },
   "linux": {
     "target": ["AppImage", "deb"],
