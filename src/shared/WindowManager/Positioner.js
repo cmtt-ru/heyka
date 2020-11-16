@@ -4,7 +4,7 @@ import { screen } from 'electron';
 import TrayManager from '../../main/classes/TrayManager';
 import { IS_LINUX } from '../../sdk/Constants';
 
-const DEFAULT_MARGIN = 20;
+const DEFAULT_MARGIN = 0;
 
 /**
  * Сlass that handles window position
@@ -22,13 +22,68 @@ export default class Positioner {
 
   /**
    * move window to position
-   * @param {object} position - position
+   * @param {object} position - position string
    * @return {void}
    */
   move(position) {
     const coords = this._getCoords(position);
 
     this.browserWindow.setPosition(coords.x, coords.y);
+  }
+
+  /**
+   * move window to XY coordinates on screen with id
+   * @param {object} params - {x,y, displayId}
+   * @return {void}
+   */
+  moveXYscreen(params) {
+    const display = screen.getAllDisplays().find(el => el.id === params.displayId) || screen.getPrimaryDisplay();
+
+    const finalPos = this._marginAdjust({
+      x: params.x + display.workArea.x,
+      y: params.y + display.workArea.y,
+    }, this.browserWindow.getBounds(), display.workArea);
+
+    console.log('retrieving:', finalPos);
+
+    this.browserWindow.setPosition(display.workArea.x, display.workArea.y); // we need two moves cause of different dpi
+    this.browserWindow.setPosition(finalPos.x, finalPos.y);
+  }
+
+  /**
+   * Make sure window is visible on screen and not bigger than this screen
+   * @param {array} size - [w, h]
+   * @param {string} displayId - display id
+   * @return {void}
+   */
+  bringWindowInView() {
+    const windowBounds = this.browserWindow.getBounds();
+    const position = {
+      x: windowBounds.x,
+      y: windowBounds.y,
+    };
+    const size = [windowBounds.width, windowBounds.height];
+    const display = screen.getDisplayNearestPoint(position);
+    const screenBounds = display.workArea;
+
+    this.resize({
+      size,
+      displayId: display.id,
+    });
+    this._marginAdjust(position, windowBounds, screenBounds);
+  }
+
+  /**
+   * resize window (make it not bigget than screen)
+   * @param {object} params - {size, displayId} (id - display ID)
+   * @return {void}
+   */
+  resize(params) {
+    const display = screen.getAllDisplays().find(el => el.id === params.displayId) || screen.getPrimaryDisplay();
+    const width = Math.min(display.workArea.width, params.size[0]);
+    const height = Math.min(display.workArea.height, params.size[1]);
+
+    this.browserWindow.setSize(width, height);
   }
 
   /**
@@ -55,48 +110,80 @@ export default class Positioner {
     const screenBounds = activeScreen.workArea;
     const windowBounds = this.browserWindow.getBounds();
 
-    // Positions
-    const positions = {
-      tray: this._trayCoords(activeScreen, windowBounds),
-      topLeft: {
-        x: screenBounds.x,
-        y: screenBounds.y,
-      },
-      topRight: {
-        x: Math.floor(screenBounds.x + (screenBounds.width - windowBounds.width)),
-        y: screenBounds.y,
-      },
-      bottomLeft: {
-        x: screenBounds.x,
-        y: Math.floor(screenBounds.height - (windowBounds.height - screenBounds.y)),
-      },
-      bottomRight: {
-        x: Math.floor(screenBounds.x + (screenBounds.width - windowBounds.width)),
-        y: Math.floor(screenBounds.height - (windowBounds.height - screenBounds.y)),
-      },
-      topCenter: {
-        x: Math.floor(screenBounds.x + ((screenBounds.width / 2) - (windowBounds.width / 2))),
-        y: screenBounds.y,
-      },
-      bottomCenter: {
-        x: Math.floor(screenBounds.x + ((screenBounds.width / 2) - (windowBounds.width / 2))),
-        y: Math.floor(screenBounds.height - (windowBounds.height - screenBounds.y)),
-      },
-      leftCenter: {
-        x: screenBounds.x,
-        y: screenBounds.y + Math.floor(screenBounds.height / 2) - Math.floor(windowBounds.height / 2),
-      },
-      rightCenter: {
-        x: Math.floor(screenBounds.x + (screenBounds.width - windowBounds.width)),
-        y: screenBounds.y + Math.floor(screenBounds.height / 2) - Math.floor(windowBounds.height / 2),
-      },
-      center: {
-        x: Math.floor(screenBounds.x + ((screenBounds.width / 2) - (windowBounds.width / 2))),
-        y: Math.floor(((screenBounds.height + screenBounds.y) / 2) - (windowBounds.height / 2)),
-      },
-    };
+    let pos;
 
-    return this._marginAdjust(positions[position], windowBounds, screenBounds);
+    switch (position) {
+      case 'tray': pos = this._trayCoords(activeScreen, windowBounds);
+        break;
+      case 'topLeft':
+        pos = {
+          x: screenBounds.x,
+          y: screenBounds.y,
+        };
+        break;
+      case 'topRight':
+        pos = {
+          x: Math.floor(screenBounds.x + (screenBounds.width - windowBounds.width)),
+          y: screenBounds.y,
+        };
+        break;
+      case 'bottomLeft':
+        pos = {
+          x: screenBounds.x,
+          y: Math.floor(screenBounds.height - (windowBounds.height - screenBounds.y)),
+        };
+        break;
+      case 'bottomRight':
+        pos = {
+          x: Math.floor(screenBounds.x + (screenBounds.width - windowBounds.width)),
+          y: Math.floor(screenBounds.height - (windowBounds.height - screenBounds.y)),
+        };
+        break;
+      case 'topCenter':
+        pos = {
+          x: Math.floor(screenBounds.x + ((screenBounds.width / 2) - (windowBounds.width / 2))),
+          y: screenBounds.y,
+        };
+        break;
+      case 'bottomCenter':
+        pos = {
+          x: Math.floor(screenBounds.x + ((screenBounds.width / 2) - (windowBounds.width / 2))),
+          y: Math.floor(screenBounds.height - (windowBounds.height - screenBounds.y)),
+        };
+        break;
+      case 'leftCenter':
+        pos = {
+          x: screenBounds.x,
+          y: screenBounds.y + Math.floor(screenBounds.height / 2) - Math.floor(windowBounds.height / 2),
+        };
+        break;
+      case 'rightCenter':
+        pos = {
+          x: Math.floor(screenBounds.x + (screenBounds.width - windowBounds.width)),
+          y: screenBounds.y + Math.floor(screenBounds.height / 2) - Math.floor(windowBounds.height / 2),
+        };
+        break;
+      default:
+        pos = {
+          x: Math.floor(screenBounds.x + ((screenBounds.width / 2) - (windowBounds.width / 2))),
+          y: Math.floor(((screenBounds.height + screenBounds.y) / 2) - (windowBounds.height / 2)),
+        };
+    }
+
+    return this._marginAdjust(pos, windowBounds, screenBounds);
+  }
+
+  /**
+ * calculate window position according to saved x-y coords (with margin in mind)
+ * @param {string} position - {x, y}
+ * @return {object} final coordinates of window: {x, y}
+ */
+  _getCoordsXY(position) {
+    const activeScreen = this._getScreen(position);
+    const screenBounds = activeScreen.workArea;
+    const windowBounds = this.browserWindow.getBounds();
+
+    return this._marginAdjust(position, windowBounds, screenBounds);
   }
 
   /**
@@ -195,5 +282,44 @@ export default class Positioner {
     } else {
       return screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
     }
+  }
+
+  /**
+   * get screen and re-calculated coords on it
+   * @param {string} position - {x, y}
+   * @return {object} {x, y, id}
+   */
+  getCoordsAndScreen(position) {
+    const display = screen.getDisplayNearestPoint(position);
+
+    console.log('saving screen: ', display.workArea);
+
+    return {
+      x: position.x - display.workArea.x,
+      y: position.y - display.workArea.y,
+      displayId: display.id,
+    };
+  }
+
+  /**
+   * get screen based on nearest point
+   * @param {string} position - {x, y}
+   * @return {object} screen
+   */
+  getScreenXY(position) {
+    return screen.getDisplayNearestPoint(position);
+  }
+
+  /**
+   * true if window is on specific display
+   * @param {object} display - display in question
+   * @return {boolean}
+   */
+  isOnScreen(display) {
+    if (display.id === screen.getDisplayMatching(this.browserWindow.getBounds()).id) { //! проверять положение руками
+      return true;
+    }
+
+    return false;
   }
 };
