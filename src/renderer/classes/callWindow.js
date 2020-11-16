@@ -10,6 +10,10 @@ const OVERLAY_WINDOW_SIZES = {
     width: 348,
     height: 264,
   },
+  streaming: {
+    width: 292,
+    height: 68,
+  },
 };
 
 /**
@@ -240,6 +244,12 @@ class CallWindow {
     } else {
       this.frameWindow.action('showInactive');
     }
+
+    if (this.overlayWindow !== null) {
+      const { width, height } = OVERLAY_WINDOW_SIZES['streaming'];
+
+      this.overlayWindow.setSize(width, height);
+    }
   }
 
   /**
@@ -247,6 +257,8 @@ class CallWindow {
    * @returns {void}
    */
   closeFrame() {
+    this.closeOverlay();
+    this.showOverlay();
     if (this.frameWindow) {
       this.frameWindow.action('close');
     }
@@ -269,6 +281,23 @@ class CallWindow {
    * @returns {void}
    */
   setMediaSharingMode(state) {
+    const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
+
+    console.log('window got', state);
+    if (this.overlayWindow !== null) {
+      this.overlayWindow.setSize(width, height);
+    }
+  }
+
+  /**
+   * Enable or disable streaming mode (this user is streaming screen)
+   * @param {boolean} state – enable or disable
+   * @returns {void}
+   */
+  setStreamingMode(state) {
+    if (this.frameWindow) {
+      return;
+    }
     const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
 
     if (this.overlayWindow !== null) {

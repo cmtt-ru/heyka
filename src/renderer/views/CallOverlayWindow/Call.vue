@@ -16,6 +16,7 @@
         class="call-window__media__video"
       />
       <div
+        v-if="!isMyMedia"
         class="call-window__media__expand"
         @click="expandHandler"
       >
@@ -29,13 +30,12 @@
           icon="fullscreen"
           @click="expandHandler"
         />
-        <!-- v-if="!isMyMedia" -->
       </div>
     </div>
 
     <call-controls
-      :row="isMediaSharing"
-      :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
+      :row="isMediaSharing || amIStreaming"
+      :buttons="buttonsSetup"
     />
   </div>
 </template>
@@ -48,6 +48,11 @@ import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
+
+const BUTTON_SETUPS = {
+  default: ['screen', 'camera', 'microphone', 'grid', 'leave'],
+  streaming: ['screen', 'microphone', 'grid', 'leave'],
+};
 
 export default {
   components: {
@@ -76,6 +81,20 @@ export default {
       selectedChannelId: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
     }),
+
+    amIStreaming() {
+      console.log(this.mediaState);
+
+      return this.mediaState.screen;
+    },
+
+    buttonsSetup() {
+      if (this.amIStreaming) {
+        return BUTTON_SETUPS.streaming;
+      }
+
+      return BUTTON_SETUPS.default;
+    },
 
     isMediaSharing() {
       return this.isAnybodySharingMedia && !this.mediaState.screen;
