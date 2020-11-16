@@ -101,8 +101,6 @@ export default {
     }),
 
     amIStreaming() {
-      console.log(this.getUsersWhoShareScreen, this.getUsersWhoShareScreen.find(userId => this.myId === userId));
-
       return !!this.getUsersWhoShareScreen.find(userId => this.myId === userId);
     },
 
