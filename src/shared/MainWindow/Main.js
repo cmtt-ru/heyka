@@ -7,7 +7,7 @@ import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electro
 import { heykaStore } from '../../renderer/store/localStore';
 import { IS_DEV, IS_MAC } from '../../sdk/Constants';
 
-const resizeable = IS_DEV || heykaStore.get('resizeWindow', false);
+const resizeable = heykaStore.get('resizeWindow', false);
 
 let params = {};
 
