@@ -234,7 +234,7 @@ class WindowManager {
 
       // retrieve window position and size
       if (options.windowPosition) {
-        if (options.windowPosition.size) {
+        if (options.windowPosition.size && browserWindow.resizable) {
           this.windows[windowId].positioner.resize(options.windowPosition);
         }
         this.windows[windowId].positioner.moveXYscreen(options.windowPosition);
