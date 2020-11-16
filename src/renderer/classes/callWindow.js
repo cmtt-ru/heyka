@@ -266,16 +266,6 @@ class CallWindow {
       if (this.overlayWindow !== null) {
         this.overlayWindow.setSize(width, height);
       }
-
-      // small trick ahead.
-      // we don't know which size to resize to.
-      // and also there ae some phantom resize events on closing streaming
-      // this.closeOverlay();
-      // const SAFE_TIMEOUT = 50;
-
-      // setTimeout(() => {
-      //   this.showOverlay();
-      // }, SAFE_TIMEOUT);
     }
   }
 
