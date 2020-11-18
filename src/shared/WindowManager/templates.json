@@ -45,7 +45,7 @@
     "fullscreenable": false,
     "backgroundColor": "#000",
     "skipTaskbar": true,
-    "resizable": false
+    "resizable": true
   },
   "sharingSelectDev": {
     "width": 500,

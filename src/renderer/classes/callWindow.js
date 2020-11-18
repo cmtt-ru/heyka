@@ -5,14 +5,29 @@ const OVERLAY_WINDOW_SIZES = {
   default: {
     width: 292,
     height: 124,
+    minWidth: 1,
+    minHeight: 1,
+    maxWidth: 292,
+    maxHeight: 124,
+    resizable: false,
   },
   mediaSharing: {
     width: 348,
     height: 264,
+    maxWidth: 660,
+    maxHeight: 440,
+    resizable: true,
+    minWidth: 348,
+    minHeight: 264,
   },
   streaming: {
     width: 348,
     height: 68,
+    maxWidth: 348,
+    maxHeight: 68,
+    minWidth: 1,
+    minHeight: 1,
+    resizable: false,
   },
 };
 
@@ -35,6 +50,18 @@ class CallWindow {
   }
 
   /**
+   * Hide or close any window
+   * @param {object} window - window
+   * @param {('hide'|'close')} action - 'hide' or 'close'
+   * @returns {void}
+   */
+  manageWindow(window, action) {
+    if (window) {
+      window.action(action);
+    }
+  }
+
+  /**
    * Show call overlay
    * @param {boolean} mediaSharingMode - media sharing Mode
    * @returns {void}
@@ -46,6 +73,7 @@ class CallWindow {
         template: 'overlay',
         showInactive: true,
         margin: 20,
+        aspectRatio: 1.778,
         position: 'bottomRight',
         visibleOnAllWorkspaces: true,
         window: {
@@ -57,18 +85,6 @@ class CallWindow {
       });
     } else {
       this.overlayWindow.action('showInactive');
-    }
-  }
-
-  /**
-   * Hide or close any window
-   * @param {object} window - window
-   * @param {('hide'|'close')} action - 'hide' or 'close'
-   * @returns {void}
-   */
-  manageWindow(window, action) {
-    if (window) {
-      window.action(action);
     }
   }
 
@@ -90,6 +106,28 @@ class CallWindow {
     if (this.overlayWindow) {
       this.overlayWindow.action('close');
     }
+  }
+
+  /**
+   * Resize overlay (and change some of its parameters)
+   *
+   * @param {string} type - overlay type (from OVERLAY_WINDOW_SIZES)
+   * @returns {void}
+   */
+  resizeOverlay(type) {
+    if (this.overlayWindow === null) {
+      return;
+    }
+
+    const template = OVERLAY_WINDOW_SIZES[type];
+
+    const OVERLAY_MARGIN = 50;
+
+    this.overlayWindow.api('setResizable', true);
+    this.overlayWindow.api('setMinimumSize', template.minWidth, template.minHeight);
+    this.overlayWindow.api('setMaximumSize', template.maxWidth, template.maxHeight);
+    this.overlayWindow.api('setResizable', template.resizable);
+    this.overlayWindow.setSize(template.width, template.height, OVERLAY_MARGIN);
   }
 
   /**
@@ -247,11 +285,7 @@ class CallWindow {
       this.frameWindow.action('showInactive');
     }
 
-    if (this.overlayWindow !== null) {
-      const { width, height } = OVERLAY_WINDOW_SIZES['streaming'];
-
-      this.overlayWindow.setSize(width, height);
-    }
+    this.resizeOverlay('streaming');
   }
 
   /**
@@ -261,12 +295,7 @@ class CallWindow {
   closeFrame() {
     if (this.frameWindow) {
       this.frameWindow.action('close');
-
-      const { width, height } = OVERLAY_WINDOW_SIZES[this.lastMediaSharingMode ? 'mediaSharing' : 'default'];
-
-      if (this.overlayWindow !== null) {
-        this.overlayWindow.setSize(width, height);
-      }
+      this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
     }
   }
 
@@ -291,11 +320,7 @@ class CallWindow {
     if (this.frameWindow) {
       return;
     }
-    const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
-
-    if (this.overlayWindow !== null) {
-      this.overlayWindow.setSize(width, height);
-    }
+    this.resizeOverlay(state ? 'mediaSharing' : 'default');
   }
 }
 
