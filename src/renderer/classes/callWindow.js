@@ -11,7 +11,7 @@ const OVERLAY_WINDOW_SIZES = {
     height: 264,
   },
   streaming: {
-    width: 292,
+    width: 348,
     height: 68,
   },
 };
