@@ -14,6 +14,28 @@ if (IS_WIN) {
   icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
 }
 
+const Directions = {
+  LEFT: 1,
+  RIGHT: 2,
+  TOP: 3,
+  LEFTTOP: 4,
+  RIGHTTOP: 5,
+  BOTTOM: 6,
+  BOTTOMLEFT: 7,
+  BOTTOMRIGHT: 8,
+};
+
+const extraWidth = 0;
+const extraHeight = 68;
+
+function getHeight(aspect, width) {
+  return Math.floor((width - extraWidth) / aspect + extraHeight);
+}
+
+function getWidth(aspect, height) {
+  return Math.floor((height - extraHeight) * aspect + extraWidth);
+}
+
 const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   width: 780,
   height: 560,
@@ -62,6 +84,21 @@ class WindowManager {
       }
       this.events[options.event].call(this, options);
       event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-api', (event, method, id, ...params) => {
+      if (this.windows[id] === undefined || this.windows[id].browserWindow[method] === undefined) {
+        return;
+      }
+
+      try {
+        // console.log(method, ...params);
+        this.windows[id].browserWindow[method](...params);
+        event.returnValue = true;
+      } catch (err) {
+        console.log(err);
+        event.returnValue = false;
+      }
     });
 
     ipcMain.on('window-manager-create', (event, options) => {
@@ -259,6 +296,71 @@ class WindowManager {
       this.sendAll(`window-hide-${windowId}`);
     });
 
+    if (IS_WIN && options.aspectRatio) {
+      let resizeDirection;
+
+      const RESIZING_HOOK = 0x0214;
+
+      browserWindow.hookWindowMessage(RESIZING_HOOK, (wParam) => {
+        resizeDirection = wParam.readUIntBE(0, 1);
+      });
+
+      browserWindow.on('will-resize', (event, screenBounds) => {
+        const rawBounds = screen.screenToDipRect(browserWindow, screenBounds);
+        const newBounds = { ...rawBounds };
+
+        event.preventDefault();
+        let tempWidth;
+        let tempHeight;
+        const toBounds = { ...newBounds };
+
+        switch (resizeDirection) {
+          case Directions.LEFT:
+          case Directions.RIGHT:
+            toBounds.height = getHeight(
+              options.aspectRatio,
+              newBounds.width
+            );
+            break;
+          case Directions.TOP:
+          case Directions.BOTTOM:
+            toBounds.width = getWidth(options.aspectRatio, newBounds.height);
+            break;
+          case Directions.BOTTOMLEFT:
+          case Directions.BOTTOMRIGHT:
+          case Directions.LEFTTOP:
+          case Directions.RIGHTTOP:
+            toBounds.width = getWidth(options.aspectRatio, newBounds.height);
+            tempWidth = newBounds.width;
+            tempHeight = getHeight(options.aspectRatio, tempWidth);
+            if (
+              tempWidth * tempHeight >
+            toBounds.width * toBounds.height
+            ) {
+              toBounds.width = tempWidth;
+              toBounds.height = tempHeight;
+            }
+            break;
+          default:
+        }
+        switch (resizeDirection) {
+          case Directions.BOTTOMLEFT:
+            toBounds.x = newBounds.x + newBounds.width - toBounds.width;
+            break;
+          case Directions.LEFTTOP:
+            toBounds.x = newBounds.x + newBounds.width - toBounds.width;
+            toBounds.y = newBounds.y + newBounds.height - toBounds.height;
+            break;
+          case Directions.RIGHTTOP:
+            toBounds.y = newBounds.y + newBounds.height - toBounds.height;
+            break;
+          default:
+        }
+        // console.log(toBounds);
+        browserWindow.setBounds(toBounds);
+      });
+    }
+
     // return this window Id after it's created
     return windowId;
   }
@@ -426,9 +528,7 @@ class WindowManager {
     if (this.windows[id]) {
       const isResizable = this.windows[id].browserWindow.resizable;
 
-      if (!isResizable) {
-        this.windows[id].browserWindow.setResizable(true);
-      }
+      this.windows[id].browserWindow.setResizable(true);
       this.windows[id].browserWindow.setSize(width, height);
       if (!isResizable) {
         this.windows[id].browserWindow.setResizable(false);
