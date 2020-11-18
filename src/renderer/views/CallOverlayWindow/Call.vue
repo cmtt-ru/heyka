@@ -66,7 +66,7 @@ import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 
 const BUTTON_SETUPS = {
   default: ['screen', 'camera', 'microphone', 'grid', 'leave'],
-  streaming: ['screen', 'microphone', 'grid', 'leave'],
+  streaming: ['screen', 'microphone', 'drawing', 'grid', 'leave'],
 };
 
 export default {
