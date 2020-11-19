@@ -1,39 +1,19 @@
 import path from 'path';
 import { ipcMain, BrowserWindow, screen, Menu, nativeImage, app } from 'electron';
 import Positioner from './Positioner';
+import AspectRatio from './AspectRatio';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
 import { IS_WIN, IS_DEV, IS_LINUX } from '../../sdk/Constants';
+
 let icon;
 
 if (IS_WIN) {
   icon = nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`));
 } else {
   icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
-}
-
-const Directions = {
-  LEFT: 1,
-  RIGHT: 2,
-  TOP: 3,
-  LEFTTOP: 4,
-  RIGHTTOP: 5,
-  BOTTOM: 6,
-  BOTTOMLEFT: 7,
-  BOTTOMRIGHT: 8,
-};
-
-const extraWidth = 0;
-const extraHeight = 68;
-
-function getHeight(aspect, width) {
-  return Math.floor((width - extraWidth) / aspect + extraHeight);
-}
-
-function getWidth(aspect, height) {
-  return Math.floor((height - extraHeight) * aspect + extraWidth);
 }
 
 const DEFAULT_WINDOW_OPTIONS = Object.freeze({
@@ -71,6 +51,7 @@ class WindowManager {
       focus: this.focusWindow,
       blur: this.blurWindow,
       size: this.sizeWindow,
+      position: this.setPosition,
       fullscreen: this.toggleFullscreenWindow,
       console: this.toggleConsoleWindow,
       reload: this.reloadWindow,
@@ -151,7 +132,7 @@ class WindowManager {
   }
 
   /**
-   * Create secondary Window
+   * Create Window
    * @param {object} options - mainWindow instance
    * @returns {string} ID of created window
    */
@@ -296,69 +277,15 @@ class WindowManager {
       this.sendAll(`window-hide-${windowId}`);
     });
 
-    if (IS_WIN && options.aspectRatio) {
-      let resizeDirection;
-
-      const RESIZING_HOOK = 0x0214;
-
-      browserWindow.hookWindowMessage(RESIZING_HOOK, (wParam) => {
-        resizeDirection = wParam.readUIntBE(0, 1);
-      });
-
-      browserWindow.on('will-resize', (event, screenBounds) => {
-        const rawBounds = screen.screenToDipRect(browserWindow, screenBounds);
-        const newBounds = { ...rawBounds };
-
-        event.preventDefault();
-        let tempWidth;
-        let tempHeight;
-        const toBounds = { ...newBounds };
-
-        switch (resizeDirection) {
-          case Directions.LEFT:
-          case Directions.RIGHT:
-            toBounds.height = getHeight(
-              options.aspectRatio,
-              newBounds.width
-            );
-            break;
-          case Directions.TOP:
-          case Directions.BOTTOM:
-            toBounds.width = getWidth(options.aspectRatio, newBounds.height);
-            break;
-          case Directions.BOTTOMLEFT:
-          case Directions.BOTTOMRIGHT:
-          case Directions.LEFTTOP:
-          case Directions.RIGHTTOP:
-            toBounds.width = getWidth(options.aspectRatio, newBounds.height);
-            tempWidth = newBounds.width;
-            tempHeight = getHeight(options.aspectRatio, tempWidth);
-            if (
-              tempWidth * tempHeight >
-            toBounds.width * toBounds.height
-            ) {
-              toBounds.width = tempWidth;
-              toBounds.height = tempHeight;
-            }
-            break;
-          default:
-        }
-        switch (resizeDirection) {
-          case Directions.BOTTOMLEFT:
-            toBounds.x = newBounds.x + newBounds.width - toBounds.width;
-            break;
-          case Directions.LEFTTOP:
-            toBounds.x = newBounds.x + newBounds.width - toBounds.width;
-            toBounds.y = newBounds.y + newBounds.height - toBounds.height;
-            break;
-          case Directions.RIGHTTOP:
-            toBounds.y = newBounds.y + newBounds.height - toBounds.height;
-            break;
-          default:
-        }
-        // console.log(toBounds);
-        browserWindow.setBounds(toBounds);
-      });
+    if (windowOptions.aspectRatio) {
+      if (IS_WIN) {
+        this.windows[windowId].aspectRatio = new AspectRatio(browserWindow, windowOptions.aspectRatio, windowOptions.extraWidth, windowOptions.extraHeight, windowOptions.maxWidth, windowOptions.maxHeight);
+      } else {
+        browserWindow.setAspectRatio(windowOptions.aspectRatio, {
+          width: windowOptions.extraWidth,
+          height: windowOptions.extraHeight,
+        });
+      }
     }
 
     // return this window Id after it's created
@@ -366,7 +293,7 @@ class WindowManager {
   }
 
   /**
- * Adjust window position in regard to tray
+ * Adjust window position in regard to pos
  * @param {object} wnd - window instance
  * @param {string} pos - window position
  * @param {number} margin margin from window borders
@@ -398,14 +325,14 @@ class WindowManager {
 
   /**
    * Set window position
-   * @param {object} window - window instance
-   * @param {string} pos - position of window
-   * @returns {string} ID of created window
+   * @param {object} window - window id
+   * @param {string} position - position of window
+   * @returns {void}
    */
-  setPosition(window, pos = 'center') {
-    const position = this.__getWindowPosition(window, pos);
+  setPosition({ id, position = 'center', margin = this.windows[id].options.margin || 0 }) {
+    const newPosition = this.__getWindowPosition(this.windows[id].browserWindow, position, margin);
 
-    window.setPosition(position.x, position.y);
+    this.windows[id].browserWindow.setPosition(newPosition.x, newPosition.y);
   }
 
   /**

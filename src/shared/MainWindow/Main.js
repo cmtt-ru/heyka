@@ -100,7 +100,10 @@ class MainWindow {
         this.window.hide();
         // Reason for this timeout: we want to teleport window after closing animation is complete
         setTimeout(() => {
-          WindowManager.setPosition(this.window, 'tray');
+          WindowManager.setPosition({
+            id: this.windowId,
+            position: 'tray',
+          });
         }, waitTime);
         TrayManager.setLastBlurTime();
       });
