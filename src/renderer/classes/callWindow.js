@@ -5,10 +5,10 @@ const OVERLAY_WINDOW_SIZES = {
   default: {
     width: 292,
     height: 124,
+    maxWidth: 660,
+    maxHeight: 440,
     minWidth: 1,
     minHeight: 1,
-    maxWidth: 292,
-    maxHeight: 124,
     resizable: false,
   },
   mediaSharing: {
@@ -16,15 +16,15 @@ const OVERLAY_WINDOW_SIZES = {
     height: 264,
     maxWidth: 660,
     maxHeight: 440,
-    resizable: true,
     minWidth: 348,
     minHeight: 264,
+    resizable: true,
   },
   streaming: {
     width: 348,
     height: 68,
-    maxWidth: 348,
-    maxHeight: 68,
+    maxWidth: 660,
+    maxHeight: 440,
     minWidth: 1,
     minHeight: 1,
     resizable: false,
@@ -72,7 +72,7 @@ class CallWindow {
         route: '/call-overlay',
         template: 'overlay',
         showInactive: true,
-        margin: 20,
+        margin: 50,
         aspectRatio: 1.778,
         position: 'bottomRight',
         visibleOnAllWorkspaces: true,
@@ -286,6 +286,7 @@ class CallWindow {
     }
 
     this.resizeOverlay('streaming');
+    this.overlayWindow.setPosition('bottomLeft');
   }
 
   /**
@@ -296,6 +297,7 @@ class CallWindow {
     if (this.frameWindow) {
       this.frameWindow.action('close');
       this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
+      this.overlayWindow.setPosition('bottomRight');
     }
   }
 

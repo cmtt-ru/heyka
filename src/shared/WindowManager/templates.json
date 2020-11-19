@@ -21,6 +21,7 @@
   "maintray": {
     "width": 500,
     "height": 600,
+    "margin": 20,
     "resizable": false,
     "alwaysOnTop": true
   },
@@ -41,6 +42,11 @@
     "hasShadow": false
   },
   "overlay": {
+    "maxWidth": 660,
+    "maxHeight": 439,
+    "aspectRatio": 1.778,
+    "extraWidth": 0,
+    "extraHeight": 68,
     "alwaysOnTop": true,
     "fullscreenable": false,
     "backgroundColor": "#000",

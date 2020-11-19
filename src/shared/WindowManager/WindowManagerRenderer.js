@@ -149,6 +149,22 @@ class Window extends EventEmitter {
   }
 
   /**
+   * Set window size
+   *
+   * @param {string} position - window position (eg. 'center', 'bottomRight')
+   * @param {number} margin - window pos margin
+   * @returns {void}
+   */
+  setPosition(position, margin) {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'position',
+      id: this.windowId,
+      position,
+      margin,
+    });
+  }
+
+  /**
    * Whether window is in fullscreen mode
    * @returns {boolean}
    */
