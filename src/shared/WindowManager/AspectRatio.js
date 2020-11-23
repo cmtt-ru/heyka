@@ -1,6 +1,7 @@
 import { screen } from 'electron';
+import { IS_WIN } from '../../sdk/Constants';
 
-const Directions = {
+const directions = {
   LEFT: 1,
   RIGHT: 2,
   TOP: 3,
@@ -39,9 +40,11 @@ export default class AspectRatio {
 
     console.log(aspectRatio, extraWidth, extraHeight, maxWidth, maxHeight);
 
-    this.window.hookWindowMessage(RESIZING_HOOK, (wParam) => {
-      resizeDirection = wParam.readUIntBE(0, 1);
-    });
+    if (!IS_WIN) {
+      this.window.hookWindowMessage(RESIZING_HOOK, (wParam) => {
+        resizeDirection = wParam.readUIntBE(0, 1);
+      });
+    }
 
     this.window.on('will-resize', (event, screenBounds) => {
       event.preventDefault();
@@ -70,6 +73,24 @@ export default class AspectRatio {
   }
 
   /**
+   * Determine the direction of resizing (if not Windows)
+   *
+   * @param {object} newBounds - new theoretical bounds after resize
+   * @returns {number} width
+   */
+  calcResizeDirection(newBounds) {
+    const oldBounds = this.window.getBounds();
+
+    console.log(oldBounds, newBounds);
+    const deltaStart = [oldBounds.x !== newBounds.x, oldBounds.y !== newBounds.y];
+    const deltaEnd = [!deltaStart[0] && (oldBounds.width !== newBounds.width),
+      !deltaStart[1] && (oldBounds.height !== newBounds.height)];
+
+    // eslint-disable-next-line no-magic-numbers
+    resizeDirection = deltaStart[0] * 1 + deltaStart[1] * 3 + deltaEnd[0] * 2 + deltaEnd[1] * 6;
+  }
+
+  /**
    * Main calc function to resize window based on aspect ratio and direction of resize
    *
    * @param {object} screenBounds - screenBounds
@@ -79,46 +100,91 @@ export default class AspectRatio {
     const rawBounds = screen.screenToDipRect(this.window, screenBounds);
     const newBounds = { ...rawBounds };
 
-    let tempWidth;
-    let tempHeight;
+    const [minWidth, minHeight] = this.window.getMinimumSize();
+
+    if (newBounds.width < minWidth || newBounds.height < minHeight) {
+      return;
+    }
+
+    if (IS_WIN) {
+      this.calcResizeDirection(newBounds);
+    }
+
+    // let tempWidth;
+    // let tempHeight;
     const toBounds = { ...newBounds };
 
+    if (resizeDirection === 0) {
+      return;
+    }
+
+    // switch (resizeDirection) {
+    //   case directions.LEFT:
+    //   case directions.RIGHT:
+    //     toBounds.height = this.getHeight(newBounds.width);
+    //     break;
+    //   case directions.TOP:
+    //   case directions.BOTTOM:
+    //     toBounds.width = this.getWidth(newBounds.height);
+    //     break;
+    //   case directions.BOTTOMLEFT:
+    //   case directions.BOTTOMRIGHT:
+    //   case directions.LEFTTOP:
+    //   case directions.RIGHTTOP:
+    //     toBounds.width = this.getWidth(newBounds.height);
+    //     tempWidth = newBounds.width;
+    //     tempHeight = this.getHeight(tempWidth);
+    //     if (tempWidth * tempHeight > toBounds.width * toBounds.height) {
+    //       toBounds.width = tempWidth;
+    //       toBounds.height = tempHeight;
+    //     }
+    //     break;
+    //   default:
+    // }
+    toBounds.width = this.getWidth(newBounds.height);
+    const tempWidth = newBounds.width;
+    const tempHeight = this.getHeight(tempWidth);
+
+    if (tempWidth * tempHeight > toBounds.width * toBounds.height) {
+      toBounds.width = tempWidth;
+      toBounds.height = tempHeight;
+    }
+
     switch (resizeDirection) {
-      case Directions.LEFT:
-      case Directions.RIGHT:
-        toBounds.height = this.getHeight(newBounds.width);
-        break;
-      case Directions.TOP:
-      case Directions.BOTTOM:
-        toBounds.width = this.getWidth(newBounds.height);
-        break;
-      case Directions.BOTTOMLEFT:
-      case Directions.BOTTOMRIGHT:
-      case Directions.LEFTTOP:
-      case Directions.RIGHTTOP:
-        toBounds.width = this.getWidth(newBounds.height);
-        tempWidth = newBounds.width;
-        tempHeight = this.getHeight(tempWidth);
-        if (tempWidth * tempHeight > toBounds.width * toBounds.height) {
-          toBounds.width = tempWidth;
-          toBounds.height = tempHeight;
-        }
+      case directions.BOTTOM:
+      case directions.BOTTOMLEFT:
+      case directions.LEFT:
+      case directions.LEFTTOP:
+      case directions.TOP:
+        toBounds.x = newBounds.x + newBounds.width - toBounds.width;
         break;
       default:
     }
+
     switch (resizeDirection) {
-      case Directions.BOTTOMLEFT:
-        toBounds.x = newBounds.x + newBounds.width - toBounds.width;
-        break;
-      case Directions.LEFTTOP:
-        toBounds.x = newBounds.x + newBounds.width - toBounds.width;
-        toBounds.y = newBounds.y + newBounds.height - toBounds.height;
-        break;
-      case Directions.RIGHTTOP:
+      case directions.LEFT:
+      case directions.LEFTTOP:
+      case directions.TOP:
+      case directions.RIGHTTOP:
+      case directions.RIGHT:
         toBounds.y = newBounds.y + newBounds.height - toBounds.height;
         break;
       default:
     }
+
+    // switch (resizeDirection) {
+    //   case directions.BOTTOMLEFT:
+    //     toBounds.x = newBounds.x + newBounds.width - toBounds.width;
+    //     break;
+    //   case directions.LEFTTOP:
+    //     toBounds.x = newBounds.x + newBounds.width - toBounds.width;
+    //     toBounds.y = newBounds.y + newBounds.height - toBounds.height;
+    //     break;
+    //   case directions.RIGHTTOP:
+    //     toBounds.y = newBounds.y + newBounds.height - toBounds.height;
+    //     break;
+    //   default:
+    // }
     this.window.setBounds(toBounds);
   }
 }
