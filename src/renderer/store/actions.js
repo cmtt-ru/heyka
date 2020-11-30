@@ -243,35 +243,24 @@ export default {
    * @returns {void}
    */
   async setSocketConnected({ state, commit, getters, dispatch }, authData) {
-    // Set socket disconnected
-    if (!authData || !authData.connected) {
-      // commit('SET_SOCKET_CONNECTED', false);
-    } else {
-      // Handle socket connected
-      // commit('SET_SOCKET_CONNECTED', true);
+    if (authData && authData.connected) {
+      if (!authData.reconnected) {
+        const selectedChannelId = getters['me/getSelectedChannelId'];
+
+        if (selectedChannelId) {
+          dispatch('unselectChannelWithoutAPICall', selectedChannelId);
+        }
+      }
 
       if (authData.reconnected) {
-        // if server said that channel is selected
-        // then select channel in app
-        if (authData.channelId && getters['me/getSelectedChannelId'] !== authData.channelId) {
-          dispatch('selectChannelWithoutAPICall', {
-            id: authData.channelId,
-            connectionOptions: authData,
-          });
-        }
-
-        // if server said that channel not selected
-        // unselect channel in app
-        if (!authData.channelId && getters['me/getSelectedChannelId']) {
-          dispatch('unselectChannelWithoutAPICall', getters['me/getSelectedChannelId']);
-        }
+        // const selectedChannelId = getters['me/getSelectedChannelId'];
+        //
+        // dispatch('selectChannelWithoutAPICall', {
+        //   id: authData.channelId,
+        //   connectionOptions: authData,
+        // });
       }
 
-      if (!authData.reconnected && getters['me/getSelectedChannelId']) {
-        dispatch('unselectChannelWithoutAPICall', getters['me/getSelectedChannelId']);
-      }
-
-      // update full workspace state
       await dispatch('updateCurrentWorkspaceState');
     }
   },

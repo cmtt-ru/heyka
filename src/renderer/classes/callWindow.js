@@ -278,7 +278,7 @@ class CallWindow {
     this.manageWindow(this.frameWindow, 'softClose');
     this.manageWindow(this.gridWindow, 'close');
     this.manageWindow(this.sharingWindow, 'close');
-    this.manageWindow(this.overlayWindow, 'close');
+    this.manageWindow(this.overlayWindow, 'softClose');
   }
 
   /**
