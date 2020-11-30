@@ -260,7 +260,7 @@ class CallWindow {
    */
   closeFrame() {
     if (this.frameWindow) {
-      this.frameWindow.action('close');
+      this.frameWindow.action('softClose');
 
       const { width, height } = OVERLAY_WINDOW_SIZES[this.lastMediaSharingMode ? 'mediaSharing' : 'default'];
 
@@ -275,7 +275,7 @@ class CallWindow {
    * @returns {void}
    */
   closeAll() {
-    this.manageWindow(this.frameWindow, 'close');
+    this.manageWindow(this.frameWindow, 'softClose');
     this.manageWindow(this.gridWindow, 'close');
     this.manageWindow(this.sharingWindow, 'close');
     this.manageWindow(this.overlayWindow, 'close');

@@ -52,6 +52,10 @@ export default {
     }),
   },
   async mounted() {
+    window.addEventListener('beforeunload', function (e) {
+      janusVideoroomWrapper.disconnectTextroom();
+    });
+
     cnsl.info('Hello from board holder window');
     await janusVideoroomWrapper.init();
     janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
