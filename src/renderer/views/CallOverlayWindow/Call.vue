@@ -81,6 +81,7 @@ export default {
       isMyMedia: false,
       preloaderSrc: null,
       preloaderShown: false,
+      channelSwitchedTs: Date.now(),
     };
   },
   computed: {
@@ -136,19 +137,34 @@ export default {
 
       this.showPreloader(value);
 
-      if (!value) {
-        janusVideoroomWrapper.leave();
-      } else {
-        janusVideoroomWrapper.join();
+      if (value && this.videoRoomState === 'closed') {
+        this.initJanusConnection();
+      } else if (!value && this.videoRoomState !== 'closed') {
+        this.destroyJanusConnection();
       }
     },
 
-    selectedChannelId(newChannelId, oldChannelId) {
-      if (oldChannelId) {
-        janusVideoroomWrapper.leave();
-      }
-      if (newChannelId) {
-        janusVideoroomWrapper.join();
+    janusOptions: {
+      deep: true,
+      handler(val) {
+        console.log('Watch new janus options: ', { ...val });
+      },
+    },
+
+    async selectedChannelId(newChannelId, oldChannelId) {
+      console.log('=========== Selected channel id changed');
+      this.channelSwitchedTs = Date.now();
+
+      if (newChannelId && this.videoRoomState === 'closed') {
+        console.log('Videoroom state was CLOSED, newChannelId is set, init janus connection');
+        this.initJanusConnection();
+      } else if (!newChannelId && this.videoRoomState !== 'closed') {
+        console.log('NewChannelId is not set, videoroomState was not closed, destroy janus');
+        this.destroyJanusConnection();
+      } else if (newChannelId && oldChannelId && this.videoRoomState === 'ready') {
+        this.showPreloader(true);
+        await this.destroyJanusConnection();
+        this.initJanusConnection();
       }
     },
 
@@ -191,6 +207,11 @@ export default {
       janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
       janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
       janusVideoroomWrapper.on('started', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('unauthorized-request', async () => {
+        this.videoRoomState = 'closed';
+        await this.destroyJanusConnection();
+        this.initJanusConnection();
+      });
       janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
       janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
 
@@ -202,7 +223,7 @@ export default {
 
       if (this.selectedChannelId) {
         this.videoRoomState = 'joining';
-        await janusVideoroomWrapper.join(this.myId, this.janusOptions);
+        await janusVideoroomWrapper.join(this.myId, { ...this.janusOptions });
       }
     },
 
@@ -210,7 +231,7 @@ export default {
      * Destroy janus connection in videoroom wrapper
      * @returns {void}
      */
-    destroyJanusConnection() {
+    async destroyJanusConnection() {
       janusVideoroomWrapper.removeAllListeners('single-sub-stream');
       janusVideoroomWrapper.removeAllListeners('publisher-joined');
       janusVideoroomWrapper.removeAllListeners('joined');
@@ -218,11 +239,11 @@ export default {
       janusVideoroomWrapper.removeAllListeners('paused');
       janusVideoroomWrapper.removeAllListeners('started');
       janusVideoroomWrapper.removeAllListeners('cleanup');
+      janusVideoroomWrapper.removeAllListeners('unauthorized-request');
 
-      janusVideoroomWrapper.leave();
-      janusVideoroomWrapper._disconnect();
+      await janusVideoroomWrapper.leave();
 
-      this.videoRoomState = false;
+      this.videoRoomState = 'closed';
     },
 
     /**
@@ -239,6 +260,8 @@ export default {
       }
 
       if (!publisher) {
+        console.log('there is no that publisher');
+
         return;
       }
 
@@ -251,6 +274,8 @@ export default {
       }
 
       if (currentFeed === publisher.janusId) {
+        console.log('current feed already set');
+
         return;
       }
 
