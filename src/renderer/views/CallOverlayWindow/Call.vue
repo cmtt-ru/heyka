@@ -211,11 +211,18 @@ export default {
      * @returns {void}
      */
     destroyJanusConnection() {
-      janusVideoroomWrapper.leave();
-      janusVideoroomWrapper._disconnect();
-      this.videoRoomState = false;
       janusVideoroomWrapper.removeAllListeners('single-sub-stream');
       janusVideoroomWrapper.removeAllListeners('publisher-joined');
+      janusVideoroomWrapper.removeAllListeners('joined');
+      janusVideoroomWrapper.removeAllListeners('switched');
+      janusVideoroomWrapper.removeAllListeners('paused');
+      janusVideoroomWrapper.removeAllListeners('started');
+      janusVideoroomWrapper.removeAllListeners('cleanup');
+
+      janusVideoroomWrapper.leave();
+      janusVideoroomWrapper._disconnect();
+
+      this.videoRoomState = false;
     },
 
     /**
