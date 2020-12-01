@@ -1,7 +1,7 @@
 <template>
   <div class="call-window">
     <div
-      v-show="isMediaSharing"
+      v-show="isLocalMediaSharing"
       class="call-window__media"
       @dblclick="expandHandler"
     >
@@ -48,7 +48,7 @@
     </div>
 
     <call-controls
-      :row="isMediaSharing || amIStreaming"
+      :row="isLocalMediaSharing || amIStreaming"
       :buttons="buttonsSetup"
     />
   </div>
@@ -92,7 +92,7 @@ export default {
       getUserWhoSharesMedia: 'getUserWhoSharesMedia',
       getUsersWhoShareMedia: 'getUsersWhoShareMedia',
       getUsersWhoShareScreen: 'getUsersWhoShareScreen',
-      amISharingMedia: 'amISharingMedia',
+      amISharingScreen: 'amISharingScreen',
       isAnybodySharingMedia: 'isAnybodySharingMedia',
       getSpeakingUser: 'getSpeakingUser',
       mediaState: 'me/getMediaState',
@@ -113,8 +113,22 @@ export default {
       return BUTTON_SETUPS.default;
     },
 
-    isMediaSharing() {
+    /**
+     * That value depends on local media state
+     * In order to changing overlay size just after media state changes
+     * @returns {boolean}
+     */
+    isLocalMediaSharing() {
       return this.isAnybodySharingMedia && !this.amIStreaming;
+    },
+
+    /**
+     * That value depends on store in order to
+     * process videostreaming only after backend response
+     * @returns {boolean}
+     */
+    isGlobalMediaSharing() {
+      return this.isAnybodySharingMedia && !this.amISharingScreen;
     },
 
     getSpeakingUserId() {
@@ -131,35 +145,27 @@ export default {
   },
 
   watch: {
-    async isMediaSharing(value) {
-      console.log('isMediaSharing: ----- ', this.isMediaSharing);
+    isLocalMediaSharing(value) {
       broadcastActions.dispatch('me/setMediaSharingMode', value);
 
       this.showPreloader(value);
+    },
 
+    isGlobalMediaSharing(value) {
+      console.log('globalmediasharing === ', value);
       if (value && this.videoRoomState === 'closed') {
         this.initJanusConnection();
-      } else if (!value && this.videoRoomState !== 'closed') {
+      } else if (!value) {
         this.destroyJanusConnection();
       }
     },
 
-    janusOptions: {
-      deep: true,
-      handler(val) {
-        console.log('Watch new janus options: ', { ...val });
-      },
-    },
-
     async selectedChannelId(newChannelId, oldChannelId) {
-      console.log('=========== Selected channel id changed');
       this.channelSwitchedTs = Date.now();
 
       if (newChannelId && this.videoRoomState === 'closed') {
-        console.log('Videoroom state was CLOSED, newChannelId is set, init janus connection');
         this.initJanusConnection();
       } else if (!newChannelId && this.videoRoomState !== 'closed') {
-        console.log('NewChannelId is not set, videoroomState was not closed, destroy janus');
         this.destroyJanusConnection();
       } else if (newChannelId && oldChannelId && this.videoRoomState === 'ready') {
         this.showPreloader(true);
@@ -183,7 +189,7 @@ export default {
   },
 
   async mounted() {
-    this.showPreloader(this.isMediaSharing);
+    this.showPreloader(this.isLocalMediaSharing);
 
     this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
   },
@@ -260,8 +266,6 @@ export default {
       }
 
       if (!publisher) {
-        console.log('there is no that publisher');
-
         return;
       }
 
@@ -274,8 +278,6 @@ export default {
       }
 
       if (currentFeed === publisher.janusId) {
-        console.log('current feed already set');
-
         return;
       }
 
