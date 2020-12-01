@@ -1,4 +1,4 @@
-import { screen } from 'electron';
+import { screen, webContents } from 'electron';
 import { IS_WIN } from '../../sdk/Constants';
 
 const directions = {
@@ -49,6 +49,13 @@ export default class AspectRatio {
     this.window.on('will-resize', (event, screenBounds) => {
       event.preventDefault();
       this.preserveAspectRatio(screenBounds);
+    });
+
+    console.log(this.window.webContents);
+    console.log(webContents);
+
+    this.window.webContents.on('cursor-changed', (event, type) => {
+      console.log(type);
     });
   }
 
