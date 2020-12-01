@@ -130,10 +130,17 @@ export default {
   },
 
   watch: {
-    isMediaSharing() {
-      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+    async isMediaSharing(value) {
+      console.log('isMediaSharing: ----- ', this.isMediaSharing);
+      broadcastActions.dispatch('me/setMediaSharingMode', value);
 
-      this.showPreloader(this.isMediaSharing);
+      this.showPreloader(value);
+
+      if (!value) {
+        this.destroyJanusConnection();
+      } else {
+        this.initJanusConnection();
+      }
     },
 
     selectedChannelId(newChannelId, oldChannelId) {
@@ -155,29 +162,10 @@ export default {
   },
 
   async created() {
-    janusVideoroomWrapper.on('joined', this.onSingleSubscriptionReady.bind(this));
-    janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
-    janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
-    janusVideoroomWrapper.on('started', this.onSingleSubscriptionReady.bind(this));
-
-    janusVideoroomWrapper.on('cleanup', () => {
-      this.videoRoomState = 'closed';
-
-      this.loadCurrentVideo();
-    });
-
-    await janusVideoroomWrapper.init();
-
-    if (this.selectedChannelId) {
-      this.videoRoomState = 'joining';
-      await janusVideoroomWrapper.join(this.myId, this.janusOptions);
-    }
+    this.initJanusConnection();
   },
 
   async mounted() {
-    janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
-    janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
-
     this.showPreloader(this.isMediaSharing);
 
     this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
@@ -193,6 +181,44 @@ export default {
   },
 
   methods: {
+    /**
+     * Init janus connection in videoroom wrapper
+     * @returns {void}
+     */
+    async initJanusConnection() {
+      janusVideoroomWrapper.on('joined', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('started', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
+      janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
+
+      janusVideoroomWrapper.on('cleanup', () => {
+        this.videoRoomState = 'closed';
+
+        this.loadCurrentVideo();
+      });
+
+      await janusVideoroomWrapper.init();
+
+      if (this.selectedChannelId) {
+        this.videoRoomState = 'joining';
+        await janusVideoroomWrapper.join(this.myId, this.janusOptions);
+      }
+    },
+
+    /**
+     * Destroy janus connection in videoroom wrapper
+     * @returns {void}
+     */
+    destroyJanusConnection() {
+      janusVideoroomWrapper.leave();
+      janusVideoroomWrapper._disconnect();
+      this.videoRoomState = false;
+      janusVideoroomWrapper.removeAllListeners('single-sub-stream');
+      janusVideoroomWrapper.removeAllListeners('publisher-joined');
+    },
+
     /**
      * Loads user video of current user if it possible
      * @returns {void}
