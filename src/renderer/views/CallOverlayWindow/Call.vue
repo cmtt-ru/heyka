@@ -137,18 +137,18 @@ export default {
       this.showPreloader(value);
 
       if (!value) {
-        this.destroyJanusConnection();
+        janusVideoroomWrapper.leave();
       } else {
-        this.initJanusConnection();
+        janusVideoroomWrapper.join();
       }
     },
 
     selectedChannelId(newChannelId, oldChannelId) {
-      if (!newChannelId && oldChannelId) {
+      if (oldChannelId) {
         janusVideoroomWrapper.leave();
       }
       if (newChannelId) {
-        janusVideoroomWrapper.join(this.myId, this.janusOptions);
+        janusVideoroomWrapper.join();
       }
     },
 
