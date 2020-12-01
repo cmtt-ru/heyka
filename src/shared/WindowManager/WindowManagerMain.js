@@ -280,11 +280,6 @@ class WindowManager {
     if (windowOptions.aspectRatio) {
       if (IS_WIN) {
         this.windows[windowId].aspectRatio = new AspectRatio(browserWindow, windowOptions.aspectRatio, windowOptions.extraWidth, windowOptions.extraHeight, windowOptions.maxWidth, windowOptions.maxHeight);
-      } else {
-        browserWindow.setAspectRatio(windowOptions.aspectRatio, {
-          width: windowOptions.extraWidth,
-          height: windowOptions.extraHeight,
-        });
       }
     }
 
