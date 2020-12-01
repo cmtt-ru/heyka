@@ -162,6 +162,7 @@ export default {
   },
 
   async created() {
+    await janusVideoroomWrapper.init();
     this.initJanusConnection();
   },
 
@@ -198,8 +199,6 @@ export default {
 
         this.loadCurrentVideo();
       });
-
-      await janusVideoroomWrapper.init();
 
       if (this.selectedChannelId) {
         this.videoRoomState = 'joining';
