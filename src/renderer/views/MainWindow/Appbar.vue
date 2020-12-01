@@ -4,7 +4,7 @@
     :class="{'appbar--mac': IS_MAC}"
   >
     <div
-      v-if="myWorkspace"
+      v-if="myWorkspace && myInfo.id"
       class="workspace"
     >
       <div
@@ -28,8 +28,35 @@
       </div>
     </div>
 
+    <div v-if="!IS_MAC">
+      <ui-button
+        :type="7"
+        class="control__button"
+        size="medium"
+        icon="collapse"
+        header
+        @click="minimizeWindowHandler"
+      />
+      <ui-button
+        :type="7"
+        class="control__button control__button--win-close"
+        size="medium"
+        icon="close"
+        header
+        @click="closeWindowHandler"
+      />
+    </div>
+
     <div
-      v-if="myInfo"
+      v-if="IS_MAC"
+      class="mac-controls-wrapper"
+    >
+      <div class="mac-controls" />
+      <div class="mac-controls" />
+    </div>
+
+    <div
+      v-if="myInfo.id"
       class="user"
       :class="{'user--mac': IS_MAC}"
     >
@@ -62,33 +89,6 @@
         :status="myInfo.onlineStatus"
         :size="32"
       />
-    </div>
-
-    <div v-if="!IS_MAC">
-      <ui-button
-        :type="7"
-        class="control__button"
-        size="medium"
-        icon="collapse"
-        header
-        @click="minimizeWindowHandler"
-      />
-      <ui-button
-        :type="7"
-        class="control__button control__button--win-close"
-        size="medium"
-        icon="close"
-        header
-        @click="closeWindowHandler"
-      />
-    </div>
-
-    <div
-      v-if="IS_MAC"
-      class="mac-controls-wrapper"
-    >
-      <div class="mac-controls" />
-      <div class="mac-controls" />
     </div>
   </div>
 </template>
@@ -254,13 +254,13 @@ export default {
 .appbar
   width 100%
   display flex
-  flex-direction row
+  flex-direction row-reverse
   justify-content space-between
   align-items center
   position relative
 
   &--mac
-    flex-direction row-reverse
+    flex-direction row
 
 .user
   display flex
