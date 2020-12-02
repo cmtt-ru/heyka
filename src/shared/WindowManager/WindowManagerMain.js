@@ -73,7 +73,6 @@ class WindowManager {
       }
 
       try {
-        // console.log(method, ...params);
         this.windows[id].browserWindow[method](...params);
         event.returnValue = true;
       } catch (err) {
