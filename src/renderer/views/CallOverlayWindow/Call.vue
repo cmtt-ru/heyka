@@ -54,7 +54,7 @@
     />
 
     <div
-      v-if="isMediaSharing"
+      v-if="isLocalMediaSharing"
     >
       <div class="resize-border resize-border--top" />
       <div class="resize-border resize-border--left" />
