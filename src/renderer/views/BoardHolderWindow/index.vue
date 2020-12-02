@@ -18,6 +18,7 @@
 <script>
 import BoardHolder from '@components/Drawing/BoardHolder';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 import { mapState, mapGetters } from 'vuex';
 import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('BoardHolderWindow', 'maroon');
@@ -39,6 +40,7 @@ export default {
   data() {
     return {
       drawingData: {},
+      canDraw: false,
     };
   },
   computed: {
@@ -48,9 +50,13 @@ export default {
     }),
     ...mapGetters({
       userId: 'me/getMyId',
-      canDraw: 'me/getAllowDraw',
+      users: 'usersInMyChannel',
     }),
   },
+  created() {
+    this.canDraw = this.$store.getters['me/getAllowDraw'];
+  },
+
   async mounted() {
     cnsl.info('Hello from board holder window');
     await janusVideoroomWrapper.init();
@@ -58,6 +64,10 @@ export default {
     janusVideoroomWrapper.on('textroom-joined', this.onNewUser.bind(this));
     cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store, this.$store.state.me.id);
     janusVideoroomWrapper.connectTextroom(this.userId, 'receiver', this.janusOptions);
+    broadcastEvents.on('toggleDrawing', (state) => {
+      this.canDraw = state;
+      this.drawingNotifyUsers();
+    });
   },
   beforeDestroy() {
     janusVideoroomWrapper.disconnectTextroom();
@@ -76,6 +86,12 @@ export default {
       drawingData.userId = from
         .replace('(sender)', '');
       this.drawingData = drawingData;
+    },
+
+    drawingNotifyUsers() {
+      for (const user of this.users) {
+        this.onNewUser(`${user.userId}(sender)`);
+      }
     },
 
     onNewUser(userId) {
