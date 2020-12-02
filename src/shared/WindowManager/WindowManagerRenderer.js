@@ -149,7 +149,7 @@ class Window extends EventEmitter {
   }
 
   /**
-   * Set window size
+   * Set window position
    *
    * @param {string} position - window position (eg. 'center', 'bottomRight')
    * @param {number} margin - window pos margin
