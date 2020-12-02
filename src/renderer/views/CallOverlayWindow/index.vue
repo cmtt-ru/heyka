@@ -7,6 +7,17 @@
   </div>
 </template>
 
+<script>
+import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
+export default {
+  mounted() {
+    window.addEventListener('beforeunload', function (e) {
+      janusVideoroomWrapper._disconnect();
+    });
+  },
+};
+</script>
+
 <style scoped lang="stylus">
     .layout__popover
         -webkit-app-region drag

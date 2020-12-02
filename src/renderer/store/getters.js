@@ -147,6 +147,25 @@ export default {
   },
 
   /**
+   * Check's that I'am sharing screen
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {boolean}
+   */
+  amISharingScreen: (state, getters) => {
+    const myId = getters['me/getMyId'];
+    const selectedChannelId = getters['me/getSelectedChannelId'];
+    const selectedChannel = getters['channels/getChannelById'](selectedChannelId);
+
+    if (!selectedChannel) {
+      return false;
+    }
+
+    return selectedChannel.users.findIndex(user => user.screen && user.userId === myId) > -1;
+  },
+
+  /**
    * Is anybody share's screen or camera
    *
    * @param {object} state – global state

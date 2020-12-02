@@ -1,7 +1,7 @@
 <template>
   <div class="call-window">
     <div
-      v-show="isMediaSharing"
+      v-show="isLocalMediaSharing"
       class="call-window__media"
       @dblclick="expandHandler"
     >
@@ -48,7 +48,7 @@
     </div>
 
     <call-controls
-      :row="isMediaSharing || amIStreaming"
+      :row="isLocalMediaSharing || amIStreaming"
       :buttons="buttonsSetup"
       class="call-window__controls"
     />
@@ -91,6 +91,7 @@ export default {
       isMyMedia: false,
       preloaderSrc: null,
       preloaderShown: false,
+      channelSwitchedTs: Date.now(),
     };
   },
   computed: {
@@ -101,7 +102,7 @@ export default {
       getUserWhoSharesMedia: 'getUserWhoSharesMedia',
       getUsersWhoShareMedia: 'getUsersWhoShareMedia',
       getUsersWhoShareScreen: 'getUsersWhoShareScreen',
-      amISharingMedia: 'amISharingMedia',
+      amISharingScreen: 'amISharingScreen',
       isAnybodySharingMedia: 'isAnybodySharingMedia',
       getSpeakingUser: 'getSpeakingUser',
       mediaState: 'me/getMediaState',
@@ -122,8 +123,22 @@ export default {
       return BUTTON_SETUPS.default;
     },
 
-    isMediaSharing() {
+    /**
+     * That value depends on local media state
+     * In order to changing overlay size just after media state changes
+     * @returns {boolean}
+     */
+    isLocalMediaSharing() {
       return this.isAnybodySharingMedia && !this.amIStreaming;
+    },
+
+    /**
+     * That value depends on store in order to
+     * process videostreaming only after backend response
+     * @returns {boolean}
+     */
+    isGlobalMediaSharing() {
+      return this.isAnybodySharingMedia && !this.amISharingScreen;
     },
 
     getSpeakingUserId() {
@@ -140,18 +155,32 @@ export default {
   },
 
   watch: {
-    isMediaSharing() {
-      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+    isLocalMediaSharing(value) {
+      broadcastActions.dispatch('me/setMediaSharingMode', value);
 
-      this.showPreloader(this.isMediaSharing);
+      this.showPreloader(value);
     },
 
-    selectedChannelId(newChannelId, oldChannelId) {
-      if (!newChannelId && oldChannelId) {
-        janusVideoroomWrapper.leave();
+    isGlobalMediaSharing(value) {
+      console.log('globalmediasharing === ', value);
+      if (value && this.videoRoomState === 'closed') {
+        this.initJanusConnection();
+      } else if (!value) {
+        this.destroyJanusConnection();
       }
-      if (newChannelId) {
-        janusVideoroomWrapper.join(this.myId, this.janusOptions);
+    },
+
+    async selectedChannelId(newChannelId, oldChannelId) {
+      this.channelSwitchedTs = Date.now();
+
+      if (newChannelId && this.videoRoomState === 'closed') {
+        this.initJanusConnection();
+      } else if (!newChannelId && this.videoRoomState !== 'closed') {
+        this.destroyJanusConnection();
+      } else if (newChannelId && oldChannelId && this.videoRoomState === 'ready') {
+        this.showPreloader(true);
+        await this.destroyJanusConnection();
+        this.initJanusConnection();
       }
     },
 
@@ -165,30 +194,12 @@ export default {
   },
 
   async created() {
-    janusVideoroomWrapper.on('joined', this.onSingleSubscriptionReady.bind(this));
-    janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
-    janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
-    janusVideoroomWrapper.on('started', this.onSingleSubscriptionReady.bind(this));
-
-    janusVideoroomWrapper.on('cleanup', () => {
-      this.videoRoomState = 'closed';
-
-      this.loadCurrentVideo();
-    });
-
     await janusVideoroomWrapper.init();
-
-    if (this.selectedChannelId) {
-      this.videoRoomState = 'joining';
-      await janusVideoroomWrapper.join(this.myId, this.janusOptions);
-    }
+    this.initJanusConnection();
   },
 
   async mounted() {
-    janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
-    janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
-
-    this.showPreloader(this.isMediaSharing);
+    this.showPreloader(this.isLocalMediaSharing);
 
     this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
   },
@@ -203,6 +214,54 @@ export default {
   },
 
   methods: {
+    /**
+     * Init janus connection in videoroom wrapper
+     * @returns {void}
+     */
+    async initJanusConnection() {
+      janusVideoroomWrapper.on('joined', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('started', this.onSingleSubscriptionReady.bind(this));
+      janusVideoroomWrapper.on('unauthorized-request', async () => {
+        this.videoRoomState = 'closed';
+        await this.destroyJanusConnection();
+        this.initJanusConnection();
+      });
+      janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
+      janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
+
+      janusVideoroomWrapper.on('cleanup', () => {
+        this.videoRoomState = 'closed';
+
+        this.loadCurrentVideo();
+      });
+
+      if (this.selectedChannelId) {
+        this.videoRoomState = 'joining';
+        await janusVideoroomWrapper.join(this.myId, { ...this.janusOptions });
+      }
+    },
+
+    /**
+     * Destroy janus connection in videoroom wrapper
+     * @returns {void}
+     */
+    async destroyJanusConnection() {
+      janusVideoroomWrapper.removeAllListeners('single-sub-stream');
+      janusVideoroomWrapper.removeAllListeners('publisher-joined');
+      janusVideoroomWrapper.removeAllListeners('joined');
+      janusVideoroomWrapper.removeAllListeners('switched');
+      janusVideoroomWrapper.removeAllListeners('paused');
+      janusVideoroomWrapper.removeAllListeners('started');
+      janusVideoroomWrapper.removeAllListeners('cleanup');
+      janusVideoroomWrapper.removeAllListeners('unauthorized-request');
+
+      await janusVideoroomWrapper.leave();
+
+      this.videoRoomState = 'closed';
+    },
+
     /**
      * Loads user video of current user if it possible
      * @returns {void}
