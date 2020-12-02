@@ -98,10 +98,6 @@ export default {
       if (typeof this.onNewUser.color === 'undefined') {
         this.onNewUser.color = 0;
       }
-      console.log({
-        canDraw: this.canDraw,
-        color: COLORS[this.onNewUser.color],
-      }, userId);
       janusVideoroomWrapper.sendData({
         canDraw: this.canDraw,
         color: COLORS[this.onNewUser.color],
