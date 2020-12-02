@@ -349,4 +349,8 @@ export default {
 
     await dispatch('initial');
   },
+
+  async logout({ commit }) {
+    commit('me/SET_USER_ID', null);
+  },
 };
