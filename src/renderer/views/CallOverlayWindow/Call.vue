@@ -111,7 +111,7 @@ export default {
     }),
 
     amIStreaming() {
-      return !!this.getUsersWhoShareScreen.find(userId => this.myId === userId);
+      return this.$store.state.me.mediaState.screen;
     },
 
     buttonsSetup() {
