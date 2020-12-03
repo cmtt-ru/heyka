@@ -188,6 +188,7 @@ import { List, ListItem } from '@components/List';
 import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import SidebarUserItem from '@components/SidebarUserItem';
+import Mousetrap from 'mousetrap';
 import { mapGetters } from 'vuex';
 
 const MANY_CHANNELS = 4;
@@ -299,6 +300,12 @@ export default {
 
   },
 
+  created() {
+    Mousetrap.bind(['command+f', 'ctrl+f'], () => {
+      this.activateInput(false);
+    });
+  },
+
   methods: {
 
     /**
@@ -337,10 +344,14 @@ export default {
 
     /**
      * Show searchbar
+     * @param {boolean} clear true if e should clear input
      * @returns {void}
      */
-    activateInput() {
-      this.searchText = '';
+    activateInput(clear = true) {
+      if (clear) {
+        this.searchText = '';
+      }
+
       this.inputActive = true;
       this.$nextTick(() => {
         this.$refs.globalSearch.focusInput();
