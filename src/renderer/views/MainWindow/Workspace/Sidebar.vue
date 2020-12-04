@@ -189,6 +189,7 @@ import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import SidebarUserItem from '@components/SidebarUserItem';
 import Mousetrap from 'mousetrap';
+import { heykaStore } from '@/store/localStore';
 import { mapGetters } from 'vuex';
 
 const MANY_CHANNELS = 4;
@@ -208,7 +209,7 @@ export default {
       MANY_CHANNELS,
       inputActive: false,
       searchText: '',
-      showMore: true,
+      showMore: heykaStore.get('showMoreCHannels', true),
     };
   },
 
@@ -340,6 +341,7 @@ export default {
      */
     toggleChannelsHandler() {
       this.showMore = !this.showMore;
+      heykaStore.set('showMoreCHannels', this.showMore);
     },
 
     /**
