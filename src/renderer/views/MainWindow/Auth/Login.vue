@@ -206,6 +206,16 @@ export default {
     } else {
       this.coverSrc = require('@assets/img/cover_day.png');
     }
+
+    DeepLink.on('login', ([status, param]) => {
+      if (status === 'false') {
+        this.$store.dispatch('app/addNotification', {
+          data: {
+            text: decodeURIComponent(param),
+          },
+        });
+      }
+    });
   },
 
   methods: {
