@@ -4,14 +4,14 @@
       <avatar
         class="push__avatar"
         :size="40"
-        :image="userAvatar(user.id, 40)"
-        :user-id="user.id"
+        :image="userAvatar(data.userId, 40)"
+        :user-id="data.userId"
       />
 
       <div class="push__col">
-        <p class="push__user-name">
+        <!-- <p class="push__user-name">
           {{ user.name }}
-        </p>
+        </p> -->
 
         <div
           class="push__channel"
@@ -82,6 +82,8 @@ export default {
      * @returns {object}
      */
     user() {
+      console.log(this.data);
+
       return this.$store.getters['users/getUserById'](this.data.userId);
     },
 

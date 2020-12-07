@@ -199,13 +199,14 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  addPush({ commit }, { inviteId, userId, message, name }) {
+  addPush({ commit }, { inviteId, userId, workspaceId, message, name }) {
     const push = {
       inviteId,
       userId,
+      workspaceId,
       name,
       ...message,
-    }; // TODO: брать workspaceId из пришедшего пуша
+    };
 
     commit('ADD_PUSH', push);
   },
