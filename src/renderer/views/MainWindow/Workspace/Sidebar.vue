@@ -1,8 +1,53 @@
 <template>
   <div
     id="sidebar_channel_anchor"
-    class="l-p-8"
+    class="l-p-12"
   >
+    <!------ search ------>
+    <div
+      v-click-outside="deactivateInput"
+      class="search-wrapper"
+    >
+      <div
+        v-show="inputActive"
+
+        class="search"
+      >
+        <ui-input
+          ref="globalSearch"
+          v-model="searchText"
+          icon="search"
+          class="search__input"
+          :placeholder="texts.search"
+          @keydown.native.esc="closeInput"
+        />
+        <svg-icon
+          v-show="searchText"
+          class="search__icon--close"
+          name="clear"
+          width="16"
+          height="16"
+          @click.native="closeInput"
+        />
+      </div>
+
+      <div
+        v-show="!inputActive"
+        class="search search--mockup"
+        @click="activateInput"
+      >
+        <svg-icon
+          class="search__icon"
+          name="search"
+          color="var(--new-UI-01)"
+          width="20"
+          height="20"
+        />
+        <div>{{ texts.search }}</div>
+      </div>
+    </div>
+
+    <!------ channels ------>
     <transition name="connected-channel">
       <div
         v-if="selectedChannel"
@@ -10,6 +55,7 @@
       >
         <channel-item
           :channel="selectedChannel"
+          top-channel
         />
       </div>
     </transition>
@@ -17,25 +63,29 @@
     <div class="channel-header">
       <a
         href="#sidebar_channel_anchor"
-        class="channel-header__label l-ml-4"
+        class="channel-header__label"
       >{{ texts.channelsHeader }}</a>
-      <ui-button
-        v-tooltip="$t('tooltips.newChannel')"
-        :type="7"
-        class="channel-header__add"
-        size="small"
-        height="16"
-        icon="add"
-        @click.native="createChannelHandler"
-      />
+      <router-link
+        :to="{name: 'create-channel'}"
+      >
+        <ui-button
+          v-tooltip="$t('tooltips.newChannel')"
+          :type="7"
+          class="channel-header__add"
+          size="small"
+          icon="add"
+          @click.native="createChannelHandler"
+        />
+      </router-link>
     </div>
 
     <list
       v-if="channels.length"
       :filter-by="searchText"
+      class="channels-list"
     >
       <list-item
-        v-for="channel in channels"
+        v-for="channel in showedChannels"
         :key="channel.name"
         :filter-key="channel.name"
         button
@@ -45,13 +95,42 @@
           <channel-item
             v-show="notSelected(channel.id)"
             :channel="channel"
-            exclude-me
             class="list-channel"
           />
         </transition>
       </list-item>
     </list>
+    <div v-if="!searchText">
+      <router-link
+        v-if="channels.length<=MANY_CHANNELS"
+        :to="{name: 'create-channel'}"
+        class="action-button"
+        @click="createChannelHandler"
+      >
+        <svg-icon
+          class="action-button__icon"
+          name="add"
+          size="medium"
+        />
+        <div>{{ texts.createChannel }}</div>
+      </router-link>
+      <a
+        v-else
+        class="action-button"
+        :href="showMore && '#sidebar_channel_anchor'"
+        @click="toggleChannelsHandler"
+      >
+        <svg-icon
+          class="action-button__icon"
+          name="arrow-down"
+          :class="{'action-button__icon--flipped': !showMore}"
+          size="medium"
+        />
+        <div>{{ toggleChannelText }}</div>
+      </a>
+    </div>
 
+    <!------ users ------>
     <div
       id="sidebar_user_anchor"
       class="user-anchor"
@@ -59,7 +138,7 @@
     <div class="channel-header user-header">
       <a
         href="#sidebar_user_anchor"
-        class="channel-header__label l-ml-4"
+        class="channel-header__label"
       >{{ texts.usersHeader }}</a>
       <router-link :to="{name: 'invite'}">
         <ui-button
@@ -67,18 +146,17 @@
           :type="7"
           class="channel-header__add"
           size="small"
-          height="16"
           icon="add"
         />
       </router-link>
     </div>
 
     <list
-      v-if="users.length"
+      v-if="sidebarUsers.length"
       :filter-by="searchText"
     >
       <list-item
-        v-for="user in users"
+        v-for="user in sidebarUsers"
         :key="user.id"
         :filter-key="user.name"
         button
@@ -89,6 +167,18 @@
         />
       </list-item>
     </list>
+    <router-link
+      v-if="!searchText"
+      :to="{name: 'invite'}"
+      class="action-button"
+    >
+      <svg-icon
+        class="action-button__icon"
+        name="add"
+        size="medium"
+      />
+      <div>{{ texts.inviteUser }}</div>
+    </router-link>
   </div>
 </template>
 
@@ -96,8 +186,11 @@
 import ChannelItem from '@components/ChannelItem';
 import { List, ListItem } from '@components/List';
 import UiButton from '@components/UiButton';
+import { UiInput } from '@components/Form';
 import SidebarUserItem from '@components/SidebarUserItem';
 import { mapGetters } from 'vuex';
+
+const MANY_CHANNELS = 4;
 
 export default {
   components: {
@@ -105,14 +198,24 @@ export default {
     ListItem,
     ChannelItem,
     UiButton,
+    UiInput,
     SidebarUserItem,
+  },
+
+  data() {
+    return {
+      MANY_CHANNELS,
+      inputActive: false,
+      searchText: '',
+      showMore: true,
+    };
   },
 
   computed: {
 
     ...mapGetters({
       channels: 'channels/getChannels',
-      users: 'users/getAllUsers',
+      getAllUsers: 'users/getAllUsers',
     }),
 
     /**
@@ -123,12 +226,11 @@ export default {
       return this.$t('workspace.navbar');
     },
 
-    /**
-     * Get search string from header
-     * @returns {string}
-     */
-    searchText() {
-      return this.$store.state.app.search;
+    sortedChannels() {
+      return [ ...this.channels ].sort((a, b) =>
+        (typeof b?.userRelation?.usageCount === 'undefined' ? Infinity : b.userRelation.usageCount) -
+        (typeof a?.userRelation?.usageCount === 'undefined' ? Infinity : a.userRelation.usageCount)
+      );
     },
 
     /**
@@ -141,9 +243,59 @@ export default {
       return this.$store.getters['channels/getChannelById'](selectedChannelId);
     },
 
-  },
+    /**
+     * Workspace users (without guests)
+     * @returns {object}
+     */
+    sidebarUsers() {
+      return this.getAllUsers.filter(user => user.role !== 'guest');
+    },
 
-  created() {
+    /**
+     * Show either all or onlyfirst 4 channels
+     * @returns {object}
+     */
+    showedChannels() {
+      if (!this.showAll) {
+        return this.sortedChannels.slice(0, MANY_CHANNELS);
+      }
+
+      return this.sortedChannels;
+    },
+
+    /**
+     * True if we should display all channels
+     * @returns {boolean}
+     */
+    showAll() {
+      return (!this.showMore || !!this.searchText);
+    },
+
+    /**
+     * Dynamic "Show more"/"Show less" text
+     * @returns {string}
+     */
+    toggleChannelText() {
+      if (this.showMore) {
+        return this.texts.showChannels;
+      } else {
+        return this.texts.hideChannels;
+      }
+    },
+
+    /**
+     * Search string in vuex
+     *
+     * @returns {string}
+     */
+    // searchText: {
+    //   get() {
+    //     return this.$store.state.app.search;
+    //   },
+    //   set(value) {
+    //     this.$store.commit('app/SET_SEARCH_TEXT', value);
+    //   },
+    // },
 
   },
 
@@ -175,6 +327,45 @@ export default {
       this.$router.push({ name: 'create-channel' });
     },
 
+    /**
+     * "Show more"/"Show less" state
+     * @returns {void}
+     */
+    toggleChannelsHandler() {
+      this.showMore = !this.showMore;
+    },
+
+    /**
+     * Show searchbar
+     * @returns {void}
+     */
+    activateInput() {
+      this.searchText = '';
+      this.inputActive = true;
+      this.$nextTick(() => {
+        this.$refs.globalSearch.focusInput();
+      });
+    },
+
+    /**
+     * Close searchbar if it is empty
+     * @returns {void}
+     */
+    deactivateInput() {
+      if (this.searchText === '') {
+        this.inputActive = false;
+      }
+    },
+
+    /**
+     * Close searchbar
+     * @returns {void}
+     */
+    async closeInput() {
+      this.searchText = '';
+      this.inputActive = false;
+    },
+
   },
 
 };
@@ -182,58 +373,142 @@ export default {
 
 <style lang="stylus" scoped>
 
+$ANIM = 250ms
+
+/deep/ .input
+  padding-right 26px
+  padding-left 33px
+  height 26px
+  min-height 26px
+  box-sizing border-box
+  font-weight 500
+
+  &::placeholder
+    font-weight 500
+
+.search
+  height 28px
+  display flex
+  flex-direction row
+  justify-content flex-start
+  align-items center
+  border-radius 6px
+  cursor pointer
+  position relative
+
+  &--mockup
+
+    &:hover
+      background-color var(--new-UI-07)
+
+    &:active
+      background-color var(--new-UI-08)
+
+  &__icon
+    margin 0 7px
+
+    &--close
+      position absolute
+      right 6px
+      top 0
+      bottom 0
+      margin auto 0
+
+      &:hover
+        color var(--new-UI-04)
+
+.action-button
+  padding 4px 8px
+  margin 2px 0
+  width 100%
+  height 24px
+  box-sizing border-box
+  border-radius 6px
+  color var(--new-UI-04)
+  font-weight bold
+  display flex
+  flex-direction row
+  align-items center
+  justify-content flex-start
+  cursor pointer
+
+  &:hover
+    background-color var(--new-UI-07)
+
+  &:active
+    background-color var(--new-UI-08)
+
+  &.router-link-active .action-button__icon
+    color var(--new-UI-01)
+
+  &__icon
+    margin-right 10px
+    transition all 0.1s ease
+
+    &--flipped
+      transform rotate(180deg)
+
 .channel-header
   display flex
-  background-color var(--app-bg)
+  background-color var(--new-bg-01)
   flex-direction row
   justify-content space-between
   align-items center
-  color var(--text-1)
+  color var(--new-UI-04)
   font-size 12px
+  font-weight bold
   position sticky
   top 0
   z-index 1
-  padding 5px 4px
-  margin-top 7px
+  padding 2px 0 2px 8px
+  margin-top 16px
+
+.router-link-active .channel-header__add
+  color var(--new-UI-01)
 
 .user-header
+  margin-top 22px
   top 27px
   bottom 0
 
 .user-anchor
   transform translateY(-25px)
 
-$ANIM = 250ms
+.channels-list
+  background-color var(--new-bg-01)
+  position relative
 
 .connected-channel
-  overflow hidden
+  margin-top 16px
+  margin-bottom 0px
 
 .connected-channel-enter
-  height 0
   opacity 0
-  transform translateY(50px)
+  transform translateY(45px)
+  margin-bottom -45px
+  margin-top 0px
 
 .connected-channel-enter-to
-  height 43px
-  transition opacity $ANIM ease, height $ANIM ease, transform $ANIM ease
+  margin-top 16px
+  transition all $ANIM ease
 
 .connected-channel-leave
-  height 43px
+  margin-top 16px
 
 .connected-channel-leave-to
   opacity 0
-  height 0
-  transform translateY(50px)
-  transition opacity $ANIM ease, height $ANIM ease, transform $ANIM ease
+  transform translateY(45px)
+  margin-bottom -45px
+  margin-top 0px
+  transition all $ANIM ease
 
 .list-channel-enter
   opacity 0
-  max-height 0
   transform translateY(-40px)
   margin-top -45px
 
 .list-channel-enter-to
-  transition opacity $ANIM ease, transform $ANIM ease, margin-top $ANIM ease
+  transition all $ANIM ease
 
 .list-channel-leave
   margin-top 2px
@@ -242,6 +517,6 @@ $ANIM = 250ms
   opacity 0
   transform translateY(-40px)
   margin-top -45px
-  transition opacity $ANIM ease, transform $ANIM ease, margin-top $ANIM ease
+  transition all $ANIM ease
 
 </style>

@@ -10,6 +10,13 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.MY_REPO_PAT }}
+        submodules: recursive
+    - name: Fix git config
+      run: |
+        git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
     - name: Cache node modules
       uses: actions/cache@v1
       with:
@@ -23,6 +30,8 @@ jobs:
       run: npm install
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
+    - name: create specific package.json file for test build
+      run: cat package.json | sed 's/heyka/heyka-stage/' > tmp && mv tmp package.json
     - name: build for mac os
       run: npm run electron:build -- --mac --publish always
       env:
@@ -34,6 +43,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.MY_REPO_PAT }}
+        submodules: recursive
+    - name: Fix git config
+      run: |
+        git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
     - name: Cache node modules
       uses: actions/cache@v1
       with:
@@ -49,6 +65,8 @@ jobs:
       run: npm install
     - name: set configuration
       run: cp ./electron-builder-stage.json ./electron-builder.json
+    - name: create specific package.json file for test build
+      run: cat package.json | sed 's/heyka/heyka-stage/' > tmp && mv tmp package.json
     - name: build for win and linux (without certificates)
       run: npm run electron:build -- --win --linux --publish always
       env:

@@ -14,6 +14,8 @@ import sounds from '@sdk/classes/sounds';
  * @property {object} data – data sent, e.g. {userId: '...'}
  */
 
+let selectedDevicesLoaded = false;
+
 export default {
   /**
    * Add privacy log
@@ -197,10 +199,11 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  addPush({ commit }, { inviteId, userId, message }) {
+  addPush({ commit }, { inviteId, userId, message, name }) {
     const push = {
       inviteId,
       userId,
+      name,
       ...message,
     }; // TODO: брать workspaceId из пришедшего пуша
 
@@ -219,20 +222,94 @@ export default {
   },
 
   /**
+   * Remove pushes by name
+   *
+   * @param {function} commit – store commit
+   * @param {string} name – push's name
+   * @returns {void}
+  */
+  removePushByName({ commit, state }, name) {
+    for (const push of state.pushes) {
+      if (push.name === name) {
+        commit('REMOVE_PUSH', push.inviteId);
+      }
+    }
+  },
+
+  /**
    * Set selected devices
    *
    * @param {object} vuex context
-   * @param {object} selectedDevices – selected devices
+   * @param {object} devices – selected devices
    * @returns {void}
    */
-  setSelectedDevices({ commit, state }, selectedDevices) {
+  setSelectedDevices({ state, commit, getters }, devices) {
+    const selectedDevices = devices ? { ...devices } : { ...state.selectedDevices };
+
+    /** Re-set default devices if previous id's are not found */
+    if (!state.devices.speakers.map(el => el.id).includes(selectedDevices.speaker)) {
+      selectedDevices.speaker = 'default';
+    }
+    if (!state.devices.microphones.map(el => el.id).includes(selectedDevices.microphone)) {
+      selectedDevices.microphone = 'default';
+    }
+    if (!state.devices.cameras.map(el => el.id).includes(selectedDevices.camera)) {
+      if (state.devices.cameras[0]) {
+        selectedDevices.camera = state.devices.cameras[0].id;
+      } else {
+        selectedDevices.camera = '';
+      }
+    }
+
     commit('SET_SELECTED_DEVICES', selectedDevices);
 
-    heykaStore.set('selectedSpeaker', selectedDevices.speaker);
-    heykaStore.set('selectedMicrophone', selectedDevices.microphone);
-    heykaStore.set('selectedCamera', selectedDevices.camera);
+    /** Save selected devices to storage */
+    Object.keys(selectedDevices).forEach(deviceType => {
+      const deviceTypeCapitalized = deviceType.charAt(0).toUpperCase() + deviceType.slice(1);
 
+      heykaStore.set(`selected${deviceTypeCapitalized}`, selectedDevices[deviceType]);
+
+      const device = getters.getDevice(deviceType, selectedDevices[deviceType]);
+
+      heykaStore.set(`selected${deviceTypeCapitalized}Label`, device?.rawLabel || '');
+    });
+
+    /** Set output device for app sounds */
     sounds.setSinkId(state.realSelectedDevices.speaker);
+  },
+
+  /**
+   * Load selected devices from storage
+   *
+   * @param {object} vuex context
+   * @returns {void}
+   */
+  loadSelectedDevices({ getters, dispatch }) {
+    const selectedDevices = {
+      speaker: getters.loadSelectedDevice('speaker'),
+      microphone: getters.loadSelectedDevice('microphone'),
+      camera: getters.loadSelectedDevice('camera'),
+    };
+
+    dispatch('setSelectedDevices', selectedDevices);
+  },
+
+  /**
+   * Set device list
+   *
+   * @param {object} vuex context
+   * @param {object} devices – device list
+   * @returns {void}
+   */
+  setDevices({ commit, dispatch }, devices) {
+    commit('SET_DEVICES', devices);
+
+    if (!selectedDevicesLoaded) {
+      dispatch('loadSelectedDevices');
+      selectedDevicesLoaded = true;
+    } else {
+      dispatch('setSelectedDevices');
+    }
   },
 
   /**

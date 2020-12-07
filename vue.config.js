@@ -1,4 +1,4 @@
-const { IS_DEV } = require('./src/shared/Constants');
+const IS_DEV = process.env.NODE_ENV === 'development';
 const path = require('path');
 const HawkWebpackPlugin = require('@hawk.so/webpack-plugin');
 const buildRevision = Date.now();
@@ -32,7 +32,6 @@ module.exports = {
         '@sdk': path.resolve(__dirname, 'src/sdk'),
         '@assets': path.resolve(__dirname, 'src/sdk/assets'),
         '@styles': path.resolve(__dirname, 'src/renderer/styles'),
-        '@icons': path.resolve(__dirname, 'src/renderer/components/icons'),
         '@views': path.resolve(__dirname, 'src/renderer/views'),
         '@components': path.resolve(__dirname, 'src/sdk/components'),
         '@libs': path.resolve(__dirname, 'src/sdk/libs'),
@@ -51,8 +50,6 @@ module.exports = {
       customFileProtocol: 'heyka://./',
       mainProcessFile: 'src/main/index.js',
       builderOptions: {
-        productName: 'Heyka',
-        appId: 'app.live.hejka',
         protocols: {
           name: 'Heyka',
           schemes: [
@@ -79,6 +76,31 @@ module.exports = {
   },
 
   chainWebpack: config => {
+    const mediaRule = config.module.rule('media');
+
+    mediaRule.uses.clear();
+    mediaRule
+      .test(/\.(ogg|mp3|wav|flac|aac)(\?.*)?$/)
+      .use('url-loader')
+      .loader('url-loader')
+      .tap(options => {
+        return {
+          limit: 4096,
+          fallback: {
+            loader: 'file-loader',
+            options: {
+              name: 'media/[name].[hash:8].[ext]',
+            },
+          },
+        };
+      });
+
+    config.module
+      .rule('video')
+      .test(/\.(mp4|webp)?$/)
+      .use('url-loader')
+      .loader('url-loader');
+
     config.module
       .rule('svg-sprite')
       .use('svgo-loader')

@@ -3,12 +3,31 @@ import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
-    width: 228,
-    height: 96,
+    width: 292,
+    height: 124,
+    maxWidth: 660,
+    maxHeight: 440,
+    minWidth: 1,
+    minHeight: 1,
+    resizable: false,
   },
   mediaSharing: {
-    width: 340,
-    height: 265,
+    width: 348,
+    height: 264,
+    maxWidth: 660,
+    maxHeight: 440,
+    minWidth: 348,
+    minHeight: 264,
+    resizable: true,
+  },
+  streaming: {
+    width: 348,
+    height: 68,
+    maxWidth: 660,
+    maxHeight: 440,
+    minWidth: 1,
+    minHeight: 1,
+    resizable: false,
   },
 };
 
@@ -24,33 +43,10 @@ class CallWindow {
     this.sharingWindow = null;
     this.gridWindow = null;
     this.frameWindow = null;
+    this.lastMediaSharingMode = null;
     broadcastEvents.on('closeOverlay', () => {
       this.closeOverlay();
     });
-  }
-
-  /**
-   * Show call overlay
-   * @returns {void}
-   */
-  showOverlay() {
-    if (this.overlayWindow === null) {
-      this.overlayWindow = WindowManager.create({
-        route: '/call-overlay',
-        template: 'overlay',
-        showInactive: true,
-        position: 'bottomRight',
-        visibleOnAllWorkspaces: true,
-        window: {
-          ...OVERLAY_WINDOW_SIZES['default'],
-        },
-        onClose: () => {
-          this.overlayWindow = null;
-        },
-      });
-    } else {
-      this.overlayWindow.action('showInactive');
-    }
   }
 
   /**
@@ -62,6 +58,33 @@ class CallWindow {
   manageWindow(window, action) {
     if (window) {
       window.action(action);
+    }
+  }
+
+  /**
+   * Show call overlay
+   * @param {boolean} mediaSharingMode - media sharing Mode
+   * @returns {void}
+   */
+  showOverlay(mediaSharingMode = false) {
+    if (this.overlayWindow === null) {
+      this.overlayWindow = WindowManager.create({
+        route: '/call-overlay',
+        template: 'overlay',
+        showInactive: true,
+        margin: 50,
+        aspectRatio: 1.778,
+        position: 'bottomRight',
+        visibleOnAllWorkspaces: true,
+        window: {
+          ...OVERLAY_WINDOW_SIZES[mediaSharingMode ? 'mediaSharing' : 'default'],
+        },
+        onClose: () => {
+          this.overlayWindow = null;
+        },
+      });
+    } else {
+      this.overlayWindow.action('showInactive');
     }
   }
 
@@ -83,6 +106,28 @@ class CallWindow {
     if (this.overlayWindow) {
       this.overlayWindow.action('close');
     }
+  }
+
+  /**
+   * Resize overlay (and change some of its parameters)
+   *
+   * @param {string} type - overlay type (from OVERLAY_WINDOW_SIZES)
+   * @returns {void}
+   */
+  resizeOverlay(type) {
+    if (this.overlayWindow === null) {
+      return;
+    }
+
+    const template = OVERLAY_WINDOW_SIZES[type];
+
+    const OVERLAY_MARGIN = 50;
+
+    this.overlayWindow.api('setResizable', true);
+    this.overlayWindow.api('setMinimumSize', template.minWidth, template.minHeight);
+    this.overlayWindow.api('setMaximumSize', template.maxWidth, template.maxHeight);
+    this.overlayWindow.api('setResizable', template.resizable);
+    this.overlayWindow.setSize(template.width, template.height, OVERLAY_MARGIN);
   }
 
   /**
@@ -136,6 +181,7 @@ class CallWindow {
       if (userId) {
         route = `/call-window/expanded/${userId}`;
       }
+
       this.gridWindow = WindowManager.create({
         route: route,
         position: 'center',
@@ -169,11 +215,13 @@ class CallWindow {
           }
         }, gridBlurTime);
       });
+
       this.gridWindow.on('focus', () => {
         broadcastEvents.dispatch('grid-expanded-focus');
         clearTimeout(this.gridTimeout);
         this.hideOverlay();
       });
+
       this.gridWindow.on('hide', () => {
         clearTimeout(this.gridTimeout);
         if (this.overlayWindow) {
@@ -182,8 +230,12 @@ class CallWindow {
       });
     } else {
       this.gridWindow.action('show');
+
       if (userId) {
-        this.gridWindow.openUrl(`/call-window/expanded/${userId}`);
+        this.gridWindow.routerPush({
+          name: 'expanded',
+          params: { id: userId },
+        });
       }
     }
   }
@@ -232,6 +284,9 @@ class CallWindow {
     } else {
       this.frameWindow.action('showInactive');
     }
+
+    this.resizeOverlay('streaming');
+    this.overlayWindow.setPosition('bottomLeft');
   }
 
   /**
@@ -241,6 +296,8 @@ class CallWindow {
   closeFrame() {
     if (this.frameWindow) {
       this.frameWindow.action('close');
+      this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
+      this.overlayWindow.setPosition('bottomRight');
     }
   }
 
@@ -261,11 +318,11 @@ class CallWindow {
    * @returns {void}
    */
   setMediaSharingMode(state) {
-    const { width, height } = OVERLAY_WINDOW_SIZES[state ? 'mediaSharing' : 'default'];
-
-    if (this.overlayWindow !== null) {
-      this.overlayWindow.setSize(width, height);
+    this.lastMediaSharingMode = state;
+    if (this.frameWindow) {
+      return;
     }
+    this.resizeOverlay(state ? 'mediaSharing' : 'default');
   }
 }
 

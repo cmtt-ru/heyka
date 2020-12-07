@@ -1,5 +1,5 @@
 <template>
-  <popover>
+  <popover :min-width="200">
     <div class="buttons">
       <router-link :to="{ name: 'user', params: { id: myId }}">
         <ui-button
@@ -11,43 +11,96 @@
         </ui-button>
       </router-link>
 
-      <div class="delimiter" />
+      <router-link :to="{name: 'settings'}">
+        <ui-button
+          data-popover-close
+          :type="11"
+          icon="settings"
+        >
+          {{ texts.settings }}
+        </ui-button>
+      </router-link>
+    </div>
 
+    <div class="delimiter" />
+
+    <div class="buttons">
       <ui-button
         data-popover-close
         :type="11"
-        icon="user-online"
         @click="changeStatus('online')"
       >
+        <svg-icon
+          class="l-mr-8"
+          name="user-online"
+        />
+
         {{ texts.online }}
+
+        <svg-icon
+          v-if="onlineStatus === 'online'"
+          class="status--checked"
+          name="check"
+        />
       </ui-button>
 
       <ui-button
         data-popover-close
         :type="11"
-        icon="user-idle"
         @click="changeStatus('idle')"
       >
+        <svg-icon
+          class="l-mr-8"
+          name="user-idle"
+        />
+
         {{ texts.idle }}
+
+        <svg-icon
+          v-if="onlineStatus === 'idle'"
+          class="status--checked"
+          name="check"
+        />
       </ui-button>
 
       <ui-button
         data-popover-close
         :type="11"
-        icon="user-offline"
         @click="changeStatus('offline')"
       >
+        <svg-icon
+          class="l-mr-8"
+          name="user-offline"
+        />
+
         {{ texts.offline }}
+
+        <svg-icon
+          v-if="onlineStatus === 'offline'"
+          class="status--checked"
+          name="check"
+        />
       </ui-button>
+    </div>
 
-      <div class="delimiter" />
+    <div class="delimiter" />
 
+    <div class="buttons">
       <ui-button
         :type="11"
         icon="disconnect"
         @click="logoutHandler"
       >
         Logout
+      </ui-button>
+
+      <ui-button
+        :type="11"
+        icon="quit"
+        class="quit-button"
+        @click.native="quitAppHandler"
+      >
+        {{ texts.quit }}
       </ui-button>
     </div>
   </popover>
@@ -57,7 +110,8 @@
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import logout from '@api/auth/logout';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
+import { ipcRenderer } from 'electron';
 
 export default {
   components: {
@@ -68,6 +122,10 @@ export default {
   computed: {
     ...mapGetters({
       myId: 'me/getMyId',
+    }),
+
+    ...mapState('me', {
+      onlineStatus: 'onlineStatus',
     }),
     /**
      * Get needed texts from I18n-locale file
@@ -96,6 +154,29 @@ export default {
     logoutHandler() {
       logout();
     },
+
+    /**
+     * Quit app handler
+     * @returns {void}
+     */
+    quitAppHandler() {
+      ipcRenderer.send('remote-quit');
+    },
   },
 };
 </script>
+
+<style lang="stylus" scoped>
+  .quit-button
+    color var(--new-signal-03)
+
+    &:hover
+      background var(--new-signal-03-3)
+
+    /deep/ svg
+      color var(--new-signal-03)
+
+  .status--checked
+    color var(--new-UI-01)
+    margin-left auto
+</style>

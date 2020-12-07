@@ -93,11 +93,21 @@ export default {
 
     if (state.mediaState.microphone !== mediaState.microphone) {
       sounds.play('microphone-toggle');
+      meStore.set('microphone', mediaState.microphone);
+    }
+
+    if (mediaState.microphone) {
+      await dispatch('app/removePushByName', 'noSound', { root: true });
     }
 
     commit('SET_MEDIA_STATE', mediaState);
 
     if (selectedChannelId) {
+      commit('channels/SET_USER_MEDIA_STATE', {
+        userId: state.id,
+        channelId: selectedChannelId,
+        userMediaState: mediaState,
+      }, { root: true });
       await API.user.setMediaState(mediaState);
 
       if (mediaState.microphone === true) {
@@ -258,7 +268,7 @@ export default {
    * @param {function} dispatch – vuex dispatch
    * @returns {void}
    */
-  microphoneState({ state, dispatch }, micState) {
+  microphoneState({ state, dispatch }, micState = !state.mediaState.microphone) {
     const newState = { ...state.mediaState };
 
     newState.microphone = micState;
@@ -308,5 +318,10 @@ export default {
    */
   async detachSocial({ dispatch }, socialName) {
     await API.auth.detachSocial(socialName);
+  },
+
+  setChannelId({ commit }, id) {
+    commit('app/ANIMATION_CHANNEL_ID', id, { root: true });
+    commit('SET_CHANNEL_ID', id);
   },
 };

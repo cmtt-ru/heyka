@@ -5,14 +5,41 @@
       class="call-window__media"
       @dblclick="expandHandler"
     >
-      <video ref="video" />
+      <video
+        ref="preloader"
+        :src="preloaderSrc"
+        class="call-window__media__preloader"
+        :class="{'call-window__media__preloader--hidden': !preloaderShown}"
+      />
+      <video
+        ref="video"
+        class="call-window__media__video"
+      />
       <div
+        v-if="sharingUser"
+        class="sharing-user"
+      >
+        <avatar
+          class="sharing-user__avatar"
+          :image="userAvatar(sharingUser.id, 12)"
+          :user-id="sharingUser.id"
+          :size="12"
+        />
+        <div>
+          {{ sharingUser.name }}
+        </div>
+      </div>
+      <div
+        v-if="!isMyMedia"
         class="call-window__media__expand"
         @click="expandHandler"
       >
         <ui-button
-          v-if="!isMyMedia"
           :type="7"
+          square
+          popover
+          class="call-window__media__expand__button"
+          :height="44"
           size="medium"
           icon="fullscreen"
           @click="expandHandler"
@@ -21,9 +48,19 @@
     </div>
 
     <call-controls
-      :row="isMediaSharing"
-      :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
+      :row="isMediaSharing || amIStreaming"
+      :buttons="buttonsSetup"
+      class="call-window__controls"
     />
+
+    <div
+      v-if="isMediaSharing"
+    >
+      <div class="resize-border resize-border--top" />
+      <div class="resize-border resize-border--left" />
+      <div class="resize-border resize-border--right" />
+      <div class="resize-border resize-border--bottom" />
+    </div>
   </div>
 </template>
 
@@ -34,17 +71,26 @@ import { mapGetters, mapState } from 'vuex';
 import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
+import Avatar from '@components/Avatar';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
+
+const BUTTON_SETUPS = {
+  default: ['screen', 'camera', 'microphone', 'grid', 'leave'],
+  streaming: ['screen', 'microphone', 'drawing', 'grid', 'leave'],
+};
 
 export default {
   components: {
     CallControls,
     UiButton,
+    Avatar,
   },
   data() {
     return {
       videoRoomState: 'closed',
       isMyMedia: false,
+      preloaderSrc: null,
+      preloaderShown: false,
     };
   },
   computed: {
@@ -54,16 +100,30 @@ export default {
     ...mapGetters({
       getUserWhoSharesMedia: 'getUserWhoSharesMedia',
       getUsersWhoShareMedia: 'getUsersWhoShareMedia',
+      getUsersWhoShareScreen: 'getUsersWhoShareScreen',
       amISharingMedia: 'amISharingMedia',
       isAnybodySharingMedia: 'isAnybodySharingMedia',
       getSpeakingUser: 'getSpeakingUser',
       mediaState: 'me/getMediaState',
       selectedChannelId: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
+      userAvatar: 'users/getUserAvatarUrl',
     }),
 
+    amIStreaming() {
+      return this.$store.state.me.mediaState.screen;
+    },
+
+    buttonsSetup() {
+      if (this.amIStreaming) {
+        return BUTTON_SETUPS.streaming;
+      }
+
+      return BUTTON_SETUPS.default;
+    },
+
     isMediaSharing() {
-      return this.isAnybodySharingMedia && !this.mediaState.screen;
+      return this.isAnybodySharingMedia && !this.amIStreaming;
     },
 
     getSpeakingUserId() {
@@ -73,11 +133,17 @@ export default {
 
       return false;
     },
+
+    sharingUser() {
+      return this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
+    },
   },
 
   watch: {
     isMediaSharing() {
       broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
+
+      this.showPreloader(this.isMediaSharing);
     },
 
     selectedChannelId(newChannelId, oldChannelId) {
@@ -99,10 +165,6 @@ export default {
   },
 
   async created() {
-    if (this.isMediaSharing) {
-      broadcastActions.dispatch('me/setMediaSharingMode', this.isMediaSharing);
-    }
-
     janusVideoroomWrapper.on('joined', this.onSingleSubscriptionReady.bind(this));
     janusVideoroomWrapper.on('switched', this.onSingleSubscriptionReady.bind(this));
     janusVideoroomWrapper.on('paused', this.onSingleSubscriptionReady.bind(this));
@@ -115,26 +177,34 @@ export default {
     });
 
     await janusVideoroomWrapper.init();
+
     if (this.selectedChannelId) {
       this.videoRoomState = 'joining';
       await janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
   },
-  mounted() {
+
+  async mounted() {
     janusVideoroomWrapper.on('single-sub-stream', stream => this.insertStream(stream));
     janusVideoroomWrapper.on('publisher-joined', this.onNewPublisher.bind(this));
+
+    this.showPreloader(this.isMediaSharing);
+
+    this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
   },
+
   beforeDestroy() {
     janusVideoroomWrapper.removeAllListeners('single-sub-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
   },
+
   destroyed() {
 
   },
+
   methods: {
     /**
      * Loads user video of current user if it possible
-     * @param {string} userId User id
      * @returns {void}
      */
     loadCurrentVideo() {
@@ -197,6 +267,7 @@ export default {
      */
     expandHandler() {
       if (this.getUserWhoSharesMedia) {
+        broadcastEvents.removeAllListeners('grid-expanded-ready');
         /** Wait until expanded grid appears and send video frame */
         broadcastEvents.once('grid-expanded-ready', () => {
           broadcastEvents.dispatch('grid-expanded-set-video-frame', this.getFrameFromVideo());
@@ -235,8 +306,10 @@ export default {
       const el = this.$refs.video;
 
       el.srcObject = stream;
+
       el.onloadedmetadata = () => {
         el.play();
+        this.showPreloader(false);
       };
     },
 
@@ -249,6 +322,33 @@ export default {
 
       return 'data:image/jpeg;base64,' + frameBuffer.toString('base64');
     },
+
+    /**
+     * Show or hide video preloader
+     * @param {boolean} state – state
+     * @returns {string}
+     */
+    showPreloader(state = true) {
+      if (this.$refs.preloader) {
+        if (state === true) {
+          this.$refs.preloader.currentTime = 0;
+          this.$refs.preloader.play();
+
+          this.$refs.preloader.onended = () => {
+            this.$refs.preloader.currentTime = 1.5;
+            this.$refs.preloader.play();
+          };
+        } else {
+          this.$refs.preloader.ontransitionend = () => {
+            this.$refs.preloader.pause();
+            this.$refs.preloader.ontransitionend = null;
+            this.$refs.preloader.onended = null;
+          };
+        }
+
+        this.preloaderShown = state;
+      }
+    },
   },
 };
 </script>
@@ -257,24 +357,46 @@ export default {
   .call-window
     display flex
     flex-direction column
+    height 100vh
 
     &__media
       position relative
-      flex-grow 1
+      flex-grow 2
+      flex-shrink 2
+      min-height 196px
 
       video
         display block
         width 100%
-        height 213px
-        object-fit cover
+        height 100%
+        object-fit contain
+        background-color #000000
+
+      &__preloader
+        position absolute
+        z-index 1
+        background var(--app-bg)
+        opacity 1
+
+        &--hidden
+          transition opacity 2s ease
+          opacity 0
 
       &__expand
         position absolute
-        bottom 0px
-        right 0px
-        padding 32px 8px 8px 24px
+        bottom 0
+        right 0
+        padding 32px 12px 12px 24px
         cursor pointer
         -webkit-app-region no-drag
+        z-index 2
+
+        &__button
+          border-radius 11px
+
+    &__controls
+      flex-grow 0
+      flex-shrink 0
 
 .close-button
   position absolute
@@ -282,4 +404,51 @@ export default {
   right 0
   border-radius 0
 
+.sharing-user
+  position absolute
+  top 12px
+  left 12px
+  display flex
+  flex-direction row
+  background-color #000000
+  padding 4px
+  border-radius 4px
+  font-size 12px
+  line-height 12px
+  align-items center
+
+  &__avatar
+    margin-right 4px
+
+.resize-border
+  position absolute
+  width 100%
+  height 6px
+  z-index 5
+  opacity 0
+  -webkit-app-region no-drag
+
+  &--top
+    top 0
+    right 0
+    left 0
+
+  &--bottom
+    bottom 0
+    right 0
+    left 0
+
+  &--left
+    top 0
+    bottom 0
+    left 0
+    width 6px
+    height 100%
+
+  &--right
+    top 0
+    right 0
+    bottom 0
+    width 6px
+    height 100%
 </style>

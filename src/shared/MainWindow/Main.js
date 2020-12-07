@@ -1,12 +1,13 @@
 import WindowManager from '../WindowManager/WindowManagerMain';
 import TrayManager from '../../main/classes/TrayManager';
 import DeepLink from '../DeepLink/DeepLinkMain';
+import Positioner from '../WindowManager/Positioner';
 import Autoupdater from '../../main/classes/AutoUpdater';
-import { ipcMain, nativeTheme, powerMonitor, app } from 'electron';
+import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electron';
 import { heykaStore } from '../../renderer/store/localStore';
 import { IS_DEV, IS_MAC } from '../../sdk/Constants';
 
-const resizeable = IS_DEV || heykaStore.get('resizeWindow', false);
+const resizeable = heykaStore.get('resizeWindow', false);
 
 let params = {};
 
@@ -23,6 +24,7 @@ if (TrayManager.isInTray()) {
 } else {
   params = {
     position: 'center',
+    windowPosition: heykaStore.get('windowPosition'),
     template: resizeable ? 'mainDev' : 'main',
     preventClose: true,
   };
@@ -38,11 +40,12 @@ class MainWindow {
   constructor() {
     this.window = null;
     this.windowId = null;
+    this.positioner = null;
   }
 
   /**
-   * Show frame window
-   * @param {string} displayId – display id
+   * Show main window
+   *
    * @returns {void}
    */
   show() {
@@ -74,6 +77,7 @@ class MainWindow {
 
     DeepLink.bindMainWindow(this.window);
     TrayManager.bindMainWindow(this.window);
+    this.positioner = new Positioner(this.window);
 
     this._eventsSubscribe();
 
@@ -96,11 +100,30 @@ class MainWindow {
         this.window.hide();
         // Reason for this timeout: we want to teleport window after closing animation is complete
         setTimeout(() => {
-          WindowManager.setPosition(this.window, 'tray');
+          WindowManager.setPosition({
+            id: this.windowId,
+            position: 'tray',
+          });
         }, waitTime);
         TrayManager.setLastBlurTime();
       });
     }
+
+    this.window.on('close', () => {
+      const newPos = {
+        x: this.window.getPosition()[0],
+        y: this.window.getPosition()[1],
+      };
+
+      const newInfo = this.positioner.getCoordsAndScreen(newPos);
+
+      newInfo.size = this.window.getSize();
+
+      console.log('saving:', newInfo);
+      heykaStore.set('windowPosition', newInfo);
+    }
+
+    );
 
     nativeTheme.on('updated', () => {
       WindowManager.sendAll('native-theme-updated');
@@ -115,6 +138,14 @@ class MainWindow {
      */
     this.window.webContents.on('did-finish-load', () => {
       WindowManager.closeAll();
+    });
+
+    /**
+     * Register global shortcuts
+     */
+
+    globalShortcut.register('CommandOrControl+Shift+M', () => {
+      this.window.webContents.send('hotkey-mic');
     });
 
     /**

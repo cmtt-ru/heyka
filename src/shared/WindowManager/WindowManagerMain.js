@@ -1,6 +1,7 @@
 import path from 'path';
-import { ipcMain, BrowserWindow, screen, Menu, nativeImage } from 'electron';
+import { ipcMain, BrowserWindow, screen, Menu, nativeImage, app } from 'electron';
 import Positioner from './Positioner';
+import AspectRatio from './AspectRatio';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
@@ -45,10 +46,12 @@ class WindowManager {
       show: this.showWindow,
       hide: this.hideWindow,
       close: this.closeWindow,
+      minimize: this.minimizeWindow,
       showInactive: this.showInactiveWindow,
       focus: this.focusWindow,
       blur: this.blurWindow,
       size: this.sizeWindow,
+      position: this.setPosition,
       fullscreen: this.toggleFullscreenWindow,
       console: this.toggleConsoleWindow,
       reload: this.reloadWindow,
@@ -62,6 +65,20 @@ class WindowManager {
       }
       this.events[options.event].call(this, options);
       event.returnValue = true;
+    });
+
+    ipcMain.on('window-manager-api', (event, method, id, ...params) => {
+      if (this.windows[id] === undefined || this.windows[id].browserWindow[method] === undefined) {
+        return;
+      }
+
+      try {
+        this.windows[id].browserWindow[method](...params);
+        event.returnValue = true;
+      } catch (err) {
+        console.log(err);
+        event.returnValue = false;
+      }
     });
 
     ipcMain.on('window-manager-create', (event, options) => {
@@ -78,6 +95,20 @@ class WindowManager {
 
     ipcMain.on('window-manager-is-fullscreen', (event, options) => {
       event.returnValue = this.getWindow(options.id).isFullScreen();
+    });
+
+    app.on('ready', () => {
+      screen.on('display-removed', () => {
+        for (const window in this.windows) {
+          this.windows[window].positioner.bringWindowInView();
+        }
+      });
+
+      screen.on('display-metrics-changed', () => {
+        for (const window in this.windows) {
+          this.windows[window].positioner.bringWindowInView();
+        }
+      });
     });
   }
 
@@ -100,7 +131,7 @@ class WindowManager {
   }
 
   /**
-   * Create secondary Window
+   * Create Window
    * @param {object} options - mainWindow instance
    * @returns {string} ID of created window
    */
@@ -143,6 +174,7 @@ class WindowManager {
     this.windows[windowId] = {
       browserWindow,
       options,
+      positioner: new Positioner(browserWindow),
     };
 
     // remove menu in prod
@@ -217,6 +249,14 @@ class WindowManager {
         browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
       }
 
+      // retrieve window position and size
+      if (options.windowPosition) {
+        if (options.windowPosition.size && browserWindow.resizable) {
+          this.windows[windowId].positioner.resize(options.windowPosition);
+        }
+        this.windows[windowId].positioner.moveXYscreen(options.windowPosition);
+      }
+
       // "show window" stuff
       if (options.showInactive) {
         browserWindow.showInactive();
@@ -236,12 +276,18 @@ class WindowManager {
       this.sendAll(`window-hide-${windowId}`);
     });
 
+    if (windowOptions.aspectRatio) {
+      if (IS_WIN) {
+        this.windows[windowId].aspectRatio = new AspectRatio(browserWindow, windowOptions.aspectRatio, windowOptions.extraWidth, windowOptions.extraHeight, windowOptions.maxWidth, windowOptions.maxHeight);
+      }
+    }
+
     // return this window Id after it's created
     return windowId;
   }
 
   /**
- * Adjust window position in regard to tray
+ * Adjust window position in regard to pos
  * @param {object} wnd - window instance
  * @param {string} pos - window position
  * @param {number} margin margin from window borders
@@ -273,14 +319,14 @@ class WindowManager {
 
   /**
    * Set window position
-   * @param {object} wnd - window instance
-   * @param {string} pos - position of window
-   * @returns {string} ID of created window
+   * @param {object} window - window id
+   * @param {string} position - position of window
+   * @returns {void}
    */
-  setPosition(wnd, pos = 'center') {
-    const position = this.__getWindowPosition(wnd, pos);
+  setPosition({ id, position = 'center', margin = this.windows[id].options.margin || 0 }) {
+    const newPosition = this.__getWindowPosition(this.windows[id].browserWindow, position, margin);
 
-    wnd.setPosition(position.x, position.y);
+    this.windows[id].browserWindow.setPosition(newPosition.x, newPosition.y);
   }
 
   /**
@@ -296,6 +342,17 @@ class WindowManager {
       } catch (e) {
         console.error('window already closed');
       }
+    }
+  }
+
+  /**
+   * Minimize window
+   * @param {string} id - ID of window in question
+   * @returns {void}
+   */
+  minimizeWindow({ id }) {
+    if (this.windows[id] !== undefined) {
+      this.windows[id].browserWindow.minimize();
     }
   }
 
@@ -360,7 +417,7 @@ class WindowManager {
    * @returns {void}
    */
   toggleFullscreenWindow({ id }) {
-    this.windows[id].browserWindow.setFullScreen(!this.windows[id].isFullScreen());
+    this.windows[id].browserWindow.setFullScreen(!this.windows[id].browserWindow.isFullScreen());
   }
 
   /**
@@ -392,9 +449,7 @@ class WindowManager {
     if (this.windows[id]) {
       const isResizable = this.windows[id].browserWindow.resizable;
 
-      if (!isResizable) {
-        this.windows[id].browserWindow.setResizable(true);
-      }
+      this.windows[id].browserWindow.setResizable(true);
       this.windows[id].browserWindow.setSize(width, height);
       if (!isResizable) {
         this.windows[id].browserWindow.setResizable(false);

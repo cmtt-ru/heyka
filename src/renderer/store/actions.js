@@ -1,11 +1,15 @@
 import API from '@api';
 import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
+import initialProcess from '@api/initialProcess';
 import callWindow from '@classes/callWindow';
 import { ipcRenderer } from 'electron';
 import router from '@/router';
 import sounds from '@sdk/classes/sounds';
-import connectionCheck from '@classes/connectionCheck';
+import connectionCheck from '@sdk/classes/connectionCheck';
+import Logger from '@sdk/classes/logger';
+
+const cnsl = new Logger('Initial', '#db580e');
 
 export default {
 
@@ -15,30 +19,52 @@ export default {
    * @returns {void}
    */
   async initial({ commit, dispatch, getters }) {
-    /** Wait until internet goes online */
-    await connectionCheck.waitUntilOnline();
+    if (initialProcess.getState()) {
+      cnsl.log('ignore... initial in progress');
 
-    /** Get authenticated user */
-    const authenticatedUser = await API.user.getAuthenticatedUser();
-
-    /** Authenticated user id */
-    const userId = authenticatedUser.id;
-
-    if (userId) {
-      commit('me/SET_USER_ID', userId);
-      dispatch('me/updateSocial', authenticatedUser);
-
-      /** Update workspace list */
-      await dispatch('workspaces/updateList');
-
-      /** Get specific workspace data */
-      await dispatch('updateCurrentWorkspaceState');
-
-      await sockets.init();
-
-      dispatch('me/setOnlineStatus', 'online');
+      return;
     } else {
-      console.error('AUTH REQUIRED');
+      initialProcess.setState(true);
+    }
+
+    cnsl.log('start');
+
+    try {
+      /** Wait until internet goes online */
+      await connectionCheck.waitUntilOnline();
+
+      /** Get authenticated user */
+      cnsl.log('...wait for authenticated user');
+      const authenticatedUser = await API.user.getAuthenticatedUser();
+
+      /** Authenticated user id */
+      const userId = authenticatedUser.id;
+
+      if (userId) {
+        commit('me/SET_USER_ID', userId);
+        dispatch('me/updateSocial', authenticatedUser);
+        // dispatch('me/update', authenticatedUser);
+
+        /** Update workspace list */
+        cnsl.log('...wait for workspace list');
+        await dispatch('workspaces/updateList');
+
+        /** Get specific workspace data */
+        cnsl.log('...wait for current workspace');
+        await dispatch('updateCurrentWorkspaceState');
+
+        cnsl.log('...wait for sockets init');
+        await sockets.init();
+
+        dispatch('me/setOnlineStatus', 'online');
+      } else {
+        console.error('AUTH REQUIRED');
+      }
+    } catch (err) {
+      cnsl.log('error', err);
+    } finally {
+      initialProcess.setState(false);
+      cnsl.log('finish');
     }
   },
 
@@ -108,7 +134,7 @@ export default {
    * @param {object} connectionOptions Connection options object
    * @returns {object} selected channel
    */
-  selectChannelWithoutAPICall({ commit, getters, state }, { id, connectionOptions }) {
+  selectChannelWithoutAPICall({ commit, dispatch, getters, state }, { id, connectionOptions }) {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
@@ -138,9 +164,12 @@ export default {
       },
     });
 
-    commit('me/SET_CHANNEL_ID', id);
+    dispatch('me/setChannelId', id);
 
-    callWindow.showOverlay();
+    const isAnybodySharingMedia = getters['isAnybodySharingMedia'];
+    const isMediaSharing = isAnybodySharingMedia && !state.me.mediaState.screen;
+
+    callWindow.showOverlay(isMediaSharing);
 
     if (state.me.mediaState.microphone === true) {
       ipcRenderer.send('tray-animation', true);
@@ -153,7 +182,7 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ commit, dispatch }, id) {
+  async unselectChannel({ commit, dispatch, state }, id = state.me.selectedChannelId) {
     commit('app/ANIMATION_CHANNEL_ID', null);
     try {
       await API.channel.unselect(id);
@@ -162,6 +191,8 @@ export default {
         commit('app/ANIMATION_CHANNEL_ID', id);
       }
     }
+
+    await dispatch('app/removePushByName', 'noSound');
 
     dispatch('unselectChannelWithoutAPICall', id);
   },
@@ -172,13 +203,13 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  unselectChannelWithoutAPICall({ commit, dispatch, state }, id) {
+  unselectChannelWithoutAPICall({ commit, dispatch, state }, id = state.me.selectedChannelId) {
     commit('channels/REMOVE_USER', {
       userId: state.me.id,
       channelId: id,
     });
 
-    commit('me/SET_CHANNEL_ID', null);
+    dispatch('me/setChannelId', null);
 
     dispatch('me/setDefaultMediaState');
 
@@ -317,8 +348,17 @@ export default {
    * @param {string} workspaceId – workspace id
    * @returns {Promise<void>}
    */
-  async changeWorkspace({ dispatch }, workspaceId) {
-    dispatch('me/setSelectedWorkspaceId', workspaceId);
+  async changeWorkspace({ dispatch, getters }, workspaceId) {
+    const selectedChannelId = getters['me/getSelectedChannelId'];
+
+    if (selectedChannelId) {
+      await dispatch('unselectChannel', selectedChannelId);
+    }
+
+    await dispatch('me/setSelectedWorkspaceId', workspaceId);
+
+    sockets.destroy();
+
     await dispatch('initial');
   },
 };

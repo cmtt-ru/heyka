@@ -1,4 +1,4 @@
-import { sortByPriority } from '@libs/arrays';
+import { sortByPriority, sortAny } from '@libs/arrays';
 import { getUserAvatarUrl } from '@libs/image';
 
 export default {
@@ -16,7 +16,13 @@ export default {
       key: 'onlineStatus',
       priority: ['online', 'idle', 'offline'],
       name: 'name',
-    })) || [];
+    })).sort(sortAny(
+      {
+        key: 'callsCount',
+        type: 'number',
+        order: 'desc',
+      }
+    )) || [];
   },
 
   /**

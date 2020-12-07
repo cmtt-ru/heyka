@@ -5,12 +5,18 @@
     </template>
 
     <template #body>
-      <ui-input
-        v-model="channelModel.name"
-        class="l-mt-16 l-mb-12"
-        icon="channel"
-        :placeholder="texts.name"
-      />
+      <ui-form
+        ref="form"
+        @submit="formSubmitHandler"
+      >
+        <ui-input
+          v-model="channelModel.name"
+          class="l-mt-6 l-mb-12"
+          icon="channel"
+          :placeholder="texts.name"
+          required
+        />
+      </ui-form>
 
       <ui-input
         v-model="channelModel.description"
@@ -36,7 +42,6 @@
       <ui-button
         v-if="isEditMode"
         :type="14"
-        class="l-mr-8"
         @click="deleteHandler"
       >
         {{ texts.buttonDelete }}
@@ -47,9 +52,8 @@
       <ui-button
         v-if="!isEditMode"
         :type="1"
-        class="l-mr-8"
-        :disabled="!isAnyChanges"
-        @click="createHandler"
+        size="small"
+        @click="submitHandler"
       >
         {{ texts.buttonCreate }}
       </ui-button>
@@ -57,15 +61,16 @@
       <ui-button
         v-if="isEditMode"
         :type="1"
-        class="l-mr-8"
-        :disabled="!isAnyChanges"
-        @click="saveHandler"
+        size="small"
+        @click="submitHandler"
       >
         {{ texts.buttonSave }}
       </ui-button>
 
       <ui-button
         :type="2"
+        class="l-mr-6"
+        size="small"
         @click="cancelHandler"
       >
         {{ texts.buttonCancel }}
@@ -76,7 +81,7 @@
 
 <script>
 import UiButton from '@components/UiButton';
-import { UiInput, UiSwitch } from '@components/Form';
+import { UiForm, UiInput, UiSwitch } from '@components/Form';
 import PseudoPopup from '@components/PseudoPopup';
 import cloneDeep from 'clone-deep';
 import { mapGetters } from 'vuex';
@@ -90,29 +95,9 @@ const CHANNEL_MODEL = {
   isPrivate: false,
 };
 
-/**
- * String to hash
- * @param {string} object – js object
- * @returns {number}
- */
-function obj2hash(object) {
-  const str = JSON.stringify(object);
-
-  let hash = 0,
-      i, chr;
-
-  for (i = 0; i < str.length; i++) {
-    chr = str.charCodeAt(i);
-    // eslint-disable-next-line no-magic-numbers
-    hash = ((hash << 5) - hash) + chr;
-    hash |= 0;
-  }
-
-  return hash;
-}
-
 export default {
   components: {
+    UiForm,
     UiInput,
     UiSwitch,
     UiButton,
@@ -121,7 +106,6 @@ export default {
   data() {
     return {
       channelModel: {},
-      channelModelHash: 0,
     };
   },
   computed: {
@@ -164,16 +148,6 @@ export default {
         return this.texts.createTitle;
       }
     },
-
-    /**
-     * Detect's changes in channel model
-     * @returns {boolean}
-     */
-    isAnyChanges() {
-      const hash = obj2hash(this.channelModel);
-
-      return hash !== this.channelModelHash;
-    },
   },
 
   watch: {
@@ -194,10 +168,8 @@ export default {
     updateChannelModel() {
       if (this.isEditMode) {
         this.channelModel = cloneDeep(this.getChannelById(this.channelId));
-        this.channelModelHash = obj2hash(this.channelModel);
       } else {
         this.channelModel = cloneDeep(CHANNEL_MODEL);
-        this.channelModelHash = obj2hash(this.channelModel);
       }
     },
     /**
@@ -256,6 +228,22 @@ export default {
      */
     deleteHandler() {
       this.$store.dispatch('channels/deleteChannel', this.channelId);
+    },
+
+    /**
+     * Submit form handler
+     * @returns {void}
+     */
+    submitHandler() {
+      this.$refs.form.submitHandler();
+    },
+
+    formSubmitHandler() {
+      if (this.isEditMode) {
+        this.saveHandler();
+      } else {
+        this.createHandler();
+      }
     },
   },
 };

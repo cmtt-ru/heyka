@@ -7,7 +7,7 @@
       >
         <ui-button
           :type="11"
-          icon="add"
+          icon="user-plus"
           data-popover-close
         >
           {{ texts.invite }}
@@ -17,7 +17,7 @@
       <ui-button
         v-if="permissions['workspaces.manage']"
         :type="11"
-        icon="edit"
+        icon="manage"
         data-popover-close
         @click="openManageWorkspace"
       >
@@ -38,9 +38,9 @@
         <avatar
           class="workspace-avatar"
           :user-id="workspace.id"
-          :image="userAvatar(workspace, 14)"
-          :size="14"
-          :border-radius="2"
+          :image="userAvatar(workspace, 18)"
+          :size="18"
+          :border-radius="6"
         />
 
         {{ workspace.name }}
@@ -51,34 +51,18 @@
           name="check"
         />
       </ui-button>
-
-      <ui-button
-        :type="11"
-        icon="workspace"
-        data-popover-close
-        @click="openWorkspaceCreation"
-      >
-        {{ texts.new }}
-      </ui-button>
     </div>
 
     <div class="delimiter" />
 
     <div class="buttons">
-      <router-link :to="{name: 'settings'}">
-        <ui-button
-          :type="11"
-          icon="settings"
-        >
-          {{ texts.settings }}
-        </ui-button>
-      </router-link>
       <ui-button
         :type="11"
-        icon="disconnect"
-        @click.native="quitAppHandler"
+        icon="plus"
+        data-popover-close
+        @click="openWorkspaceCreation"
       >
-        {{ texts.quit }}
+        {{ texts.new }}
       </ui-button>
     </div>
   </popover>
@@ -88,9 +72,9 @@
 import Avatar from '@components/Avatar';
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
-import { ipcRenderer } from 'electron';
 import { mapGetters } from 'vuex';
 import { getUserAvatarUrl } from '@libs/image';
+import { WEB_URL } from '@sdk/Constants';
 
 export default {
   components: {
@@ -133,22 +117,16 @@ export default {
 
   methods: {
     /**
-     * Quit app handler
-     * @returns {void}
-     */
-    quitAppHandler() {
-      ipcRenderer.send('remote-quit');
-    },
-
-    /**
      * Open manage workspace
      * @returns {void}
      */
     async openManageWorkspace() {
       const { code } = await this.$API.auth.link();
-      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      // const baseUrl = 'http://localhost:8082/';
-      const link = `${baseUrl}/manage/${code}`;
+      const link = `${WEB_URL}/manage/${code}`;
+
+      if (IS_DEV) {
+        navigator.clipboard.writeText(link);
+      }
 
       window.open(link);
     },
@@ -159,9 +137,7 @@ export default {
      */
     async openWorkspaceCreation() {
       const { code } = await this.$API.auth.link();
-      const baseUrl = IS_DEV ? process.env.VUE_APP_DEV_URL : process.env.VUE_APP_PROD_URL;
-      // const baseUrl = 'http://localhost:8082';
-      const link = `${baseUrl}/workspace/create/${code}`;
+      const link = `${WEB_URL}/ws/create/${code}`;
 
       window.open(link);
     },
@@ -175,11 +151,11 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   .workspace-avatar
-    margin-right 7px
+    margin-right 8px
 
   .workspace--checked
-    color var(--color-1)
+    color var(--new-UI-01)
     margin-left auto
 </style>

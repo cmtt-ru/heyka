@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { EventEmitter } from 'events';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
 
 /**
  * A class that tells info to main window manager upon window creation
@@ -93,6 +94,20 @@ class Window extends EventEmitter {
   }
 
   /**
+   * Browserwindow's api sent to main process
+   * @param {string} method - method name
+   * @param {object} params - params
+   * @returns {void}
+   */
+  api(method, ...params) {
+    ipcRenderer.sendSync('window-manager-api',
+      method,
+      this.windowId,
+      ...params
+    );
+  }
+
+  /**
    * Open url in window - send signal to main process
    * @param {string} route route to move to
    * @param {string} url url to move to (if not index.html)
@@ -108,6 +123,15 @@ class Window extends EventEmitter {
   }
 
   /**
+   * Navigate with window's router
+   * @param {object} routerParams – router params, like, `url`, or `name`
+   * @returns {void}
+   */
+  routerPush(routerParams) {
+    broadcastEvents.dispatch(`window-router-push-${this.windowId}`, routerParams);
+  }
+
+  /**
    * Set window size
    * @param {number} width - window width
    * @param {number} height - window height
@@ -120,6 +144,22 @@ class Window extends EventEmitter {
       id: this.windowId,
       width,
       height,
+      margin,
+    });
+  }
+
+  /**
+   * Set window position
+   *
+   * @param {string} position - window position (eg. 'center', 'bottomRight')
+   * @param {number} margin - window pos margin
+   * @returns {void}
+   */
+  setPosition(position, margin) {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'position',
+      id: this.windowId,
+      position,
       margin,
     });
   }
