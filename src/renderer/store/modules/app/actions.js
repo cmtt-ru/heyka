@@ -199,7 +199,7 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  addPush({ commit }, { inviteId, userId, workspaceId, message, name }) {
+  async addPush({ commit }, { inviteId, userId, workspaceId, message, name }) {
     const push = {
       inviteId,
       userId,
@@ -207,6 +207,14 @@ export default {
       name,
       ...message,
     };
+
+    if (userId) {
+      push.user = await API.app.getUser(userId);
+    }
+    if (workspaceId) {
+      push.workspace = await API.workspace.info(workspaceId);
+    }
+    console.log(push.workspace);
 
     commit('ADD_PUSH', push);
   },

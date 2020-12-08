@@ -4,14 +4,14 @@
       <avatar
         class="push__avatar"
         :size="40"
-        :image="userAvatar(data.userId, 40)"
+        :image="data.user.avatarSet.image64x64"
         :user-id="data.userId"
       />
 
       <div class="push__col">
-        <!-- <p class="push__user-name">
-          {{ user.name }}
-        </p> -->
+        <p class="push__user-name">
+          {{ data.user.name }}
+        </p>
 
         <div
           class="push__channel"
@@ -22,7 +22,7 @@
             size="medium"
             class="push__channel__icon push__channel--no-shrink"
           />
-          <span v-textfade>{{ channel.name }}</span>
+          <span v-textfade>{{ channel.name || data.workspace.name }}</span>
         </div>
       </div>
     </div>
@@ -77,22 +77,13 @@ export default {
     texts() {
       return this.$t('push');
     },
-    /**
-     * Get user's info
-     * @returns {object}
-     */
-    user() {
-      console.log(this.data);
-
-      return this.$store.getters['users/getUserById'](this.data.userId);
-    },
 
     /**
      * Get user's channel
      * @return {object}
      */
     channel() {
-      return this.$store.getters['channels/getChannelById'](this.data.channelId) || { name: 'no channel' };
+      return this.$store.getters['channels/getChannelById'](this.data.channelId) || { name: null };
     },
   },
   mounted() {
