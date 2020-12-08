@@ -337,6 +337,10 @@ export default {
    * @returns {Promise<void>}
    */
   async changeWorkspace({ dispatch, getters }, workspaceId) {
+    if (workspaceId === getters['me/getSelectedWorkspaceId']) {
+      return;
+    }
+
     const selectedChannelId = getters['me/getSelectedChannelId'];
 
     if (selectedChannelId) {
@@ -350,7 +354,27 @@ export default {
     await dispatch('initial');
   },
 
-  async logout({ commit }) {
+  /**
+   * Change current workspace ans connect to channel
+   *
+   * @param {object} vuex context
+   * @param {string} workspaceId – workspace id
+   * @returns {Promise<void>}
+   */
+  async selectChannelInAnotherWorkspace({ dispatch }, { workspaceId, channelId }) {
+    await dispatch('changeWorkspace', workspaceId);
+    await dispatch('selectChannel', channelId);
+  },
+
+  /**
+   * Clear some stuff in vuex after logout
+   *
+   * @param {object} vuex context
+   *
+   * @returns {Promise<void>}
+   */
+  logout({ commit }) {
     commit('me/SET_USER_ID', null);
   },
+
 };
