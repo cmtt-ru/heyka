@@ -73,9 +73,6 @@ export default {
   .mainwindow-wrapper
     background-color var(--new-bg-03)
 
-    &--mac
-      background-color var(--new-bg-02)
-
   .layout
     display flex
     width 100%
