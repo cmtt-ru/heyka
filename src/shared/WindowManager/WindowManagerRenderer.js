@@ -94,6 +94,20 @@ class Window extends EventEmitter {
   }
 
   /**
+   * Browserwindow's api sent to main process
+   * @param {string} method - method name
+   * @param {object} params - params
+   * @returns {void}
+   */
+  api(method, ...params) {
+    ipcRenderer.sendSync('window-manager-api',
+      method,
+      this.windowId,
+      ...params
+    );
+  }
+
+  /**
    * Open url in window - send signal to main process
    * @param {string} route route to move to
    * @param {string} url url to move to (if not index.html)
@@ -130,6 +144,22 @@ class Window extends EventEmitter {
       id: this.windowId,
       width,
       height,
+      margin,
+    });
+  }
+
+  /**
+   * Set window position
+   *
+   * @param {string} position - window position (eg. 'center', 'bottomRight')
+   * @param {number} margin - window pos margin
+   * @returns {void}
+   */
+  setPosition(position, margin) {
+    ipcRenderer.sendSync('window-manager-event', {
+      event: 'position',
+      id: this.windowId,
+      position,
       margin,
     });
   }
