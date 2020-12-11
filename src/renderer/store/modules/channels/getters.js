@@ -40,13 +40,9 @@ export default {
    * @returns {object}
    */
   getAudioQualityStatusByUserId: (state, getters) => userId => {
-    const aqiData = getters['getConversationDataByUserId'](userId, 'audio-quality-indicator');
+    const aqiData = getters['getConversationData'](userId, 'audio-quality-indicator');
 
-    if (!aqiData) {
-      return;
-    }
-
-    return aqiData.status;
+    return aqiData || 0;
   },
 
   /**
