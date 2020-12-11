@@ -202,7 +202,9 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  unselectChannelWithoutAPICall({ commit, dispatch, state }, id = state.me.selectedChannelId) {
+  unselectChannelWithoutAPICall({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
+    const isTemporary = getters['channels/getChannelById'](id).isTemporary;
+
     commit('channels/REMOVE_USER', {
       userId: state.me.id,
       channelId: id,
@@ -215,6 +217,9 @@ export default {
     callWindow.closeAll();
 
     ipcRenderer.send('tray-animation', false);
+    if (isTemporary) {
+      router.replace({ name: 'workspace' });
+    }
   },
 
   /**
@@ -337,6 +342,10 @@ export default {
    * @returns {Promise<void>}
    */
   async changeWorkspace({ dispatch, getters }, workspaceId) {
+    if (workspaceId === getters['me/getSelectedWorkspaceId']) {
+      return;
+    }
+
     const selectedChannelId = getters['me/getSelectedChannelId'];
 
     if (selectedChannelId) {
@@ -350,7 +359,27 @@ export default {
     await dispatch('initial');
   },
 
-  async logout({ commit }) {
+  /**
+   * Change current workspace ans connect to channel
+   *
+   * @param {object} vuex context
+   * @param {string} workspaceId – workspace id
+   * @returns {Promise<void>}
+   */
+  async selectChannelInAnotherWorkspace({ dispatch }, { workspaceId, channelId }) {
+    await dispatch('changeWorkspace', workspaceId);
+    await dispatch('selectChannel', channelId);
+  },
+
+  /**
+   * Clear some stuff in vuex after logout
+   *
+   * @param {object} vuex context
+   *
+   * @returns {Promise<void>}
+   */
+  logout({ commit }) {
     commit('me/SET_USER_ID', null);
   },
+
 };
