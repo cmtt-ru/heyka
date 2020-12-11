@@ -5,7 +5,6 @@ const Network = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/S
 const About = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/About');
 const Support = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Support');
 const TestZone = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/TestZone');
-const Stats = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Stats');
 
 export const settingsRoutes = {
   path: 'settings',
@@ -40,11 +39,6 @@ export const settingsRoutes = {
       path: 'test-zone',
       name: 'test-zone',
       component: TestZone,
-    },
-    {
-      path: 'stats',
-      name: 'stats',
-      component: Stats,
     },
   ],
 };

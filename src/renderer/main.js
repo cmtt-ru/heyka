@@ -13,7 +13,6 @@ import '@sdk/directives';
 import { Mixin } from '@/mixins';
 import permissions from '@sdk/classes/permissions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
-import '@sdk/classes/SpeedTest';
 import network from '@sdk/classes/network';
 
 if (isMainWindow()) {

@@ -122,4 +122,86 @@ export default {
     }
   },
 
+  /**
+   * Add conversation data
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {string} userId – user id
+   * @param {string} channelId – channel id
+   * @param {string} action – action
+   * @param {object} data – data
+   * @constructor
+   */
+  ADD_CONVERSATION_DATA(state, { userId, channelId, action, data }) {
+    if (state.collection[channelId]) {
+      const channel = state.collection[channelId];
+
+      if (!channel.conversationData) {
+        Vue.set(channel, 'conversationData', {});
+      }
+
+      const conversationData = channel.conversationData;
+
+      if (!conversationData[userId]) {
+        Vue.set(conversationData, userId, {});
+      }
+
+      const user = conversationData[userId];
+
+      Vue.set(user, action, data);
+    }
+  },
+
+  /**
+   * Clear conversation data
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {string} channelId – channel id
+   * @constructor
+   */
+  CLEAR_CONVERSATION_DATA(state, { channelId }) {
+    if (state.collection[channelId]) {
+      Vue.delete(state.collection[channelId], 'conversationData');
+    }
+  },
+
+  /**
+   * Add conversation event
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {string} userId – user id
+   * @param {string} channelId – channel id
+   * @param {string} action – action
+   * @param {object} data – data
+   * @constructor
+   */
+  ADD_CONVERSATION_EVENT(state, { userId, channelId, action, data }) {
+    if (state.collection[channelId]) {
+      const channel = state.collection[channelId];
+
+      if (!channel.conversationEvents) {
+        Vue.set(channel, 'conversationEvents', []);
+      }
+
+      channel.conversationEvents.push({
+        userId,
+        action,
+        data,
+      });
+    }
+  },
+
+  /**
+   * Clear conversation events
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {string} channelId – channel id
+   * @constructor
+   */
+  CLEAR_CONVERSATION_EVENTS(state, { channelId }) {
+    if (state.collection[channelId]) {
+      Vue.delete(state.collection[channelId], 'conversationEvents');
+    }
+  },
+
 };

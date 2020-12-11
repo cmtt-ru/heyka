@@ -103,8 +103,8 @@
 import { List, ListItem } from '@components/List';
 import ChannelUserItem from '@components/ChannelUserItem';
 import UiButton from '@components/UiButton';
-import JanusEvents from '@sdk/classes/janusEvents';
 import { mapGetters } from 'vuex';
+import API from '@api';
 
 const ICON_MAP = {
   public: 'channel',
@@ -237,8 +237,17 @@ export default {
      * Audio lags handler
      * @returns {void}
      */
-    audioLagsHandler() {
-      JanusEvents.emit('submit-data');
+    async audioLagsHandler() {
+      await API.app.reportBadConnection();
+
+      const notification = {
+        lifespan: 3000,
+        data: {
+          text: this.texts['audioLagsNotification'],
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
     },
   },
 };

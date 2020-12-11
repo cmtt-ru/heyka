@@ -34,7 +34,7 @@
     "no-undef": 2,
     "no-magic-numbers": [2, {
       "ignoreArrayIndexes": true,
-      "ignore": [0, 1, -1, 2]
+      "ignore": [0, 1, -1, 2, -2]
     }],
 
     "array-bracket-spacing": [2, "never", {
@@ -135,7 +135,7 @@
     }],
     "valid-jsdoc": [1, {
       "matchDescription": ".+",
-      "requireReturnDescription": false,
+      "requireReturnDescription": false
     }],
 
     "one-var-declaration-per-line": ["warn"],
