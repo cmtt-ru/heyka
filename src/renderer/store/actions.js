@@ -202,7 +202,9 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  unselectChannelWithoutAPICall({ commit, dispatch, state }, id = state.me.selectedChannelId) {
+  unselectChannelWithoutAPICall({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
+    const isTemporary = getters['channels/getChannelById'](id).isTemporary;
+
     commit('channels/REMOVE_USER', {
       userId: state.me.id,
       channelId: id,
@@ -215,6 +217,9 @@ export default {
     callWindow.closeAll();
 
     ipcRenderer.send('tray-animation', false);
+    if (isTemporary) {
+      router.replace({ name: 'workspace' });
+    }
   },
 
   /**
