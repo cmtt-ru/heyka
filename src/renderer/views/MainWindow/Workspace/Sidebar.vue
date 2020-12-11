@@ -188,6 +188,8 @@ import { List, ListItem } from '@components/List';
 import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import SidebarUserItem from '@components/SidebarUserItem';
+import Mousetrap from 'mousetrap';
+import { heykaStore } from '@/store/localStore';
 import { mapGetters } from 'vuex';
 
 const MANY_CHANNELS = 4;
@@ -207,7 +209,7 @@ export default {
       MANY_CHANNELS,
       inputActive: false,
       searchText: '',
-      showMore: true,
+      showMore: heykaStore.get('showMoreChannels', true),
     };
   },
 
@@ -299,6 +301,16 @@ export default {
 
   },
 
+  created() {
+    Mousetrap.bind(['command+f', 'ctrl+f'], () => {
+      this.activateInput(false);
+    });
+  },
+
+  beforeDestroy() {
+    Mousetrap.unbind(['command+f', 'ctrl+f']);
+  },
+
   methods: {
 
     /**
@@ -333,14 +345,19 @@ export default {
      */
     toggleChannelsHandler() {
       this.showMore = !this.showMore;
+      heykaStore.set('showMoreChannels', this.showMore);
     },
 
     /**
      * Show searchbar
+     * @param {boolean} clear true if e should clear input
      * @returns {void}
      */
-    activateInput() {
-      this.searchText = '';
+    activateInput(clear = true) {
+      if (clear) {
+        this.searchText = '';
+      }
+
       this.inputActive = true;
       this.$nextTick(() => {
         this.$refs.globalSearch.focusInput();
