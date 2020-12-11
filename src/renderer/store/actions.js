@@ -208,6 +208,9 @@ export default {
       channelId: id,
     });
 
+    commit('channels/CLEAR_CONVERSATION_DATA');
+    commit('channels/CLEAR_CONVERSATION_EVENTS');
+
     dispatch('me/setChannelId', null);
 
     dispatch('me/setDefaultMediaState');
