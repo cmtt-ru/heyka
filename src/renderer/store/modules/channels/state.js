@@ -8,6 +8,8 @@
  * @property {string} createdAt – creation date
  * @property {string} updatedAt – update date
  * @property {MediaState[]} users – array of user's media state
+ * @property {object} conversationData – conversation data grouped by user id
+ * @property {array} conversationEvents – conversation events
  */
 
 /**
