@@ -205,7 +205,7 @@ export default {
       userId,
       name,
       ...message,
-    }; // TODO: брать workspaceId из пришедшего пуша
+    };
 
     commit('ADD_PUSH', push);
   },
