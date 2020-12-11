@@ -59,13 +59,6 @@
         >
           Test Zone
         </router-link>
-        <router-link
-          class="settings-link"
-          :to="{name: 'stats'}"
-          replace
-        >
-          Stats
-        </router-link>
         <div class="app-info">
           {{ prettyInfo }}
         </div>
