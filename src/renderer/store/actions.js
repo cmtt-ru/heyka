@@ -218,7 +218,7 @@ export default {
 
     ipcRenderer.send('tray-animation', false);
     if (isTemporary) {
-      router.push({ name: 'workspace' });
+      router.replace({ name: 'workspace' });
     }
   },
 
