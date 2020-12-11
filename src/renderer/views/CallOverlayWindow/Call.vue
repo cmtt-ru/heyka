@@ -48,7 +48,7 @@
     </div>
 
     <call-controls
-      :row="isLocalMediaSharing || amIStreaming"
+      :row="isLocalMediaSharing || isSharingFullScreen"
       :buttons="buttonsSetup"
       class="call-window__controls"
     />
@@ -109,14 +109,15 @@ export default {
       selectedChannelId: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
+      isSharingFullScreen: 'janus/isSharingFullScreen',
     }),
 
     amIStreaming() {
-      return this.$store.state.me.mediaState.screen;
+      return this.isSharingFullScreen;
     },
 
     buttonsSetup() {
-      if (this.amIStreaming) {
+      if (this.isSharingFullScreen) {
         return BUTTON_SETUPS.streaming;
       }
 
@@ -129,7 +130,7 @@ export default {
      * @returns {boolean}
      */
     isLocalMediaSharing() {
-      return this.isAnybodySharingMedia && !this.amIStreaming;
+      return !this.amISharingScreen && this.isAnybodySharingMedia;
     },
 
     /**
