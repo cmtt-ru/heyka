@@ -54,7 +54,7 @@
     />
 
     <div
-      v-if="isMediaSharing"
+      v-if="isLocalMediaSharing"
     >
       <div class="resize-border resize-border--top" />
       <div class="resize-border resize-border--left" />
@@ -428,7 +428,7 @@ export default {
         display block
         width 100%
         height 100%
-        object-fit contain
+        object-fit cover
         background-color #000000
 
       &__preloader

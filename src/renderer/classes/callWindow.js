@@ -296,7 +296,6 @@ class CallWindow {
   closeFrame() {
     if (this.frameWindow) {
       this.frameWindow.action('softClose');
-
       this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
       this.overlayWindow.setPosition('bottomRight');
     }
