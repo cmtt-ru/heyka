@@ -54,7 +54,10 @@ export default {
     async responseHandler({ response, inviteId, data }) {
       switch (response.action) {
         case 'accept-invite':
-          await broadcastActions.dispatch('selectChannel', data.channelId);
+          await broadcastActions.dispatch('selectChannelInAnotherWorkspace', {
+            workspaceId: data.workspaceId,
+            channelId: data.channelId,
+          });
           await broadcastEvents.dispatch('open-channel', data.channelId);
           await broadcastActions.dispatch('app/sendPushResponse', {
             response,

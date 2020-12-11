@@ -55,9 +55,11 @@ export default {
       const usersWhoSharesCamera = selectedChannel.users.filter(user => user.camera);
 
       if (usersWhoSharesScreen.length > 0) {
-        lastUserWhoSharesMedia = usersWhoSharesScreen[0].userId;
+        const sortedSharings = usersWhoSharesScreen.sort((a, b) => Date.parse(b.startScreenTs || 0) - Date.parse(a.startScreenTs || 0));
 
-        return usersWhoSharesScreen[0].userId;
+        lastUserWhoSharesMedia = sortedSharings[0].userId;
+
+        return sortedSharings[0].userId;
       }
 
       const speakingUserWithCamera = usersWhoSharesCamera.filter(user => user.speaking);
