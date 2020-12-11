@@ -46,6 +46,7 @@ class WindowManager {
       show: this.showWindow,
       hide: this.hideWindow,
       close: this.closeWindow,
+      softClose: this.softCloseWindow,
       minimize: this.minimizeWindow,
       showInactive: this.showInactiveWindow,
       focus: this.focusWindow,
@@ -338,6 +339,22 @@ class WindowManager {
     if (this.windows[id] !== undefined) {
       try {
         this.windows[id].browserWindow.destroy();
+        delete this.windows[id];
+      } catch (e) {
+        console.error('window already closed');
+      }
+    }
+  }
+
+  /**
+   * Soft close window
+   * @param {string} id - ID of window in question
+   * @returns {void}
+   */
+  softCloseWindow({ id }) {
+    if (this.windows[id] !== undefined) {
+      try {
+        this.windows[id].browserWindow.close();
         delete this.windows[id];
       } catch (e) {
         console.error('window already closed');

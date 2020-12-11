@@ -295,7 +295,8 @@ class CallWindow {
    */
   closeFrame() {
     if (this.frameWindow) {
-      this.frameWindow.action('close');
+      this.frameWindow.action('softClose');
+
       this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
       this.overlayWindow.setPosition('bottomRight');
     }
@@ -306,10 +307,10 @@ class CallWindow {
    * @returns {void}
    */
   closeAll() {
-    this.manageWindow(this.frameWindow, 'close');
+    this.manageWindow(this.frameWindow, 'softClose');
     this.manageWindow(this.gridWindow, 'close');
     this.manageWindow(this.sharingWindow, 'close');
-    this.manageWindow(this.overlayWindow, 'close');
+    this.manageWindow(this.overlayWindow, 'softClose');
   }
 
   /**
