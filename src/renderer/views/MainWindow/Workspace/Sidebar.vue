@@ -209,7 +209,7 @@ export default {
       MANY_CHANNELS,
       inputActive: false,
       searchText: '',
-      showMore: heykaStore.get('showMoreCHannels', true),
+      showMore: heykaStore.get('showMoreChannels', true),
     };
   },
 
@@ -345,7 +345,7 @@ export default {
      */
     toggleChannelsHandler() {
       this.showMore = !this.showMore;
-      heykaStore.set('showMoreCHannels', this.showMore);
+      heykaStore.set('showMoreChannels', this.showMore);
     },
 
     /**
