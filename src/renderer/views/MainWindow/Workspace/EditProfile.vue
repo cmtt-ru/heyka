@@ -149,7 +149,7 @@ export default {
       selectedChannel: 'myChannel',
       me: 'myInfo',
       userAvatar: 'users/getUserAvatarUrl',
-      socialAuth: 'me/getsocialAuth',
+      socialAuth: 'me/getSocialAuth',
     }),
 
     /**

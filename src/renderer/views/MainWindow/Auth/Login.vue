@@ -147,6 +147,7 @@ import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
 import { WEB_URL } from '@sdk/Constants';
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
 const http = require('http');
 

@@ -75,7 +75,7 @@ export default {
    * @param {MeState} state – me module state
    * @returns {string}
    */
-  getsocialAuth: state => {
+  getSocialAuth: state => {
     return state.socialAuth;
   },
 };
