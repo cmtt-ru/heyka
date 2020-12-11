@@ -307,6 +307,10 @@ export default {
     });
   },
 
+  beforeDestroy() {
+    Mousetrap.unbind(['command+f', 'ctrl+f']);
+  },
+
   methods: {
 
     /**
