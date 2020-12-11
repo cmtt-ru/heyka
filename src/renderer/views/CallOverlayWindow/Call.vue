@@ -50,7 +50,17 @@
     <call-controls
       :row="isLocalMediaSharing || amIStreaming"
       :buttons="buttonsSetup"
+      class="call-window__controls"
     />
+
+    <div
+      v-if="isMediaSharing"
+    >
+      <div class="resize-border resize-border--top" />
+      <div class="resize-border resize-border--left" />
+      <div class="resize-border resize-border--right" />
+      <div class="resize-border resize-border--bottom" />
+    </div>
   </div>
 </template>
 
@@ -66,7 +76,7 @@ import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 
 const BUTTON_SETUPS = {
   default: ['screen', 'camera', 'microphone', 'grid', 'leave'],
-  streaming: ['screen', 'microphone', 'grid', 'leave'],
+  streaming: ['screen', 'microphone', 'drawing', 'grid', 'leave'],
 };
 
 export default {
@@ -406,16 +416,20 @@ export default {
   .call-window
     display flex
     flex-direction column
+    height 100vh
 
     &__media
       position relative
-      flex-grow 1
+      flex-grow 2
+      flex-shrink 2
+      min-height 196px
 
       video
         display block
         width 100%
-        height 196px
-        object-fit cover
+        height 100%
+        object-fit contain
+        background-color #000000
 
       &__preloader
         position absolute
@@ -439,6 +453,10 @@ export default {
         &__button
           border-radius 11px
 
+    &__controls
+      flex-grow 0
+      flex-shrink 0
+
 .close-button
   position absolute
   top 0
@@ -461,4 +479,35 @@ export default {
   &__avatar
     margin-right 4px
 
+.resize-border
+  position absolute
+  width 100%
+  height 6px
+  z-index 5
+  opacity 0
+  -webkit-app-region no-drag
+
+  &--top
+    top 0
+    right 0
+    left 0
+
+  &--bottom
+    bottom 0
+    right 0
+    left 0
+
+  &--left
+    top 0
+    bottom 0
+    left 0
+    width 6px
+    height 100%
+
+  &--right
+    top 0
+    right 0
+    bottom 0
+    width 6px
+    height 100%
 </style>
