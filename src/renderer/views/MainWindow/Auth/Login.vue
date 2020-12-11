@@ -217,6 +217,17 @@ export default {
         });
       }
     });
+
+    //! remove after users can create new profiles with SNS
+    DeepLink.on('social-link', ([status, param]) => {
+      if (status === 'false') {
+        this.$store.dispatch('app/addNotification', {
+          data: {
+            text: decodeURIComponent(param),
+          },
+        });
+      }
+    });
   },
 
   methods: {
