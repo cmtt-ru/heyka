@@ -228,8 +228,8 @@ export default {
 
     sortedChannels() {
       return [ ...this.channels ].sort((a, b) =>
-        (typeof b?.userRelation?.usageCount === 'undefined' ? Infinity : b.userRelation.usageCount) -
-        (typeof a?.userRelation?.usageCount === 'undefined' ? Infinity : a.userRelation.usageCount)
+        (b.isTemporary ? Infinity : (b.userRelation?.usageCount || 0)) -
+        (a.isTemporary ? Infinity : (a.userRelation?.usageCount || 0))
       );
     },
 

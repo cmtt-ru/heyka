@@ -1,4 +1,5 @@
 import path from 'path';
+import OS from 'os';
 import { app, Menu, Tray, nativeImage, nativeTheme, ipcMain } from 'electron';
 import { IS_MAC, IS_LINUX } from '../../sdk/Constants';
 import { heykaStore } from '../../renderer/store/localStore';
@@ -6,6 +7,7 @@ import { heykaStore } from '../../renderer/store/localStore';
 let animationTimer;
 const blurDebounce = 300;
 const oneSecond = 1000;
+const BIG_SUR_VERSION = 20;
 
 /**
  * Icon names for dark&light themes. No ".png", no "@2x/@3x" stuff
@@ -26,8 +28,14 @@ const icons = {
 };
 
 let theme = 'light';
+let permanentTheme;
 
 if ((IS_MAC && nativeTheme.shouldUseDarkColors) || !IS_MAC) {
+  theme = 'dark';
+}
+
+if (IS_MAC && OS.release().split('.')[0] >= BIG_SUR_VERSION) {
+  permanentTheme = 'dark';
   theme = 'dark';
 }
 
@@ -219,10 +227,11 @@ class TrayManager {
   */
   updateTheme() {
     if ((IS_MAC && nativeTheme.shouldUseDarkColors) || !IS_MAC) {
-      theme = 'dark';
+      theme = permanentTheme || 'dark';
     } else {
-      theme = 'light';
+      theme = permanentTheme || 'light';
     }
+
     this.set('default');
   }
 
