@@ -48,6 +48,7 @@
     "extraWidth": 0,
     "extraHeight": 68,
     "alwaysOnTop": true,
+    "maximizable": false,
     "fullscreenable": false,
     "backgroundColor": "#000",
     "skipTaskbar": true,
