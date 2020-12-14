@@ -84,15 +84,21 @@
       </div>
 
       <div
-        v-if="selectedChannelId"
         class="l-flex bottom-block"
       >
         <ui-button
+          v-if="selectedChannelId"
           :type="14"
           class="l-mr-4"
           @click="audioLagsHandler"
         >
           {{ texts.audioLags }}
+        </ui-button>
+
+        <ui-button
+          :type="14"
+        >
+          Support
         </ui-button>
       </div>
     </div>
