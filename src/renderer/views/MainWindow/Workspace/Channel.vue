@@ -268,6 +268,7 @@ export default {
     openIntercom() {
       const user = this.$store.getters['users/getUserById'](this.$store.getters['me/getMyId']);
 
+      intercom.init();
       intercom.show();
       intercom.setUserData({
         name: user.name,
