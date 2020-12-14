@@ -120,6 +120,7 @@ export default {
         flex 0 0 39px
 
       &--body
+        position relative
         flex 1 1 auto
 
 </style>
