@@ -154,6 +154,7 @@ import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
 import { WEB_URL } from '@sdk/Constants';
+import { heykaStore } from '@/store/localStore';
 
 const http = require('http');
 
@@ -174,7 +175,7 @@ export default {
       passReset: false,
       loginInProgress: false,
       login: {
-        email: '',
+        email: heykaStore.get('loginEmail') || '',
         password: IS_DEV ? 'heyka-password' : '',
       },
       IS_DEV,
@@ -287,6 +288,8 @@ export default {
 
       try {
         await this.$API.auth.signin({ credentials: this.login });
+
+        heykaStore.set('loginEmail', this.login.email);
 
         await this.$store.dispatch('initial');
 
