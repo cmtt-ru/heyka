@@ -67,7 +67,6 @@ class Intercom {
    * @returns {void}
    */
   show() {
-    this.init();
     window.Intercom('show');
   }
 
