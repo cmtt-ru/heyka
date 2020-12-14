@@ -54,6 +54,12 @@
             class="reset-form"
             @submit="loginHandler()"
           >
+            <div
+              v-if="IS_DEV"
+              class="dev-server"
+            >
+              {{ texts.devServer }}
+            </div>
             <ui-input
               v-model="login.email"
               icon="mail"
@@ -75,6 +81,7 @@
               :type="6"
               wide
               class="login__button"
+              :loading="loginInProgress"
               submit
             >
               {{ texts.login }}
@@ -165,14 +172,12 @@ export default {
     return {
       coverSrc: null,
       passReset: false,
-      // login: {
-      //   email: 'ivanb@cmtt.ru',
-      //   password: 'VT3O2O',
-      // },
+      loginInProgress: false,
       login: {
         email: '',
         password: IS_DEV ? 'heyka-password' : '',
       },
+      IS_DEV,
     };
   },
 
@@ -278,6 +283,8 @@ export default {
      * @returns {void}
      */
     async loginHandler() {
+      this.loginInProgress = true;
+
       try {
         await this.$API.auth.signin({ credentials: this.login });
 
@@ -297,6 +304,8 @@ export default {
 
           await this.$store.dispatch('app/addNotification', notification);
         }
+      } finally {
+        this.loginInProgress = false;
       }
     },
 
