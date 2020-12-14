@@ -76,31 +76,31 @@
 
         <ui-button
           :type="14"
-          class="l-ml-auto l-mr-4"
+          class="l-ml-auto"
           @click="revokeInviteHandler"
         >
           {{ texts.revokeInvite }}
         </ui-button>
       </div>
+    </div>
 
-      <div
-        class="l-flex bottom-block"
+    <div class="bottom-block l-flex">
+      <ui-button
+        v-if="selectedChannelId"
+        :type="14"
+        class="l-mr-4"
+        @click="audioLagsHandler"
       >
-        <ui-button
-          v-if="selectedChannelId"
-          :type="14"
-          class="l-mr-4"
-          @click="audioLagsHandler"
-        >
-          {{ texts.audioLags }}
-        </ui-button>
+        {{ texts.audioLags }}
+      </ui-button>
 
-        <ui-button
-          :type="14"
-        >
-          Support
-        </ui-button>
-      </div>
+      <ui-button
+        class="l-ml-auto"
+        :type="14"
+        @click="openIntercom"
+      >
+        {{ texts.support }}
+      </ui-button>
     </div>
   </div>
 </template>
@@ -111,6 +111,7 @@ import ChannelUserItem from '@components/ChannelUserItem';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
 import API from '@api';
+import intercom from '@classes/intercom';
 
 const ICON_MAP = {
   public: 'channel',
@@ -206,6 +207,10 @@ export default {
 
   },
 
+  beforeDestroy() {
+    intercom.hide();
+  },
+
   methods: {
     /**
      * Connect to channel
@@ -255,6 +260,14 @@ export default {
 
       await this.$store.dispatch('app/addNotification', notification);
     },
+
+    /**
+     * Open Intercom Widget
+     * @returns {void}
+     */
+    openIntercom() {
+      intercom.show();
+    },
   },
 };
 </script>
@@ -299,7 +312,7 @@ export default {
 .bottom-block
   position absolute
   bottom 0
-  padding 8px 0
+  padding 8px 12px
   box-sizing border-box
   background-color var(--app-bg)
   width 100%
