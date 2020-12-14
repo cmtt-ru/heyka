@@ -1,6 +1,4 @@
 /* eslint-disable camelcase */
-let intercomInited = false;
-
 const APP_ID = 'zmdddvb6';
 
 const DEFAULT_INTERCOM_OPTIONS = {
@@ -10,15 +8,22 @@ const DEFAULT_INTERCOM_OPTIONS = {
 };
 
 /**
- * Itercom widget class
+ * Intercom widget class
  */
 class Intercom {
   /**
-   * Initialize Intercome Widget once
+   * Intercom constructor
+   */
+  constructor() {
+    this.intercomInited = false;
+  }
+
+  /**
+   * Initialize Intercom Widget once
    * @returns {void}
    */
   init() {
-    if (intercomInited) {
+    if (this.intercomInited) {
       return;
     }
 
@@ -54,22 +59,39 @@ class Intercom {
 
     window.Intercom('boot', DEFAULT_INTERCOM_OPTIONS);
 
-    intercomInited = true;
+    this.intercomInited = true;
   }
 
+  /**
+   * Init & Show widget
+   * @returns {void}
+   */
   show() {
     this.init();
     window.Intercom('show');
   }
 
+  /**
+   * Hide widget
+   * @returns {void}
+   */
   hide() {
     window.Intercom('hide');
   }
 
+  /**
+   * Set user data, like name or email
+   * @param {object} data – user data
+   * @returns {void}
+   */
   setUserData(data) {
     window.Intercom('update', data);
   }
 
+  /**
+   * Destroy widget
+   * @returns {void}
+   */
   destroy() {
     window.Intercom('shutdown');
   }
