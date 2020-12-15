@@ -54,8 +54,6 @@ export default {
 
         cnsl.log('...wait for sockets init');
         await sockets.init();
-
-        dispatch('me/setOnlineStatus', 'online');
       } else {
         console.error('AUTH REQUIRED');
       }
