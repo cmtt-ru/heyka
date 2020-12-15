@@ -40,7 +40,20 @@ export default {
    * @returns {object}
    */
   getAudioQualityStatusByUserId: (state, getters) => userId => {
-    const aqiData = getters['getConversationData'](userId, 'audio-quality-indicator');
+    const aqiData = getters['getConversationData'](userId, 'audio-quality-indicator')?.status;
+
+    return aqiData || 0;
+  },
+
+  /**
+   * Get "raise hand" timestamp by user id
+   *
+   * @param {ChannelState} state – channels module state
+   * @param {object} getters – vuex getters
+   * @returns {object}
+   */
+  getHandUpStatusByUserId: (state, getters) => userId => {
+    const aqiData = getters['getConversationData'](userId, 'hand-up')?.timestamp;
 
     return aqiData || 0;
   },
@@ -67,7 +80,7 @@ export default {
       return null;
     }
 
-    return channel.conversationData[userId]['audio-quality-indicator'].status;
+    return channel.conversationData[userId][action];
   },
 
   /**
