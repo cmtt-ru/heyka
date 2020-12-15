@@ -342,8 +342,6 @@ export default {
   },
 
   raiseHandInChannel({ commit }, myId) {
-    console.log(myId);
-    // rootGetters['me/getMyId']
     conversationBroadcast('hand-up', myId, {
       timestamp: Date.now(),
     });
