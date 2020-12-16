@@ -20,6 +20,7 @@ import { prepareTokens } from '@api/tokens';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { mapGetters } from 'vuex';
 import { heykaStore } from '@/store/localStore';
+import { client } from '@api/socket/client';
 
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
@@ -92,6 +93,10 @@ export default {
     ipcRenderer.send('tray-animation', false);
 
     this.showMacScreenSharingPermission();
+
+    window.addEventListener('beforeunload', () => {
+      client.emit('logout');
+    });
   },
 
   mounted() {
