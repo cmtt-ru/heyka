@@ -133,26 +133,29 @@ export default {
 
 <style lang="stylus">
 .app-info
-  font-size 10px
-  color var(--text-1)
+  font-size 12px
+  line-height 18px
+  color var(--new-UI-04)
   white-space pre-line
-  padding 4px
+  position absolute
+  bottom 12px
+  left 12px
 
 .settings-link
   display block
-  padding 4px
-  border-radius 4px
+  padding 6px 8px
+  border-radius 6px
   font-size 14px
+  line-height 16px
   text-decoration none
   color var(--text-0)
-  margin-bottom 2px
+  margin 0 4px 4px
 
   &:hover:not(.router-link-exact-active)
-    background-color var(--item-bg-hover)
+    background-color var(--new-UI-07)
 
   &.router-link-exact-active
-    background-color var(--item-bg-active)
-    box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
+    background-color var(--new-UI-07)
 
 .close-strip
   height 40px
@@ -167,5 +170,10 @@ export default {
 .settings-title
   height 40px
   line-height 40px
+  font-size 16px
+  font-weight bold
+
+.layout__column--sidebar
+    background-color var(--new-bg-04)
 
 </style>
