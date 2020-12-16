@@ -370,7 +370,7 @@ export default {
      * @returns {void}
      */
     onNewPublisher(publisher) {
-      if (!this.isLocalMediaSharing) {
+      if (this.isLocalMediaSharing) {
         this.loadCurrentVideo();
       }
     },
