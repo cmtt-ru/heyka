@@ -1,53 +1,49 @@
 <template>
   <div class="settings-page">
     <div class="settings__label">
-      {{ texts.languageLabel }}
+      {{ texts.generalCategory }}
     </div>
     <ui-select
       v-model="language"
       :data="languages"
+      :label="texts.languageLabel"
     />
-    <div class="settings__label">
-      {{ texts.behaviourLabel }}
-    </div>
     <ui-select
       v-model="localSettings.mode"
       :data="modes"
+      :label="texts.behaviourLabel"
     />
     <div class="settings__label">
-      {{ texts.autorunLabel }}
+      {{ texts.appearanceCategory }}
+    </div>
+    <ui-select
+      v-model="themeName"
+      :data="themes"
+      :disabled="themeAuto"
+      :label="texts.appearanceLabel"
+    />
+    <ui-switch
+      v-model="themeAuto"
+      :text="texts.automaticallySwitch"
+    />
+    <div class="settings__label">
+      {{ texts.autorunCategory }}
     </div>
     <ui-switch
       v-model="autorun"
       :text="texts.autorunSwitch"
     />
     <div class="settings__label">
-      {{ texts.appearanceLabel }}
+      {{ texts.advancedCategory }}
     </div>
-    <ui-select
-      v-model="themeName"
-      :data="themes"
-      :disabled="themeAuto"
+    <ui-switch
+      v-model="localSettings.resizeWindow"
+      :text="texts.resize"
     />
     <ui-switch
-      v-model="themeAuto"
-      :text="texts.automaticallySwitch"
+      v-model="muteMic"
+      :text="texts.nomic"
     />
-    <br>
-
-    <details class="expand">
-      <summary class="expand__header">
-        {{ texts.advanced }}
-      </summary>
-      <ui-switch
-        v-model="localSettings.resizeWindow"
-        :text="texts.resize"
-      />
-      <ui-switch
-        v-model="muteMic"
-        :text="texts.nomic"
-      />
-    </details>
   </div>
 </template>
 
