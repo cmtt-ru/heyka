@@ -1,12 +1,18 @@
 <template>
   <layout>
-    <template #sidebar-header>
+    <template #header>
       <div class="settings-title l-pl-12 l-fw-m">
         {{ texts.header }}
       </div>
+      <div
+        class="settings-close"
+        @click="$router.go(-1)"
+      >
+        {{ texts.close }}
+      </div>
     </template>
 
-    <template #sidebar-body>
+    <template #sidebar>
       <div class="l-p-8">
         <router-link
           class="settings-link"
@@ -65,33 +71,18 @@
       </div>
     </template>
 
-    <template #content-body>
-      <div>
-        <div class="close-strip">
-          <ui-button
-            :type="7"
-            size="small"
-            icon="close"
-            @click="closeHandler"
-          />
-        </div>
-
-        <div>
-          <router-view />
-        </div>
-      </div>
+    <template #content>
+      <router-view />
     </template>
   </layout>
 </template>
 
 <script>
-import Layout from './../Layout';
-import UiButton from '@components/UiButton';
+import Layout from './SettingsLayout';
 
 export default {
   components: {
     Layout,
-    UiButton,
   },
   data() {
     return {
@@ -157,15 +148,13 @@ export default {
   &.router-link-exact-active
     background-color var(--new-UI-07)
 
-.close-strip
-  height 40px
-  width 40px
-  margin-left auto
-  box-sizing border-box
-  padding 8px
-  display flex
-  flex-direction row
-  justify-content flex-end
+.settings-close
+  color var(--new-UI-01)
+  margin-right 10px
+  cursor pointer
+
+  &:hover
+    color var(--new-UI-01-1) //? так ли?
 
 .settings-title
   height 40px
