@@ -53,7 +53,6 @@
           v-if="IS_DEV"
           class="settings-link"
           :to="{name: 'styleguide'}"
-          replace
         >
           {{ texts.styleguide }}
         </router-link>
@@ -140,7 +139,7 @@ export default {
   line-height 16px
   text-decoration none
   color var(--text-0)
-  margin 0 4px 4px
+  margin 2px 4px 4px
 
   &:hover:not(.router-link-exact-active)
     background-color var(--new-UI-07)
