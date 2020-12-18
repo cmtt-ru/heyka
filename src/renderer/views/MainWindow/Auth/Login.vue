@@ -175,7 +175,7 @@ export default {
       passReset: false,
       loginInProgress: false,
       login: {
-        email: heykaStore.get('loginEmail') || '',
+        email: heykaStore.get('loginEmail', ''),
         password: IS_DEV ? 'heyka-password' : '',
       },
       IS_DEV,
