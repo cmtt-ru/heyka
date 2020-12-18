@@ -54,8 +54,6 @@ export default {
 
         cnsl.log('...wait for sockets init');
         await sockets.init();
-
-        dispatch('me/setOnlineStatus', 'online');
       } else {
         console.error('AUTH REQUIRED');
       }
@@ -203,7 +201,7 @@ export default {
    * @returns {object} unselected channel
    */
   unselectChannelWithoutAPICall({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
-    const isTemporary = getters['channels/getChannelById'](id).isTemporary;
+    const isTemporary = getters['channels/getChannelById'](id)?.isTemporary;
 
     commit('channels/REMOVE_USER', {
       userId: state.me.id,
