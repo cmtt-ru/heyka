@@ -53,9 +53,9 @@ export default {
    * @returns {object}
    */
   getHandUpStatusByUserId: (state, getters) => userId => {
-    const aqiData = getters['getConversationData'](userId, 'hand-up')?.timestamp;
+    const huData = getters['getConversationData'](userId, 'hand-up')?.timestamp;
 
-    return aqiData || 0;
+    return huData || 0;
   },
 
   /**
