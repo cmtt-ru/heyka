@@ -58,6 +58,7 @@
         :type="3"
         :wide="true"
         class="user-action"
+        :disabled="inviteButtonDisabled[user.id]"
         @click="sendInvite"
       >
         <div
@@ -113,6 +114,8 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 
+const DISABLE_AFTER_INVITE_TIMEOUT = 5000;
+
 /**
  * status-to-color map (small circle to the right of username)
  */
@@ -135,6 +138,12 @@ export default {
   components: {
     Avatar,
     UiButton,
+  },
+
+  data() {
+    return {
+      inviteButtonDisabled: {},
+    };
   },
 
   computed: {
@@ -220,6 +229,21 @@ export default {
           channelId: this.$store.getters['me/getSelectedChannelId'],
         },
       });
+
+      const notification = {
+        lifespan: 3000,
+        data: {
+          text: this.texts.inviteSent,
+        },
+      };
+
+      this.$store.dispatch('app/addNotification', notification);
+
+      this.$set(this.inviteButtonDisabled, this.user.id, true);
+
+      setTimeout(() => {
+        this.$delete(this.inviteButtonDisabled, this.user.id);
+      }, DISABLE_AFTER_INVITE_TIMEOUT);
     },
 
     async startPrivateTalk(userId) {
