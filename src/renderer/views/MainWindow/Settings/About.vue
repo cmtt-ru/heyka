@@ -1,15 +1,15 @@
 <template>
   <div class="settings-page">
-    <svg-icon
+    <!-- <svg-icon
       class="about-logo"
       name="logo"
       width="40"
       height="35"
-    />
-
-    <div class="about-name">
+    /> -->
+    <div class="settings__label">
       {{ info.name }}
     </div>
+
     <div class="about-version">
       {{ texts.version }} {{ info.version }}
     </div>
@@ -17,7 +17,7 @@
     <a class="about-link">{{ texts.notice }}</a>
 
     <ui-button
-      :type="2"
+      :type="1"
       class="check-for-updates"
       @click="checkforUpdatesHandler"
     >
@@ -102,26 +102,16 @@ export default {
 <style scoped lang="stylus">
 @import './styles'
 
-.settings-page
-  padding-left  20px
-
-.about-logo
-  color transparent
-
-.about-name
-  padding-top 16px
-  font-weight 500
-  font-size 18px
-
 .about-version
-  padding-top 8px
+  padding-top 4px
 
 .about-link
-  padding-top 12px
+  padding-top 8px
   color var(--color-2)
 
 .check-for-updates
   margin 16px auto
+
 .changelog
   display flex
   flex-direction column
@@ -131,11 +121,13 @@ export default {
   box-sizing border-box
   align-items flex-start
   justify-content center
-  font-size 12px
+  font-size 13px //? надо ли менять?
 
   &__version
-    font-size 2em
-    padding-bottom 15px
+    font-weight bold
+    font-size 18px
+    line-height 28px
+    padding-bottom 8px
 
   &__text
     color var(--text-0)

@@ -136,6 +136,7 @@ export default {
 
     if (rootState.app.muteMic) {
       defaultState.microphone = false;
+      meStore.set('microphone', false);
     }
 
     commit('SET_MEDIA_STATE', defaultState);
@@ -184,6 +185,21 @@ export default {
   },
 
   /**
+   * Set online when computer goes sleep
+   *
+   * @param {function} commit – vuex commit
+   * @param {boolean} state – sleep state
+   * @returns {Promise<void>}
+   */
+  async setOnlineStatusSleep({ commit }, state) {
+    const status = state ? 'idle' : 'online';
+
+    commit('SET_ONLINE_STATUS', status);
+    meStore.set('onlineStatus', status);
+    await API.user.setOnlineStatus(status, 'sleep');
+  },
+
+  /**
    * Set suspend state
    * @param {object} context – store context
    * @param {boolean} value – state
@@ -228,8 +244,6 @@ export default {
    * @returns {void}
    */
   async setLockScreenState({ state, commit, dispatch, getters }, value) {
-    const statusByState = value ? 'idle' : 'online';
-
     /**  If already suspended than ignore lock screen */
     if (state.suspendState === true || state.lockScreenState === value) {
       return;
@@ -247,15 +261,13 @@ export default {
       await dispatch('stopMediaSharing');
 
       if (state.onlineStatus === 'online') {
-        await dispatch('setOnlineStatus', statusByState);
-      } else {
-        await dispatch('setOnlineStatus', state.onlineStatus);
+        await dispatch('setOnlineStatusSleep', true);
       }
     }
 
     /** Screen unlocked */
     if (!value && state.previousOnlineStatus === 'online') {
-      await dispatch('setOnlineStatus', statusByState);
+      await dispatch('setOnlineStatusSleep', false);
     }
 
     commit('SET_LOCK_SCREEN_STATE', value);
