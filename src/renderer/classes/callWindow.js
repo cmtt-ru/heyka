@@ -22,12 +22,11 @@ const OVERLAY_WINDOW_SIZES = {
   },
   streaming: {
     width: 348,
-    height: 68,
-    maxWidth: 660,
-    maxHeight: 440,
-    minWidth: 1,
-    minHeight: 1,
-    resizable: false,
+    height: 42,
+  },
+  streamingMax: {
+    width: 348,
+    height: 110,
   },
 };
 
@@ -43,9 +42,13 @@ class CallWindow {
     this.sharingWindow = null;
     this.gridWindow = null;
     this.frameWindow = null;
+    this.streamingOverlayWindow = null;
     this.lastMediaSharingMode = null;
     broadcastEvents.on('closeOverlay', () => {
       this.closeOverlay();
+    });
+    broadcastEvents.on('hover-streaming-panel', (val) => {
+      this.resizeStreamingOverlay(val ? 'streamingMax' : 'streaming');
     });
   }
 
@@ -128,6 +131,15 @@ class CallWindow {
     this.overlayWindow.api('setMaximumSize', template.maxWidth, template.maxHeight);
     this.overlayWindow.api('setResizable', template.resizable);
     this.overlayWindow.setSize(template.width, template.height, OVERLAY_MARGIN);
+  }
+
+  resizeStreamingOverlay(type) {
+    if (this.streamingOverlayWindow === null) {
+      return;
+    }
+    const template = OVERLAY_WINDOW_SIZES[type];
+
+    this.streamingOverlayWindow.setSize(template.width, template.height);
   }
 
   /**
@@ -285,8 +297,8 @@ class CallWindow {
       this.frameWindow.action('showInactive');
     }
 
-    this.resizeOverlay('streaming');
-    this.overlayWindow.setPosition('bottomLeft');
+    this.hideOverlay();
+    this.showStreamingOverlay();
   }
 
   /**
@@ -296,8 +308,46 @@ class CallWindow {
   closeFrame() {
     if (this.frameWindow) {
       this.frameWindow.action('softClose');
+      this.closeStreamingOverlay();
       this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
-      this.overlayWindow.setPosition('bottomRight');
+      this.overlayWindow.action('showInactive');
+      // this.overlayWindow.setPosition('bottomRight');
+    }
+  }
+
+  /**
+   * Show streaming overlay window
+   * @returns {void}
+   */
+  showStreamingOverlay() {
+    if (this.streamingOverlayWindow === null) {
+      this.streamingOverlayWindow = WindowManager.create({
+        route: '/call-overlay',
+        template: 'overlay',
+        showInactive: true,
+        margin: 80,
+        aspectRatio: 1.778,
+        position: 'bottomLeft',
+        visibleOnAllWorkspaces: true,
+        window: {
+          ...OVERLAY_WINDOW_SIZES['streaming'],
+        },
+        onClose: () => {
+          this.streamingOverlayWindow = null;
+        },
+      });
+    } else {
+      this.streamingOverlayWindow.action('showInactive');
+    }
+  }
+
+  /**
+   * Close streaming overlay window
+   * @returns {void}
+   */
+  closeStreamingOverlay() {
+    if (this.streamingOverlayWindow) {
+      this.streamingOverlayWindow.action('softClose');
     }
   }
 

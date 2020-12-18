@@ -47,6 +47,15 @@
       </div>
     </div>
 
+    <div
+      v-if="amIStreaming"
+      class="hover-me"
+      @mouseenter="mouseEnterStreamingHandler"
+      @mouseleave="mouseLeaveStreamingHandler"
+    >
+      Идет трансляция
+    </div>
+
     <call-controls
       :row="isLocalMediaSharing || amIStreaming"
       :buttons="buttonsSetup"
@@ -408,6 +417,15 @@ export default {
         this.preloaderShown = state;
       }
     },
+
+    mouseEnterStreamingHandler() {
+      broadcastEvents.dispatch('hover-streaming-panel', true);
+    },
+
+    mouseLeaveStreamingHandler() {
+      broadcastEvents.dispatch('hover-streaming-panel', false);
+    },
+
   },
 };
 </script>
@@ -510,4 +528,14 @@ export default {
     bottom 0
     width 6px
     height 100%
+
+.hover-me
+  background-color var(--new-UI-01)
+  color var(--new-UI-09)
+  width 100%
+  height 48px
+  flex-shrink 0
+  padding 8px
+  box-sizing border-box
+  -webkit-app-region no-drag
 </style>
