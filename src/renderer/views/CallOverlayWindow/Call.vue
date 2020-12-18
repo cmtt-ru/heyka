@@ -49,11 +49,18 @@
 
     <div
       v-if="amIStreaming"
-      class="hover-me"
-      @mouseenter="mouseEnterStreamingHandler"
-      @mouseleave="mouseLeaveStreamingHandler"
+      class="sharing-panel"
     >
-      Идет трансляция
+      <div>Идет трансляция</div>
+      <ui-button
+        :type="7"
+        square
+        popover
+        class="sharing-panel__expand-button"
+        size="small"
+        icon="arrow-down"
+        @click="streamingHandler"
+      />
     </div>
 
     <call-controls
@@ -101,6 +108,7 @@ export default {
       preloaderSrc: null,
       preloaderShown: false,
       channelSwitchedTs: Date.now(),
+      streamingOverlayExpanded: false,
     };
   },
   computed: {
@@ -418,12 +426,9 @@ export default {
       }
     },
 
-    mouseEnterStreamingHandler() {
-      broadcastEvents.dispatch('hover-streaming-panel', true);
-    },
-
-    mouseLeaveStreamingHandler() {
-      broadcastEvents.dispatch('hover-streaming-panel', false);
+    streamingHandler() {
+      this.streamingOverlayExpanded = !this.streamingOverlayExpanded;
+      broadcastEvents.dispatch('hover-streaming-panel', this.streamingOverlayExpanded);
     },
 
   },
@@ -529,13 +534,21 @@ export default {
     width 6px
     height 100%
 
-.hover-me
+.sharing-panel
   background-color var(--new-UI-01)
   color var(--new-UI-09)
   width 100%
-  height 48px
+  height 42px
   flex-shrink 0
   padding 8px
   box-sizing border-box
-  -webkit-app-region no-drag
+  display flex
+  flex-direction row
+  justify-content space-between
+
+  &__expand-button
+    border-radius 20px
+    overflow hidden
+    background-color rgba(255, 255, 255, 0.2) //! не переменная
+
 </style>
