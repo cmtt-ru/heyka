@@ -159,10 +159,6 @@ export default {
     },
   },
 
-  /**
-   *
-   */
-
   watch: {
     isLocalMediaSharing(value) {
       broadcastActions.dispatch('me/setMediaSharingMode', value);
@@ -185,7 +181,6 @@ export default {
       } else if (!newChannelId && this.videoRoomState !== 'closed') {
         this.destroyJanusConnection();
       } else if (newChannelId && oldChannelId && this.videoRoomState === 'ready') {
-        // this.showPreloader(true);
         await this.destroyJanusConnection();
         this.initJanusConnection();
       }
