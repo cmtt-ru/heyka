@@ -17,6 +17,8 @@ import network from '@sdk/classes/network';
 
 if (isMainWindow()) {
   require('@classes/pushWindow');
+  require('@classes/intercom');
+
   network.watchInternetState();
 }
 
