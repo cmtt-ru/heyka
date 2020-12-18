@@ -136,6 +136,7 @@ export default {
 
     if (rootState.app.muteMic) {
       defaultState.microphone = false;
+      meStore.set('microphone', false);
     }
 
     commit('SET_MEDIA_STATE', defaultState);
