@@ -203,15 +203,20 @@ export default {
    * @returns {object} unselected channel
    */
   unselectChannelWithoutAPICall({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
-    const isTemporary = getters['channels/getChannelById'](id)?.isTemporary;
+    const channel = getters['channels/getChannelById'](id);
+    let isTemporary = false;
 
-    commit('channels/REMOVE_USER', {
-      userId: state.me.id,
-      channelId: id,
-    });
+    if (channel) {
+      isTemporary = channel.isTemporary;
 
-    commit('channels/CLEAR_CONVERSATION_DATA', { channelId: id });
-    commit('channels/CLEAR_CONVERSATION_EVENTS', { channelId: id });
+      commit('channels/REMOVE_USER', {
+        userId: state.me.id,
+        channelId: id,
+      });
+
+      commit('channels/CLEAR_CONVERSATION_DATA', { channelId: id });
+      commit('channels/CLEAR_CONVERSATION_EVENTS', { channelId: id });
+    }
 
     dispatch('me/setChannelId', null);
 
