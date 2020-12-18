@@ -166,7 +166,6 @@ export default {
   watch: {
     isLocalMediaSharing(value) {
       broadcastActions.dispatch('me/setMediaSharingMode', value);
-
       // this.showPreloader(value);
     },
 
