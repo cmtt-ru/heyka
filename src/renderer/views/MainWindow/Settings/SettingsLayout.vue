@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="mainwindow-wrapper"
-    :class="{'mainwindow-wrapper--mac': IS_MAC}"
-  >
+  <div>
     <div
       class="layout__appbar"
       :class="{'layout__appbar--mac': IS_MAC}"
@@ -11,21 +8,19 @@
       <appbar />
     </div>
     <div
+      class="layout__header"
+      :class="{'layout__header--mac': IS_MAC}"
+    >
+      <slot name="header" />
+    </div>
+    <div
       class="layout"
-      :class="{'layout--mac': IS_MAC}"
     >
       <div
         class="layout__column layout__column--sidebar"
       >
-        <div
-          v-if="$slots['sidebar-header']"
-          class="layout__row layout__row--header"
-        >
-          <slot name="sidebar-header" />
-        </div>
-
         <div class="layout__row layout__row--body scroll">
-          <slot name="sidebar-body" />
+          <slot name="sidebar" />
         </div>
       </div>
 
@@ -33,7 +28,7 @@
         class="layout__column layout__column--content"
       >
         <div class="layout__row layout__row--body scroll">
-          <slot name="content-body" />
+          <slot name="content" />
         </div>
       </div>
     </div>
@@ -41,7 +36,7 @@
 </template>
 
 <script>
-import Appbar from '../../Appbar';
+import Appbar from '../../../Appbar';
 export default {
   components: {
     Appbar,
@@ -56,30 +51,11 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .resizing-padding
-    position absolute
-    top 0
-    right 0
-    left 0
-    width 100%
-    height 6px
-    z-index 5
-    opacity 0
-    -webkit-app-region no-drag
-
-  .mainwindow-wrapper
-    background-color var(--new-bg-03)
 
   .layout
     display flex
     width 100%
-    height calc(100vh - 48px)
-    box-shadow 0px -1px 12px rgba(0, 0, 0, 0.12)
-
-    &--mac
-      border-top-left-radius 10px
-      border-top-right-radius 10px
-      overflow hidden
+    height calc(100vh - 96px)
 
     &__appbar
       width 100%
@@ -94,6 +70,24 @@ export default {
       justify-content stretch
       align-items center
 
+    &__header
+      width 100%
+      height 48px
+      padding 8px
+      box-sizing border-box
+      background-color var(--new-bg-04)
+      color var(--new-UI-02)
+      display flex
+      flex-direction row
+      justify-content space-between
+      align-items center
+      box-shadow 0px -1px 12px rgba(0, 0, 0, 0.12), inset 0 -1px 0 0 var(--new-stroke-01)
+
+      &--mac
+        border-top-left-radius 10px
+        border-top-right-radius 10px
+        overflow hidden
+
     &__column
       display flex
       height 100%
@@ -103,18 +97,15 @@ export default {
 
       &--sidebar
         flex 0 0 220px
-        background-color var(--new-bg-01)
+        background-color var(--new-bg-04)
 
       &--content
         flex 1 1 auto
+        box-shadow -1px 0 0 0 var(--new-stroke-01)
 
     &__row
 
-      &--header
-        flex 0 0 39px
-
       &--body
-        position relative
         flex 1 1 auto
 
 </style>
