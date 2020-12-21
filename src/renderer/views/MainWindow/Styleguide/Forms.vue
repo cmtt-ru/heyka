@@ -119,7 +119,7 @@ export default {
         value: 'BMW',
       },
       {
-        name: 'Citroen',
+        name: 'Citroen Citroen',
         value: 'Citroen',
       },
       {

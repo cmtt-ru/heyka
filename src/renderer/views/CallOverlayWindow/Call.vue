@@ -109,6 +109,7 @@ export default {
       preloaderShown: false,
       channelSwitchedTs: Date.now(),
       streamingOverlayExpanded: false,
+      isMediaPlaying: false,
     };
   },
   computed: {
@@ -169,13 +170,15 @@ export default {
     sharingUser() {
       return this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
     },
+
+    isNeedToShowPreloader() {
+      return !this.isMediaPlaying && this.isLocalMediaSharing;
+    },
   },
 
   watch: {
     isLocalMediaSharing(value) {
       broadcastActions.dispatch('me/setMediaSharingMode', value);
-
-      this.showPreloader(value);
     },
 
     isGlobalMediaSharing(value) {
@@ -195,7 +198,6 @@ export default {
       } else if (!newChannelId && this.videoRoomState !== 'closed') {
         this.destroyJanusConnection();
       } else if (newChannelId && oldChannelId && this.videoRoomState === 'ready') {
-        this.showPreloader(true);
         await this.destroyJanusConnection();
         this.initJanusConnection();
       }
@@ -208,17 +210,34 @@ export default {
     videoRoomState(info) {
       console.log('videoroom state: ', info);
     },
-  },
 
-  async created() {
-    await janusVideoroomWrapper.init();
-    this.initJanusConnection();
+    isNeedToShowPreloader(val) {
+      this.showPreloader(val);
+    },
   },
 
   async mounted() {
+    await janusVideoroomWrapper.init();
+
+    if (this.isLocalMediaSharing) {
+      this.initJanusConnection();
+    }
+
     this.showPreloader(this.isLocalMediaSharing);
 
     this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
+
+    this.$refs.video.addEventListener('loadedmetadata', () => {
+      this.isMediaPlaying = true;
+    }, false);
+
+    this.$refs.video.addEventListener('abort', () => {
+      this.isMediaPlaying = false;
+    }, false);
+
+    this.$refs.video.addEventListener('suspend', () => {
+      this.isMediaPlaying = false;
+    }, false);
   },
 
   beforeDestroy() {
@@ -361,7 +380,9 @@ export default {
      * @returns {void}
      */
     onNewPublisher(publisher) {
-      this.loadCurrentVideo();
+      if (this.isLocalMediaSharing) {
+        this.loadCurrentVideo();
+      }
     },
 
     /**
@@ -385,7 +406,6 @@ export default {
 
       el.onloadedmetadata = () => {
         el.play();
-        this.showPreloader(false);
       };
     },
 

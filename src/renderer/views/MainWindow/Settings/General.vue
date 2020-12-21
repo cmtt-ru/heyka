@@ -1,53 +1,58 @@
 <template>
   <div class="settings-page">
     <div class="settings__label">
-      {{ texts.languageLabel }}
+      {{ texts.generalCategory }}
     </div>
     <ui-select
       v-model="language"
       :data="languages"
+      :label="texts.languageLabel"
     />
-    <div class="settings__label">
-      {{ texts.behaviourLabel }}
-    </div>
     <ui-select
       v-model="localSettings.mode"
       :data="modes"
+      :label="texts.behaviourLabel"
     />
     <div class="settings__label">
-      {{ texts.autorunLabel }}
+      {{ texts.appearanceCategory }}
+    </div>
+    <ui-select
+      v-model="themeName"
+      :data="themes"
+      :disabled="themeAuto"
+      :label="texts.appearanceLabel"
+    />
+    <ui-switch
+      v-model="themeAuto"
+      :text="texts.automaticallySwitch"
+    />
+
+    <div class="settings__label">
+      {{ texts.autorunCategory }}
     </div>
     <ui-switch
       v-model="autorun"
       :text="texts.autorunSwitch"
     />
     <div class="settings__label">
-      {{ texts.appearanceLabel }}
+      {{ texts.advancedCategory }}
     </div>
-    <ui-select
-      v-model="themeName"
-      :data="themes"
-      :disabled="themeAuto"
+    <ui-switch
+      v-model="localSettings.resizeWindow"
+      :text="texts.resize"
     />
     <ui-switch
-      v-model="themeAuto"
-      :text="texts.automaticallySwitch"
+      v-model="muteMic"
+      :text="texts.nomic"
     />
-    <br>
 
-    <details class="expand">
-      <summary class="expand__header">
-        {{ texts.advanced }}
-      </summary>
-      <ui-switch
-        v-model="localSettings.resizeWindow"
-        :text="texts.resize"
-      />
-      <ui-switch
-        v-model="muteMic"
-        :text="texts.nomic"
-      />
-    </details>
+    <div class="settings__label">
+      {{ texts.serverLabel }}
+    </div>
+    <ui-switch
+      v-model="localSettings.devServer"
+      :text="texts.serverSwitch"
+    />
   </div>
 </template>
 
@@ -82,6 +87,7 @@ export default {
       localSettings: {
         mode: this.$store.state.app.runAppFrom,
         resizeWindow: this.$store.state.app.resizeWindow,
+        devServer: heykaStore.get('devServer') || false,
       },
 
     };
@@ -128,6 +134,15 @@ export default {
      */
     resizeWindow() {
       return this.$store.state.app.resizeWindow;
+    },
+
+    /**
+     * Is dev server
+     *
+     * @returns {boolean}
+     */
+    devServer() {
+      return heykaStore.get('devServer') || false;
     },
 
     /**
@@ -233,7 +248,7 @@ export default {
      * @returns {boolean}
      */
     settingsWillChange() {
-      return (this.localSettings.mode !== this.mode) || (this.localSettings.resizeWindow !== this.resizeWindow);
+      return (this.localSettings.mode !== this.mode) || (this.localSettings.resizeWindow !== this.resizeWindow) || (this.localSettings.devServer !== this.devServer);
     },
   },
 
@@ -282,11 +297,13 @@ export default {
     cancelImportantSetting() {
       this.$set(this.localSettings, 'mode', this.mode);
       this.$set(this.localSettings, 'resizeWindow', this.resizeWindow);
+      this.$set(this.localSettings, 'devServer', this.devServer);
     },
 
     restartHandler() {
       heykaStore.set('runAppFrom', this.localSettings.mode);
       heykaStore.set('resizeWindow', this.localSettings.resizeWindow);
+      heykaStore.set('devServer', this.localSettings.devServer);
       heykaStore.set('openPage', 'settings');
       ipcRenderer.send('remote-restart');
     },
