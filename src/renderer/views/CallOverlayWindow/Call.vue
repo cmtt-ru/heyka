@@ -106,10 +106,11 @@ export default {
       selectedChannelId: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
+      isSharingFullScreen: 'janus/isSharingFullScreen',
     }),
 
     amIStreaming() {
-      return this.$store.state.me.mediaState.screen;
+      return this.isSharingFullScreen;
     },
 
     /**
@@ -118,7 +119,7 @@ export default {
      * @returns {boolean}
      */
     isLocalMediaSharing() {
-      return this.isAnybodySharingMedia && !this.amIStreaming;
+      return !this.amISharingScreen && this.isAnybodySharingMedia;
     },
 
     /**
