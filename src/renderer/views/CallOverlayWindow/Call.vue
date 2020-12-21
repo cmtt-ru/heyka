@@ -48,7 +48,7 @@
     </div>
 
     <call-controls
-      :row="isLocalMediaSharing || amIStreaming"
+      :row="isLocalMediaSharing"
       :buttons="buttonsSetup"
       class="call-window__controls"
     />
