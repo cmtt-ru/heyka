@@ -49,7 +49,7 @@
 
     <call-controls
       :row="isLocalMediaSharing"
-      :buttons="buttonsSetup"
+      :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
       class="call-window__controls"
     />
 
@@ -73,11 +73,6 @@ import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
-
-const BUTTON_SETUPS = {
-  default: ['screen', 'camera', 'microphone', 'grid', 'leave'],
-  streaming: ['screen', 'microphone', 'drawing', 'grid', 'leave'],
-};
 
 export default {
   components: {
@@ -115,14 +110,6 @@ export default {
 
     amIStreaming() {
       return this.$store.state.me.mediaState.screen;
-    },
-
-    buttonsSetup() {
-      if (this.amIStreaming) {
-        return BUTTON_SETUPS.streaming;
-      }
-
-      return BUTTON_SETUPS.default;
     },
 
     /**
