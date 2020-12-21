@@ -22,7 +22,7 @@ const OVERLAY_WINDOW_SIZES = {
   },
   streaming: {
     width: 348,
-    height: 42,
+    height: 41, //! because renders as 42px on Windows. Whyy
   },
   streamingMax: {
     width: 348,
@@ -133,6 +133,12 @@ class CallWindow {
     this.overlayWindow.setSize(template.width, template.height, OVERLAY_MARGIN);
   }
 
+  /**
+   * Resize streaming overlay
+   *
+   * @param {string} type - overlay type (from OVERLAY_WINDOW_SIZES)
+   * @returns {void}
+   */
   resizeStreamingOverlay(type) {
     if (this.streamingOverlayWindow === null) {
       return;
@@ -222,7 +228,7 @@ class CallWindow {
       this.gridWindow.on('blur', () => {
         broadcastEvents.dispatch('grid-expanded-blur');
         this.gridTimeout = setTimeout(() => {
-          if (this.overlayWindow) {
+          if (this.overlayWindow && !this.streamingOverlayWindow) {
             this.showOverlay();
           }
         }, gridBlurTime);
@@ -236,7 +242,7 @@ class CallWindow {
 
       this.gridWindow.on('hide', () => {
         clearTimeout(this.gridTimeout);
-        if (this.overlayWindow) {
+        if (this.overlayWindow && !this.streamingOverlayWindow) {
           this.showOverlay();
         }
       });
@@ -311,7 +317,6 @@ class CallWindow {
       this.closeStreamingOverlay();
       this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
       this.overlayWindow.action('showInactive');
-      // this.overlayWindow.setPosition('bottomRight');
     }
   }
 
@@ -322,7 +327,7 @@ class CallWindow {
   showStreamingOverlay() {
     if (this.streamingOverlayWindow === null) {
       this.streamingOverlayWindow = WindowManager.create({
-        route: '/call-overlay',
+        route: '/call-overlay/streaming',
         template: 'overlay',
         showInactive: true,
         margin: 80,
@@ -336,6 +341,7 @@ class CallWindow {
           this.streamingOverlayWindow = null;
         },
       });
+      console.log(this.streamingOverlayWindow);
     } else {
       this.streamingOverlayWindow.action('showInactive');
     }
@@ -360,6 +366,7 @@ class CallWindow {
     this.manageWindow(this.gridWindow, 'close');
     this.manageWindow(this.sharingWindow, 'close');
     this.manageWindow(this.overlayWindow, 'softClose');
+    this.manageWindow(this.streamingOverlayWindow, 'softClose');
   }
 
   /**

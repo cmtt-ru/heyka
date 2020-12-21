@@ -4,6 +4,7 @@ const CallWindowExpanded = () => import(/* webpackChunkName: "call" */ '@sdk/vie
 
 const CallOverlayWindow = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow');
 const CallOverlayWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow/Call');
+const StreamingOverlayWindow = () => import(/* webpackChunkName: "call" */ '@views/CallOverlayWindow/StreamingCall');
 
 const CallSharingWindow = () => import(/* webpackChunkName: "call" */ '@views/CallSharingWindow');
 const CallSharingWindowMain = () => import(/* webpackChunkName: "call" */ '@views/CallSharingWindow/Sharing');
@@ -15,6 +16,10 @@ export const callRoutes = [ {
     {
       path: '',
       component: CallOverlayWindowMain,
+    },
+    {
+      path: 'streaming',
+      component: StreamingOverlayWindow,
     },
   ],
 },
