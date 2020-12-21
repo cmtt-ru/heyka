@@ -109,10 +109,6 @@ export default {
       isSharingFullScreen: 'janus/isSharingFullScreen',
     }),
 
-    amIStreaming() {
-      return this.isSharingFullScreen;
-    },
-
     /**
      * That value depends on local media state
      * In order to changing overlay size just after media state changes
