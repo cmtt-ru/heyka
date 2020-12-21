@@ -47,22 +47,6 @@
       </div>
     </div>
 
-    <div
-      v-if="amIStreaming"
-      class="sharing-panel"
-    >
-      <div>Идет трансляция</div>
-      <ui-button
-        :type="7"
-        square
-        popover
-        class="sharing-panel__expand-button"
-        size="small"
-        icon="arrow-down"
-        @click="streamingHandler"
-      />
-    </div>
-
     <call-controls
       :row="isLocalMediaSharing || amIStreaming"
       :buttons="buttonsSetup"
@@ -553,22 +537,4 @@ export default {
     bottom 0
     width 6px
     height 100%
-
-.sharing-panel
-  background-color var(--new-UI-01)
-  color var(--new-UI-09)
-  width 100%
-  height 42px
-  flex-shrink 0
-  padding 8px
-  box-sizing border-box
-  display flex
-  flex-direction row
-  justify-content space-between
-
-  &__expand-button
-    border-radius 20px
-    overflow hidden
-    background-color rgba(255, 255, 255, 0.2) //! не переменная
-
 </style>
