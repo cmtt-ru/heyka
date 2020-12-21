@@ -122,7 +122,7 @@ export default {
      */
     async openManageWorkspace() {
       const { code } = await this.$API.auth.link();
-      const link = `${WEB_URL}/manage/${code}`;
+      const link = `${WEB_URL}/manage/${this.$store.state.me.selectedWorkspaceId}/${code}`;
 
       if (IS_DEV) {
         navigator.clipboard.writeText(link);

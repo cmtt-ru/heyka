@@ -6,6 +6,7 @@ import dateFormat from 'dateformat';
 import { v4 as uuidV4 } from 'uuid';
 import { heykaStore } from '@/store/localStore';
 import sounds from '@sdk/classes/sounds';
+import { conversationBroadcast } from '@api/socket/utils';
 
 /**
  * @typedef PrivacyLogData
@@ -338,5 +339,11 @@ export default {
       volume = loudestVolume;
     }
     commit('SET_MICROPHONE_VOLUME', volume);
+  },
+
+  raiseHandInChannel({ commit }, myId) {
+    conversationBroadcast('hand-up', myId, {
+      timestamp: Date.now(),
+    });
   },
 };

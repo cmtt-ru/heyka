@@ -1,5 +1,8 @@
 <template>
   <div class="settings-page">
+    <div class="settings__label">
+      {{ texts.transparencyCategory }}
+    </div>
     <div class="privacy-text">
       {{ texts.transparency }}
     </div>
@@ -11,11 +14,11 @@
       rows="10"
     />
     <div class="settings__label">
-      {{ texts.googleLabel }}
+      {{ texts.googleCategory }}
     </div>
     <ui-switch
       v-model="analytics"
-      :text="texts.googleSwitch"
+      :text="texts.googleLabel"
       @input="save('Analytics', analytics)"
     />
   </div>
@@ -68,9 +71,6 @@ export default {
 
 <style scoped lang="stylus">
 @import './styles'
-
-.settings-page
-  padding 8px 20px 12px
 
 .privacy-text
   line-height 22px

@@ -54,6 +54,12 @@
             class="reset-form"
             @submit="loginHandler()"
           >
+            <div
+              v-if="IS_DEV"
+              class="dev-server"
+            >
+              {{ texts.devServer }}
+            </div>
             <ui-input
               v-model="login.email"
               icon="mail"
@@ -75,6 +81,7 @@
               :type="6"
               wide
               class="login__button"
+              :loading="loginInProgress"
               submit
             >
               {{ texts.login }}
@@ -147,6 +154,7 @@ import UiButton from '@components/UiButton';
 import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
 import { WEB_URL } from '@sdk/Constants';
+import { heykaStore } from '@/store/localStore';
 
 const http = require('http');
 
@@ -165,14 +173,12 @@ export default {
     return {
       coverSrc: null,
       passReset: false,
-      // login: {
-      //   email: 'ivanb@cmtt.ru',
-      //   password: 'VT3O2O',
-      // },
+      loginInProgress: false,
       login: {
-        email: '',
+        email: heykaStore.get('loginEmail', ''),
         password: IS_DEV ? 'heyka-password' : '',
       },
+      IS_DEV,
     };
   },
 
@@ -278,8 +284,12 @@ export default {
      * @returns {void}
      */
     async loginHandler() {
+      this.loginInProgress = true;
+
       try {
         await this.$API.auth.signin({ credentials: this.login });
+
+        heykaStore.set('loginEmail', this.login.email);
 
         await this.$store.dispatch('initial');
 
@@ -297,6 +307,8 @@ export default {
 
           await this.$store.dispatch('app/addNotification', notification);
         }
+      } finally {
+        this.loginInProgress = false;
       }
     },
 
