@@ -57,7 +57,9 @@ class Intercom {
       }
     })();
 
-    window.Intercom('boot', DEFAULT_INTERCOM_OPTIONS);
+    if (window.Intercom) {
+      window.Intercom('boot', DEFAULT_INTERCOM_OPTIONS);
+    }
 
     this.intercomInited = true;
   }
@@ -67,7 +69,9 @@ class Intercom {
    * @returns {void}
    */
   show() {
-    window.Intercom('show');
+    if (window.Intercom) {
+      window.Intercom('show');
+    }
   }
 
   /**
@@ -75,7 +79,9 @@ class Intercom {
    * @returns {void}
    */
   hide() {
-    window.Intercom('hide');
+    if (window.Intercom) {
+      window.Intercom('hide');
+    }
   }
 
   /**
@@ -84,7 +90,9 @@ class Intercom {
    * @returns {void}
    */
   setUserData(data) {
-    window.Intercom('update', data);
+    if (window.Intercom) {
+      window.Intercom('update', data);
+    }
   }
 
   /**
@@ -92,7 +100,9 @@ class Intercom {
    * @returns {void}
    */
   destroy() {
-    window.Intercom('shutdown');
+    if (window.Intercom) {
+      window.Intercom('shutdown');
+    }
   }
 }
 
