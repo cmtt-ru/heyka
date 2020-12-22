@@ -64,7 +64,8 @@ export default {
      */
     lifespan: {
       type: Number,
-      default: 40000,
+      default: 100000000,
+      // default: 40000,
     },
   },
 
@@ -254,7 +255,7 @@ $ANIM_DELAY = 200ms
   justify-content space-between
   align-items center
   padding 12px
-  margin 0 12px 12px
+  margin-bottom 12px
   overflow hidden
   width 344px
   height 64px

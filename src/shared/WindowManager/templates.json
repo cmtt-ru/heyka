@@ -32,6 +32,8 @@
     "skipTaskbar": true
   },
   "push": {
+    "width": 368,
+    "height": 1500,
     "transparent": true,
     "movable": false,
     "resizable": false,
