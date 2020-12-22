@@ -33,6 +33,16 @@ import { heykaStore } from '@/store/localStore';
  * @property {number} microphoneVolume – current microphone volume in decibels
  * @property {array} notifications – in-app notifications
  * @property {string} search – workspace search
+ *
+ * @property {ConnectionStatus} connectionStatus - several connection status
+ */
+
+/**
+ * @typedef {object} ConnectionStatus
+ * @property {boolean} internet – internet status
+ * @property {boolean} api – backend API status
+ * @property {boolean} socket – socket connection status
+ * @property {boolean} janus – janus connection status
  */
 
 /**
@@ -78,6 +88,12 @@ const state = () => {
     pushes: [],
     search: '',
     animationChannel: null,
+    connectionStatus: {
+      internet: true,
+      api: false,
+      socket: false,
+      janus: false,
+    },
   };
 };
 
