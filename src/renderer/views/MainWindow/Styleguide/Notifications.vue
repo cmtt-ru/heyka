@@ -43,6 +43,19 @@
     >
       Модальное уведомление
     </ui-button>
+
+    <br><br>
+
+    <h1 class="l-mt-12">
+      Pushes
+    </h1>
+    <ui-button
+      :type="1"
+      class="l-mt-12"
+      @click="showTakingMutedPush()"
+    >
+      Пуш-уведомление
+    </ui-button>
   </div>
 </template>
 
@@ -158,6 +171,21 @@ export default {
       };
 
       await this.$store.dispatch('app/addNotification', notification);
+    },
+
+    /**
+   * Display 'No one hears you' push
+   * @returns {void}
+   */
+    async showTakingMutedPush() {
+      const push = {
+        inviteId: Date.now().toString(),
+        local: true,
+        name: 'noSound',
+        message: { action: 'muted' },
+      };
+
+      await this.$store.dispatch('app/addPush', push);
     },
 
     alert() {
