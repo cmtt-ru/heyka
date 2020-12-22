@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 /**
  * Max length of privacy log array
  * @type {number}
@@ -220,5 +222,18 @@ export default {
    */
   ANIMATION_CHANNEL_ID(state, id) {
     state.animationChannel = id;
+  },
+
+  /**
+   * Set connection status
+   *
+   * @param {AppState} state – module app state
+   * @param {ConnectionStatus} statusObject – status object
+   * @constructor
+   */
+  SET_CONNECTION_STATUS(state, statusObject) {
+    Object.keys(statusObject).forEach(status => {
+      Vue.set(state.connectionStatus, status, statusObject[status]);
+    });
   },
 };
