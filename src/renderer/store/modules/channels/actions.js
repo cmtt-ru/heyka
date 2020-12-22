@@ -198,6 +198,10 @@ export default {
         commit('ADD_CONVERSATION_DATA', commitData);
         commit('ADD_CONVERSATION_EVENT', commitData);
         break;
+
+      case 'socket-reconnecting':
+        commit('ADD_CONVERSATION_DATA', commitData);
+        break;
     }
   },
 };
