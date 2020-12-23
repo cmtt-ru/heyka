@@ -22,10 +22,10 @@ import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
-// const NO_MOUSE_EVENTS_TIMEOUT = 3000;
+const NO_MOUSE_EVENTS_TIMEOUT = 150;
 const pushWindow = WindowManager.getCurrentWindow();
 
-// let ignoreMouseTimeout;
+let ignoreMouseTimeout;
 let ignoreMouse = false;
 
 export default {
@@ -49,24 +49,27 @@ export default {
   },
 
   created() {
-    // pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
     window.addEventListener('mousemove', event => {
-      // console.count(event.target);
       if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
         if (ignoreMouse === true) {
           return;
         }
+
         pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
         ignoreMouse = true;
         console.log('ignoreMouse: true');
-        // if (ignoreMouseTimeout) {
-        //   clearTimeout(ignoreMouseTimeout);
-        // }
-        // ignoreMouseTimeout = setTimeout(function () {
-        //   pushWindow.api('setIgnoreMouseEvents', false);
-        //   ignoreMouse = false;
-        //   console.log('ignoreMouse: false');
-        // }, NO_MOUSE_EVENTS_TIMEOUT);
+
+        if (ignoreMouseTimeout) {
+          clearTimeout(ignoreMouseTimeout);
+        }
+
+        ignoreMouseTimeout = setTimeout(function () {
+          pushWindow.action('sendInputEvent', {
+            type: 'mouseLeave',
+            x: 0,
+            y: 0,
+          });
+        }, NO_MOUSE_EVENTS_TIMEOUT);
       } else {
         if (ignoreMouse === false) {
           return;

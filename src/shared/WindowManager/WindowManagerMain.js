@@ -58,6 +58,7 @@ class WindowManager {
       reload: this.reloadWindow,
       openurl: this.openUrl,
       willQuit: this.willQuit,
+      sendInputEvent: this.sendInputEvent,
     };
 
     ipcMain.on('window-manager-event', (event, options) => {
@@ -522,6 +523,19 @@ class WindowManager {
     for (const w in this.windows) {
       if (w !== this.mainWindowId) {
         this.closeWindow({ id: w });
+      }
+    }
+  }
+
+  /**
+   * Send input event in window
+   * @returns {void}
+   */
+  sendInputEvent({ id, data }) {
+    for (const w in this.windows) {
+      if (w !== this.mainWindowId) {
+        console.log('sendInputEvent', data);
+        this.windows[w].browserWindow.webContents.sendInputEvent(data);
       }
     }
   }
