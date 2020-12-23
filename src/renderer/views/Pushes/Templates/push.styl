@@ -1,0 +1,39 @@
+.push
+  display flex
+  flex-direction row
+  justify-content flex-start
+  align-items flex-start
+  position relative
+
+  &__close-button
+    position absolute
+    top 8px
+    right 8px
+    color var(--new-UI-03)
+
+  &__image
+    width 40px
+    height 40px
+    border 1px solid rgba(0, 0, 0, 0.1)
+    border-radius 40px
+    display flex
+    flex-direction row
+    justify-content center
+    align-items center
+
+  &__content
+    margin-left 10px
+    margin-right 32px
+    display flex
+    flex-direction column
+
+    &__header
+      font-weight bold
+
+  &__button-wrapper
+    flex-shrink 0
+    flex-grow 0
+    margin-top 8px
+
+  &__button
+    margin-right 8px

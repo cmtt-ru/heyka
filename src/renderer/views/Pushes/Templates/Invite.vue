@@ -1,48 +1,53 @@
 <template>
-  <div>
-    <div class="push__content">
+  <div class="push">
+    <ui-button
+      :type="7"
+      class="push__close-button"
+      icon="close"
+      size="tiny"
+      :height="22"
+      @click="$emit('button-click', {action: 'busy', showResponse: true})"
+    />
+    <div class="push__image">
       <avatar
         class="push__avatar"
         :size="40"
         :image="data.user.avatarSet.image64x64"
         :user-id="data.userId"
       />
-
-      <div class="push__col">
-        <p class="push__user-name">
-          {{ data.user.name }}
-        </p>
-
-        <div
-          class="push__channel"
-        >
-          <span class="push__channel--no-shrink">{{ texts.invitesto }}</span>
-          <svg-icon
-            name="channelOnAir"
-            size="medium"
-            class="push__channel__icon push__channel--no-shrink"
-          />
-          <span v-textfade>{{ channel.name || data.workspace.name }}</span>
-        </div>
-      </div>
     </div>
-    <div class="push__button-wrapper">
-      <ui-button
-        :type="1"
-        size="medium"
-        class="push__button"
-        @click="$emit('button-click', {action: 'accept-invite'})"
-      >
-        {{ texts.join }}
-      </ui-button>
-      <ui-button
-        :type="3"
-        size="medium"
-        class="push__button"
-        @click="$emit('button-click', {action: 'busy', showResponse: true})"
-      >
-        {{ texts.busy }}
-      </ui-button>
+    <div class="push__content">
+      <div class="push__content__header">
+        {{ data.user.name }}
+      </div>
+      <div class="push__content__info">
+        <span class="push__info--no-shrink">{{ texts.invitesto }}</span>
+        <svg-icon
+          name="channelOnAir"
+          size="medium"
+          class="push__info__icon push__info--no-shrink"
+        />
+        <span v-textfade>{{ channel.name || data.workspace.name }}</span>
+      </div>
+
+      <div class="push__button-wrapper">
+        <ui-button
+          :type="1"
+          size="medium"
+          class="push__button"
+          @click="$emit('button-click', {action: 'accept-invite'})"
+        >
+          {{ texts.join }}
+        </ui-button>
+        <ui-button
+          :type="3"
+          size="medium"
+          class="push__button"
+          @click="$emit('button-click', {action: 'busy', showResponse: true})"
+        >
+          {{ texts.busy }}
+        </ui-button>
+      </div>
     </div>
   </div>
 </template>
@@ -96,14 +101,8 @@ export default {
 </script>
 
 <style  lang="stylus" scoped>
-
+@import './push.styl'
 .push
-
-  &__content
-    display flex
-
-  &__col
-      margin-left 8px
 
   &__avatar
     display block
@@ -112,13 +111,7 @@ export default {
     border-radius 4px
     flex-shrink 0
 
-  &__user-name
-    margin-top 3px
-    overflow hidden
-    text-overflow ellipsis
-    white-space nowrap
-
-  &__channel
+  &__info
     display flex
     align-items center
     color var(--text-1)
@@ -133,13 +126,5 @@ export default {
 
     &__icon
       margin-left 4px
-
-  &__button-wrapper
-    flex-shrink 0
-    flex-grow 0
-    margin-left 8px
-
-  &__button
-    margin 0 4px
 
 </style>

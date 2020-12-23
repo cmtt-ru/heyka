@@ -258,7 +258,6 @@ $ANIM_DELAY = 200ms
   margin-bottom 12px
   overflow hidden
   width 344px
-  height 64px
   box-sizing border-box
   border-radius 6px
   box-shadow 0px 3px 8px rgba(0, 0, 0, 0.15)
