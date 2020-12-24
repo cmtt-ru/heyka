@@ -54,6 +54,9 @@ export default {
     },
 
   },
+  mounted() {
+    this.$emit('child-mounted');
+  },
 };
 </script>
 

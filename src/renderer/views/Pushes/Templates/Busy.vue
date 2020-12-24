@@ -66,6 +66,9 @@ export default {
     },
 
   },
+  mounted() {
+    this.$emit('child-mounted');
+  },
 
   methods: {
     avatarUrl: getUserAvatarUrl,

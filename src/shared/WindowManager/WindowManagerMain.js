@@ -534,7 +534,6 @@ class WindowManager {
   sendInputEvent({ id, data }) {
     for (const w in this.windows) {
       if (w !== this.mainWindowId) {
-        console.log('sendInputEvent', data);
         this.windows[w].browserWindow.webContents.sendInputEvent(data);
       }
     }

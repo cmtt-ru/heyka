@@ -44,8 +44,6 @@
       Модальное уведомление
     </ui-button>
 
-    <br><br>
-
     <h1 class="l-mt-12">
       Pushes
     </h1>

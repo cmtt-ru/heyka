@@ -49,6 +49,7 @@ export default {
   },
 
   created() {
+    pushWindow.action('console');
     window.addEventListener('mousemove', event => {
       if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
         if (ignoreMouse === true) {
@@ -57,7 +58,6 @@ export default {
 
         pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
         ignoreMouse = true;
-        console.log('ignoreMouse: true');
 
         if (ignoreMouseTimeout) {
           clearTimeout(ignoreMouseTimeout);
@@ -76,7 +76,6 @@ export default {
         }
         pushWindow.api('setIgnoreMouseEvents', false);
         ignoreMouse = false;
-        console.log('ignoreMouse: false');
       }
     });
   },
@@ -133,9 +132,6 @@ body, html
 
 *
   pointer-events all
-
-.draggable
-  -webkit-app-region drag
 </style>
 
 <style lang="stylus" scoped>
