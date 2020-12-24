@@ -20,7 +20,7 @@
         {{ texts.text }}
       </div>
       <div class="push__content__info">
-        {{ texts.text }}
+        {{ texts.info }}
       </div>
 
       <div class="push__button-wrapper">

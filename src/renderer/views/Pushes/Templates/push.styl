@@ -12,14 +12,23 @@
     color var(--new-UI-03)
 
   &__image
+    position relative
     width 40px
     height 40px
     border 1px solid rgba(0, 0, 0, 0.1)
     border-radius 40px
     display flex
     flex-direction row
+    flex-shrink 0
     justify-content center
     align-items center
+
+  &__avatar--workspace
+    position absolute
+    bottom -1px
+    right -1px
+    border 1px solid rgba(0, 0, 0, 0.1)
+    border-radius 16px
 
   &__content
     margin-left 10px
@@ -29,6 +38,9 @@
 
     &__header
       font-weight bold
+
+    &__info
+      font-weight normal
 
   &__button-wrapper
     flex-shrink 0
