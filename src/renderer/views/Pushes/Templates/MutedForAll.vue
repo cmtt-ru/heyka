@@ -73,10 +73,12 @@ export default {
      * @returns {object}
      */
     user() {
-      console.log(this.$store.getters['users/getUserById'](this.data.userId));
-
       return this.$store.getters['users/getUserById'](this.data.userId);
     },
+  },
+
+  mounted() {
+    this.$emit('child-mounted');
   },
 
   methods: {

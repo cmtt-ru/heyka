@@ -100,6 +100,7 @@ export default {
       action: 'busy',
       showResponse: true,
     });
+    this.$emit('child-mounted');
   },
   methods: {
     avatarUrl: getUserAvatarUrl,

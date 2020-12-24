@@ -6,6 +6,7 @@ import Logger from '@sdk/classes/logger';
 const cnsl = new Logger('Push Window', '#a9ff71');
 
 const PUSH_MOVEOUT_TIMER = 500;
+const BIG_WINDOW_HEIGHT = 2000;
 
 /**
  * Class for controlling push window
@@ -35,6 +36,9 @@ class PushWindow {
         position: 'topRight',
         margin: 0,
         template: 'push',
+        window: {
+          height: screen.availHeight || BIG_WINDOW_HEIGHT,
+        },
         visibleOnAllWorkspaces: true,
         showInactive: true,
         onClose: () => {
