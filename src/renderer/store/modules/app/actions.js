@@ -215,6 +215,11 @@ export default {
     if (workspaceId) {
       push.workspace = rootGetters['workspaces/getWorkspaceById'](workspaceId);
     }
+    if (message.channelId) {
+      push.channel = rootGetters['channels/getChannelById'](message.channelId) || await API.channel.info(message.channelId);
+    }
+
+    console.log(push);
 
     commit('ADD_PUSH', push);
   },

@@ -12,22 +12,32 @@
       <avatar
         class="push__avatar"
         :size="40"
-        :image="data.user.avatarSet.image64x64"
+        :image="avatarUrl(data.user, 40)"
         :user-id="data.userId"
+      />
+      <avatar
+        v-if="data.workspaceId !== workspaceId"
+        class="push__avatar--workspace"
+        :size="16"
+        :image="avatarUrl(data.workspace, 16)"
+        :user-id="data.workspaceId"
       />
     </div>
     <div class="push__content">
-      <div class="push__content__header">
+      <div
+        v-textfade
+        class="push__content__header"
+      >
         {{ data.user.name }}
       </div>
       <div class="push__content__info">
-        <span class="push__info--no-shrink">{{ texts.invitesto }}</span>
+        <span class="push__content__info--no-shrink">{{ texts.invitesto }}</span>
         <svg-icon
-          name="channelOnAir"
+          name="channel"
           size="medium"
-          class="push__info__icon push__info--no-shrink"
+          class="push__content__info__icon push__content__info--no-shrink"
         />
-        <span v-textfade>{{ channel.name || data.workspace.name }}</span>
+        <span v-textfade>{{ data.channel.name }}</span>
       </div>
 
       <div class="push__button-wrapper">
@@ -56,6 +66,7 @@
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
+import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   components: {
@@ -73,7 +84,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      userAvatar: 'users/getUserAvatarUrl',
+      workspaceId: 'me/getSelectedWorkspaceId',
     }),
     /**
      * Get needed texts from I18n-locale file
@@ -83,13 +94,6 @@ export default {
       return this.$t('push');
     },
 
-    /**
-     * Get user's channel
-     * @return {object}
-     */
-    channel() {
-      return this.$store.getters['channels/getChannelById'](this.data.channelId) || { name: null };
-    },
   },
   mounted() {
     this.$emit('default-close-response', {
@@ -97,24 +101,17 @@ export default {
       showResponse: true,
     });
   },
+  methods: {
+    avatarUrl: getUserAvatarUrl,
+  },
 };
 </script>
 
 <style  lang="stylus" scoped>
 @import './push.styl'
-.push
-
-  &__avatar
-    display block
-    width 40px
-    height 40px
-    border-radius 4px
-    flex-shrink 0
-
-  &__info
+.push__content__info
     display flex
     align-items center
-    color var(--text-1)
     font-size 12px
     line-height 14px
     margin-top 1px
@@ -126,5 +123,6 @@ export default {
 
     &__icon
       margin-left 4px
+      color var(--new-UI-01)
 
 </style>

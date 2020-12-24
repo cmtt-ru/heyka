@@ -1,26 +1,54 @@
 <template>
-  <div class="push__content">
-    <svg-icon
-      name="mic-off"
-      size="large"
-    />
-    <p>{{ texts.text }}<br>{{ user.name }}</p>
-
+  <div class="push">
     <ui-button
-      :type="1"
-      @click="$emit('button-click')"
-    >
-      {{ texts.close }}
-    </ui-button>
+      :type="7"
+      class="push__close-button"
+      icon="close"
+      size="tiny"
+      :height="22"
+      @click="$emit('button-click', {action: 'busy', showResponse: true})"
+    />
+    <div class="push__image">
+      <avatar
+        class="push__avatar"
+        :size="40"
+        :image="avatarUrl(user, 40)"
+        :user-id="user.id"
+      />
+    </div>
+    <div class="push__content">
+      <div
+        v-textfade
+        class="push__content__header"
+      >
+        {{ user.name }}
+      </div>
+      <div class="push__content__info">
+        {{ texts.text }}
+      </div>
+
+      <div class="push__button-wrapper">
+        <ui-button
+          :type="1"
+          class="push__button"
+          @click="$emit('button-click', {action: 'turn-mic-on'})"
+        >
+          {{ texts.turnOn }}
+        </ui-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import UiButton from '@components/UiButton';
+import Avatar from '@components/Avatar';
+import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   components: {
     UiButton,
+    Avatar,
   },
   props: {
     /**
@@ -45,20 +73,18 @@ export default {
      * @returns {object}
      */
     user() {
+      console.log(this.$store.getters['users/getUserById'](this.data.userId));
+
       return this.$store.getters['users/getUserById'](this.data.userId);
     },
+  },
+
+  methods: {
+    avatarUrl: getUserAvatarUrl,
   },
 };
 </script>
 
 <style  lang="stylus" scoped>
-.push
-  &__content
-    display flex
-    align-items center
-    padding-left 12px
-
-    p
-      flex 1 0 auto
-      margin-left 12px
+@import './push.styl'
 </style>
