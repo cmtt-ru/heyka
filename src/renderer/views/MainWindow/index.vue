@@ -3,6 +3,7 @@
     <janus />
     <notifications />
     <router-view />
+    <app-status :show="!$store.getters['app/getConnectionStatus']" />
     <!--    <performance-monitor />-->
   </div>
 </template>
@@ -12,6 +13,7 @@ import { ipcRenderer } from 'electron';
 import Janus from '@components/Janus.vue';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import Notifications from '@components/Notifications';
+import AppStatus from '@components/AppStatus';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
 // import PerformanceMonitor from '@components/PerformanceMonitor';
@@ -28,6 +30,7 @@ export default {
   components: {
     Janus,
     Notifications,
+    AppStatus,
     // PerformanceMonitor,
   },
   data() {

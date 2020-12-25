@@ -272,7 +272,11 @@ export default {
         // });
       }
 
+      connectionCheck.handleSocketState(true);
+
       await dispatch('updateCurrentWorkspaceState');
+    } else {
+      connectionCheck.handleSocketState(false);
     }
   },
 
