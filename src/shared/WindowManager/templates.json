@@ -67,6 +67,15 @@
     "backgroundColor": "#000",
     "resizable": false
   },
+  "sharingOverlay": {
+    "maxWidth": 660,
+    "maxHeight": 439,
+    "alwaysOnTop": true,
+    "maximizable": false,
+    "fullscreenable": false,
+    "backgroundColor": "#000",
+    "skipTaskbar": true
+  },
   "call": {
     "width": 1500,
     "height": 1000,
