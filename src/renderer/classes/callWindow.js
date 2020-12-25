@@ -308,6 +308,16 @@ class CallWindow {
   }
 
   /**
+   * Show frame window console
+   * @returns {void}
+   */
+  showFrameConsole() {
+    if (this.frameWindow !== null) {
+      this.frameWindow.action('console');
+    }
+  }
+
+  /**
    * Hide frame window
    * @returns {void}
    */
