@@ -413,12 +413,6 @@ export default {
         this.preloaderShown = state;
       }
     },
-
-    streamingHandler() {
-      this.streamingOverlayExpanded = !this.streamingOverlayExpanded;
-      broadcastEvents.dispatch('hover-streaming-panel', this.streamingOverlayExpanded);
-    },
-
   },
 };
 </script>
