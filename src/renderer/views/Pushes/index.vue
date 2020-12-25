@@ -49,7 +49,6 @@ export default {
   },
 
   created() {
-    pushWindow.action('console');
     window.addEventListener('mousemove', event => {
       if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
         if (ignoreMouse === true) {

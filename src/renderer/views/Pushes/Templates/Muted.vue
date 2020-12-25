@@ -12,7 +12,7 @@
       <svg-icon
         class="push__image__icon"
         name="mic-off"
-        size="large"
+        size="medium"
       />
     </div>
     <div class="push__content">
@@ -26,7 +26,7 @@
       <div class="push__button-wrapper">
         <ui-button
           :type="1"
-          size="medium"
+          size="small"
           class="push__button"
           @click="$emit('button-click', {action: 'turn-mic-on'})"
         >
