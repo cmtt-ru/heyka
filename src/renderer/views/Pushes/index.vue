@@ -1,5 +1,6 @@
 <template>
   <div
+    id="push-wrapper"
     :style="$themes.getColors('navbar')"
     class="push-wrapper"
   >
@@ -19,10 +20,22 @@
 import Push from './Push';
 import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+
+const NO_MOUSE_EVENTS_TIMEOUT = 150;
+const pushWindow = WindowManager.getCurrentWindow();
+
+let ignoreMouseTimeout;
+let ignoreMouse = false;
 
 export default {
   components: {
     Push,
+  },
+  data() {
+    return {
+
+    };
   },
   computed: {
     /**
@@ -34,7 +47,40 @@ export default {
       return this.$store.state.app.pushes;
     },
   },
+
+  created() {
+    window.addEventListener('mousemove', event => {
+      if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
+        if (ignoreMouse === true) {
+          return;
+        }
+
+        pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
+        ignoreMouse = true;
+
+        if (ignoreMouseTimeout) {
+          clearTimeout(ignoreMouseTimeout);
+        }
+
+        ignoreMouseTimeout = setTimeout(function () {
+          pushWindow.action('sendInputEvent', {
+            type: 'mouseLeave',
+            x: 0,
+            y: 0,
+          });
+        }, NO_MOUSE_EVENTS_TIMEOUT);
+      } else {
+        if (ignoreMouse === false) {
+          return;
+        }
+        pushWindow.api('setIgnoreMouseEvents', false);
+        ignoreMouse = false;
+      }
+    });
+  },
+
   methods: {
+
     /**
      * Close push by its id
      *
@@ -77,6 +123,15 @@ export default {
   },
 };
 </script>
+
+<style lang="stylus">
+body, html
+  pointer-events none
+  height 100%
+
+*
+  pointer-events all
+</style>
 
 <style lang="stylus" scoped>
 .push-wrapper

@@ -1,32 +1,43 @@
 <template>
-  <div>
-    <div class="push__content">
+  <div class="push">
+    <ui-button
+      :type="7"
+      class="push__close-button"
+      icon="close"
+      size="tiny"
+      :height="22"
+      @click="$emit('button-click', {action: 'busy', showResponse: true})"
+    />
+    <div class="push__image">
       <avatar
         class="push__avatar"
         :size="40"
-        :image="userAvatar(user.id, 40)"
+        :image="avatarUrl(user, 40)"
         :user-id="user.id"
       />
-
-      <div class="push__col">
-        <p class="push__user-name">
-          {{ user.name }}
-        </p>
-
-        <div class="push__channel">
-          {{ texts.isbusy }}
-        </div>
+    </div>
+    <div class="push__content">
+      <div
+        v-textfade
+        class="push__content__header"
+      >
+        {{ user.name }}
+      </div>
+      <div class="push__content__info">
+        {{ texts.isbusy }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
-import { mapGetters } from 'vuex';
+import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   components: {
+    UiButton,
     Avatar,
   },
   props: {
@@ -39,9 +50,6 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({
-      userAvatar: 'users/getUserAvatarUrl',
-    }),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
@@ -58,52 +66,16 @@ export default {
     },
 
   },
+  mounted() {
+    this.$emit('child-mounted');
+  },
+
+  methods: {
+    avatarUrl: getUserAvatarUrl,
+  },
 };
 </script>
 
 <style  lang="stylus" scoped>
-
-.push
-
-  &__content
-    display flex
-
-  &__col
-      margin-left 8px
-
-  &__avatar
-    display block
-    width 40px
-    height 40px
-    border-radius 4px
-    flex-shrink 0
-
-  &__user-name
-    margin-top 3px
-    overflow hidden
-    text-overflow ellipsis
-    white-space nowrap
-
-  &__channel
-    display flex
-    align-items center
-    color var(--text-1)
-    align-items center
-    font-size 12px
-    line-height 14px
-    margin-top 1px
-    flex-shrink 0
-    white-space nowrap
-
-    &__icon
-      margin-left 4px
-
-  &__button-wrapper
-    flex-shrink 0
-    flex-grow 0
-    margin-left 8px
-
-  &__button
-    margin 0 4px
-
+@import './push.styl'
 </style>

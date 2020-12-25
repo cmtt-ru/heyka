@@ -1,14 +1,16 @@
 <template>
-  <transition name="push">
+  <transition :name="transitionName">
     <component
       :is="data.action"
       v-if="mounted"
+      ref="push"
       v-hammer:pan.horizontal="pan"
       v-hammer:panstart="onPanStart"
       v-hammer:panend="onPanEnd"
       :style="styles"
       class="push"
       :data="data"
+      @child-mounted="childMountedHandler"
       @button-click="clickHandler"
       @default-close-response="saveCloseResponse"
     />
@@ -29,6 +31,8 @@ const THRESHOLD = 90;
 
 /* distance that push travels to the side during closing sequence */
 const SIDETRAVEL = 100;
+
+const DEFAULT_HEIGHT = 100;
 
 export default {
 
@@ -70,45 +74,63 @@ export default {
 
   data() {
     return {
+      transitionName: null,
       closeResponse: null,
       mounted: false,
+      childMounted: false,
       holding: false,
       timeoutEnded: false,
       closeRunning: false,
       styles: {
         transition: null,
-        opacity: null,
+        opacity: 0,
         transform: null,
         height: null,
         padding: null,
         margin: null,
+        position: 'absolute',
+        '--offset': '-66px',
+        'pointer-events': 'none',
       },
     };
   },
 
-  /**
-   * 1. flag "mounted" to true (so we can show push)
-   * 2. emit "mounted" event (for future use)
-   * 3. set timeout with self-destruct
-   *
-   * @returns {void}
-  */
   mounted() {
     this.mounted = true;
-    this.$nextTick(() => {
-      this.$emit('mounted', this.id);
-    });
-
-    setTimeout(() => {
-      this.timeoutEnded = true;
-      /* if we are holding the push, or push is already destroyed, do nothing */
-      if (!this.holding && !this.closeRunning) {
-        this.close(true);
-      }
-    }, this.lifespan);
   },
 
   methods: {
+    /**
+     * 1. flag "mounted" to true (so we can show push)
+     * 2. emit "mounted" event (for future use)
+     * 3. set timeout with self-destruct
+     *
+     * @returns {void}
+    */
+    childMountedHandler() {
+      if (this.childMounted) {
+        return;
+      }
+      this.childMounted = true;
+      this.styles['--offset'] = `-${this.$refs.push?.$el?.offsetHeight || DEFAULT_HEIGHT}px`;
+      this.styles.position = null;
+      this.styles.opacity = null;
+      this.styles['pointer-events'] = null;
+      this.mounted = false;
+      this.transitionName = 'push';
+      this.$emit('mounted', this.id);
+      this.$nextTick(() => {
+        this.mounted = true;
+      });
+
+      setTimeout(() => {
+        this.timeoutEnded = true;
+        /* if we are holding the push, or push is already destroyed, do nothing */
+        if (!this.holding && !this.closeRunning) {
+          this.close(true);
+        }
+      }, this.lifespan);
+    },
 
     /**
      * Handle clicked button: strart closing sequence and trigger button action if found one
@@ -254,37 +276,34 @@ $ANIM_DELAY = 200ms
   justify-content space-between
   align-items center
   padding 12px
-  margin 0 12px 12px
+  margin-bottom 12px
   overflow hidden
   width 344px
-  height 64px
   box-sizing border-box
-  border-radius 6px
+  border-radius 12px
   box-shadow 0px 3px 8px rgba(0, 0, 0, 0.15)
   pointer-events auto
   transition all $ANIM ease
   opacity 1
 
 .push-enter
-  height 0
-  padding 0px 12px
-  margin 0px 12px
   opacity 0
   transform translateX(200px)
+  margin-bottom var(--offset)
 
-.push-enter-active
+.push-enter-to
   pointer-events none
-  transition opacity $ANIM ease $ANIM_DELAY, height $ANIM ease, padding $ANIM ease, margin $ANIM ease, transform $ANIM ease $ANIM_DELAY
+  margin-bottom 12px
+  transition opacity $ANIM ease $ANIM_DELAY, margin-bottom $ANIM ease, transform $ANIM ease $ANIM_DELAY
 
 .push-leave
-  height 0
   opacity 0
+  margin-bottom 12px
 
-.push-leave-active
-  padding 0px 12px
-  margin 0px 12px
+.push-leave-to
   opacity 0
-  height 0
-  transition opacity $ANIM ease, height $ANIM ease $ANIM_DELAY, padding $ANIM ease $ANIM_DELAY, margin $ANIM ease $ANIM_DELAY, transform $ANIM ease
+  margin-bottom var(--offset)
+  transform translateY(var(--offset))
+  transition opacity $ANIM ease, margin-bottom $ANIM ease, transform $ANIM ease
 
 </style>

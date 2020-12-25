@@ -86,10 +86,11 @@ class Window extends EventEmitter {
    * @param {string} event - event name
    * @returns {void}
    */
-  action(event) {
+  action(event, data) {
     ipcRenderer.sendSync('window-manager-event', {
       event,
       id: this.windowId,
+      data,
     });
   }
 
