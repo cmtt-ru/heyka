@@ -11,8 +11,6 @@ let updateTimer;
 
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = false;
-autoUpdater.allowPrerelease = true;
-autoUpdater.channel = 'beta';
 
 export default {
   /**
