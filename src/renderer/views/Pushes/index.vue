@@ -152,11 +152,13 @@ export default {
 
 <style lang="stylus">
 body, html
-  pointer-events none
   height 100%
 
+body
+  pointer-events none
+
 *
-  pointer-events all
+  pointer-events auto
 </style>
 
 <style lang="stylus" scoped>
