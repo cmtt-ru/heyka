@@ -139,4 +139,8 @@ export default {
     return deviceId;
   },
 
+  getConnectionStatus: state => {
+    return state.connectionStatus.internet && state.connectionStatus.api && state.connectionStatus.socket;
+  },
+
 };
