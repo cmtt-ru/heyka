@@ -341,7 +341,6 @@ class CallWindow {
           this.streamingOverlayWindow = null;
         },
       });
-      console.log(this.streamingOverlayWindow);
     } else {
       this.streamingOverlayWindow.action('showInactive');
     }
