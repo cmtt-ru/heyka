@@ -22,12 +22,11 @@ const OVERLAY_WINDOW_SIZES = {
   },
   streaming: {
     width: 348,
-    height: 68,
-    maxWidth: 660,
-    maxHeight: 440,
-    minWidth: 1,
-    minHeight: 1,
-    resizable: false,
+    height: 41, //! because renders as 42px on Windows. Whyy
+  },
+  streamingMax: {
+    width: 348,
+    height: 110,
   },
 };
 
@@ -43,9 +42,13 @@ class CallWindow {
     this.sharingWindow = null;
     this.gridWindow = null;
     this.frameWindow = null;
+    this.streamingOverlayWindow = null;
     this.lastMediaSharingMode = null;
     broadcastEvents.on('closeOverlay', () => {
       this.closeOverlay();
+    });
+    broadcastEvents.on('click-streaming-panel', (val) => {
+      this.resizeStreamingOverlay(val ? 'streamingMax' : 'streaming');
     });
   }
 
@@ -131,6 +134,21 @@ class CallWindow {
   }
 
   /**
+   * Resize streaming overlay
+   *
+   * @param {string} type - overlay type (from OVERLAY_WINDOW_SIZES)
+   * @returns {void}
+   */
+  resizeStreamingOverlay(type) {
+    if (this.streamingOverlayWindow === null) {
+      return;
+    }
+    const template = OVERLAY_WINDOW_SIZES[type];
+
+    this.streamingOverlayWindow.setSize(template.width, template.height);
+  }
+
+  /**
    * Show sharing window
    * @returns {void}
    */
@@ -210,7 +228,7 @@ class CallWindow {
       this.gridWindow.on('blur', () => {
         broadcastEvents.dispatch('grid-expanded-blur');
         this.gridTimeout = setTimeout(() => {
-          if (this.overlayWindow) {
+          if (this.overlayWindow && !this.streamingOverlayWindow) {
             this.showOverlay();
           }
         }, gridBlurTime);
@@ -224,7 +242,7 @@ class CallWindow {
 
       this.gridWindow.on('hide', () => {
         clearTimeout(this.gridTimeout);
-        if (this.overlayWindow) {
+        if (this.overlayWindow && !this.streamingOverlayWindow) {
           this.showOverlay();
         }
       });
@@ -285,8 +303,8 @@ class CallWindow {
       this.frameWindow.action('showInactive');
     }
 
-    this.resizeOverlay('streaming');
-    this.overlayWindow.setPosition('bottomLeft');
+    this.hideOverlay();
+    this.showStreamingOverlay();
   }
 
   /**
@@ -296,8 +314,45 @@ class CallWindow {
   closeFrame() {
     if (this.frameWindow) {
       this.frameWindow.action('softClose');
+      this.closeStreamingOverlay();
       this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
-      this.overlayWindow.setPosition('bottomRight');
+      this.overlayWindow.action('showInactive');
+    }
+  }
+
+  /**
+   * Show streaming overlay window
+   * @returns {void}
+   */
+  showStreamingOverlay() {
+    if (this.streamingOverlayWindow === null) {
+      this.streamingOverlayWindow = WindowManager.create({
+        route: '/call-overlay/streaming',
+        template: 'overlay',
+        showInactive: true,
+        margin: 80,
+        aspectRatio: 1.778,
+        position: 'bottomLeft',
+        visibleOnAllWorkspaces: true,
+        window: {
+          ...OVERLAY_WINDOW_SIZES['streaming'],
+        },
+        onClose: () => {
+          this.streamingOverlayWindow = null;
+        },
+      });
+    } else {
+      this.streamingOverlayWindow.action('showInactive');
+    }
+  }
+
+  /**
+   * Close streaming overlay window
+   * @returns {void}
+   */
+  closeStreamingOverlay() {
+    if (this.streamingOverlayWindow) {
+      this.streamingOverlayWindow.action('softClose');
     }
   }
 
@@ -310,6 +365,7 @@ class CallWindow {
     this.manageWindow(this.gridWindow, 'close');
     this.manageWindow(this.sharingWindow, 'close');
     this.manageWindow(this.overlayWindow, 'softClose');
+    this.manageWindow(this.streamingOverlayWindow, 'softClose');
   }
 
   /**
