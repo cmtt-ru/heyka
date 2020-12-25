@@ -56,7 +56,7 @@ export default {
             return;
           }
 
-          pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
+          pushWindow.api('setIgnoreMouseEvents', true);
           ignoreMouse = true;
 
           if (ignoreMouseTimeout) {
