@@ -5,13 +5,7 @@ import Logger from '@sdk/classes/logger';
 
 const cnsl = new Logger('Push Window', '#a9ff71');
 
-const ONE_PUSH_SIZE = {
-  width: 368,
-  height: 76,
-};
-const TOP_MARGIN = 12;
 const PUSH_MOVEOUT_TIMER = 500;
-const MAX_AMOUNT = 7;
 
 /**
  * Class for controlling push window
@@ -41,12 +35,9 @@ class PushWindow {
         position: 'topRight',
         margin: 0,
         template: 'push',
+        maxAvailHeight: true,
         visibleOnAllWorkspaces: true,
         showInactive: true,
-        window: {
-          width: ONE_PUSH_SIZE.width,
-          height: ONE_PUSH_SIZE.height + TOP_MARGIN,
-        },
         onClose: () => {
           this.window = null;
         },
@@ -90,13 +81,6 @@ class PushWindow {
     this._newPushSupport();
     if (this.window === null) {
       this._show();
-    } else {
-      // resize to fit one extra notification in case some old notification is still in move-out transition
-      this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(length + 1, MAX_AMOUNT), 0);
-
-      this.closewWindowTimeout = setTimeout(() => {
-        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(length, MAX_AMOUNT), 0);
-      }, PUSH_MOVEOUT_TIMER);
     }
   }
 
@@ -111,10 +95,6 @@ class PushWindow {
       cnsl.log('no pushes left');
       this.closewWindowTimeout = setTimeout(() => {
         this.window.action('close');
-      }, PUSH_MOVEOUT_TIMER);
-    } else {
-      this.closewWindowTimeout = setTimeout(() => {
-        this.window.setSize(ONE_PUSH_SIZE.width, TOP_MARGIN + ONE_PUSH_SIZE.height * Math.min(length, MAX_AMOUNT), 0);
       }, PUSH_MOVEOUT_TIMER);
     }
   }

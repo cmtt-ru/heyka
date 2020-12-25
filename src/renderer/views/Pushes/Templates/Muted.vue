@@ -1,25 +1,36 @@
 <template>
-  <div>
+  <div class="push">
+    <ui-button
+      :type="7"
+      class="push__close-button"
+      icon="close"
+      size="tiny"
+      :height="22"
+      @click="$emit('button-click')"
+    />
+    <div class="push__image">
+      <svg-icon
+        class="push__image__icon"
+        name="mic-off"
+        size="medium"
+      />
+    </div>
     <div class="push__content">
-      <div class="push__col">
+      <div class="push__content__header">
         {{ texts.text }}
       </div>
+      <div class="push__content__info">
+        {{ texts.info }}
+      </div>
+
       <div class="push__button-wrapper">
         <ui-button
           :type="1"
-          size="medium"
+          size="small"
           class="push__button"
           @click="$emit('button-click', {action: 'turn-mic-on'})"
         >
           {{ texts.button1 }}
-        </ui-button>
-        <ui-button
-          :type="3"
-          size="medium"
-          class="push__button"
-          @click="$emit('button-click')"
-        >
-          {{ texts.button2 }}
         </ui-button>
       </div>
     </div>
@@ -43,25 +54,13 @@ export default {
     },
 
   },
+  mounted() {
+    this.$emit('child-mounted');
+  },
 };
 </script>
 
 <style  lang="stylus" scoped>
-
-.push
-
-  &__content
-    display flex
-
-  &__col
-      margin-left 8px
-
-  &__button-wrapper
-    flex-shrink 0
-    flex-grow 0
-    margin-left 8px
-
-  &__button
-    margin 0 4px
+@import './push.styl'
 
 </style>

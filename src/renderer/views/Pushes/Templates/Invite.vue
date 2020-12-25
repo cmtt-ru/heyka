@@ -1,48 +1,63 @@
 <template>
-  <div>
-    <div class="push__content">
+  <div class="push">
+    <ui-button
+      :type="7"
+      class="push__close-button"
+      icon="close"
+      size="tiny"
+      :height="22"
+      @click="$emit('button-click', {action: 'busy', showResponse: true})"
+    />
+    <div class="push__image">
       <avatar
         class="push__avatar"
         :size="40"
-        :image="data.user.avatarSet.image64x64"
+        :image="avatarUrl(data.user, 40)"
         :user-id="data.userId"
       />
-
-      <div class="push__col">
-        <p class="push__user-name">
-          {{ data.user.name }}
-        </p>
-
-        <div
-          class="push__channel"
-        >
-          <span class="push__channel--no-shrink">{{ texts.invitesto }}</span>
-          <svg-icon
-            name="channelOnAir"
-            size="medium"
-            class="push__channel__icon push__channel--no-shrink"
-          />
-          <span v-textfade>{{ channel.name || data.workspace.name }}</span>
-        </div>
-      </div>
+      <avatar
+        v-if="data.workspaceId !== workspaceId"
+        class="push__avatar--workspace"
+        :size="16"
+        :image="avatarUrl(data.workspace, 16)"
+        :user-id="data.workspaceId"
+      />
     </div>
-    <div class="push__button-wrapper">
-      <ui-button
-        :type="1"
-        size="medium"
-        class="push__button"
-        @click="$emit('button-click', {action: 'accept-invite'})"
+    <div class="push__content">
+      <div
+        v-textfade
+        class="push__content__header"
       >
-        {{ texts.join }}
-      </ui-button>
-      <ui-button
-        :type="3"
-        size="medium"
-        class="push__button"
-        @click="$emit('button-click', {action: 'busy', showResponse: true})"
-      >
-        {{ texts.busy }}
-      </ui-button>
+        {{ data.user.name }}
+      </div>
+      <div class="push__content__info">
+        <span class="push__content__info--no-shrink">{{ texts.invitesto }}</span>
+        <svg-icon
+          name="channel"
+          size="medium"
+          class="push__content__info__icon push__content__info--no-shrink"
+        />
+        <span v-textfade>{{ data.channel.name }}</span>
+      </div>
+
+      <div class="push__button-wrapper">
+        <ui-button
+          :type="1"
+          size="small"
+          class="push__button"
+          @click="$emit('button-click', {action: 'accept-invite'})"
+        >
+          {{ texts.join }}
+        </ui-button>
+        <ui-button
+          :type="2"
+          size="small"
+          class="push__button"
+          @click="$emit('button-click', {action: 'busy', showResponse: true})"
+        >
+          {{ texts.busy }}
+        </ui-button>
+      </div>
     </div>
   </div>
 </template>
@@ -51,6 +66,7 @@
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
+import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   components: {
@@ -68,7 +84,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      userAvatar: 'users/getUserAvatarUrl',
+      workspaceId: 'me/getSelectedWorkspaceId',
     }),
     /**
      * Get needed texts from I18n-locale file
@@ -78,52 +94,25 @@ export default {
       return this.$t('push');
     },
 
-    /**
-     * Get user's channel
-     * @return {object}
-     */
-    channel() {
-      return this.$store.getters['channels/getChannelById'](this.data.channelId) || { name: null };
-    },
   },
   mounted() {
     this.$emit('default-close-response', {
       action: 'busy',
       showResponse: true,
     });
+    this.$emit('child-mounted');
+  },
+  methods: {
+    avatarUrl: getUserAvatarUrl,
   },
 };
 </script>
 
 <style  lang="stylus" scoped>
-
-.push
-
-  &__content
-    display flex
-
-  &__col
-      margin-left 8px
-
-  &__avatar
-    display block
-    width 40px
-    height 40px
-    border-radius 4px
-    flex-shrink 0
-
-  &__user-name
-    margin-top 3px
-    overflow hidden
-    text-overflow ellipsis
-    white-space nowrap
-
-  &__channel
+@import './push.styl'
+.push__content__info
     display flex
     align-items center
-    color var(--text-1)
-    font-size 12px
-    line-height 14px
     margin-top 1px
     flex-shrink 0
     white-space nowrap
@@ -133,13 +122,6 @@ export default {
 
     &__icon
       margin-left 4px
-
-  &__button-wrapper
-    flex-shrink 0
-    flex-grow 0
-    margin-left 8px
-
-  &__button
-    margin 0 4px
+      color var(--new-UI-01)
 
 </style>
