@@ -1,5 +1,6 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
+import { IS_WIN } from '@sdk/Constants';
 
 const OVERLAY_WINDOW_SIZES = {
   default: {
@@ -22,13 +23,17 @@ const OVERLAY_WINDOW_SIZES = {
   },
   streaming: {
     width: 348,
-    height: 41, //! because renders as 42px on Windows. Whyy
+    height: 42,
   },
   streamingMax: {
     width: 348,
     height: 110,
   },
 };
+
+if (IS_WIN) {
+  OVERLAY_WINDOW_SIZES.streaming.height = 42; //! because renders as 42px on Windows. Whyy
+}
 
 /**
  * Class for controlling call windows
