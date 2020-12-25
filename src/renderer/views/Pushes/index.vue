@@ -49,34 +49,60 @@ export default {
   },
 
   created() {
-    window.addEventListener('mousemove', event => {
-      if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
-        if (ignoreMouse === true) {
-          return;
-        }
+    if (IS_LINUX) {
+      window.addEventListener('mousemove', event => {
+        if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
+          if (ignoreMouse === true) {
+            return;
+          }
 
-        pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
-        ignoreMouse = true;
+          pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
+          ignoreMouse = true;
 
-        if (ignoreMouseTimeout) {
-          clearTimeout(ignoreMouseTimeout);
+          if (ignoreMouseTimeout) {
+            clearTimeout(ignoreMouseTimeout);
+          }
+          ignoreMouseTimeout = setTimeout(function () {
+            pushWindow.api('setIgnoreMouseEvents', false);
+          }, NO_MOUSE_EVENTS_TIMEOUT);
+        } else {
+          if (ignoreMouse === false) {
+            return;
+          }
+          pushWindow.api('setIgnoreMouseEvents', false);
+          ignoreMouse = false;
         }
+      });
+    } else {
+      window.addEventListener('mousemove', event => {
+        if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
+          if (ignoreMouse === true) {
+            return;
+          }
 
-        ignoreMouseTimeout = setTimeout(function () {
-          pushWindow.action('sendInputEvent', {
-            type: 'mouseLeave',
-            x: 0,
-            y: 0,
-          });
-        }, NO_MOUSE_EVENTS_TIMEOUT);
-      } else {
-        if (ignoreMouse === false) {
-          return;
+          pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
+          ignoreMouse = true;
+
+          if (ignoreMouseTimeout) {
+            clearTimeout(ignoreMouseTimeout);
+          }
+
+          ignoreMouseTimeout = setTimeout(function () {
+            pushWindow.action('sendInputEvent', {
+              type: 'mouseLeave',
+              x: 0,
+              y: 0,
+            });
+          }, NO_MOUSE_EVENTS_TIMEOUT);
+        } else {
+          if (ignoreMouse === false) {
+            return;
+          }
+          pushWindow.api('setIgnoreMouseEvents', false);
+          ignoreMouse = false;
         }
-        pushWindow.api('setIgnoreMouseEvents', false);
-        ignoreMouse = false;
-      }
-    });
+      });
+    }
   },
 
   methods: {
