@@ -68,7 +68,8 @@ export default {
      */
     lifespan: {
       type: Number,
-      default: 40000,
+      // default: 40000,
+      default: 40000000,
     },
   },
 
@@ -280,7 +281,7 @@ $ANIM_DELAY = 200ms
   overflow hidden
   width 344px
   box-sizing border-box
-  border-radius 6px
+  border-radius 12px
   box-shadow 0px 3px 8px rgba(0, 0, 0, 0.15)
   pointer-events auto
   transition all $ANIM ease

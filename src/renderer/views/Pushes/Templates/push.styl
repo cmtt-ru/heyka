@@ -16,12 +16,16 @@
     width 40px
     height 40px
     border 1px solid rgba(0, 0, 0, 0.1)
+    box-sizing border-box
     border-radius 40px
     display flex
     flex-direction row
     flex-shrink 0
     justify-content center
     align-items center
+
+    &__icon
+      color var(--new-UI-03)
 
   &__avatar--workspace
     position absolute
@@ -33,6 +37,7 @@
   &__content
     margin-left 10px
     margin-right 32px
+    line-height 20px
     display flex
     flex-direction column
 

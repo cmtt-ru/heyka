@@ -31,6 +31,7 @@
         <ui-button
           :type="1"
           class="push__button"
+          size="small"
           @click="$emit('button-click', {action: 'turn-mic-on'})"
         >
           {{ texts.turnOn }}

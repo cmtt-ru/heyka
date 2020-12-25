@@ -189,6 +189,16 @@ class WindowManager {
       browserWindow.setIgnoreMouseEvents(true);
     }
 
+    if (options.maxAvailHeight) {
+      const { height } = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
+
+      this.sizeWindow({
+        id: windowId,
+        width: null,
+        height,
+      });
+    }
+
     // open route and url from options
     this.openUrl({
       id: windowId,
@@ -465,6 +475,12 @@ class WindowManager {
    */
   sizeWindow({ id, width, height, margin }) {
     if (this.windows[id]) {
+      if (!width) {
+        width = this.windows[id].browserWindow.getSize()[0];
+      }
+      if (!height) {
+        height = this.windows[id].browserWindow.getSize()[1];
+      }
       const isResizable = this.windows[id].browserWindow.resizable;
 
       this.windows[id].browserWindow.setResizable(true);

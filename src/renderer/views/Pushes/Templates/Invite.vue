@@ -43,15 +43,15 @@
       <div class="push__button-wrapper">
         <ui-button
           :type="1"
-          size="medium"
+          size="small"
           class="push__button"
           @click="$emit('button-click', {action: 'accept-invite'})"
         >
           {{ texts.join }}
         </ui-button>
         <ui-button
-          :type="3"
-          size="medium"
+          :type="2"
+          size="small"
           class="push__button"
           @click="$emit('button-click', {action: 'busy', showResponse: true})"
         >
@@ -113,8 +113,6 @@ export default {
 .push__content__info
     display flex
     align-items center
-    font-size 12px
-    line-height 14px
     margin-top 1px
     flex-shrink 0
     white-space nowrap
