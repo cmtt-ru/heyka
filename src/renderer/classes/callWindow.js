@@ -32,7 +32,7 @@ const OVERLAY_WINDOW_SIZES = {
 };
 
 if (IS_WIN) {
-  OVERLAY_WINDOW_SIZES.streaming.height = 42; //! because renders as 42px on Windows. Whyy
+  OVERLAY_WINDOW_SIZES.streaming.height = 41; //! because renders as 42px on Windows. Whyy
 }
 
 /**
