@@ -153,6 +153,20 @@ export default {
   },
 
   /**
+   * Remove conversation data
+   *
+   * @param {ChannelState} state – vuex state
+   * @param {string} channelId – channel id
+   * @param {string} userId – user id
+   * @constructor
+   */
+  REMOVE_CONVERSATION_DATA(state, { channelId, userId }) {
+    if (state.collection[channelId]) {
+      Vue.delete(state.collection[channelId].conversationData, userId);
+    }
+  },
+
+  /**
    * Clear conversation data
    *
    * @param {ChannelState} state – vuex state
