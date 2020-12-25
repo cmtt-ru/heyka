@@ -1,10 +1,6 @@
 <template>
   <div id="app">
     <router-view />
-    <pre
-      hidden
-      style="position: fixed; z-index: 9999; background: rgba(0,0,0,0.8); padding: 12px; left: 12px; top: 60px; color: #fff; border-radius: 6px; pointer-events: none"
-    >{{ JSON.stringify($store.state.app.connectionStatus, null, 2) }}</pre>
   </div>
 </template>
 
