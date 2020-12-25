@@ -57,7 +57,7 @@
           {{ texts.styleguide }}
         </router-link>
         <router-link
-          v-if="IS_DEV"
+          v-show="IS_DEV"
           class="settings-link"
           :to="{name: 'test-zone'}"
           replace
