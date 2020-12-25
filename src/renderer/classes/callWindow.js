@@ -47,7 +47,7 @@ class CallWindow {
     broadcastEvents.on('closeOverlay', () => {
       this.closeOverlay();
     });
-    broadcastEvents.on('hover-streaming-panel', (val) => {
+    broadcastEvents.on('click-streaming-panel', (val) => {
       this.resizeStreamingOverlay(val ? 'streamingMax' : 'streaming');
     });
   }
