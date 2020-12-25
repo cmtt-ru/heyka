@@ -45,7 +45,7 @@ export default {
   methods: {
     streamingHandler() {
       this.streamingOverlayExpanded = !this.streamingOverlayExpanded;
-      broadcastEvents.dispatch('hover-streaming-panel', this.streamingOverlayExpanded);
+      broadcastEvents.dispatch('click-streaming-panel', this.streamingOverlayExpanded);
     },
 
   },
