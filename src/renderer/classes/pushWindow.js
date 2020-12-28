@@ -37,7 +37,7 @@ class PushWindow {
         template: 'push',
         maxAvailHeight: true,
         visibleOnAllWorkspaces: true,
-        showInactive: false,
+        showInactive: true,
         onClose: () => {
           this.window = null;
         },
