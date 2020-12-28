@@ -49,8 +49,10 @@ export default {
   },
 
   created() {
+    if (IS_LINUX) {
+      return;
+    }
     window.addEventListener('mousemove', event => {
-      console.count('mousemove');
       if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
         if (ignoreMouse === true) {
           return;
