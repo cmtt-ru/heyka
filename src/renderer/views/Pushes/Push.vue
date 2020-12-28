@@ -68,7 +68,7 @@ export default {
      */
     lifespan: {
       type: Number,
-      default: 40000,
+      default: 4000000,
     },
   },
 
