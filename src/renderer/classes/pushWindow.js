@@ -25,7 +25,7 @@ class PushWindow {
   }
 
   /**
-   * Show frame window
+   * Show push window
    * @returns {void}
    */
   _show() {
@@ -37,7 +37,7 @@ class PushWindow {
         template: 'push',
         maxAvailHeight: true,
         visibleOnAllWorkspaces: true,
-        showInactive: true,
+        showInactive: false,
         onClose: () => {
           this.window = null;
         },
