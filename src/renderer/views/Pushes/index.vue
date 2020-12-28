@@ -49,35 +49,31 @@ export default {
   },
 
   created() {
-    if (IS_LINUX) {
-      // linux logic
-    } else {
-      window.addEventListener('mousemove', event => {
-        console.count('mousemove');
-        if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
-          if (ignoreMouse === true) {
-            return;
-          }
-
-          pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
-          ignoreMouse = true;
-
-          if (ignoreMouseTimeout) {
-            clearTimeout(ignoreMouseTimeout);
-          }
-
-          ignoreMouseTimeout = setTimeout(function () {
-            pushWindow.api('focus');
-          }, NO_MOUSE_EVENTS_TIMEOUT);
-        } else {
-          if (ignoreMouse === false) {
-            return;
-          }
-          pushWindow.api('setIgnoreMouseEvents', false);
-          ignoreMouse = false;
+    window.addEventListener('mousemove', event => {
+      console.count('mousemove');
+      if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
+        if (ignoreMouse === true) {
+          return;
         }
-      });
-    }
+
+        pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
+        ignoreMouse = true;
+
+        if (ignoreMouseTimeout) {
+          clearTimeout(ignoreMouseTimeout);
+        }
+
+        ignoreMouseTimeout = setTimeout(function () {
+          pushWindow.api('focus');
+        }, NO_MOUSE_EVENTS_TIMEOUT);
+      } else {
+        if (ignoreMouse === false) {
+          return;
+        }
+        pushWindow.api('setIgnoreMouseEvents', false);
+        ignoreMouse = false;
+      }
+    });
   },
 
   methods: {
