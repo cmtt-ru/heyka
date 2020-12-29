@@ -34,6 +34,15 @@ import {ipcRenderer} from "electron";
     >
       Close
     </ui-button>
+
+    <ui-button
+      :type="1"
+      size="small"
+      class="l-mr-8"
+      @click="openFrameWindowConsole"
+    >
+      Console
+    </ui-button>
   </div>
 </template>
 
@@ -65,6 +74,10 @@ export default {
 
     closeFrameWindow() {
       callWindow.closeFrame();
+    },
+
+    openFrameWindowConsole() {
+      callWindow.showFrameConsole();
     },
   },
 };

@@ -48,8 +48,8 @@
     </div>
 
     <call-controls
-      :row="isLocalMediaSharing || amIStreaming"
-      :buttons="buttonsSetup"
+      :row="isLocalMediaSharing"
+      :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
       class="call-window__controls"
     />
 
@@ -74,11 +74,6 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 
-const BUTTON_SETUPS = {
-  default: ['screen', 'camera', 'microphone', 'grid', 'leave'],
-  streaming: ['screen', 'microphone', 'drawing', 'grid', 'leave'],
-};
-
 export default {
   components: {
     CallControls,
@@ -92,6 +87,7 @@ export default {
       preloaderSrc: null,
       preloaderShown: false,
       channelSwitchedTs: Date.now(),
+      streamingOverlayExpanded: false,
       isMediaPlaying: false,
     };
   },
@@ -110,19 +106,8 @@ export default {
       selectedChannelId: 'me/getSelectedChannelId',
       myId: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
+      isSharingFullScreen: 'janus/isSharingFullScreen',
     }),
-
-    amIStreaming() {
-      return this.$store.state.me.mediaState.screen;
-    },
-
-    buttonsSetup() {
-      if (this.amIStreaming) {
-        return BUTTON_SETUPS.streaming;
-      }
-
-      return BUTTON_SETUPS.default;
-    },
 
     /**
      * That value depends on local media state
@@ -130,7 +115,7 @@ export default {
      * @returns {boolean}
      */
     isLocalMediaSharing() {
-      return this.isAnybodySharingMedia && !this.amIStreaming;
+      return !this.amISharingScreen && this.isAnybodySharingMedia;
     },
 
     /**

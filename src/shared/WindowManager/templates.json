@@ -32,6 +32,8 @@
     "skipTaskbar": true
   },
   "push": {
+    "width": 368,
+    "height": 1500,
     "transparent": true,
     "movable": false,
     "resizable": false,
@@ -63,6 +65,14 @@
     "height": 500,
     "alwaysOnTop": true,
     "backgroundColor": "#000",
+    "resizable": false
+  },
+  "sharingOverlay": {
+    "alwaysOnTop": true,
+    "maximizable": false,
+    "fullscreenable": false,
+    "backgroundColor": "#000",
+    "skipTaskbar": true,
     "resizable": false
   },
   "call": {

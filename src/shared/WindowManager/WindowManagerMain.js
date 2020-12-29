@@ -58,6 +58,7 @@ class WindowManager {
       reload: this.reloadWindow,
       openurl: this.openUrl,
       willQuit: this.willQuit,
+      sendInputEvent: this.sendInputEvent,
     };
 
     ipcMain.on('window-manager-event', (event, options) => {
@@ -186,6 +187,16 @@ class WindowManager {
     // set mouseEvents mode
     if (options.ignoreMouseEvents) {
       browserWindow.setIgnoreMouseEvents(true);
+    }
+
+    if (options.maxAvailHeight) {
+      const { height } = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
+
+      this.sizeWindow({
+        id: windowId,
+        width: null,
+        height,
+      });
     }
 
     // open route and url from options
@@ -464,6 +475,12 @@ class WindowManager {
    */
   sizeWindow({ id, width, height, margin }) {
     if (this.windows[id]) {
+      if (!width) {
+        width = this.windows[id].browserWindow.getSize()[0];
+      }
+      if (!height) {
+        height = this.windows[id].browserWindow.getSize()[1];
+      }
       const isResizable = this.windows[id].browserWindow.resizable;
 
       this.windows[id].browserWindow.setResizable(true);
@@ -522,6 +539,18 @@ class WindowManager {
     for (const w in this.windows) {
       if (w !== this.mainWindowId) {
         this.closeWindow({ id: w });
+      }
+    }
+  }
+
+  /**
+   * Send input event in window
+   * @returns {void}
+   */
+  sendInputEvent({ id, data }) {
+    for (const w in this.windows) {
+      if (w !== this.mainWindowId) {
+        this.windows[w].browserWindow.webContents.sendInputEvent(data);
       }
     }
   }

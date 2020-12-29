@@ -59,6 +59,19 @@ export default {
   },
 
   /**
+   * Get audio quality status by user id
+   *
+   * @param {ChannelState} state – channels module state
+   * @param {object} getters – vuex getters
+   * @returns {object}
+   */
+  getReconnectingStatusByUserId: (state, getters) => userId => {
+    const rData = getters['getConversationData'](userId, 'socket-reconnecting');
+
+    return !!rData;
+  },
+
+  /**
    * Get conversation data
    *
    * @param {ChannelState} state – channels module state
@@ -90,7 +103,7 @@ export default {
    * @param {object} getters – vuex getters
    * @param {object} rootState – vuex root state
    * @param {object} rootGetters – vuex root getters
-   * @returns {object}
+   * @returns {array}
    */
   getConversationEvents: (state, getters, rootState, rootGetters) => {
     const channelId = rootGetters['me/getSelectedChannelId'];
@@ -102,7 +115,7 @@ export default {
     const channel = getters['getChannelById'](channelId);
 
     if (channel) {
-      return channel.conversationEvents;
+      return channel.conversationEvents || [];
     }
   },
 
