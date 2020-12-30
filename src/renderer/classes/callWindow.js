@@ -350,7 +350,7 @@ class CallWindow {
         position: 'bottomLeft',
         visibleOnAllWorkspaces: true,
         window: {
-          ...OVERLAY_WINDOW_SIZES['streaming'],
+          ...OVERLAY_WINDOW_SIZES['streamingMax'],
         },
         onClose: () => {
           this.streamingOverlayWindow = null;
