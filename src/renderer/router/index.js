@@ -7,6 +7,7 @@ import { settingsRoutes } from './settingsRoutes';
 import { styleguideRoutes } from './styleguideRoutes';
 
 const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
+const NoWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/NoWorkspace');
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/Pushes');
 const BoardHolderWindow = () => import(/* webpackChunkName: "boardHolder" */ '@views/BoardHolderWindow');
 
@@ -28,6 +29,13 @@ const routes = [
       authRoutes,
       settingsRoutes,
       styleguideRoutes,
+
+      /* Board holder window */
+      {
+        path: 'no-workspace',
+        name: 'no-workspace',
+        component: NoWorkspace,
+      },
     ],
   },
   ...callRoutes,
