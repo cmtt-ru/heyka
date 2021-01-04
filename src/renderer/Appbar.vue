@@ -1,10 +1,11 @@
 <template>
   <div
+    v-if="myId"
     class="appbar"
     :class="{'appbar--mac': IS_MAC}"
   >
     <div
-      v-if="myWorkspace && myInfo.id"
+      v-if="myWorkspace"
       class="workspace"
     >
       <div
@@ -56,11 +57,11 @@
     </div>
 
     <div
-      v-if="myInfo.id"
       class="user"
       :class="{'user--mac': IS_MAC}"
     >
       <ui-button
+        v-if="myWorkspace"
         v-tooltip="speakerTooltip"
         :type="7"
         class="user__button"
@@ -71,6 +72,7 @@
         @click="switchProp('speakers')"
       />
       <ui-button
+        v-if="myWorkspace"
         v-tooltip="microphoneTooltip"
         :type="7"
         class="user__button"
@@ -84,8 +86,8 @@
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
-        :image="userAvatar(myInfo.id, 32)"
-        :user-id="myInfo.id"
+        :image="userAvatar(myId, 32)"
+        :user-id="myId"
         :status="myInfo.onlineStatus"
         :size="32"
       />
@@ -126,6 +128,10 @@ export default {
     };
   },
 
+  mounted() {
+    console.log(this.myId);
+  },
+
   computed: {
 
     ...mapGetters({
@@ -134,6 +140,7 @@ export default {
       mediaState: 'me/getMediaState',
       userAvatar: 'users/getUserAvatarUrl',
       myWorkspace: 'myWorkspace',
+      myId: 'me/getMyId',
     }),
 
     /**

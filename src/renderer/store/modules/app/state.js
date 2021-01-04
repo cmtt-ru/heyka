@@ -89,6 +89,7 @@ const state = () => {
     search: '',
     animationChannel: null,
     connectionStatus: {
+      visible: true,
       internet: true,
       api: false,
       socket: false,

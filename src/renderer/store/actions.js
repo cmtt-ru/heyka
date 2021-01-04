@@ -28,6 +28,7 @@ export default {
     }
 
     cnsl.log('start');
+    connectionCheck.resetConnectionStatus();
 
     try {
       /** Wait until internet goes online */
@@ -46,14 +47,27 @@ export default {
 
         /** Update workspace list */
         cnsl.log('...wait for workspace list');
-        await dispatch('workspaces/updateList');
+        const updateListState = await dispatch('workspaces/updateList');
 
-        /** Get specific workspace data */
-        cnsl.log('...wait for current workspace');
-        await dispatch('updateCurrentWorkspaceState');
+        if (updateListState) {
+          /** Get specific workspace data */
+          cnsl.log('...wait for current workspace');
+          await dispatch('updateCurrentWorkspaceState');
 
-        cnsl.log('...wait for sockets init');
-        await sockets.init();
+          cnsl.log('...wait for sockets init');
+          await sockets.init();
+
+          connectionCheck.appStatusVisibleState(true);
+
+          if (router.history.current.name === 'no-workspace') {
+            await router.replace({ name: 'workspace' });
+          }
+        } else {
+          cnsl.log('...workspace list is empty');
+          connectionCheck.appStatusVisibleState(false);
+
+          await router.replace({ name: 'no-workspace' });
+        }
       } else {
         console.error('AUTH REQUIRED');
       }
