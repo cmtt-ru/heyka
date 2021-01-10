@@ -9,11 +9,10 @@
         />
 
         <h4>
-          Have no access to any workspace
+          {{ texts['title'] }}
         </h4>
         <p>
-          Create a new team or ask your co-workers
-          to invite you. Your email is ds@cmtt.ru
+          {{ $t('noWorkspace.description', [myEmail]) }}
         </p>
 
         <ui-button
@@ -21,7 +20,7 @@
           size="large"
           @click="createHandler"
         >
-          Create workspace
+          {{ texts['create'] }}
         </ui-button>
       </div>
     </div>
@@ -32,6 +31,7 @@
 import Layout from './Layout';
 import UiButton from '@components/UiButton';
 import { WEB_URL } from '@sdk/Constants';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -43,6 +43,24 @@ export default {
     return {
 
     };
+  },
+
+  mounted() {
+    console.log('me', this.me);
+  },
+
+  computed: {
+    ...mapGetters({
+      myEmail: 'me/getMyEmail',
+    }),
+
+    /**
+     * Get needed texts from I18n-locale file
+     * @returns {object}
+     */
+    texts() {
+      return this.$t('noWorkspace');
+    },
   },
 
   methods: {
