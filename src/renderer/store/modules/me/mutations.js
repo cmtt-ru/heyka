@@ -12,6 +12,17 @@ export default {
   },
 
   /**
+   * Sets user email
+   *
+   * @param {MeState} state – module me state
+   * @param {string} email – user email
+   * @constructor
+   */
+  SET_USER_EMAIL(state, email) {
+    state.email = email;
+  },
+
+  /**
    * Sets selected workspace id
    *
    * @param {MeState} state – module me state
