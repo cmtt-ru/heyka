@@ -155,6 +155,7 @@ import { UiForm, UiInput } from '@components/Form';
 import { errorMessages } from '@api/errors/types';
 import { WEB_URL } from '@sdk/Constants';
 import { heykaStore } from '@/store/localStore';
+import connectionCheck from '@sdk/classes/connectionCheck';
 
 const http = require('http');
 
@@ -201,6 +202,8 @@ export default {
   },
 
   mounted() {
+    connectionCheck.appStatusVisibleState(false);
+
     this.createLocalServer();
 
     const hour = new Date().getHours();
