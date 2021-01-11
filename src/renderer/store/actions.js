@@ -147,6 +147,9 @@ export default {
         userId: state.me.id,
         channelId: state.me.selectedChannelId,
       });
+
+      commit('channels/CLEAR_CONVERSATION_DATA', { channelId: id });
+      commit('channels/CLEAR_CONVERSATION_EVENTS', { channelId: id });
     }
 
     commit('janus/SET_OPTIONS', connectionOptions);
