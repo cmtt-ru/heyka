@@ -151,6 +151,8 @@ export default {
 
     commit('janus/SET_OPTIONS', connectionOptions);
 
+    ipcRenderer.send('remote-register-mute-shortcut');
+
     commit('channels/ADD_USER', {
       userId: state.me.id,
       channelId: id,
@@ -215,6 +217,8 @@ export default {
       commit('channels/CLEAR_CONVERSATION_DATA', { channelId: id });
       commit('channels/CLEAR_CONVERSATION_EVENTS', { channelId: id });
     }
+
+    ipcRenderer.send('remote-unregister-mute-shortcut');
 
     dispatch('me/setChannelId', null);
 
