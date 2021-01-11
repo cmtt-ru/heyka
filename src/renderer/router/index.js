@@ -30,7 +30,7 @@ const routes = [
       settingsRoutes,
       styleguideRoutes,
 
-      /* Board holder window */
+      /* No workspace page */
       {
         path: 'no-workspace',
         name: 'no-workspace',
