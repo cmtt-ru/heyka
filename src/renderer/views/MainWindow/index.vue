@@ -116,7 +116,7 @@ export default {
      */
     DeepLink.on('workspace', async ([ workspaceId ]) => {
       console.log('workspaceId', workspaceId);
-      await this.$store.dispatch('workspaces/updateList');
+      await this.$store.dispatch('initial');
       await this.$store.dispatch('changeWorkspace', workspaceId);
     });
 

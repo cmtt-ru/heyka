@@ -60,7 +60,12 @@ export default {
 
           connectionCheck.appStatusVisibleState(true);
 
-          if (router.history.current.name === 'no-workspace') {
+          const routes = [
+            'auth',
+            'no-workspace',
+          ];
+
+          if (routes.indexOf(router.history.current.name) >= 0) {
             await router.replace({ name: 'workspace' });
           }
         } else {
