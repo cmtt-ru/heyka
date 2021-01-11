@@ -9,6 +9,8 @@ import { IS_DEV, IS_MAC } from '../../sdk/Constants';
 
 const resizeable = heykaStore.get('resizeWindow', false);
 
+const MUTE_SHORTCUT = 'CommandOrControl+Shift+M';
+
 let params = {};
 
 if (TrayManager.isInTray()) {
@@ -138,14 +140,25 @@ class MainWindow {
      */
     this.window.webContents.on('did-finish-load', () => {
       WindowManager.closeAll();
+      globalShortcut.unregister(MUTE_SHORTCUT);
     });
 
     /**
-     * Register global shortcuts
+     * Register/unregister global shortcuts
      */
 
-    globalShortcut.register('CommandOrControl+Shift+M', () => {
-      this.window.webContents.send('hotkey-mic');
+    ipcMain.on('remote-register-mute-shortcut', () => {
+      if (globalShortcut.isRegistered(MUTE_SHORTCUT)) {
+        return;
+      }
+
+      globalShortcut.register(MUTE_SHORTCUT, () => {
+        this.window.webContents.send('hotkey-mic');
+      });
+    });
+
+    ipcMain.on('remote-unregister-mute-shortcut', () => {
+      globalShortcut.unregister(MUTE_SHORTCUT);
     });
 
     /**
