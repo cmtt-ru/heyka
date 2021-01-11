@@ -49,6 +49,9 @@ export default {
   },
 
   created() {
+    if (IS_LINUX) {
+      return;
+    }
     window.addEventListener('mousemove', event => {
       if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
         if (ignoreMouse === true) {
@@ -63,11 +66,7 @@ export default {
         }
 
         ignoreMouseTimeout = setTimeout(function () {
-          pushWindow.action('sendInputEvent', {
-            type: 'mouseLeave',
-            x: 0,
-            y: 0,
-          });
+          pushWindow.api('focus');
         }, NO_MOUSE_EVENTS_TIMEOUT);
       } else {
         if (ignoreMouse === false) {
@@ -126,11 +125,13 @@ export default {
 
 <style lang="stylus">
 body, html
-  pointer-events none
   height 100%
 
+body
+  pointer-events none
+
 *
-  pointer-events all
+  pointer-events auto
 </style>
 
 <style lang="stylus" scoped>
