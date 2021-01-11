@@ -292,10 +292,6 @@ export default {
         heykaStore.set('loginEmail', this.login.email);
 
         await this.$store.dispatch('initial');
-
-        await this.$router.replace({
-          name: 'workspace',
-        });
       } catch (err) {
         if (err.response.data.message === errorMessages.emailOrPasswordAreInvalid ||
             err.response.data.message === errorMessages.invalidRequestPayloadInput) { // ? maybe not needed
