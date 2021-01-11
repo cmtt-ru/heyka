@@ -128,10 +128,6 @@ export default {
     };
   },
 
-  mounted() {
-    console.log(this.myId);
-  },
-
   computed: {
 
     ...mapGetters({
