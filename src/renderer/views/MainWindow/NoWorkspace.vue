@@ -45,10 +45,6 @@ export default {
     };
   },
 
-  mounted() {
-    console.log('me', this.me);
-  },
-
   computed: {
     ...mapGetters({
       myEmail: 'me/getMyEmail',
