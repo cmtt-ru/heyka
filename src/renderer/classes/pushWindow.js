@@ -25,7 +25,7 @@ class PushWindow {
   }
 
   /**
-   * Show frame window
+   * Show push window
    * @returns {void}
    */
   _show() {

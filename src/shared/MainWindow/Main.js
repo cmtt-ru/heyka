@@ -138,14 +138,21 @@ class MainWindow {
      */
     this.window.webContents.on('did-finish-load', () => {
       WindowManager.closeAll();
+      globalShortcut.unregister('CommandOrControl+Shift+M');
     });
 
     /**
-     * Register global shortcuts
+     * Register/unregister global shortcuts
      */
 
-    globalShortcut.register('CommandOrControl+Shift+M', () => {
-      this.window.webContents.send('hotkey-mic');
+    ipcMain.on('remote-register-mute-shortcut', () => {
+      globalShortcut.register('CommandOrControl+Shift+M', () => {
+        this.window.webContents.send('hotkey-mic');
+      });
+    });
+
+    ipcMain.on('remote-unregister-mute-shortcut', () => {
+      globalShortcut.unregister('CommandOrControl+Shift+M');
     });
 
     /**
