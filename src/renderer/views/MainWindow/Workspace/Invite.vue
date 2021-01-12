@@ -79,6 +79,19 @@
         </tab>
 
         <tab name="Slack">
+          <div class="">
+            You have no workspaces connected
+            with Slack.
+          </div>
+          <ui-button
+            :type="16"
+            :wide="true"
+            class="link"
+          >
+            {{ texts.moreInvites }}
+          </ui-button>
+        </tab>
+        <tab name="MS Teams">
           Work in progress
         </tab>
       </tabs>
