@@ -9,16 +9,27 @@ export default {
    */
   async updateList({ commit, dispatch, rootGetters }) {
     const workspaces = await API.workspace.getWorkspaces();
-    const workspacesIdList = workspaces.map(w => w.id);
 
-    /** Selected workspace id */
-    let selectedWorkspaceId = rootGetters['me/getSelectedWorkspaceId'];
+    if (workspaces.length > 0) {
+      const workspacesIdList = workspaces.map(w => w.id);
 
-    if (!selectedWorkspaceId || !workspacesIdList.includes(selectedWorkspaceId)) {
-      selectedWorkspaceId = workspaces[0].id;
-      dispatch('me/setSelectedWorkspaceId', selectedWorkspaceId, { root: true });
+      /** Selected workspace id */
+      let selectedWorkspaceId = rootGetters['me/getSelectedWorkspaceId'];
+
+      if (!selectedWorkspaceId || !workspacesIdList.includes(selectedWorkspaceId)) {
+        selectedWorkspaceId = workspaces[0].id;
+        dispatch('me/setSelectedWorkspaceId', selectedWorkspaceId, { root: true });
+      }
+
+      commit('SET_COLLECTION', mapKeys(workspaces, 'id'));
+
+      return true;
+    } else {
+      commit('SET_COLLECTION', {});
+
+      dispatch('me/setSelectedWorkspaceId', null, { root: true });
+
+      return false;
     }
-
-    commit('SET_COLLECTION', mapKeys(workspaces, 'id'));
   },
 };

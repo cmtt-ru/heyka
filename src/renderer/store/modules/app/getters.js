@@ -140,7 +140,11 @@ export default {
   },
 
   getConnectionStatus: state => {
-    return state.connectionStatus.internet && state.connectionStatus.api && state.connectionStatus.socket;
+    if (state.connectionStatus.visible) {
+      return state.connectionStatus.internet && state.connectionStatus.api && state.connectionStatus.socket;
+    }
+
+    return true;
   },
 
 };

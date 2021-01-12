@@ -15,26 +15,28 @@
       :class="{'layout--mac': IS_MAC}"
     >
       <div
+        v-if="$slots['sidebar-body']"
         class="layout__column layout__column--sidebar"
       >
-        <div
-          v-if="$slots['sidebar-header']"
-          class="layout__row layout__row--header"
-        >
-          <slot name="sidebar-header" />
-        </div>
-
         <div class="layout__row layout__row--body scroll">
           <slot name="sidebar-body" />
         </div>
       </div>
 
       <div
+        v-if="$slots['content-body']"
         class="layout__column layout__column--content"
       >
         <div class="layout__row layout__row--body scroll">
           <slot name="content-body" />
         </div>
+      </div>
+
+      <div
+        v-if="$slots['default']"
+        class="layout__column layout__column--content scroll"
+      >
+        <slot />
       </div>
     </div>
   </div>
