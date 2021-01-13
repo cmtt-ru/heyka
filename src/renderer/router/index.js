@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { workspaceRoutes } from './workspaceRoutes';
-import { authRoutes } from './authRoutes';
+import { authRoutes, newAuthRoutes } from './authRoutes';
 import { callRoutes } from './callRoutes';
 import { settingsRoutes } from './settingsRoutes';
 import { styleguideRoutes } from './styleguideRoutes';
@@ -29,6 +29,7 @@ const routes = [
       authRoutes,
       settingsRoutes,
       styleguideRoutes,
+      newAuthRoutes,
 
       /* No workspace page */
       {
