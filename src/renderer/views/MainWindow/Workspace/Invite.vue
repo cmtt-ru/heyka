@@ -79,18 +79,7 @@
         </tab>
 
         <tab name="Slack">
-          <div class="">
-            You have no workspaces connected with Slack.
-          </div>
-          <ui-button
-            :type="17"
-            :wide="true"
-            class="link"
-            icon="slack"
-            @click="slackConnect"
-          >
-            Connect with Slack
-          </ui-button>
+          <slack-invite />
         </tab>
         <tab name="MS Teams">
           Work in progress
@@ -109,6 +98,7 @@ import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+import SlackInvite from './SlackInvite';
 
 export default {
   components: {
@@ -118,6 +108,7 @@ export default {
     Tab,
     EditableList,
     PseudoPopup,
+    SlackInvite,
   },
 
   data() {
