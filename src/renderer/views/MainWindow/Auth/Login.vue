@@ -140,6 +140,10 @@
             >
               {{ texts.signup }}
             </div>
+
+            <router-link :to="{name:'new-auth'}">
+              New
+            </router-link>
           </div>
           <br>
         </div>

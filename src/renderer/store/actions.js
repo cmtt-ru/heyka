@@ -62,6 +62,9 @@ export default {
 
           const routes = [
             'auth',
+            'new-auth',
+            'new-auth-email-signin',
+            'new-auth-email-reset',
             'no-workspace',
           ];
 
@@ -362,10 +365,6 @@ export default {
       await API.auth.signinByLink(authLink);
 
       await dispatch('initial');
-
-      await router.replace({
-        name: 'workspace',
-      });
     } catch (err) {
       console.log(`Code ${authLink} is invalid:`, err);
     }
