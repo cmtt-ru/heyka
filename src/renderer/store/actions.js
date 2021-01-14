@@ -28,6 +28,7 @@ export default {
     }
 
     cnsl.log('start');
+    connectionCheck.resetConnectionStatus();
 
     try {
       /** Wait until internet goes online */
@@ -42,18 +43,37 @@ export default {
 
       if (userId) {
         commit('me/SET_USER_ID', userId);
+        commit('me/SET_USER_EMAIL', authenticatedUser.email);
         dispatch('me/update', authenticatedUser);
 
         /** Update workspace list */
         cnsl.log('...wait for workspace list');
-        await dispatch('workspaces/updateList');
+        const updateListState = await dispatch('workspaces/updateList');
 
-        /** Get specific workspace data */
-        cnsl.log('...wait for current workspace');
-        await dispatch('updateCurrentWorkspaceState');
+        if (updateListState) {
+          /** Get specific workspace data */
+          cnsl.log('...wait for current workspace');
+          await dispatch('updateCurrentWorkspaceState');
 
-        cnsl.log('...wait for sockets init');
-        await sockets.init();
+          cnsl.log('...wait for sockets init');
+          await sockets.init();
+
+          connectionCheck.appStatusVisibleState(true);
+
+          const routes = [
+            'auth',
+            'no-workspace',
+          ];
+
+          if (routes.indexOf(router.history.current.name) >= 0) {
+            await router.replace({ name: 'workspace' });
+          }
+        } else {
+          cnsl.log('...workspace list is empty');
+          connectionCheck.appStatusVisibleState(false);
+
+          await router.replace({ name: 'no-workspace' });
+        }
       } else {
         console.error('AUTH REQUIRED');
       }
@@ -147,6 +167,9 @@ export default {
         userId: state.me.id,
         channelId: state.me.selectedChannelId,
       });
+
+      commit('channels/CLEAR_CONVERSATION_DATA', { channelId: id });
+      commit('channels/CLEAR_CONVERSATION_EVENTS', { channelId: id });
     }
 
     commit('janus/SET_OPTIONS', connectionOptions);
@@ -181,8 +204,14 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ commit, dispatch, state }, id = state.me.selectedChannelId) {
+  async unselectChannel({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
     commit('app/ANIMATION_CHANNEL_ID', null);
+    const channel = getters['channels/getChannelById'](id);
+
+    if (channel.isTemporary) {
+      router.replace({ name: 'workspace' });
+    }
+
     try {
       await API.channel.unselect(id);
     } catch (err) {
@@ -204,11 +233,8 @@ export default {
    */
   unselectChannelWithoutAPICall({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
     const channel = getters['channels/getChannelById'](id);
-    let isTemporary = false;
 
     if (channel) {
-      isTemporary = channel.isTemporary;
-
       commit('channels/REMOVE_USER', {
         userId: state.me.id,
         channelId: id,
@@ -227,9 +253,6 @@ export default {
     callWindow.closeAll();
 
     ipcRenderer.send('tray-animation', false);
-    if (isTemporary) {
-      router.replace({ name: 'workspace' });
-    }
   },
 
   /**

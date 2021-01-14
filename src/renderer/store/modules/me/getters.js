@@ -10,6 +10,16 @@ export default {
   },
 
   /**
+   * Get user email
+   *
+   * @param {MeState} state – module me state
+   * @returns {string}
+   */
+  getMyEmail(state) {
+    return state.email;
+  },
+
+  /**
    * Get selected workspace id
    *
    * @param {MeState} state – me module state

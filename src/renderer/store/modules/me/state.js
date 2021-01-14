@@ -3,6 +3,7 @@ import { meStore } from '@/store/localStore';
 /**
  * @typedef {object} MeState
  * @property {string} id – my id
+ * @property {string} email – user id
  * @property {string} selectedWorkspaceId – selected workspace id
  * @property {string} selectedChannelId – selected channel id
  * @property {MediaState} mediaState – my media state
@@ -39,6 +40,7 @@ const state = () => {
    */
   return {
     id: null,
+    email: null,
     selectedWorkspaceId: meStore.get('selectedWorkspaceId'),
     selectedChannelId: null,
     mediaState: initialMediaState,
