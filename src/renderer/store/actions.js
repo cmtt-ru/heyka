@@ -204,8 +204,14 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ commit, dispatch, state }, id = state.me.selectedChannelId) {
+  async unselectChannel({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
     commit('app/ANIMATION_CHANNEL_ID', null);
+    const channel = getters['channels/getChannelById'](id);
+
+    if (channel.isTemporary) {
+      router.replace({ name: 'workspace' });
+    }
+
     try {
       await API.channel.unselect(id);
     } catch (err) {
@@ -227,11 +233,8 @@ export default {
    */
   unselectChannelWithoutAPICall({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
     const channel = getters['channels/getChannelById'](id);
-    let isTemporary = false;
 
     if (channel) {
-      isTemporary = channel.isTemporary;
-
       commit('channels/REMOVE_USER', {
         userId: state.me.id,
         channelId: id,
@@ -250,9 +253,6 @@ export default {
     callWindow.closeAll();
 
     ipcRenderer.send('tray-animation', false);
-    if (isTemporary) {
-      router.replace({ name: 'workspace' });
-    }
   },
 
   /**
