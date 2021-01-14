@@ -1,25 +1,30 @@
 <template>
   <div>
-    <div class="">
-      {{ texts.noWorkspaces }}
+    <div v-if="!slackUsers.length">
+      <div class="top-info-text">
+        {{ texts.noWorkspaces }}
+      </div>
+      <ui-button
+        :type="17"
+        :wide="true"
+        class="link"
+        icon="slack"
+        size="large"
+        @click="slackConnect"
+      >
+        {{ texts.connect }}
+      </ui-button>
     </div>
-    <ui-button
-      :type="17"
-      :wide="true"
-      class="link"
-      icon="slack"
-      @click="slackConnect"
-    >
-      {{ texts.connect }}
-    </ui-button>
-    <div
-      v-if="slackUsers.length"
-      class="slack-user-list"
-    >
+
+    <div v-else>
+      <div class="top-info-text">
+        {{ texts.canInviteBeginning }} {{ slackWorkspace.name }}. {{ texts.canInviteEnd }}
+      </div>
       <ui-input
         v-model="filterKey"
         icon="search"
         placeholder="Search"
+        class="user-search"
       />
       <list
         selectable
@@ -92,6 +97,7 @@ export default {
   data() {
     return {
       slackUsers: [],
+      slackWorkspace: null,
       selectedUsers: [],
       filterKey: '',
     };
@@ -100,6 +106,7 @@ export default {
   computed: {
     ...mapGetters({
       selectedWorkspaceId: 'me/getSelectedWorkspaceId',
+      getWorkspaceById: 'workspaces/getWorkspaceById',
     }),
 
     /**
@@ -123,10 +130,13 @@ export default {
     //   }
     // });
 
+    console.log();
+
     try {
       const users = await this.$API.workspace.getSlackUsers(this.selectedWorkspaceId);
 
       this.slackUsers = users;
+      this.slackWorkspace = this.getWorkspaceById(this.selectedWorkspaceId).slack;
     } catch (err) {
       console.log(err);
     }
@@ -164,49 +174,56 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .user
-    padding 4px 10px
+
+.top-info-text
+  margin 4px 0 22px
+
+.user-search
+  margin-bottom 18px
+
+.user
+  padding 4px 10px
+  display flex
+  flex-direction row
+  align-items center
+  margin-bottom 2px
+  border-radius 6px
+  cursor pointer
+
+  &:hover
+    background-color var(--new-UI-06)
+
+  &__check
+    margin 0 5px
+    flex-shrink 0
+    color white
+    display none
+
+  &.list-item--selected
+    background-color var(--new-UI-01)
+    color var(--new-UI-09)
+
+    & .user__check
+      display initial
+
+  &__avatar
+    margin-right 12px
+    flex-shrink 0
+
+  &__inner
     display flex
-    flex-direction row
-    align-items center
-    margin-bottom 2px
-    border-radius 6px
-    cursor pointer
+    flex-direction column
+    align-items flex-start
+    flex-grow 1
 
-    &:hover
-      background-color var(--new-UI-06)
+  &__real-name
+    font-weight 500
+    font-size 13px
+    line-height 16px
 
-    &__check
-      margin 0 5px
-      flex-shrink 0
-      color white
-      display none
-
-    &.list-item--selected
-      background-color var(--new-UI-01)
-      color var(--new-UI-09)
-
-      & .user__check
-        display initial
-
-    &__avatar
-      margin-right 12px
-      flex-shrink 0
-
-    &__inner
-      display flex
-      flex-direction column
-      align-items flex-start
-      flex-grow 1
-
-    &__real-name
-      font-weight 500
-      font-size 13px
-      line-height 16px
-
-    &__name
-      font-weight normal
-      font-size 12px
-      line-height 16px
+  &__name
+    font-weight normal
+    font-size 12px
+    line-height 16px
 
 </style>
