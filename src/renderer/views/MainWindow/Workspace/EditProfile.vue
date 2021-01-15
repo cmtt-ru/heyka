@@ -33,7 +33,7 @@
             />
           </div>
 
-          <div class="currently-not-needed">
+          <div class="link-social-accout">
             <div class="login-label">
               {{ texts.login }}
             </div>
@@ -151,6 +151,7 @@ export default {
       selectedChannel: 'myChannel',
       me: 'myInfo',
       userAvatar: 'users/getUserAvatarUrl',
+      socialAuth: 'me/getSocialAuth',
     }),
 
     /**
@@ -176,14 +177,6 @@ export default {
     vuexAvatarFileId() {
       return this.me.avatarFileId;
     },
-
-    /**
-     * Social accounts
-     * @returns {object}
-     */
-    socialAuth() {
-      return this.$store.state.me.socialAuth || {};
-    },
   },
 
   watch: {
@@ -200,6 +193,7 @@ export default {
     this.$set(this.profile, 'avatarFileId', this.vuexAvatarFileId);
 
     DeepLink.on('social-link', ([status, error]) => {
+      console.log('------ DeepLink', 'social-link', arguments);
       if (status === 'false') {
         this.$store.dispatch('app/addNotification', {
           data: {
@@ -289,10 +283,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.currently-not-needed
-  opacity 0.5
-  pointer-events none
-
 $SAVE_FADE_TIME = 2s
 
 .edit-profile-page

@@ -46,6 +46,8 @@ export default {
         commit('me/SET_USER_EMAIL', authenticatedUser.email);
         dispatch('me/update', authenticatedUser);
 
+        console.log('authenticatedUser', authenticatedUser);
+
         /** Update workspace list */
         cnsl.log('...wait for workspace list');
         const updateListState = await dispatch('workspaces/updateList');
