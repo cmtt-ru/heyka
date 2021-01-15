@@ -309,12 +309,12 @@ export default {
   },
 
   /**
-   * Update me data
+   * Update social data
    * @param {function} commit – vuex commit
    * @param {object} data – me data
    * @returns {void}
    */
-  async update({ commit }, data) {
+  async updateSocial({ commit }, data) {
     const filteredData = {
       socialAuth: data.socialAuth,
     };
