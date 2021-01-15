@@ -6,6 +6,8 @@ import { callRoutes } from './callRoutes';
 import { settingsRoutes } from './settingsRoutes';
 import { styleguideRoutes } from './styleguideRoutes';
 
+const Wireframe = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Wireframe');
+
 const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
 const NoWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/NoWorkspace');
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/Pushes');
@@ -14,6 +16,10 @@ const BoardHolderWindow = () => import(/* webpackChunkName: "boardHolder" */ '@v
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: '/empty',
+    component: Wireframe,
+  },
   {
     /**
      * Main window routes
@@ -56,7 +62,7 @@ const routes = [
    */
   {
     path: '*',
-    redirect: '/main-window/workspace',
+    redirect: '/empty',
   },
 ];
 
