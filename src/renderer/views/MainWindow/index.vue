@@ -2,6 +2,10 @@
   <div>
     <janus />
     <notifications />
+    <wireframe
+      v-show="loading"
+      class="wireframe"
+    />
     <router-view />
     <app-status :show="!$store.getters['app/getConnectionStatus']" />
     <!--    <performance-monitor />-->
@@ -9,6 +13,9 @@
 </template>
 
 <script>
+import Wireframe from '@views/MainWindow/Wireframe';
+import initialProcess from '@api/initialProcess';
+
 import { ipcRenderer } from 'electron';
 import Janus from '@components/Janus.vue';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
@@ -26,16 +33,20 @@ import { client } from '@api/socket/client';
 
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
+const WIREFRAME_MAX_TIME = 10000;
+
 export default {
   components: {
     Janus,
     Notifications,
     AppStatus,
+    Wireframe,
     // PerformanceMonitor,
   },
   data() {
     return {
       updateNotificationShown: false,
+      loading: true,
     };
   },
 
@@ -120,6 +131,17 @@ export default {
       await this.$store.dispatch('changeWorkspace', workspaceId);
     });
 
+    initialProcess.on('state-changed', val => {
+      console.log(val);
+      if (!val) {
+        this.loading = false;
+      }
+    });
+
+    setTimeout(() => {
+      this.loading = false;
+    }, WIREFRAME_MAX_TIME);
+
     ipcRenderer.send('start-is-ready');
   },
 
@@ -189,5 +211,11 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-
+.wireframe
+  z-index 2000
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  right 0
 </style>
