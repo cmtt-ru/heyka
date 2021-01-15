@@ -268,8 +268,8 @@ $ANIM = 330ms
 $ANIM_DELAY = 200ms
 
 .push
-  background-color var(--app-bg)
-  color var(--text-0)
+  background-color var(--new-bg-04)
+  color var(--new-UI-02)
   flex-shrink 0
   display flex
   flex-direction row
