@@ -17,10 +17,20 @@
     </div>
 
     <div v-else>
-      <div class="top-info-text">
-        {{ texts.canInviteBeginning }} {{ slackWorkspace.name }}. {{ texts.canInviteEnd }}
+      <div
+        v-if="!invitesSentTo.length"
+        class="top-info-text"
+      >
+        {{ texts.canInviteBeginning }}{{ slackWorkspace.name }}{{ texts.canInviteEnd }}
+      </div>
+      <div
+        v-else
+        class="top-info-text"
+      >
+        {{ texts.successInviteStart }}{{ $tc("slackInvite.successInviteMiddle", invitesSentTo.length) }}{{ texts.successInviteEnd }}
       </div>
       <ui-input
+        ref="top_slack_invite"
         v-model="filterKey"
         icon="search"
         placeholder="Search"
@@ -32,7 +42,7 @@
         @multipick="selectUser"
       >
         <list-item
-          v-for="user in slackUsers"
+          v-for="user in notInvitedSlackUsers"
           :key="user.id"
           :filter-key="user.name"
           :selectable-content="user"
@@ -66,13 +76,17 @@
           />
         </list-item>
       </list>
-      <ui-button
+      <div
         v-if="selectedUsers.length"
-        :type="1"
-        @click="sendOneInvite"
+        class="submit-button-wrapper"
       >
-        {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
-      </ui-button>
+        <ui-button
+          :type="1"
+          @click="sendOneInvite"
+        >
+          {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
+        </ui-button>
+      </div>
     </div>
   </div>
 </template>
@@ -83,7 +97,7 @@ import { UiInput } from '@components/Form';
 import { List, ListItem } from '@components/List';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
-// import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
 export default {
   components: {
@@ -100,6 +114,7 @@ export default {
       slackWorkspace: null,
       selectedUsers: [],
       filterKey: '',
+      invitesSentTo: [],
     };
   },
 
@@ -117,36 +132,44 @@ export default {
       return this.$t('slackInvite');
     },
 
+    notInvitedSlackUsers() {
+      return this.slackUsers.filter(el => !this.invitesSentTo.includes(el.id));
+    },
+
   },
 
   async mounted() {
-    // DeepLink.on('slack-connect', ([status, error]) => {
-    //   if (status === 'false') {
-    //     this.$store.dispatch('app/addNotification', {
-    //       data: {
-    //         text: decodeURIComponent(error),
-    //       },
-    //     });
-    //   }
-    // });
+    DeepLink.on('slack-connect', ([status, error]) => {
+      if (status === 'false') {
+        this.$store.dispatch('app/addNotification', {
+          data: {
+            text: decodeURIComponent(error),
+          },
+        });
+      } else {
+        this.getSlackUsers();
+      }
+    });
 
-    console.log();
-
-    try {
-      const users = await this.$API.workspace.getSlackUsers(this.selectedWorkspaceId);
-
-      this.slackUsers = users;
-      this.slackWorkspace = this.getWorkspaceById(this.selectedWorkspaceId).slack;
-    } catch (err) {
-      console.log(err);
-    }
+    this.getSlackUsers();
   },
 
   beforeDestroy() {
-    // DeepLink.removeAllListeners('slack-connect');
+    DeepLink.removeAllListeners('slack-connect');
   },
 
   methods: {
+
+    async getSlackUsers() {
+      try {
+        const users = await this.$API.workspace.getSlackUsers(this.selectedWorkspaceId);
+
+        this.slackUsers = users;
+        this.slackWorkspace = this.getWorkspaceById(this.selectedWorkspaceId).slack;
+      } catch (err) {
+        console.log(err);
+      }
+    },
 
     async slackConnect() {
       const url = await this.$API.workspace.connectWithSlack(this.selectedWorkspaceId);
@@ -163,6 +186,9 @@ export default {
         for (const user of this.selectedUsers) {
           await this.$API.workspace.inviteSlackUser(this.selectedWorkspaceId, { slackUserId: user.id });
         }
+        this.invitesSentTo = [...this.invitesSentTo, ...this.selectedUsers.map(el => el.id)];
+        this.selectedUsers = [];
+        document.getElementsByClassName('pseudo-popup__body')[0].scrollTo(0, 0);
       } catch (err) {
         console.error(err);
       }
@@ -180,6 +206,16 @@ export default {
 
 .user-search
   margin-bottom 18px
+  position sticky
+  top -0.5px
+  z-index 10
+  background-color var(--new-bg-04)
+
+/deep/ .input
+  padding-left 54px
+
+/deep/ .input__icon
+  padding-left 12px
 
 .user
   padding 4px 10px
@@ -225,5 +261,14 @@ export default {
     font-weight normal
     font-size 12px
     line-height 16px
+
+.submit-button-wrapper
+  position absolute
+  bottom 0
+  width 100%
+  padding 16px
+  background-color var(--new-bg-04)
+  box-shadow inset -2px 0 0 1px var(--new-UI-06)
+  transform translateX(-16px)
 
 </style>
