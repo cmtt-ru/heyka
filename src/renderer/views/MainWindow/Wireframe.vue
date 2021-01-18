@@ -127,6 +127,7 @@ export default {
   flex-direction row
   align-items center
   transform scaleX(-1)
+  margin 0 4px
 
   &--mac
     transform initial

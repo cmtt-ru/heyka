@@ -226,8 +226,7 @@ class WindowManager {
       }
     });
 
-    // listen to "ready-to-show" event so we can show and position our window
-    browserWindow.on('ready-to-show', (event) => {
+    const prepareWindow = () => {
       // positioning stuff
       // browserWindow.setAlwaysOnTop(true, 'floating', 3);
       const position = this.__getWindowPosition(browserWindow, options.position, options.margin);
@@ -274,8 +273,19 @@ class WindowManager {
         browserWindow.showInactive();
       } else {
         browserWindow.show();
+        console.log('browserWindow.show');
       }
-    });
+    };
+
+    if (windowOptions.show) {
+      console.log('windowOptions.show');
+      prepareWindow();
+    } else {
+    // listen to "ready-to-show" event so we can show and position our window
+      browserWindow.on('ready-to-show', (event) => {
+        prepareWindow();
+      });
+    }
 
     // tell renderer about blur, focus and hide events
     browserWindow.on('blur', (event) => {
