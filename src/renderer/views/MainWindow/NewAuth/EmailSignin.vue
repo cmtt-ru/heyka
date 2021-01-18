@@ -84,7 +84,7 @@ export default {
   data() {
     return {
       login: {
-        email: IS_ELECTRON ? heykaStore.get('loginEmail', '') : authFileStore.get('loginEmail', ''),
+        email: heykaStore.get('loginEmail', ''),
         password: IS_DEV ? 'heyka-password' : '',
       },
       loginInProgress: false,
@@ -121,7 +121,7 @@ export default {
           heykaStore.set('loginEmail', this.login.email);
           await this.$store.dispatch('initial');
         } else {
-          authFileStore.set('loginEmail', this.login.email);
+          heykaStore.set('loginEmail', this.login.email);
 
           if (authFileStore.get('inviteCode')) {
             this.$API.workspace.joinByCode(authFileStore.get('inviteCode'));
