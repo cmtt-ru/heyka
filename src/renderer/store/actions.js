@@ -64,9 +64,9 @@ export default {
 
           const routes = [
             'auth',
-            'new-auth',
-            'new-auth-email-signin',
-            'new-auth-email-reset',
+            'auth',
+            'auth-email-signin',
+            'auth-email-reset',
             'no-workspace',
           ];
 

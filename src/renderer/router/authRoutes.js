@@ -1,37 +1,22 @@
 const Auth = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth');
-const Login = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Auth/Login');
+const AuthLayout = () => import(/* webpackChunkName: "main" */ '@components/Auth/Layout');
+const AuthMain = () => import(/* webpackChunkName: "main" */ '@components/Auth/Main');
+const AuthEmailSignin = () => import(/* webpackChunkName: "main" */ '@components/Auth/EmailSignin');
+const AuthEmailReset = () => import(/* webpackChunkName: "main" */ '@components/Auth/EmailReset');
+const AuthEmailSignup = () => import(/* webpackChunkName: "main" */ '@components/Auth/EmailSignup');
 
 export const authRoutes = {
-  path: 'auth',
+  path: '/auth',
   component: Auth,
   children: [
     {
       path: '',
-      name: 'auth',
-      component: Login,
-    },
-  ],
-};
-
-const NewAuth = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/NewAuth');
-const NewAuthLayout = () => import(/* webpackChunkName: "main" */ '@components/NewAuth/Layout');
-const NewAuthMain = () => import(/* webpackChunkName: "main" */ '@components/NewAuth/Main');
-const NewAuthEmailSignin = () => import(/* webpackChunkName: "main" */ '@components/NewAuth/EmailSignin');
-const NewAuthEmailReset = () => import(/* webpackChunkName: "main" */ '@components/NewAuth/EmailReset');
-const NewAuthEmailSignup = () => import(/* webpackChunkName: "main" */ '@components/NewAuth/EmailSignup');
-
-export const newAuthRoutes = {
-  path: '/new-auth',
-  component: NewAuth,
-  children: [
-    {
-      path: '',
-      component: NewAuthLayout,
+      component: AuthLayout,
       children: [
         {
           path: '',
-          name: 'new-auth',
-          component: NewAuthMain,
+          name: 'auth',
+          component: AuthMain,
           meta: {
             depth: 1,
           },
@@ -39,16 +24,16 @@ export const newAuthRoutes = {
 
         {
           path: 'email-signin',
-          name: 'new-auth-email-signin',
-          component: NewAuthEmailSignin,
+          name: 'auth-email-signin',
+          component: AuthEmailSignin,
           meta: {
             depth: 2,
           },
         },
         {
           path: 'email-reset',
-          name: 'new-auth-email-reset',
-          component: NewAuthEmailReset,
+          name: 'auth-email-reset',
+          component: AuthEmailReset,
           meta: {
             depth: 3,
           },
@@ -56,8 +41,8 @@ export const newAuthRoutes = {
 
         {
           path: 'email-signup',
-          name: 'new-auth-email-signup',
-          component: NewAuthEmailSignup,
+          name: 'auth-email-signup',
+          component: AuthEmailSignup,
           meta: {
             depth: 3,
           },
