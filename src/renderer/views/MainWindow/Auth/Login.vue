@@ -280,7 +280,7 @@ export default {
      * @returns {void}
      */
     async registerHandler() {
-      const link = `${WEB_URL}/auth/register`;
+      const link = `${WEB_URL}/auth/email/signup`;
 
       window.open(link);
     },
