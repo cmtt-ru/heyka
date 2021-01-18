@@ -2,10 +2,12 @@
   <div>
     <janus />
     <notifications />
-    <wireframe
-      v-show="loading"
-      class="wireframe"
-    />
+    <transition name="wireframe-fade">
+      <wireframe
+        v-if="loading"
+        class="wireframe"
+      />
+    </transition>
     <router-view />
     <app-status :show="!$store.getters['app/getConnectionStatus']" />
     <!--    <performance-monitor />-->
@@ -14,8 +16,6 @@
 
 <script>
 import Wireframe from '@views/MainWindow/Wireframe';
-import initialProcess from '@api/initialProcess';
-
 import { ipcRenderer } from 'electron';
 import Janus from '@components/Janus.vue';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
@@ -74,6 +74,7 @@ export default {
     } catch (e) {
       cnsl.log('redirecting to login', e);
     }
+    this.loading = false;
 
     broadcastEvents.on('open-channel', id => {
       this.$router.push({
@@ -114,6 +115,9 @@ export default {
   },
 
   mounted() {
+    // send signal to index.html so that we can hide super-global wireframe there
+    window.removeWireframe();
+
     /**
      * Deep link for login
      */
@@ -129,13 +133,6 @@ export default {
       console.log('workspaceId', workspaceId);
       await this.$store.dispatch('initial');
       await this.$store.dispatch('changeWorkspace', workspaceId);
-    });
-
-    initialProcess.on('state-changed', val => {
-      console.log(val);
-      if (!val) {
-        this.loading = false;
-      }
     });
 
     setTimeout(() => {
@@ -218,4 +215,11 @@ export default {
   bottom 0
   left 0
   right 0
+
+.wireframe-fade-leave-active
+  transition all 0.2s ease
+
+.wireframe-fade-enter, .wireframe-fade-leave-to
+  opacity 0
+
 </style>

@@ -18,6 +18,9 @@ if (TrayManager.isInTray()) {
     position: 'tray',
     template: 'maintray',
     preventClose: true,
+    window: {
+      show: true,
+    },
   };
 
   if (IS_MAC) {
@@ -29,6 +32,9 @@ if (TrayManager.isInTray()) {
     windowPosition: heykaStore.get('windowPosition'),
     template: resizeable ? 'mainDev' : 'main',
     preventClose: true,
+    window: {
+      show: true,
+    },
   };
 }
 

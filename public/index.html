@@ -6,8 +6,300 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <style>
+  #wireframe{
+    background-color: #ebeff4;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    margin: 0 auto;
+    z-index: 9999;
+  }
+  .wireframe--hidden{
+    display: none;
+  }
+
+  .wireframe__layout {
+	display: flex;
+	width: 100%;
+	height: calc(100vh - 48px);
+	box-shadow: 0px -1px 12px rgba(0,0,0,0.12);
+}
+
+.wireframe__layout--mac {
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	overflow: hidden;
+}
+
+.wireframe__layout__appbar {
+	width: 100%;
+	height: 48px;
+	padding: 8px;
+	box-sizing: border-box;
+	background-color: #ebeff4;
+	-webkit-app-region: drag;
+	display: flex;
+	flex-direction: row;
+	justify-content: stretch;
+	align-items: center;
+}
+
+.wireframe__layout__column {
+	display: flex;
+	height: 100%;
+	background-color: #ffffff;
+	flex-direction: column;
+}
+
+.wireframe__layout__column--sidebar {
+	flex: 0 0 220px;
+	background-color: #f1f4f6;
+}
+
+.wireframe__layout__column--content {
+	flex: 1 1 auto;
+  position: relative;
+}
+
+.wireframe__layout__row--header {
+	flex: 0 0 39px;
+}
+
+.wireframe__layout__row--body {
+	position: relative;
+	flex: 1 1 auto;
+}
+
+
+.wireframe__appbar {
+	width: 100%;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+}
+
+.wireframe__appbar--mac {
+	flex-direction: row;
+}
+
+.wireframe__workspace {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	height: 32px;
+	width: fit-content;
+}
+
+.wireframe__user {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	transform: scaleX(-1);
+	margin: 0 4px;
+}
+
+.wireframe__user--mac {
+	transform: initial;
+}
+
+.wireframe__content-svg {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	height: 100%;
+}
+    </style>
   </head>
   <body>
+    <div id="wireframe" class="wireframe__wireframe--hidden">
+
+        <div class="wireframe__layout__appbar">
+          <div
+            class="wireframe__appbar"
+            id="appbar"
+          >
+            <div
+              class="wireframe__workspace"
+            >
+              <svg width="164" height="32" viewBox="0 0 164 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0.5 8C0.5 3.58172 4.08172 0 8.5 0H155.5C159.918 0 163.5 3.58172 163.5 8V24C163.5 28.4183 159.918 32 155.5 32H8.5C4.08173 32 0.5 28.4183 0.5 24V8Z" fill="url(#paint0_linear)"/>
+                <rect x="6.5" y="6" width="20" height="20" rx="6" fill="url(#paint1_linear)"/>
+                <g style="mix-blend-mode:luminosity" opacity="0.5">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M140.47 13.9697C140.763 13.6768 141.237 13.6768 141.53 13.9697L145.5 17.9393L149.47 13.9697C149.763 13.6768 150.237 13.6768 150.53 13.9697C150.823 14.2626 150.823 14.7374 150.53 15.0303L146.03 19.5303C145.737 19.8232 145.263 19.8232 144.97 19.5303L140.47 15.0303C140.177 14.7374 140.177 14.2626 140.47 13.9697Z" fill="white" fill-opacity="0.05"/>
+                </g>
+                <defs>
+                <linearGradient id="paint0_linear" x1="0.499999" y1="16" x2="163.5" y2="16" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+                <stop offset="1" stop-color="#EAEAEA"/>
+                </linearGradient>
+                <linearGradient id="paint1_linear" x1="6.5" y1="15.9999" x2="26.5" y2="15.9999" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#C4C4C4"/>
+                <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+                </linearGradient>
+                </defs>
+                </svg>
+                
+              
+            </div>
+    
+            <div id="window-buttons"></div>
+            <div id="mac-buttons"></div>
+    
+            <div
+              class="wireframe__user"
+              id="user"
+            >
+              <svg width="104" height="32" viewBox="0 0 104 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M72 16C72 7.16345 79.1634 0 88 0C96.8366 0 104 7.16345 104 16C104 24.8366 96.8366 32 88 32C79.1634 32 72 24.8366 72 16Z" fill="url(#paint0_2_linear)"/>
+                <path d="M36 16C36 11.0294 40.0294 7 45 7C49.9706 7 54 11.0294 54 16C54 20.9706 49.9706 25 45 25C40.0294 25 36 20.9706 36 16Z" fill="url(#paint1_2_linear)"/>
+                <path d="M0 16C0 11.0294 4.02944 7 9 7C13.9706 7 18 11.0294 18 16C18 20.9706 13.9706 25 9 25C4.02944 25 0 20.9706 0 16Z" fill="url(#paint2_2_linear)"/>
+                <defs>
+                <linearGradient id="paint0_2_linear" x1="6.29576e-07" y1="15.9998" x2="104" y2="15.9998" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#C4C4C4"/>
+                <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+                </linearGradient>
+                <linearGradient id="paint1_2_linear" x1="6.29576e-07" y1="15.9998" x2="104" y2="15.9998" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#C4C4C4"/>
+                <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+                </linearGradient>
+                <linearGradient id="paint2_2_linear" x1="6.29576e-07" y1="15.9998" x2="104" y2="15.9998" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#C4C4C4"/>
+                <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+                </linearGradient>
+                </defs>
+                </svg>
+            </div>
+          </div>
+        </div>
+    
+        <div
+      class="wireframe__layout"
+      id="layout"
+    >
+
+        <div class="wireframe__layout__column wireframe__layout__column--sidebar">
+          <svg width="220" height="332" viewBox="0 0 220 332" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="63" width="58" height="10" rx="5" fill="url(#paint0_3_linear)"/>
+            <rect x="186" y="60" width="16" height="16" rx="8" fill="url(#paint1_3_linear)"/>
+            <rect x="20" y="207" width="58" height="10" rx="5" fill="url(#paint2_3_linear)"/>
+            <rect x="186" y="204" width="16" height="16" rx="8" fill="url(#paint3_3_linear)"/>
+            <g style="mix-blend-mode:luminosity">
+            <rect x="12" y="12" width="196" height="28" rx="6" fill="url(#paint4_linear)"/>
+            </g>
+            <rect x="12" y="84" width="196" height="28" rx="6" fill="url(#paint5_linear)"/>
+            <g style="mix-blend-mode:luminosity">
+            <rect x="12" y="116" width="196" height="28" rx="6" fill="url(#paint6_linear)"/>
+            </g>
+            <g style="mix-blend-mode:luminosity">
+            <rect x="12" y="148" width="196" height="28" rx="6" fill="url(#paint7_linear)"/>
+            </g>
+            <g style="mix-blend-mode:luminosity">
+            <rect x="12" y="228" width="196" height="28" rx="6" fill="url(#paint8_linear)"/>
+            </g>
+            <g style="mix-blend-mode:luminosity">
+            <rect x="12" y="260" width="196" height="28" rx="6" fill="url(#paint9_linear)"/>
+            </g>
+            <g style="mix-blend-mode:luminosity">
+            <rect x="12" y="292" width="196" height="28" rx="6" fill="url(#paint10_linear)"/>
+            </g>
+            <defs>
+            <linearGradient id="paint0_3_linear" x1="20" y1="67.9999" x2="78" y2="68" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C4C4C4"/>
+            <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+            </linearGradient>
+            <linearGradient id="paint1_3_linear" x1="186" y1="67.9999" x2="202" y2="67.9999" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C4C4C4"/>
+            <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+            </linearGradient>
+            <linearGradient id="paint2_3_linear" x1="20" y1="212" x2="78" y2="212" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C4C4C4"/>
+            <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+            </linearGradient>
+            <linearGradient id="paint3_3_linear" x1="186" y1="212" x2="202" y2="212" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C4C4C4"/>
+            <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+            </linearGradient>
+            <linearGradient id="paint4_linear" x1="12" y1="26" x2="208" y2="26" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+            <stop offset="1" stop-color="#EAEAEA"/>
+            </linearGradient>
+            <linearGradient id="paint5_linear" x1="12" y1="98" x2="208" y2="98" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+            <stop offset="1" stop-color="#EAEAEA"/>
+            </linearGradient>
+            <linearGradient id="paint6_linear" x1="12" y1="130" x2="208" y2="130" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+            <stop offset="1" stop-color="#EAEAEA"/>
+            </linearGradient>
+            <linearGradient id="paint7_linear" x1="12" y1="162" x2="208" y2="162" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+            <stop offset="1" stop-color="#EAEAEA"/>
+            </linearGradient>
+            <linearGradient id="paint8_linear" x1="12" y1="242" x2="208" y2="242" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+            <stop offset="1" stop-color="#EAEAEA"/>
+            </linearGradient>
+            <linearGradient id="paint9_linear" x1="12" y1="274" x2="208" y2="274" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+            <stop offset="1" stop-color="#EAEAEA"/>
+            </linearGradient>
+            <linearGradient id="paint10_linear" x1="12" y1="306" x2="208" y2="306" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+            <stop offset="1" stop-color="#EAEAEA"/>
+            </linearGradient>
+            </defs>
+            </svg>
+            
+        </div>
+    
+        <div class="wireframe__layout__column wireframe__layout__column--content">
+          <svg class="wireframe__content-svg" width="180" height="136" viewBox="0 0 180 136" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect y="104" width="180" height="10" rx="5" fill="url(#paint0_4_linear)"/>
+            <rect x="40" y="126" width="100" height="10" rx="5" fill="url(#paint1_4_linear)"/>
+            <path d="M40 12C40 5.37258 45.3726 0 52 0H128C134.627 0 140 5.37258 140 12V68C140 74.6274 134.627 80 128 80H52C45.3726 80 40 74.6274 40 68V12Z" fill="url(#paint2_4_linear)"/>
+            <defs>
+            <linearGradient id="paint0_4_linear" x1="1.08965e-06" y1="109" x2="180" y2="109" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C4C4C4"/>
+            <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+            </linearGradient>
+            <linearGradient id="paint1_4_linear" x1="40" y1="131" x2="140" y2="131" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C4C4C4"/>
+            <stop offset="1" stop-color="#C4C4C4" stop-opacity="0.54"/>
+            </linearGradient>
+            <linearGradient id="paint2_4_linear" x1="40" y1="40" x2="140" y2="40" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#D7D7D7" stop-opacity="0.44"/>
+            <stop offset="1" stop-color="#EAEAEA"/>
+            </linearGradient>
+            </defs>
+            </svg>
+        </div>
+      </div>
+    </div>
+    <script>
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
+      if (isMac){
+        document.getElementById('appbar').classList.add("wireframe__appbar--mac");
+        document.getElementById('user').classList.add("wireframe__user--mac");
+        document.getElementById('layout').classList.add("wireframe__layout--mac");
+        document.getElementById('window-buttons').style.display = "none";
+        
+      } else {
+        document.getElementById('mac-buttons').style.display = "none";
+      }
+      document.getElementById('wireframe').classList.remove("wireframe--hidden");
+
+      window.removeWireframe = ()=>{
+        document.getElementById('wireframe').classList.add("wireframe--hidden");
+      }
+    </script>
+
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
