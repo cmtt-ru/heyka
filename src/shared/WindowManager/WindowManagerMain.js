@@ -273,16 +273,14 @@ class WindowManager {
         browserWindow.showInactive();
       } else {
         browserWindow.show();
-        console.log('browserWindow.show');
       }
     };
 
     if (windowOptions.show) {
-      console.log('windowOptions.show');
       prepareWindow();
     } else {
     // listen to "ready-to-show" event so we can show and position our window
-      browserWindow.on('ready-to-show', (event) => {
+      browserWindow.on('ready-to-show', () => {
         prepareWindow();
       });
     }

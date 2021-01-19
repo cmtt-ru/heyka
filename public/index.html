@@ -154,6 +154,7 @@
     
             <div
               class="wireframe__user"
+              style="display: none;"
               id="user"
             >
               <svg width="104" height="32" viewBox="0 0 104 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -286,6 +287,7 @@
       const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
       if (isMac){
         document.getElementById('appbar').classList.add("wireframe__appbar--mac");
+        document.getElementById('user').style.display = "flex";
         document.getElementById('user').classList.add("wireframe__user--mac");
         document.getElementById('layout').classList.add("wireframe__layout--mac");
         document.getElementById('window-buttons').style.display = "none";
