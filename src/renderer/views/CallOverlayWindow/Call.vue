@@ -5,12 +5,12 @@
       class="call-window__media"
       @dblclick="expandHandler"
     >
-      <video
-        ref="preloader"
-        :src="preloaderSrc"
-        class="call-window__media__preloader"
-        :class="{'call-window__media__preloader--hidden': !preloaderShown}"
-      />
+      <!--      <video-->
+      <!--        ref="preloader"-->
+      <!--        :src="preloaderSrc"-->
+      <!--        class="call-window__media__preloader"-->
+      <!--        :class="{'call-window__media__preloader&#45;&#45;hidden': !preloaderShown}"-->
+      <!--      />-->
       <video
         ref="video"
         class="call-window__media__video"
@@ -84,7 +84,7 @@ export default {
     return {
       videoRoomState: 'closed',
       isMyMedia: false,
-      preloaderSrc: null,
+      // preloaderSrc: null,
       preloaderShown: false,
       channelSwitchedTs: Date.now(),
       streamingOverlayExpanded: false,
@@ -193,7 +193,7 @@ export default {
 
     this.showPreloader(this.isLocalMediaSharing);
 
-    this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
+    // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
 
     this.$refs.video.addEventListener('loadedmetadata', () => {
       this.isMediaPlaying = true;
