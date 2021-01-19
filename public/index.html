@@ -118,7 +118,7 @@
     </style>
   </head>
   <body>
-    <div id="wireframe" class="wireframe__wireframe--hidden">
+    <div hidden id="wireframe" class="wireframe__wireframe--hidden">
 
         <div class="wireframe__layout__appbar">
           <div
@@ -284,22 +284,27 @@
       </div>
     </div>
     <script>
-      const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
-      if (isMac){
-        document.getElementById('appbar').classList.add("wireframe__appbar--mac");
-        document.getElementById('user').style.display = "flex";
-        document.getElementById('user').classList.add("wireframe__user--mac");
-        document.getElementById('layout').classList.add("wireframe__layout--mac");
-        document.getElementById('window-buttons').style.display = "none";
-        
-      } else {
-        document.getElementById('mac-buttons').style.display = "none";
-      }
-      document.getElementById('wireframe').classList.remove("wireframe--hidden");
+      if (process.argv.includes('--is-main-window')){
+      
+        document.getElementById('wireframe').hidden = false;
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
+        if (isMac){
+          document.getElementById('appbar').classList.add("wireframe__appbar--mac");
+          document.getElementById('user').style.display = "flex";
+          document.getElementById('user').classList.add("wireframe__user--mac");
+          document.getElementById('layout').classList.add("wireframe__layout--mac");
+          document.getElementById('window-buttons').style.display = "none";
+          
+        } else {
+          document.getElementById('mac-buttons').style.display = "none";
+        }
+        document.getElementById('wireframe').classList.remove("wireframe--hidden");
 
+      }
       window.removeWireframe = ()=>{
         document.getElementById('wireframe').classList.add("wireframe--hidden");
       }
+    
     </script>
 
     <noscript>

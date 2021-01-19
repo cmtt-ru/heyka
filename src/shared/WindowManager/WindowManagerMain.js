@@ -151,6 +151,10 @@ class WindowManager {
     // add global argument so we can identify window by its id
     windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
 
+    if (options.isMainWindow) {
+      windowOptions.webPreferences.additionalArguments.push('--is-main-window');
+    }
+
     if (IS_LINUX && options.displayId) {
       let display = null;
 
@@ -280,8 +284,7 @@ class WindowManager {
       prepareWindow();
     } else {
     // listen to "ready-to-show" event so we can show and position our window
-      browserWindow.on('ready-to-show', async () => {
-        await browserWindow.webContents.executeJavaScript('window.removeWireframe()');
+      browserWindow.on('ready-to-show', () => {
         prepareWindow();
       });
     }
