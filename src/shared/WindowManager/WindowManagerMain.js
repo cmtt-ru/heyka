@@ -280,7 +280,8 @@ class WindowManager {
       prepareWindow();
     } else {
     // listen to "ready-to-show" event so we can show and position our window
-      browserWindow.on('ready-to-show', () => {
+      browserWindow.on('ready-to-show', async () => {
+        await browserWindow.webContents.executeJavaScript('window.removeWireframe()');
         prepareWindow();
       });
     }
