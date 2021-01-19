@@ -58,9 +58,10 @@ export default {
     align-items center
     justify-content center
     color var(--new-UI-04)
+    white-space pre-line
 
     &__doggo
-      margin-bottom 24px
+      margin-bottom 14px
 
   .changelog
     position absolute

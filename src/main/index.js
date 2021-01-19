@@ -64,7 +64,7 @@ app.on('second-instance', () => {
 app.on('ready', async () => {
   createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
-  createLoadingScreen();
+  // createLoadingScreen();
   mainWindowId = MainWindowManager.createWindow();
 
   ipcMain.on('page-rendered', () => {
