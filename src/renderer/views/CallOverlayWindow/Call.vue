@@ -1,7 +1,7 @@
 <template>
   <div class="call-window">
     <div
-      v-show="isLocalMediaSharing"
+      v-show="isMediaPlaying"
       class="call-window__media"
       @dblclick="expandHandler"
     >
@@ -48,13 +48,13 @@
     </div>
 
     <call-controls
-      :row="isLocalMediaSharing"
+      :row="isMediaPlaying"
       :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
       class="call-window__controls"
     />
 
     <div
-      v-if="isLocalMediaSharing"
+      v-if="isMediaPlaying"
     >
       <div class="resize-border resize-border--top" />
       <div class="resize-border resize-border--left" />
@@ -145,7 +145,11 @@ export default {
   },
 
   watch: {
-    isLocalMediaSharing(value) {
+    // isLocalMediaSharing(value) {
+    //   broadcastActions.dispatch('me/setMediaSharingMode', value);
+    // },
+
+    isMediaPlaying(value) {
       broadcastActions.dispatch('me/setMediaSharingMode', value);
     },
 
@@ -195,17 +199,32 @@ export default {
 
     // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
 
-    this.$refs.video.addEventListener('loadedmetadata', () => {
+    this.$refs.video.addEventListener('playing', () => {
+      console.log('Video event --> playing');
       this.isMediaPlaying = true;
     }, false);
 
-    this.$refs.video.addEventListener('abort', () => {
+    this.$refs.video.addEventListener('suspend', () => {
+      console.log('Video event --> suspend');
       this.isMediaPlaying = false;
     }, false);
 
-    this.$refs.video.addEventListener('suspend', () => {
-      this.isMediaPlaying = false;
+    this.$refs.video.addEventListener('error', () => {
+      console.log('Video event --> error', this.$refs.video.error);
     }, false);
+
+    /**
+     * Code for listen all video event
+     */
+    // function addListenerMulti(el, s, fn) {
+    //   s.split(' ').forEach(e => el.addEventListener(e, fn, false));
+    // }
+    //
+    // var video = this.$refs.video;
+    //
+    // addListenerMulti(video, 'abort canplay canplaythrough durationchange emptied encrypted ended error interruptbegin interruptend loadeddata loadedmetadata loadstart pause play playing ratechange seeked seeking stalled suspend volumechange waiting', function (e) {
+    //   console.log(e.type);
+    // });
   },
 
   beforeDestroy() {
