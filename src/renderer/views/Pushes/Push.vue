@@ -20,6 +20,13 @@
 <script>
 import Vue from 'vue';
 import { VueHammer } from 'vue2-hammer';
+import { throttle } from 'throttle-debounce';
+
+/**
+ * Scroll throttle timeout
+ * @type {number}
+ */
+const THROTTLE_TIMEOUT = 100;
 
 Vue.use(VueHammer);
 VueHammer.config.pan = {
@@ -32,7 +39,11 @@ const THRESHOLD = 90;
 /* distance that push travels to the side during closing sequence */
 const SIDETRAVEL = 100;
 
+/* default push height */
 const DEFAULT_HEIGHT = 100;
+
+/* deltaX for wheel event to trigger push swipeout */
+const MIN_DELTA_SWIPE = 20;
 
 export default {
 
@@ -68,7 +79,7 @@ export default {
      */
     lifespan: {
       type: Number,
-      default: 40000,
+      default: 4000000,
     },
   },
 
@@ -121,6 +132,7 @@ export default {
       this.$emit('mounted', this.id);
       this.$nextTick(() => {
         this.mounted = true;
+        this.$nextTick(() => this.attachWheelListener());
       });
 
       setTimeout(() => {
@@ -130,6 +142,10 @@ export default {
           this.close(true);
         }
       }, this.lifespan);
+    },
+
+    attachWheelListener() {
+      this.$refs.push.$el.addEventListener('wheel', (e) => this.onWheel(e));
     },
 
     /**
@@ -221,6 +237,20 @@ export default {
         });
       }
     },
+
+    onWheel: throttle(THROTTLE_TIMEOUT, true, function (event) {
+      event.preventDefault();
+      const deltaX = event.deltaX;
+
+      if (deltaX === 0 || deltaX < MIN_DELTA_SWIPE) {
+        return;
+      }
+      this.styles.transform = `translateX(200px)`;
+      this.styles.opacity = 0;
+      this.$nextTick(() => {
+        this.close();
+      });
+    }),
 
     /**
      * Handle every panning event: translate push and add opacity if over THRESHOLD
