@@ -16,6 +16,7 @@
         class="call-window__media__video"
         @playing="setMediaPlaying(true)"
         @suspend="setMediaPlaying(false)"
+        @timeupdate="timeUpdateHandler"
         @error="videErrorHandler"
       />
       <div
@@ -443,6 +444,17 @@ export default {
      */
     videErrorHandler() {
       console.log('Video event --> error', this.$refs.video.error);
+    },
+
+    /**
+     * Video time update event handler
+     * @returns {void}
+     */
+    timeUpdateHandler() {
+      if (!this.isMediaPlaying && this.$refs.video) {
+        console.log(`Video event --> timeUpdate`, this.$refs.video.currentTime);
+        this.setMediaPlaying(this.$refs.video.currentTime !== 0);
+      }
     },
   },
 };
