@@ -32,12 +32,22 @@
 
     <div v-if="user.onlineStatus==='offline'">
       <ui-button
-        :type="2"
-        :wide="true"
+        :type="17"
+        wide
+        icon="slack"
         class="user-action"
         @click="_notImplemented()"
       >
         <div>{{ texts.inviteBySlackButton }}</div>
+      </ui-button>
+      <ui-button
+        :type="17"
+        wide
+        icon="ms-teams"
+        class="user-action"
+        @click="_notImplemented()"
+      >
+        <div>{{ texts.inviteByTeamsButton }}</div>
       </ui-button>
     </div>
 
@@ -45,7 +55,7 @@
       <ui-button
         v-if="!isMe && !isInPrivateTalk"
         :type="1"
-        :wide="true"
+        wide
         class="user-action"
         @click="startPrivateTalk(user.id)"
       >
@@ -53,8 +63,8 @@
       </ui-button>
       <ui-button
         v-if="selectedChannel && !isMe"
-        :type="3"
-        :wide="true"
+        :type="17"
+        wide
         class="user-action"
         :disabled="inviteButtonDisabled[user.id]"
         @click="sendInvite"
@@ -84,15 +94,6 @@
     </div> -->
 
     <div class="user-info">
-      <div class="user-info__title">
-        {{ texts.email }}
-      </div>
-      <div class="user-info__content user-info__content--email">
-        {{ user.email }}
-      </div>
-    </div>
-
-    <div class="user-info">
       <router-link :to="{ name: 'edit-profile'}">
         <ui-button
           v-if="isMe"
@@ -103,6 +104,15 @@
           <div>{{ texts.edit }}</div>
         </ui-button>
       </router-link>
+    </div>
+
+    <div class="user-info">
+      <div class="user-info__title">
+        {{ texts.email }}
+      </div>
+      <div class="user-info__content user-info__content--email">
+        {{ user.email }}
+      </div>
     </div>
   </div>
 </template>
@@ -257,7 +267,7 @@ export default {
 .user
   height 40px
   padding 0
-  margin-bottom 24px
+  margin-bottom 16px
   width 100%
   box-sizing border-box
   display flex
@@ -272,7 +282,9 @@ export default {
   &__name
     margin-left 12px
     font-weight 500
-    font-size 18px
+    font-size 16px
+    line-height 22px
+    letter-spacing -0.24px
     flex-shrink 1
 
   &__status
@@ -294,7 +306,7 @@ export default {
     color var(--icon-1)
 
 .user-action
-  margin-bottom 8px
+  margin-bottom 12px
 
   &__inner
     display flex
@@ -308,7 +320,7 @@ export default {
   margin 0 4px
 
 .user-info
-  margin-top 20px
+  margin-top 12px
 
   &__title
     font-weight bold
