@@ -14,6 +14,9 @@
       <video
         ref="video"
         class="call-window__media__video"
+        @playing="setMediaPlaying(true)"
+        @suspend="setMediaPlaying(false)"
+        @error="videErrorHandler"
       />
       <div
         v-if="sharingUser"
@@ -198,20 +201,6 @@ export default {
     this.showPreloader(this.isLocalMediaSharing);
 
     // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
-
-    this.$refs.video.addEventListener('playing', () => {
-      console.log('Video event --> playing');
-      this.isMediaPlaying = true;
-    }, false);
-
-    this.$refs.video.addEventListener('suspend', () => {
-      console.log('Video event --> suspend');
-      this.isMediaPlaying = false;
-    }, false);
-
-    this.$refs.video.addEventListener('error', () => {
-      console.log('Video event --> error', this.$refs.video.error);
-    }, false);
 
     /**
      * Code for listen all video event
@@ -431,6 +420,29 @@ export default {
 
         this.preloaderShown = state;
       }
+    },
+
+    /**
+     * Set media playing state
+     * @param {boolean} state – state
+     * @returns {void}
+     */
+    setMediaPlaying(state) {
+      if (state) {
+        console.log('Video event --> playing');
+      } else {
+        console.log('Video event --> suspend');
+      }
+
+      this.isMediaPlaying = state;
+    },
+
+    /**
+     * Video error handler
+     * @returns {void}
+     */
+    videErrorHandler() {
+      console.log('Video event --> error', this.$refs.video.error);
     },
   },
 };
