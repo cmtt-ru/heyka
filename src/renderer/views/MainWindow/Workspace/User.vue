@@ -10,6 +10,7 @@
         :image="userAvatar(user.id, 40)"
         :user-id="user.id"
         :size="40"
+        :status="user.onlineStatus"
       />
       <div
         v-textfade
@@ -18,10 +19,7 @@
         {{ user.name }}
       </div>
       <!-- <div>TODO: user role</div> -->
-      <div
-        :style="statusStyle"
-        class="user__status"
-      />
+
       <ui-button
         v-if="isMe"
         v-popover.click="{name: 'UserMore'}"
@@ -75,7 +73,7 @@
         </div>
       </ui-button>
     </div>
-
+    <!--
     <div class="user-info">
       <div class="user-info__title">
         {{ texts.localTime }}
@@ -83,7 +81,7 @@
       <div class="user-info__content">
         {{ time }}
       </div>
-    </div>
+    </div> -->
 
     <div class="user-info">
       <div class="user-info__title">
@@ -313,11 +311,14 @@ export default {
   margin-top 20px
 
   &__title
-    font-size 12px
-    color var(--text-1)
+    font-weight bold
+    font-size 14px
+    line-height 24px
+    color var(--new-UI-02)
 
   &__content
     margin-top 4px
+    line-height 22px
 
     &--email
       user-select all
