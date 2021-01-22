@@ -94,7 +94,7 @@
     </div> -->
 
     <div class="user-info">
-      <router-link :to="{ name: 'edit-profile'}">
+      <router-link :to="{ name: 'edit-profile-main'}">
         <ui-button
           v-if="isMe"
           :type="1"

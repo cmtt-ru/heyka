@@ -11,30 +11,49 @@
       >
         <div>
           <div class="user">
-            <div class="user__input-wrapper">
-              <ui-input
-                v-model="profile.name"
-                class="user__input"
-                :placeholder="me.name"
-              />
-              <ui-input
-                v-model="me.email"
-                class="user__input"
-                disabled
-              />
-            </div>
-
             <ui-image
               :key="me.avatarFileId || me.id"
-              :image="userAvatar(me.id, 76)"
+              :image="userAvatar(me.id, 64)"
               class="user__avatar"
-              :size="76"
+              :size="64"
               @input="setNewAvatar"
             />
+            <div class="edit-link edit-link--warning">
+              Удалить фото 2
+            </div>
+          </div>
+
+          <div class="block-title">
+            Полное имя
+          </div>
+          <ui-input
+            v-model="profile.name"
+            class="user__input"
+            :placeholder="me.name"
+          />
+
+          <div class="block-title">
+            Почта
+          </div>
+          <div>
+            {{ me.email }}
+          </div>
+          <div class="edit-link">
+            Изменить почту
+          </div>
+
+          <div class="block-title">
+            Пароль
+          </div>
+          <div
+            class="edit-link"
+            @click="resetHandler"
+          >
+            Сбросить пароль
           </div>
 
           <div class="link-social-accout">
-            <div class="login-label">
+            <div class="block-title">
               {{ texts.login }}
             </div>
 
@@ -142,8 +161,8 @@ export default {
       profile: {
         name: null,
         avatarFileId: null,
-        socialName: null,
       },
+      socialName: null,
     };
   },
 
@@ -268,6 +287,22 @@ export default {
       }, hideTime);
     },
 
+    async resetHandler() {
+      try {
+        await this.$API.auth.discardPass({ email: this.me.email });
+      } catch (err) {
+        console.log('ERROR:', err);
+      }
+
+      const notification = {
+        data: {
+          text: this.$t['notifications.login.passReset'],
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
+    },
+
     /**
      * Connect account to SNS
      *
@@ -324,23 +359,29 @@ $SAVE_FADE_TIME = 2s
   align-items center
   justify-content flex-start
 
-  &__input-wrapper
-    flex-grow 1
-
-  &__input
-    margin 6px 0
-
-  &__input:first-of-type
-    margin-bottom 12px
-
   &__avatar
-    margin 6px 0 6px 12px
+    margin 6px 14px 6px 0
     flex-shrink 0
 
-.login-label
+.edit-link
+  font-weight 500
   font-size 12px
   line-height 18px
-  padding 8px 0
+  letter-spacing -0.24px
+  color var(--new-UI-01)
+  cursor pointer
+  margin-top 8px
+
+  &--warning
+    color var(--new-signal-03)
+    margin-top 0
+
+.block-title
+  margin 24px 0 8px
+  font-weight bold
+  font-size 14px
+  line-height 24px
+  color var(--new-UI-02)
 
 .login-button
   margin-bottom 12px
