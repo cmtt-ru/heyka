@@ -185,9 +185,7 @@ export default {
   },
 
   created() {
-    const template = process.argv.find(argv => argv.indexOf('--template') === 0);
-
-    if (template && template.split('=')[1] === 'maintray') {
+    if (this.$store.state.app.runAppFrom === 'tray') {
       this.tray = true;
     }
   },
