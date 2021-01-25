@@ -30,14 +30,14 @@ app.setAsDefaultProtocolClient('heyka');
  * Create Splash window
  * @returns {void}
  */
-function createLoadingScreen() {
-  loadingScreenID = WindowManager.createWindow({
-    position: 'center',
-    template: 'splash',
-    url: 'splash.html',
-  });
-  console.timeEnd('before-load');
-}
+// function createLoadingScreen() {
+// loadingScreenID = WindowManager.createWindow({
+//     position: 'center',
+//     template: 'splash',
+//     url: 'splash.html',
+// });
+// console.timeEnd('before-load');
+// }
 
 app.on('window-all-closed', () => {
   if (!IS_MAC) {
