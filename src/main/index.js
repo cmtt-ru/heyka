@@ -31,11 +31,12 @@ app.setAsDefaultProtocolClient('heyka');
  * @returns {void}
  */
 // function createLoadingScreen() {
-//   loadingScreenID = WindowManager.createWindow({
+// loadingScreenID = WindowManager.createWindow({
 //     position: 'center',
 //     template: 'splash',
 //     url: 'splash.html',
-//   });
+// });
+// console.timeEnd('before-load');
 // }
 
 app.on('window-all-closed', () => {
