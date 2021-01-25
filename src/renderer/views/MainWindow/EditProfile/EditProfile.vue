@@ -1,156 +1,81 @@
 <template>
-  <pseudo-popup @close="closeHandler">
-    <template #header>
-      {{ texts.edit }}
-    </template>
-
-    <template #body>
-      <div
-        v-if="me"
-        class="edit-profile-page"
-      >
-        <div>
-          <div class="user">
-            <ui-image
-              :key="me.avatarFileId || me.id"
-              :image="userAvatar(me.id, 64)"
-              class="user__avatar"
-              :size="64"
-              @input="setNewAvatar"
-            />
-            <div class="edit-link edit-link--warning">
-              Удалить фото
-            </div>
-          </div>
-
-          <div class="block-title">
-            Полное имя
-          </div>
-          <ui-input
-            v-model="profile.name"
-            class="user__input"
-            :placeholder="me.name"
-          />
-
-          <div class="block-title">
-            Почта
-          </div>
-          <div>
-            {{ me.email }}
-          </div>
-          <div class="edit-link">
-            Изменить почту
-          </div>
-
-          <div class="block-title">
-            Пароль
-          </div>
-          <div
-            class="edit-link"
-            @click="resetHandler"
-          >
-            Сбросить пароль
-          </div>
-
-          <div class="link-social-accout">
-            <div class="block-title">
-              {{ texts.login }}
-            </div>
-
-            <ui-button
-              :type="3"
-              icon=""
-              wide
-              class="login-button"
-              @click="socialHandler('slack')"
-            >
-              Slack
-              <svg-icon
-                v-if="socialAuth.slack"
-                slot="right"
-                color="var(--icon-1)"
-                name="close"
-                size="medium"
-                @click.native.stop="detachSocialHandler('slack')"
-              />
-            </ui-button>
-
-            <ui-button
-              :type="3"
-              icon=""
-              :wide="true"
-              class="login-button"
-              @click="socialHandler('facebook')"
-            >
-              Facebook
-              <svg-icon
-                v-if="socialAuth.facebook"
-                slot="right"
-                color="var(--icon-1)"
-                name="close"
-                size="medium"
-                @click.native.stop="detachSocialHandler('facebook')"
-              />
-            </ui-button>
-            <ui-button
-              :type="3"
-              icon=""
-              :wide="true"
-              class="login-button"
-              @click="socialHandler('google')"
-            >
-              <svg-icon
-                v-if="socialAuth.google"
-                slot="right"
-                color="var(--icon-1)"
-                name="close"
-                size="medium"
-                @click.native.stop="detachSocialHandler('google')"
-              />
-              Google
-            </ui-button>
-          </div>
-        </div>
+  <div
+    v-if="me"
+    class="edit-profile-page"
+  >
+    <div>
+      <div class="user">
+        <ui-image
+          :key="me.avatarFileId || me.id"
+          :image="userAvatar(me.id, 64)"
+          class="user__avatar"
+          :size="64"
+          @input="setNewAvatar"
+        />
         <div
-          ref="savedText"
-          class="saved-text"
+          class="edit-link edit-link--warning"
+          @click="_notImplemented()"
         >
-          {{ texts.saved }}
+          {{ texts.deletePhoto }}
         </div>
       </div>
-    </template>
-    <template #footer>
-      <ui-button
-        :type="1"
-        size="small"
-        @click="submit"
-      >
-        {{ $t('workspace.editChannel.buttonSave') }}
-      </ui-button>
 
-      <ui-button
-        :type="2"
-        class="l-mr-6"
-        size="small"
-        @click="closeHandler"
+      <div class="block-title">
+        {{ texts.fullNameLabel }}
+      </div>
+      <ui-input
+        v-model="profile.name"
+        class="user__input"
+        :placeholder="me.name"
+      />
+
+      <div class="block-title">
+        {{ texts.emailLabel }}
+      </div>
+      <div>
+        {{ me.email }}
+      </div>
+      <div
+        class="edit-link"
+        @click="_notImplemented()"
       >
-        {{ $t('workspace.editChannel.buttonCancel') }}
-      </ui-button>
-    </template>
-  </pseudo-popup>
+        {{ texts.editEmail }}
+      </div>
+
+      <div class="block-title">
+        {{ texts.passLabel }}
+      </div>
+      <div
+        class="edit-link"
+        @click="resetHandler"
+      >
+        {{ texts.resetPass }}
+      </div>
+    </div>
+    <div
+      ref="savedText"
+      class="saved-text"
+    >
+      {{ texts.saved }}
+    </div>
+    <ui-button
+      :type="1"
+      size="small"
+      @click="submit"
+    >
+      {{ $t('workspace.editChannel.buttonSave') }}
+    </ui-button>
+  </div>
 </template>
 
 <script>
-import PseudoPopup from '@components/PseudoPopup';
 import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
-import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { WEB_URL } from '@sdk/Constants';
 
 export default {
   components: {
-    PseudoPopup,
     UiInput,
     UiImage,
     UiButton,
@@ -211,31 +136,6 @@ export default {
   mounted() {
     this.$set(this.profile, 'name', this.vuexName);
     this.$set(this.profile, 'avatarFileId', this.vuexAvatarFileId);
-
-    DeepLink.on('social-link', ([status, error]) => {
-      let text = '';
-
-      if (status === 'true') {
-        const socialName = this.socialName.charAt(0).toUpperCase() + this.socialName.slice(1);
-
-        text = this.$t('workspace.userSettings.socialLinked', [ socialName ]);
-      } else {
-        text = decodeURIComponent(error);
-      }
-
-      this.$store.dispatch('app/addNotification', {
-        lifespan: 3000,
-        data: {
-          text,
-        },
-      });
-
-      this.socialName = null;
-    });
-  },
-
-  beforeDestroy() {
-    DeepLink.removeAllListeners('social-link');
   },
 
   methods: {
@@ -296,7 +196,7 @@ export default {
 
       const notification = {
         data: {
-          text: this.$t['notifications.login.passReset'],
+          text: this.$t('notifications.login.passReset'),
         },
       };
 
@@ -337,6 +237,7 @@ $SAVE_FADE_TIME = 2s
   height 100%
   display flex
   flex-direction column
+  padding 6px 8px
 
 .close-strip
   height 40px

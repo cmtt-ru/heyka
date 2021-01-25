@@ -2,31 +2,31 @@
   <layout>
     <template #header>
       <div class="settings-title l-pl-12 l-fw-m">
-        Styleguide
+        {{ texts.pageName }}
       </div>
       <div
         class="settings-close"
         @click="$router.go(-1)"
       >
-        Закрыть
+        {{ $t('techTexts.close') }}
       </div>
     </template>
 
     <template #sidebar>
       <div class="l-p-8">
         <router-link
-          class="link"
+          class="editprofile-link"
           :to="{name: 'edit-profile-main'}"
           replace
         >
-          Основное
+          {{ texts.mainSettings }}
         </router-link>
         <router-link
-          class="link"
+          class="editprofile-link"
           :to="{name: 'edit-profile-social'}"
           replace
         >
-          Формы входа
+          {{ texts.loginSettings }}
         </router-link>
       </div>
     </template>
@@ -59,7 +59,7 @@ export default {
      * @returns {object}
      */
     texts() {
-      return this.$t('settings.labels');
+      return this.$t('workspace.userSettings');
     },
   },
 };
@@ -74,21 +74,21 @@ export default {
   &:hover
     color var(--new-UI-01-1) //? так ли?
 
-.link
+.editprofile-link
   display block
-  padding 4px
-  border-radius 4px
+  padding 6px 8px
+  border-radius 6px
   font-size 14px
+  line-height 16px
   text-decoration none
   color var(--text-0)
-  margin-top 2px
+  margin 2px 4px 4px
 
   &:hover:not(.router-link-exact-active)
-    background-color var(--item-bg-hover)
+    background-color var(--new-UI-07)
 
-.router-link-exact-active
-  background-color var(--item-bg-active)
-  box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
+  &.router-link-exact-active
+    background-color var(--new-UI-07)
 
 pre
   display inline-flex
