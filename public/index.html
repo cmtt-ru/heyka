@@ -7,6 +7,12 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
     <style>
+      html{
+        --appbar-wireframe: #ebeff4;
+        --sidebar-wireframe: #f1f4f6;
+        --content-wireframe: #ffffff;
+
+      }
   #wireframe{
     background-color: #ebeff4;
     position: absolute;
@@ -39,7 +45,7 @@
 	height: 48px;
 	padding: 8px;
 	box-sizing: border-box;
-	background-color: #ebeff4;
+	background-color: var(--appbar-wireframe);
 	-webkit-app-region: drag;
 	display: flex;
 	flex-direction: row;
@@ -50,13 +56,13 @@
 .wireframe__layout__column {
 	display: flex;
 	height: 100%;
-	background-color: #ffffff;
+	background-color: var(--content-wireframe);
 	flex-direction: column;
 }
 
 .wireframe__layout__column--sidebar {
 	flex: 0 0 220px;
-	background-color: #f1f4f6;
+	background-color: var(--sidebar-wireframe);
 }
 
 .wireframe__layout__column--content {
@@ -284,27 +290,49 @@
       </div>
     </div>
     <script>
-      if (process.argv.includes('--is-main-window')){
-      
-        document.getElementById('wireframe').hidden = false;
-        const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
-        if (isMac){
-          document.getElementById('appbar').classList.add("wireframe__appbar--mac");
-          document.getElementById('user').style.display = "flex";
-          document.getElementById('user').classList.add("wireframe__user--mac");
-          document.getElementById('layout').classList.add("wireframe__layout--mac");
-          document.getElementById('window-buttons').style.display = "none";
-          
-        } else {
-          document.getElementById('mac-buttons').style.display = "none";
-        }
-        document.getElementById('wireframe').classList.remove("wireframe--hidden");
+if (process.argv.includes('--is-main-window')){
 
+      function getTheme(){
+        if (localStorage.themeName){
+          if (localStorage.themeName === 'dark'){
+            return 'dark';
+          }
+          return 'light';
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches){
+            return 'dark';
+        }
+        return 'light';
       }
+
+      function setDarkColors(){
+        document.documentElement.style.setProperty('--appbar-wireframe', '#3d4046')
+        document.documentElement.style.setProperty('--sidebar-wireframe', '#272a30')
+        document.documentElement.style.setProperty('--content-wireframe', '#1f2227')
+      }
+
+      if (getTheme() == 'dark') {
+        setDarkColors()
+      }
+
+      document.getElementById('wireframe').hidden = false;
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
+      if (isMac){
+        document.getElementById('appbar').classList.add("wireframe__appbar--mac");
+        document.getElementById('user').style.display = "flex";
+        document.getElementById('user').classList.add("wireframe__user--mac");
+        document.getElementById('layout').classList.add("wireframe__layout--mac");
+        document.getElementById('window-buttons').style.display = "none";
+        
+      } else {
+        document.getElementById('mac-buttons').style.display = "none";
+      }
+      document.getElementById('wireframe').classList.remove("wireframe--hidden");
+
       window.removeWireframe = ()=>{
         document.getElementById('wireframe').classList.add("wireframe--hidden");
       }
-    
+
+}
     </script>
 
     <noscript>
