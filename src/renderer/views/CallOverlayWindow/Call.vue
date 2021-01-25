@@ -1,7 +1,7 @@
 <template>
   <div class="call-window">
     <div
-      v-show="isMediaPlaying"
+      v-show="mediaCanShow"
       class="call-window__media"
       @dblclick="expandHandler"
     >
@@ -52,13 +52,13 @@
     </div>
 
     <call-controls
-      :row="isMediaPlaying"
+      :row="mediaCanShow"
       :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
       class="call-window__controls"
     />
 
     <div
-      v-if="isMediaPlaying"
+      v-if="mediaCanShow"
     >
       <div class="resize-border resize-border--top" />
       <div class="resize-border resize-border--left" />
@@ -93,6 +93,8 @@ export default {
       channelSwitchedTs: Date.now(),
       streamingOverlayExpanded: false,
       isMediaPlaying: false,
+      isStreamActive: false,
+      isNeedToWaitVideo: true,
     };
   },
   computed: {
@@ -140,11 +142,62 @@ export default {
     },
 
     sharingUser() {
-      return this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
+      const user = this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
+
+      if (!user) {
+        return;
+      }
+
+      const channel = this.$store.getters['channels/getChannelById'](this.selectedChannelId);
+      const mediaState = channel.users.filter(c => c.userId === user.id)[0];
+
+      return Object.assign({}, user, mediaState);
     },
 
     isNeedToShowPreloader() {
       return !this.isMediaPlaying && this.isLocalMediaSharing;
+    },
+
+    /**
+     * Is user sharing media
+     * @returns {boolean}
+     */
+    isUserSharingMedia() {
+      if (!this.sharingUser) {
+        return false;
+      }
+
+      return this.sharingUser.camera || this.sharingUser.screen;
+    },
+
+    /**
+     * Whether to show video
+     * @returns {boolean}
+     */
+    mediaCanShow() {
+      console.log('Media can show -->', this.isUserSharingMedia, this.isMediaPlaying, this.isStreamActive);
+
+      if (this.isUserSharingMedia) {
+        const state = this.isStreamActive && this.isMediaPlaying;
+
+        if (this.isNeedToWaitVideo) {
+          if (state) {
+            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+            this.isNeedToWaitVideo = false;
+
+            return true;
+          }
+
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.isNeedToWaitVideo = true;
+      }
+
+      return false;
     },
   },
 
@@ -153,7 +206,7 @@ export default {
     //   broadcastActions.dispatch('me/setMediaSharingMode', value);
     // },
 
-    isMediaPlaying(value) {
+    mediaCanShow(value) {
       broadcastActions.dispatch('me/setMediaSharingMode', value);
     },
 
@@ -202,28 +255,11 @@ export default {
     this.showPreloader(this.isLocalMediaSharing);
 
     // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
-
-    /**
-     * Code for listen all video event
-     */
-    // function addListenerMulti(el, s, fn) {
-    //   s.split(' ').forEach(e => el.addEventListener(e, fn, false));
-    // }
-    //
-    // var video = this.$refs.video;
-    //
-    // addListenerMulti(video, 'abort canplay canplaythrough durationchange emptied encrypted ended error interruptbegin interruptend loadeddata loadedmetadata loadstart pause play playing ratechange seeked seeking stalled suspend volumechange waiting', function (e) {
-    //   console.log(e.type);
-    // });
   },
 
   beforeDestroy() {
     janusVideoroomWrapper.removeAllListeners('single-sub-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
-  },
-
-  destroyed() {
-
   },
 
   methods: {
@@ -377,13 +413,25 @@ export default {
      * @returns {void}
      */
     async insertStream(stream) {
-      const el = this.$refs.video;
+      const video = this.$refs.video;
 
-      el.srcObject = stream;
+      video.srcObject = stream;
 
-      el.onloadedmetadata = () => {
-        el.play();
+      video.onloadedmetadata = () => {
+        video.play();
       };
+
+      stream.onactive = () => {
+        this.isStreamActive = true;
+        console.log(`Media stream' --> active`);
+      };
+
+      stream.oninactive = () => {
+        this.isStreamActive = false;
+        console.log(`Media stream' --> inactive`);
+      };
+
+      this.isStreamActive = stream.active;
     },
 
     /**
