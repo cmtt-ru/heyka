@@ -10,17 +10,21 @@
           icon="slack"
           wide
           class="login-button"
+          :class="{'login-button--connected': socialAuth.slack}"
           @click="socialHandler('slack')"
         >
           Slack
-          <svg-icon
-            v-if="!socialAuth.slack"
+          <div
+            v-if="socialAuth.slack"
             slot="right"
-            color="var(--icon-1)"
-            name="close"
-            size="medium"
-            @click.native.stop="detachSocialHandler('slack')"
-          />
+            class="close-button-wrapper"
+            @click.stop="detachSocialHandler('slack')"
+          >
+            <svg-icon
+              name="close"
+              size="medium"
+            />
+          </div>
         </ui-button>
 
         <ui-button
@@ -31,15 +35,19 @@
           @click="socialHandler('facebook')"
         >
           Facebook
-          <svg-icon
+          <div
             v-if="socialAuth.facebook"
             slot="right"
-            color="var(--icon-1)"
-            name="close"
-            size="medium"
-            @click.native.stop="detachSocialHandler('facebook')"
-          />
+            class="close-button-wrapper"
+            @click.stop="detachSocialHandler('facebook')"
+          >
+            <svg-icon
+              name="close"
+              size="medium"
+            />
+          </div>
         </ui-button>
+
         <ui-button
           :type="17"
           icon="google"
@@ -47,15 +55,18 @@
           class="login-button"
           @click="socialHandler('google')"
         >
-          <svg-icon
+          Google
+          <div
             v-if="socialAuth.google"
             slot="right"
-            color="var(--icon-1)"
-            name="close"
-            size="medium"
-            @click.native.stop="detachSocialHandler('google')"
-          />
-          Google
+            class="close-button-wrapper"
+            @click.stop="detachSocialHandler('google')"
+          >
+            <svg-icon
+              name="close"
+              size="medium"
+            />
+          </div>
         </ui-button>
       </div>
     </div>
@@ -179,5 +190,30 @@ $SAVE_FADE_TIME = 2s
 
 .login-button
   margin-bottom 12px
+  align-items center
 
+  &--connected
+    background-color rgba(21, 117, 241, 0.15)
+    box-shadow none
+
+.close-button-wrapper
+  display inline
+  width 45px
+  height 24px
+  box-sizing border-box
+  color var(--new-UI-01)
+  margin-left -45px
+  transform translateX(12px)
+  border-top-right-radius 6px
+  border-bottom-right-radius 6px
+  display flex
+  flex-direction row
+  justify-content center
+  align-items center
+  border-left 1px solid rgba(21, 117, 241, 0.15)
+
+  &:hover
+    background-color rgba(21, 117, 241, 0.15)
+    border-left 1px solid transparent
+    height 100%
 </style>
