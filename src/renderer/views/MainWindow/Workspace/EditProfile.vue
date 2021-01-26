@@ -33,7 +33,7 @@
             />
           </div>
 
-          <div class="currently-not-needed">
+          <div class="link-social-accout">
             <div class="login-label">
               {{ texts.login }}
             </div>
@@ -142,6 +142,7 @@ export default {
       profile: {
         name: null,
         avatarFileId: null,
+        socialName: null,
       },
     };
   },
@@ -151,6 +152,7 @@ export default {
       selectedChannel: 'myChannel',
       me: 'myInfo',
       userAvatar: 'users/getUserAvatarUrl',
+      socialAuth: 'me/getSocialAuth',
     }),
 
     /**
@@ -176,14 +178,6 @@ export default {
     vuexAvatarFileId() {
       return this.me.avatarFileId;
     },
-
-    /**
-     * Social accounts
-     * @returns {object}
-     */
-    socialAuth() {
-      return this.$store.state.me.socialAuth || {};
-    },
   },
 
   watch: {
@@ -200,13 +194,24 @@ export default {
     this.$set(this.profile, 'avatarFileId', this.vuexAvatarFileId);
 
     DeepLink.on('social-link', ([status, error]) => {
-      if (status === 'false') {
-        this.$store.dispatch('app/addNotification', {
-          data: {
-            text: decodeURIComponent(error),
-          },
-        });
+      let text = '';
+
+      if (status === 'true') {
+        const socialName = this.socialName.charAt(0).toUpperCase() + this.socialName.slice(1);
+
+        text = this.$t('workspace.userSettings.socialLinked', [ socialName ]);
+      } else {
+        text = decodeURIComponent(error);
       }
+
+      this.$store.dispatch('app/addNotification', {
+        lifespan: 3000,
+        data: {
+          text,
+        },
+      });
+
+      this.socialName = null;
     });
   },
 
@@ -277,6 +282,8 @@ export default {
       const { code } = await this.$API.auth.link();
       const link = `${WEB_URL}/auth/social/${socialName}/link/${code}`;
 
+      this.socialName = socialName;
+
       window.open(link);
     },
 
@@ -289,10 +296,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.currently-not-needed
-  opacity 0.5
-  pointer-events none
-
 $SAVE_FADE_TIME = 2s
 
 .edit-profile-page
