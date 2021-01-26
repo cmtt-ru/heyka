@@ -84,6 +84,7 @@ class Window extends EventEmitter {
   /**
    * All signals sent to main process
    * @param {string} event - event name
+   * @param {object} data
    * @returns {void}
    */
   action(event, data) {
