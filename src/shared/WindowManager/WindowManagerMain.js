@@ -155,6 +155,9 @@ class WindowManager {
       windowOptions.webPreferences.additionalArguments.push('--is-main-window');
     }
 
+    // add global argument with window's template
+    windowOptions.webPreferences.additionalArguments.push('--template=' + options.template);
+
     if (IS_LINUX && options.displayId) {
       let display = null;
 

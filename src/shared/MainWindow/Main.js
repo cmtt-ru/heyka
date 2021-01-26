@@ -22,6 +22,7 @@ if (TrayManager.isInTray()) {
     window: {
       show: true,
     },
+    margin: 20,
   };
 
   if (IS_MAC) {
