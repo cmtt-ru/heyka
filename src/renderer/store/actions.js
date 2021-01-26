@@ -46,8 +46,6 @@ export default {
         commit('me/SET_USER_EMAIL', authenticatedUser.email);
         dispatch('me/updateSocial', authenticatedUser);
 
-        console.log('authenticatedUser', authenticatedUser);
-
         /** Update workspace list */
         cnsl.log('...wait for workspace list');
         const updateListState = await dispatch('workspaces/updateList');
@@ -193,10 +191,10 @@ export default {
 
     dispatch('me/setChannelId', id);
 
-    const isAnybodySharingMedia = getters['isAnybodySharingMedia'];
-    const isMediaSharing = isAnybodySharingMedia && !state.me.mediaState.screen;
+    // const isAnybodySharingMedia = getters['isAnybodySharingMedia'];
+    // const isMediaSharing = isAnybodySharingMedia && !state.me.mediaState.screen;
 
-    callWindow.showOverlay(isMediaSharing);
+    callWindow.showOverlay();
 
     if (state.me.mediaState.microphone === true) {
       ipcRenderer.send('tray-animation', true);

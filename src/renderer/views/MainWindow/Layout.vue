@@ -3,12 +3,17 @@
     class="mainwindow-wrapper"
     :class="{'mainwindow-wrapper--mac': IS_MAC}"
   >
+    <div />
     <div
       class="layout__appbar"
       :class="{'layout__appbar--mac': IS_MAC}"
     >
       <div class="resizing-padding" />
-      <appbar />
+      <slot
+        v-if="$slots['appbar-body']"
+        name="appbar-body"
+      />
+      <appbar v-else />
     </div>
     <div
       class="layout"
