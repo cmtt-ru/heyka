@@ -14,10 +14,6 @@
       <video
         ref="video"
         class="call-window__media__video"
-        @playing="setMediaPlaying(true)"
-        @suspend="setMediaPlaying(false)"
-        @timeupdate="timeUpdateHandler"
-        @error="videErrorHandler"
       />
       <div
         v-if="sharingUser"
@@ -260,6 +256,16 @@ export default {
   beforeDestroy() {
     janusVideoroomWrapper.removeAllListeners('single-sub-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
+
+    const video = this.$refs['video'];
+
+    if (video) {
+      video.onloadedmetadata = null;
+      video.onplaying = null;
+      video.onsuspend = null;
+      video.ontimeupdate = null;
+      video.onerror = null;
+    }
   },
 
   methods: {
@@ -419,6 +425,22 @@ export default {
 
       video.onloadedmetadata = () => {
         video.play();
+      };
+
+      video.onplaying = () => {
+        this.setMediaPlaying(true);
+      };
+
+      video.onsuspend = () => {
+        this.setMediaPlaying(false);
+      };
+
+      video.ontimeupdate = () => {
+        this.timeUpdateHandler();
+      };
+
+      video.onerror = () => {
+        this.videErrorHandler();
       };
 
       stream.onactive = () => {
