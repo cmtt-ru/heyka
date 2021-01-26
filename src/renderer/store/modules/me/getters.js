@@ -78,4 +78,14 @@ export default {
   getAllowDraw: state => {
     return state.allowDraw;
   },
+
+  /**
+   * Get socialAuth state
+   *
+   * @param {MeState} state – me module state
+   * @returns {string}
+   */
+  getSocialAuth: state => {
+    return state.socialAuth;
+  },
 };

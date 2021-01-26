@@ -44,7 +44,7 @@ export default {
       if (userId) {
         commit('me/SET_USER_ID', userId);
         commit('me/SET_USER_EMAIL', authenticatedUser.email);
-        dispatch('me/update', authenticatedUser);
+        dispatch('me/updateSocial', authenticatedUser);
 
         /** Update workspace list */
         cnsl.log('...wait for workspace list');
@@ -62,6 +62,9 @@ export default {
 
           const routes = [
             'auth',
+            'auth',
+            'auth-email-signin',
+            'auth-email-reset',
             'no-workspace',
           ];
 
@@ -362,10 +365,6 @@ export default {
       await API.auth.signinByLink(authLink);
 
       await dispatch('initial');
-
-      await router.replace({
-        name: 'workspace',
-      });
     } catch (err) {
       console.log(`Code ${authLink} is invalid:`, err);
     }
