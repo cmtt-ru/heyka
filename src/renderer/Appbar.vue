@@ -1,11 +1,10 @@
 <template>
   <div
-    v-if="myId"
     class="appbar"
     :class="{'appbar--mac': IS_MAC}"
   >
     <div
-      v-if="myWorkspace"
+      v-if="myWorkspace && myId"
       class="workspace"
     >
       <div
@@ -65,6 +64,7 @@
     </div>
 
     <div
+      v-if="myId"
       class="user"
       :class="{'user--mac': IS_MAC}"
     >

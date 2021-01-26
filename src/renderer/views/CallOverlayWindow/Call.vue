@@ -1,16 +1,16 @@
 <template>
   <div class="call-window">
     <div
-      v-show="isLocalMediaSharing"
+      v-show="mediaCanShow"
       class="call-window__media"
       @dblclick="expandHandler"
     >
-      <video
-        ref="preloader"
-        :src="preloaderSrc"
-        class="call-window__media__preloader"
-        :class="{'call-window__media__preloader--hidden': !preloaderShown}"
-      />
+      <!--      <video-->
+      <!--        ref="preloader"-->
+      <!--        :src="preloaderSrc"-->
+      <!--        class="call-window__media__preloader"-->
+      <!--        :class="{'call-window__media__preloader&#45;&#45;hidden': !preloaderShown}"-->
+      <!--      />-->
       <video
         ref="video"
         class="call-window__media__video"
@@ -48,13 +48,13 @@
     </div>
 
     <call-controls
-      :row="isLocalMediaSharing"
+      :row="mediaCanShow"
       :buttons="['screen', 'camera', 'microphone', 'grid', 'leave']"
       class="call-window__controls"
     />
 
     <div
-      v-if="isLocalMediaSharing"
+      v-if="mediaCanShow"
     >
       <div class="resize-border resize-border--top" />
       <div class="resize-border resize-border--left" />
@@ -84,11 +84,13 @@ export default {
     return {
       videoRoomState: 'closed',
       isMyMedia: false,
-      preloaderSrc: null,
+      // preloaderSrc: null,
       preloaderShown: false,
       channelSwitchedTs: Date.now(),
       streamingOverlayExpanded: false,
       isMediaPlaying: false,
+      isStreamActive: false,
+      isNeedToWaitVideo: true,
     };
   },
   computed: {
@@ -136,16 +138,71 @@ export default {
     },
 
     sharingUser() {
-      return this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
+      const user = this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
+
+      if (!user) {
+        return;
+      }
+
+      const channel = this.$store.getters['channels/getChannelById'](this.selectedChannelId);
+      const mediaState = channel.users.filter(c => c.userId === user.id)[0];
+
+      return Object.assign({}, user, mediaState);
     },
 
     isNeedToShowPreloader() {
       return !this.isMediaPlaying && this.isLocalMediaSharing;
     },
+
+    /**
+     * Is user sharing media
+     * @returns {boolean}
+     */
+    isUserSharingMedia() {
+      if (!this.sharingUser) {
+        return false;
+      }
+
+      return this.sharingUser.camera || this.sharingUser.screen;
+    },
+
+    /**
+     * Whether to show video
+     * @returns {boolean}
+     */
+    mediaCanShow() {
+      console.log('Media can show -->', this.isUserSharingMedia, this.isMediaPlaying, this.isStreamActive);
+
+      if (this.isUserSharingMedia) {
+        const state = this.isStreamActive && this.isMediaPlaying;
+
+        if (this.isNeedToWaitVideo) {
+          if (state) {
+            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+            this.isNeedToWaitVideo = false;
+
+            return true;
+          }
+
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.isNeedToWaitVideo = true;
+      }
+
+      return false;
+    },
   },
 
   watch: {
-    isLocalMediaSharing(value) {
+    // isLocalMediaSharing(value) {
+    //   broadcastActions.dispatch('me/setMediaSharingMode', value);
+    // },
+
+    mediaCanShow(value) {
       broadcastActions.dispatch('me/setMediaSharingMode', value);
     },
 
@@ -193,28 +250,22 @@ export default {
 
     this.showPreloader(this.isLocalMediaSharing);
 
-    this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
-
-    this.$refs.video.addEventListener('loadedmetadata', () => {
-      this.isMediaPlaying = true;
-    }, false);
-
-    this.$refs.video.addEventListener('abort', () => {
-      this.isMediaPlaying = false;
-    }, false);
-
-    this.$refs.video.addEventListener('suspend', () => {
-      this.isMediaPlaying = false;
-    }, false);
+    // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
   },
 
   beforeDestroy() {
     janusVideoroomWrapper.removeAllListeners('single-sub-stream');
     janusVideoroomWrapper.removeAllListeners('publisher-joined');
-  },
 
-  destroyed() {
+    const video = this.$refs['video'];
 
+    if (video) {
+      video.onloadedmetadata = null;
+      video.onplaying = null;
+      video.onsuspend = null;
+      video.ontimeupdate = null;
+      video.onerror = null;
+    }
   },
 
   methods: {
@@ -368,13 +419,41 @@ export default {
      * @returns {void}
      */
     async insertStream(stream) {
-      const el = this.$refs.video;
+      const video = this.$refs.video;
 
-      el.srcObject = stream;
+      video.srcObject = stream;
 
-      el.onloadedmetadata = () => {
-        el.play();
+      video.onloadedmetadata = () => {
+        video.play();
       };
+
+      video.onplaying = () => {
+        this.setMediaPlaying(true);
+      };
+
+      video.onsuspend = () => {
+        this.setMediaPlaying(false);
+      };
+
+      video.ontimeupdate = () => {
+        this.timeUpdateHandler();
+      };
+
+      video.onerror = () => {
+        this.videErrorHandler();
+      };
+
+      stream.onactive = () => {
+        this.isStreamActive = true;
+        console.log(`Media stream' --> active`);
+      };
+
+      stream.oninactive = () => {
+        this.isStreamActive = false;
+        console.log(`Media stream' --> inactive`);
+      };
+
+      this.isStreamActive = stream.active;
     },
 
     /**
@@ -411,6 +490,40 @@ export default {
         }
 
         this.preloaderShown = state;
+      }
+    },
+
+    /**
+     * Set media playing state
+     * @param {boolean} state – state
+     * @returns {void}
+     */
+    setMediaPlaying(state) {
+      if (state) {
+        console.log('Video event --> playing');
+      } else {
+        console.log('Video event --> suspend');
+      }
+
+      this.isMediaPlaying = state;
+    },
+
+    /**
+     * Video error handler
+     * @returns {void}
+     */
+    videErrorHandler() {
+      console.log('Video event --> error', this.$refs.video.error);
+    },
+
+    /**
+     * Video time update event handler
+     * @returns {void}
+     */
+    timeUpdateHandler() {
+      if (!this.isMediaPlaying && this.$refs.video) {
+        console.log(`Video event --> timeUpdate`, this.$refs.video.currentTime);
+        this.setMediaPlaying(this.$refs.video.currentTime !== 0);
       }
     },
   },

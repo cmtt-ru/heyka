@@ -30,14 +30,14 @@ app.setAsDefaultProtocolClient('heyka');
  * Create Splash window
  * @returns {void}
  */
-function createLoadingScreen() {
-  loadingScreenID = WindowManager.createWindow({
-    position: 'center',
-    template: 'splash',
-    url: 'splash.html',
-  });
-  console.timeEnd('before-load');
-}
+// function createLoadingScreen() {
+// loadingScreenID = WindowManager.createWindow({
+//     position: 'center',
+//     template: 'splash',
+//     url: 'splash.html',
+// });
+// console.timeEnd('before-load');
+// }
 
 app.on('window-all-closed', () => {
   if (!IS_MAC) {
@@ -64,7 +64,7 @@ app.on('second-instance', () => {
 app.on('ready', async () => {
   createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
-  createLoadingScreen();
+  // createLoadingScreen();
   mainWindowId = MainWindowManager.createWindow();
 
   ipcMain.on('page-rendered', () => {
