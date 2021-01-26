@@ -18,6 +18,7 @@ if (TrayManager.isInTray()) {
     position: 'tray',
     template: 'maintray',
     preventClose: true,
+    margin: 20,
     isMainWindow: true,
     window: {
       show: true,
