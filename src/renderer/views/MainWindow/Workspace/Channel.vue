@@ -317,11 +317,11 @@ export default {
   margin-bottom 48px
 
 .bottom-block
-  position absolute
+  position fixed
   bottom 0
-  padding 8px 12px
+  padding 8px 12px 8px 18px
   box-sizing border-box
   background-color var(--app-bg)
-  width 100%
+  width calc(100% - 220px)
 
 </style>

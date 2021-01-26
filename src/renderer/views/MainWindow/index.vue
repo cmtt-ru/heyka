@@ -121,8 +121,19 @@ export default {
     /**
      * Deep link for login
      */
-    DeepLink.on('login', ([ code ]) => {
-      console.log('useAuthLink', code);
+    DeepLink.on('login', ([code, error = '']) => {
+      console.log('DeepLink login', code, error);
+
+      if (code === 'false') {
+        this.$store.dispatch('app/addNotification', {
+          data: {
+            text: decodeURIComponent(error),
+          },
+        });
+
+        return;
+      }
+
       this.$store.dispatch('useAuthLink', code);
     });
 
