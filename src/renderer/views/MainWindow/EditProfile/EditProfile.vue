@@ -14,7 +14,7 @@
         />
         <div
           class="edit-link edit-link--warning"
-          @click="_notImplemented()"
+          @click="deleteImage"
         >
           {{ texts.deletePhoto }}
         </div>
@@ -171,6 +171,7 @@ export default {
 
     async deleteImage() {
       try {
+        this.$set(this.profile, 'avatarFileId', null);
         await this.$API.user.editProfile({ avatarFileId: null });
         this.savedAnimation();
       } catch (err) {
