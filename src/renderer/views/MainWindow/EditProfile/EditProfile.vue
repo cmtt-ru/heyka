@@ -169,6 +169,15 @@ export default {
       }
     },
 
+    async deleteImage() {
+      try {
+        await this.$API.user.editProfile({ avatarFileId: null });
+        this.savedAnimation();
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
     /**
      * show "saved!" text after successful API request
      * @returns {void}
