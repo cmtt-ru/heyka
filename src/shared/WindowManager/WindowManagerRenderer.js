@@ -12,11 +12,11 @@ class WindowManager {
    * @param {object} options window options
    * @returns {Window}
    */
-  create(options) {
+  async create(options) {
     const onClose = options.onClose;
 
     delete options.onClose;
-    const windowData = ipcRenderer.sendSync('window-manager-create', options);
+    const windowData = await ipcRenderer.invoke('window-manager-create', options);
 
     return new Window(windowData.id, onClose);
   }
@@ -170,8 +170,8 @@ class Window extends EventEmitter {
    * Whether window is in fullscreen mode
    * @returns {boolean}
    */
-  isFullscreen() {
-    return ipcRenderer.sendSync('window-manager-is-fullscreen', {
+  async isFullscreen() {
+    return ipcRenderer.invoke('window-manager-is-fullscreen', {
       id: this.windowId,
     });
   }

@@ -84,16 +84,16 @@ class WindowManager {
       return true;
     });
 
-    ipcMain.on('window-manager-create', (event, options) => {
+    ipcMain.handle('window-manager-create', async (event, options) => {
       const windowId = this.createWindow(options);
 
-      event.returnValue = {
+      return {
         id: windowId,
       };
     });
 
-    ipcMain.on('window-manager-is-fullscreen', (event, options) => {
-      event.returnValue = this.getWindow(options.id).isFullScreen();
+    ipcMain.handle('window-manager-is-fullscreen', async (event, options) => {
+      return this.getWindow(options.id).isFullScreen();
     });
 
     app.on('ready', () => {
