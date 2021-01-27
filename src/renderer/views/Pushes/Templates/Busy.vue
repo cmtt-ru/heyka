@@ -24,7 +24,7 @@
         {{ user.name }}
       </div>
       <div class="push__content__info">
-        {{ texts.isbusy }}
+        {{ texts[data.text] }}
       </div>
     </div>
   </div>
