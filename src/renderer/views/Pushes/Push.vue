@@ -110,6 +110,10 @@ export default {
     this.mounted = true;
   },
 
+  beforeDestroy() {
+    this.$refs.push.$el.removeEventListener('wheel', (e) => this.onWheel(e));
+  },
+
   methods: {
     /**
      * 1. flag "mounted" to true (so we can show push)
@@ -155,6 +159,10 @@ export default {
      * @returns {void}
     */
     clickHandler(response) {
+      if (this.styles.transform !== null) {
+        return;
+      }
+
       if (response) {
         this.$emit('response', {
           response,
