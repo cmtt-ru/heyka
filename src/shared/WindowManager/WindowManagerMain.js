@@ -92,10 +92,6 @@ class WindowManager {
       };
     });
 
-    ipcMain.on('window-manager-is-main-window', (event, options) => {
-      event.returnValue = this.mainWindowId === options.id;
-    });
-
     ipcMain.on('window-manager-is-fullscreen', (event, options) => {
       event.returnValue = this.getWindow(options.id).isFullScreen();
     });
