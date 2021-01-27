@@ -101,8 +101,8 @@ class Window extends EventEmitter {
    * @param {object} params - params
    * @returns {void}
    */
-  api(method, ...params) {
-    ipcRenderer.invoke('window-manager-api',
+  async api(method, ...params) {
+    return ipcRenderer.invoke('window-manager-api',
       method,
       this.windowId,
       ...params
