@@ -35,6 +35,8 @@ if (IS_WIN) {
   OVERLAY_WINDOW_SIZES.streaming.height = 41; //! because renders as 42px on Windows. Whyy
 }
 
+const BLUR_TIME = 100;
+
 /**
  * Class for controlling call windows
  */
@@ -220,8 +222,6 @@ class CallWindow {
         },
       });
 
-      const gridBlurTime = 200;
-
       this.gridTimeout = null;
 
       broadcastEvents.on('exit-fullscreen', () => {
@@ -233,22 +233,32 @@ class CallWindow {
       this.gridWindow.on('blur', () => {
         broadcastEvents.dispatch('grid-expanded-blur');
         this.gridTimeout = setTimeout(() => {
-          if (this.overlayWindow && !this.streamingOverlayWindow) {
+          if (this.streamingOverlayWindow) {
+            this.streamingOverlayWindow.action('showInactive');
+          } else if (this.overlayWindow) {
             this.showOverlay();
           }
-        }, gridBlurTime);
+        }, BLUR_TIME);
       });
 
       this.gridWindow.on('focus', () => {
-        broadcastEvents.dispatch('grid-expanded-focus');
+        console.log('grid-focus');
         clearTimeout(this.gridTimeout);
-        this.hideOverlay();
+        if (this.streamingOverlayWindow) {
+          this.streamingOverlayWindow.action('hide');
+        } else {
+          this.hideOverlay();
+        }
+        broadcastEvents.dispatch('grid-expanded-focus');
       });
 
       this.gridWindow.on('hide', () => {
+        console.log('grid-hide');
         clearTimeout(this.gridTimeout);
-        if (this.overlayWindow && !this.streamingOverlayWindow) {
-          this.showOverlay();
+        if (this.streamingOverlayWindow) {
+          this.streamingOverlayWindow.action('show');
+        } else if (this.overlayWindow) {
+          this.overlayWindow.action('show');
         }
       });
     } else {
@@ -308,8 +318,12 @@ class CallWindow {
       this.frameWindow.action('showInactive');
     }
 
-    this.hideOverlay();
-    this.showStreamingOverlay();
+    this.hideGrid();
+
+    setTimeout(() => {
+      this.hideOverlay();
+      this.showStreamingOverlay();
+    }, BLUR_TIME);
   }
 
   /**
