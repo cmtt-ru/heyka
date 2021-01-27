@@ -315,7 +315,7 @@ export default {
    * @returns {void}
    */
   async openSharingWindow() {
-    callWindow.showSharing();
+    return callWindow.showSharing();
   },
 
   /**

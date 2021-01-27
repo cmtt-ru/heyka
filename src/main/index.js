@@ -121,9 +121,10 @@ if (IS_DEV) {
   }
 }
 
-ipcMain.on('open-webrtc-internals', (event) => {
-  event.returnValue = true;
+ipcMain.handle('open-webrtc-internals', async (event) => {
   createWebrtcInternals();
+
+  return true;
 });
 
 ipcMain.on('exit-fullscreen', (event) => {

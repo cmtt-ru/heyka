@@ -78,9 +78,9 @@ class CallWindow {
    * @param {boolean} mediaSharingMode - media sharing Mode
    * @returns {void}
    */
-  showOverlay(mediaSharingMode = false) {
+  async showOverlay(mediaSharingMode = false) {
     if (this.overlayWindow === null) {
-      this.overlayWindow = WindowManager.create({
+      this.overlayWindow = await WindowManager.create({
         route: '/call-overlay',
         template: 'overlay',
         showInactive: true,
@@ -96,7 +96,7 @@ class CallWindow {
         },
       });
     } else {
-      this.overlayWindow.action('showInactive');
+      await this.overlayWindow.action('showInactive');
     }
   }
 
@@ -167,7 +167,7 @@ class CallWindow {
    */
   async showSharing() {
     if (this.sharingWindow === null) {
-      this.sharingWindow = WindowManager.create({
+      this.sharingWindow = await WindowManager.create({
         route: '/call-sharing',
         template: IS_DEV ? 'sharingSelectDev' : 'sharingSelect',
         position: 'center',
@@ -217,7 +217,7 @@ class CallWindow {
         route = `/call-window/expanded/${userId}`;
       }
 
-      this.gridWindow = WindowManager.create({
+      this.gridWindow = await WindowManager.create({
         route: route,
         position: 'center',
         template: 'call',
@@ -236,9 +236,11 @@ class CallWindow {
 
       this.gridTimeout = null;
 
-      broadcastEvents.on('exit-fullscreen', () => {
-        if (this.gridWindow.isFullscreen()) {
-          this.gridWindow.action('fullscreen');
+      broadcastEvents.on('exit-fullscreen', async () => {
+        const isFullscreen = await this.gridWindow.isFullscreen();
+
+        if (isFullscreen) {
+          await this.gridWindow.action('fullscreen');
         }
       });
 
@@ -307,7 +309,7 @@ class CallWindow {
    */
   async showFrame(displayId, sourceIndex) {
     if (this.frameWindow === null) {
-      this.frameWindow = WindowManager.create({
+      this.frameWindow = await WindowManager.create({
         template: 'frame',
         route: '/board-holder',
         ignoreMouseEvents: true,
@@ -359,7 +361,7 @@ class CallWindow {
    */
   async showStreamingOverlay() {
     if (this.streamingOverlayWindow === null) {
-      this.streamingOverlayWindow = WindowManager.create({
+      this.streamingOverlayWindow = await WindowManager.create({
         route: '/call-overlay/streaming',
         template: 'overlay',
         showInactive: true,

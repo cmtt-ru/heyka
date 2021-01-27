@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     openWebrtcInternals() {
-      ipcRenderer.sendSync('open-webrtc-internals');
+      ipcRenderer.invoke('open-webrtc-internals');
     },
 
     openFrameWindow() {
