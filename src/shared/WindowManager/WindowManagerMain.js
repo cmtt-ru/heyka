@@ -61,25 +61,28 @@ class WindowManager {
       sendInputEvent: this.sendInputEvent,
     };
 
-    ipcMain.on('window-manager-event', (event, options) => {
+    ipcMain.handle('window-manager-event', (event, options) => {
       if (this.events[options.event] === undefined) {
         return;
       }
       this.events[options.event].call(this, options);
-      event.returnValue = true;
+
+      return true;
     });
 
-    ipcMain.on('window-manager-api', (event, method, id, ...params) => {
+    ipcMain.handle('window-manager-api', (event, method, id, ...params) => {
       if (this.windows[id] === undefined || this.windows[id].browserWindow[method] === undefined) {
         return;
       }
 
       try {
         this.windows[id].browserWindow[method](...params);
-        event.returnValue = true;
+
+        return true;
       } catch (err) {
         console.log(err);
-        event.returnValue = false;
+
+        return false;
       }
     });
 

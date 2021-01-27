@@ -265,8 +265,8 @@ export default {
    * @returns {void}
    */
   async openGrid({ state }, userId) {
-    callWindow.hideOverlay();
-    callWindow.showGrid(userId);
+    await callWindow.hideOverlay();
+    await callWindow.showGrid(userId);
   },
 
   /**
@@ -323,7 +323,7 @@ export default {
    * @returns {void}
    */
   async closeSharingWindow() {
-    callWindow.closeSharing();
+    await callWindow.closeSharing();
   },
 
   /**
