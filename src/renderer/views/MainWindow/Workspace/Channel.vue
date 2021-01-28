@@ -141,6 +141,7 @@ export default {
     texts() {
       return this.$t('workspace.channel');
     },
+
     /**
      * Get users array
      * @returns {array} array of users
