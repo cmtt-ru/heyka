@@ -6,6 +6,7 @@ import Autoupdater from '../../main/classes/AutoUpdater';
 import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electron';
 import { heykaStore } from '../../renderer/store/localStore';
 import { IS_DEV, IS_MAC } from '../../sdk/Constants';
+import sleep from 'es7-sleep';
 
 const resizeable = heykaStore.get('resizeWindow', false);
 
@@ -142,6 +143,14 @@ class MainWindow {
 
     ipcMain.on('start-is-ready', () => {
       DeepLink.resendLast();
+    });
+
+    ipcMain.handle('test-sync', async (event, timeout = 0) => {
+      await sleep(timeout);
+
+      console.log('test-sync');
+
+      return 'test';
     });
 
     /**

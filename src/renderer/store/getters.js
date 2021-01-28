@@ -21,22 +21,26 @@ export default {
    * @returns {array}
    */
   getUsersByChannel: (state, getters) => (id) => {
-    const ch = getters['channels/getChannelById'](id) || { users: [] };
+    const channel = getters['channels/getChannelById'](id) || { users: [] };
 
-    const users = ch.users.map(user => {
-      return {
-        ...user,
-        ...getters['users/getUserById'](user.userId),
-      };
+    const users = channel.users.map(user => {
+      // users.push(Object.assign(user, getters['users/getUserById'](user.userId)));
+      return Object.assign(user, getters['users/getUserById'](user.userId));
     });
 
-    return users.sort(sortAny([
+    console.log('users', users);
+
+    const sorted = users.sort(sortAny([
       {
         key: 'name',
         type: 'string',
         order: 'asc',
       },
     ]));
+
+    console.log(sorted);
+
+    return sorted;
   },
 
   /**
