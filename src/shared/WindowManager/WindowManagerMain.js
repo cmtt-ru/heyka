@@ -27,7 +27,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   show: false,
   icon: icon,
   webPreferences: Object.freeze({
-    nodeIntegration: true,
+    // nodeIntegration: true,
     webSecurity: true,
   }),
 });
@@ -283,6 +283,8 @@ class WindowManager {
 
     if (windowOptions.show) {
       prepareWindow();
+      console.log('prepareWindow');
+      browserWindow.webContents.toggleDevTools();
     } else {
     // listen to "ready-to-show" event so we can show and position our window
       browserWindow.on('ready-to-show', () => {

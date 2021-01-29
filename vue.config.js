@@ -1,20 +1,20 @@
 const IS_DEV = process.env.NODE_ENV === 'development';
 const path = require('path');
-const HawkWebpackPlugin = require('@hawk.so/webpack-plugin');
+// const HawkWebpackPlugin = require('@hawk.so/webpack-plugin');
 const buildRevision = Date.now();
 const webpackPlugins = [];
 
 /**
  * Add the Hawk plugin for sending source maps
  */
-if (process.env.VUE_APP_HAWK_TOKEN) {
-  webpackPlugins.push(
-    new HawkWebpackPlugin({
-      integrationToken: process.env.VUE_APP_HAWK_TOKEN,
-      release: buildRevision,
-    })
-  );
-}
+// if (process.env.VUE_APP_HAWK_TOKEN) {
+//   webpackPlugins.push(
+//     new HawkWebpackPlugin({
+//       integrationToken: process.env.VUE_APP_HAWK_TOKEN,
+//       release: buildRevision,
+//     })
+//   );
+// }
 
 module.exports = {
   pages: {
@@ -25,6 +25,7 @@ module.exports = {
   },
 
   configureWebpack: {
+    target: 'web',
     resolve: {
       alias: {
         '@static': path.resolve(__dirname, 'public'),
