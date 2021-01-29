@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
-const path = require('path');
-const electron = require('electron');
-const Conf = require('conf');
+import path from 'path';
+
+import Conf from 'conf';
 
 /**
  * Class for local storage
@@ -13,13 +13,7 @@ class Store extends Conf {
  * @returns {void}
  */
   constructor(options) {
-    let defaultCwd;
-
-    if (electron.app) {
-      defaultCwd = electron.app.getPath('userData');
-    } else {
-      defaultCwd = ipcRenderer.sendSync('remote-getPath', 'userData');
-    }
+    const defaultCwd = ipcRenderer.sendSync('remote-getPath', 'userData');
 
     options = {
       name: 'config',
