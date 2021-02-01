@@ -1,6 +1,8 @@
-import OS from 'os';
+import UAParser from 'ua-parser-js';
 import i18n from '@sdk/translations/i18n';
 import { heykaStore } from '@/store/localStore';
+
+const parsedUserAgent = new UAParser().getResult();
 
 export default {
   /**
@@ -13,8 +15,8 @@ export default {
     return {
       name: state.appName,
       version: state.appVersion,
-      system: OS.type(), // TODO: make prettier
-      systemVer: OS.release(),
+      system: parsedUserAgent.os.name,
+      systemVer: parsedUserAgent.os.version,
     };
   },
 

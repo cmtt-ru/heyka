@@ -49,7 +49,6 @@ import {ipcRenderer} from "electron";
 <script>
 import UiButton from '@components/UiButton';
 import callWindow from '@classes/callWindow';
-import { ipcRenderer } from 'electron';
 
 export default {
   components: {
@@ -65,7 +64,7 @@ export default {
   },
   methods: {
     openWebrtcInternals() {
-      ipcRenderer.invoke('open-webrtc-internals');
+      window.ipcRenderer.invoke('open-webrtc-internals');
     },
 
     openFrameWindow() {

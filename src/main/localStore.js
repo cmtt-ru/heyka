@@ -1,14 +1,18 @@
+import { app } from 'electron';
+const path = require('path');
+const Conf = require('conf');
+
 /**
  * Class for local storage
  */
-class Store extends window.Conf {
+class Store extends Conf {
   /**
-   * Inits deep link class
-   * @param {object} options name for store and other stuff
-   * @returns {void}
-   */
+ * Inits deep link class
+ * @param {object} options name for store and other stuff
+ * @returns {void}
+ */
   constructor(options) {
-    const defaultCwd = window.ipcRenderer.sendSync('remote-getPath', 'userData');
+    const defaultCwd = app.getPath('userData');
 
     options = {
       name: 'config',
@@ -16,7 +20,7 @@ class Store extends window.Conf {
     };
 
     if (options.cwd) {
-      options.cwd = defaultCwd + options.cwd;
+      options.cwd = path.isAbsolute(options.cwd) ? options.cwd : path.join(defaultCwd, options.cwd);
     } else {
       options.cwd = defaultCwd;
     }

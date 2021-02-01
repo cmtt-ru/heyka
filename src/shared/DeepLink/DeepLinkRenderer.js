@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron';
 import { EventEmitter } from 'events';
 
 /**
@@ -11,7 +10,7 @@ class DeepLinkRenderer extends EventEmitter {
    */
   constructor() {
     super();
-    ipcRenderer.on('deep-link', (event, args) => {
+    window.ipcRenderer.on('deep-link', (event, args) => {
       this.deepLinkHandler(args);
     });
   }
