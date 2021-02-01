@@ -7,23 +7,23 @@
 <script>
 import '@sdk/styles/fonts.styl';
 import '@styles/global.styl';
-// import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
-// import Mousetrap from 'mousetrap';
-// require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import Mousetrap from 'mousetrap';
+require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
 
 export default {
   created() {
-    // this.loadSvgSprite();
+    this.loadSvgSprite();
 
-    // Mousetrap.bind(['command+i', 'ctrl+i'], () => {
-    //   WindowManager.getCurrentWindow().action('console');
-    // });
-    // Mousetrap.bind(['command+r', 'ctrl+r'], () => {
-    //   WindowManager.getCurrentWindow().action('reload');
-    // });
-    // Mousetrap.bind('up up down down left right left right b a enter', function () {
-    //   console.log('%ckonami code!', 'color: green; font: 4rem/1 Tahoma;');
-    // });
+    Mousetrap.bind(['command+i', 'ctrl+i'], () => {
+      WindowManager.getCurrentWindow().action('console');
+    });
+    Mousetrap.bind(['command+r', 'ctrl+r'], () => {
+      WindowManager.getCurrentWindow().action('reload');
+    });
+    Mousetrap.bind('up up down down left right left right b a enter', function () {
+      console.log('%ckonami code!', 'color: green; font: 4rem/1 Tahoma;');
+    });
   },
 
   methods: {

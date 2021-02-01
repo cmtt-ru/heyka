@@ -4,8 +4,8 @@ import DeepLink from '../DeepLink/DeepLinkMain';
 import Positioner from '../WindowManager/Positioner';
 import Autoupdater from '../../main/classes/AutoUpdater';
 import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electron';
-import { heykaStore } from '../../renderer/store/localStore';
-import { IS_DEV, IS_MAC } from '../../sdk/Constants';
+import { heykaStore } from '../../main/localStore';
+import { IS_DEV, IS_MAC } from '../../main/Constants';
 
 const resizeable = heykaStore.get('resizeWindow', false);
 

@@ -290,7 +290,7 @@
       </div>
     </div>
     <script>
-if (process.argv.includes('--is-main-window')){
+if (window.navigator.userAgent.split(' ').includes('is-main-window')){
 
       function getTheme(){
         if (localStorage.themeName){
@@ -331,6 +331,10 @@ if (process.argv.includes('--is-main-window')){
       window.removeWireframe = ()=>{
         document.getElementById('wireframe').classList.add("wireframe--hidden");
       }
+
+      setTimeout(() => {
+        window.removeWireframe()
+      }, 10000);
 
 }
     </script>

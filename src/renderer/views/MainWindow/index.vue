@@ -1,211 +1,224 @@
 <template>
   <div>
-    успех
+    <div>
+      <janus />
+      <notifications />
+      <transition name="wireframe-fade">
+        <wireframe
+          v-if="loading"
+          class="wireframe"
+        />
+      </transition>
+      <router-view />
+      <app-status :show="!$store.getters['app/getConnectionStatus']" />
+    <!--    <performance-monitor />-->
+    </div>
   </div>
 </template>
 
 <script>
-// import Wireframe from '@views/MainWindow/Wireframe';
-// import { ipcRenderer } from 'electron';
-// import Janus from '@components/Janus.vue';
-// import broadcastEvents from '@sdk/classes/broadcastEvents';
-// import Notifications from '@components/Notifications';
-// import AppStatus from '@components/AppStatus';
-// import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
-// import mediaCapturer from '@classes/mediaCapturer';
-// // import PerformanceMonitor from '@components/PerformanceMonitor';
-// import Logger from '@sdk/classes/logger';
-// import { prepareTokens } from '@api/tokens';
-// import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
-// import { mapGetters } from 'vuex';
-// import { heykaStore } from '@/store/localStore';
-// import { client } from '@api/socket/client';
+import Wireframe from '@views/MainWindow/Wireframe';
+import Janus from '@components/Janus.vue';
+import broadcastEvents from '@sdk/classes/broadcastEvents';
+import Notifications from '@components/Notifications';
+import AppStatus from '@components/AppStatus';
+import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+import mediaCapturer from '@classes/mediaCapturer';
+// import PerformanceMonitor from '@components/PerformanceMonitor';
+import Logger from '@sdk/classes/logger';
+import { prepareTokens } from '@api/tokens';
+import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+import { mapGetters } from 'vuex';
+import { heykaStore } from '@/store/localStore';
+import { client } from '@api/socket/client';
 
-// const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
+const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
-// const WIREFRAME_MAX_TIME = 10000;
+const WIREFRAME_MAX_TIME = 10000;
 
-// export default {
-//   components: {
-//     Janus,
-//     Notifications,
-//     AppStatus,
-//     Wireframe,
-//     // PerformanceMonitor,
-//   },
-//   data() {
-//     return {
-//       updateNotificationShown: false,
-//       loading: true,
-//     };
-//   },
+export default {
+  components: {
+    Janus,
+    Notifications,
+    AppStatus,
+    Wireframe,
+    // PerformanceMonitor,
+  },
+  data() {
+    return {
+      updateNotificationShown: false,
+      loading: true,
+    };
+  },
 
-//   computed: {
-//     ...mapGetters({
-//       mediaState: 'me/getMediaState',
-//     }),
-//   },
+  computed: {
+    ...mapGetters({
+      mediaState: 'me/getMediaState',
+    }),
+  },
 
-//   async created() {
-//     try {
-//       /** Open specific page if it was cached before restart */
-//       if (heykaStore.get('openPage')) {
-//         this.$router.push({ name: heykaStore.get('openPage') });
-//         heykaStore.set('openPage', null);
-//       }
+  async created() {
+    try {
+      /** Open specific page if it was cached before restart */
+      if (heykaStore.get('openPage')) {
+        this.$router.push({ name: heykaStore.get('openPage') });
+        heykaStore.set('openPage', null);
+      }
 
-//       /** Prepare tokens */
-//       await prepareTokens();
+      /** Prepare tokens */
+      await prepareTokens();
 
-//       /** Check authorization */
-//       await this.$API.auth.check();
+      /** Check authorization */
+      await this.$API.auth.check();
 
-//       await this.$store.dispatch('initial');
-//     } catch (e) {
-//       cnsl.log('redirecting to login', e);
-//     }
-//     this.loading = false;
+      await this.$store.dispatch('initial');
+    } catch (e) {
+      cnsl.log('redirecting to login', e);
+    }
+    this.loading = false;
 
-//     broadcastEvents.on('open-channel', id => {
-//       this.$router.push({
-//         name: 'channel',
-//         params: { id },
-//       });
-//     });
+    broadcastEvents.on('open-channel', id => {
+      this.$router.push({
+        name: 'channel',
+        params: { id },
+      });
+    });
 
-//     /**
-//      * Global Shortcuts stuff
-//     */
-//     ipcRenderer.on('hotkey-mic', (event, state) => {
-//       this.$store.dispatch('me/microphoneState', !this.mediaState.microphone);
-//     });
+    /**
+     * Global Shortcuts stuff
+    */
+    window.ipcRenderer.on('hotkey-mic', (event, state) => {
+      this.$store.dispatch('me/microphoneState', !this.mediaState.microphone);
+    });
 
-//     /**
-//      * Auto update stuff
-//      */
-//     ipcRenderer.on('update-error', (event, error) => {
-//       cnsl.error('update-error', error);
-//     });
+    /**
+     * Auto update stuff
+     */
+    window.ipcRenderer.on('update-error', (event, error) => {
+      cnsl.error('update-error', error);
+    });
 
-//     ipcRenderer.on('update-downloaded', () => {
-//       if (!this.updateNotificationShown) {
-//         this.showUpdateNotification();
-//         this.updateNotificationShown = true;
-//       }
-//     });
+    window.ipcRenderer.on('update-downloaded', () => {
+      if (!this.updateNotificationShown) {
+        this.showUpdateNotification();
+        this.updateNotificationShown = true;
+      }
+    });
 
-//     ipcRenderer.send('update-check');
-//     ipcRenderer.send('tray-animation', false);
+    window.ipcRenderer.send('update-check');
+    window.ipcRenderer.send('tray-animation', false);
 
-//     this.showMacScreenSharingPermission();
+    this.showMacScreenSharingPermission();
 
-//     window.addEventListener('beforeunload', () => {
-//       client.emit('logout');
-//     });
-//   },
+    window.addEventListener('beforeunload', () => {
+      client.emit('logout');
+    });
+  },
 
-//   mounted() {
-//     // send signal to index.html so that we can hide super-global wireframe there
-//     window.removeWireframe();
+  mounted() {
+    // send signal to index.html so that we can hide super-global wireframe there
+    window.removeWireframe();
 
-//     /**
-//      * Deep link for login
-//      */
-//     DeepLink.on('login', ([code, error = '']) => {
-//       console.log('DeepLink login', code, error);
+    window.ipcRenderer.send('page-rendered', 'Hello from Main!');
 
-//       if (code === 'false') {
-//         this.$store.dispatch('app/addNotification', {
-//           data: {
-//             text: decodeURIComponent(error),
-//           },
-//         });
+    /**
+     * Deep link for login
+     */
+    DeepLink.on('login', ([code, error = '']) => {
+      console.log('DeepLink login', code, error);
 
-//         return;
-//       }
+      if (code === 'false') {
+        this.$store.dispatch('app/addNotification', {
+          data: {
+            text: decodeURIComponent(error),
+          },
+        });
 
-//       this.$store.dispatch('useAuthLink', code);
-//     });
+        return;
+      }
 
-//     /**
-//      * Deep link for open specific workspace
-//      */
-//     DeepLink.on('workspace', async ([ workspaceId ]) => {
-//       console.log('workspaceId', workspaceId);
-//       await this.$store.dispatch('initial');
-//       await this.$store.dispatch('changeWorkspace', workspaceId);
-//     });
+      this.$store.dispatch('useAuthLink', code);
+    });
 
-//     setTimeout(() => {
-//       this.loading = false;
-//     }, WIREFRAME_MAX_TIME);
+    /**
+     * Deep link for open specific workspace
+     */
+    DeepLink.on('workspace', async ([ workspaceId ]) => {
+      console.log('workspaceId', workspaceId);
+      await this.$store.dispatch('initial');
+      await this.$store.dispatch('changeWorkspace', workspaceId);
+    });
 
-//     ipcRenderer.send('start-is-ready');
-//   },
+    setTimeout(() => {
+      this.loading = false;
+    }, WIREFRAME_MAX_TIME);
 
-//   beforeDestroy() {
-//     DeepLink.removeAllListeners('login');
-//   },
+    window.ipcRenderer.send('start-is-ready');
+  },
 
-//   destroyed() {
-//     broadcastEvents.removeAllListeners('open-channel');
-//     ipcRenderer.removeAllListeners('update-error');
-//     ipcRenderer.removeAllListeners('update-downloaded');
-//     ipcRenderer.removeAllListeners('hotkey-mic');
-//   },
+  beforeDestroy() {
+    DeepLink.removeAllListeners('login');
+  },
 
-//   methods: {
-//     /**
-//      * Show update install notification
-//      * @returns {void}
-//      */
-//     async showUpdateNotification() {
-//       const texts = this.$t('autoUpdate');
+  destroyed() {
+    broadcastEvents.removeAllListeners('open-channel');
+    window.ipcRenderer.removeAllListeners('update-error');
+    window.ipcRenderer.removeAllListeners('update-downloaded');
+    window.ipcRenderer.removeAllListeners('hotkey-mic');
+  },
 
-//       const notification = {
-//         infinite: true,
-//         data: {
-//           text: texts.message,
-//           buttons: [
-//             {
-//               text: texts.install,
-//               type: 1,
-//               action: () => {
-//                 WindowManager.willQuit();
-//                 ipcRenderer.send('update-install');
-//                 // electron.remote.app.relaunch();
-//                 // electron.remote.app.quit();
-//               },
-//             },
-//             {
-//               text: texts.later,
-//               close: true,
-//             },
-//           ],
-//         },
-//       };
+  methods: {
+    /**
+     * Show update install notification
+     * @returns {void}
+     */
+    async showUpdateNotification() {
+      const texts = this.$t('autoUpdate');
 
-//       await this.$store.dispatch('app/addNotification', notification);
-//     },
+      const notification = {
+        infinite: true,
+        data: {
+          text: texts.message,
+          buttons: [
+            {
+              text: texts.install,
+              type: 1,
+              action: () => {
+                WindowManager.willQuit();
+                window.ipcRenderer.send('update-install');
+                // electron.remote.app.relaunch();
+                // electron.remote.app.quit();
+              },
+            },
+            {
+              text: texts.later,
+              close: true,
+            },
+          ],
+        },
+      };
 
-//     /**
-//      * Show mac screen sharing permission
-//      * @returns {void}
-//      */
-//     async showMacScreenSharingPermission() {
-//       const timeout = 1000;
+      await this.$store.dispatch('app/addNotification', notification);
+    },
 
-//       if (IS_MAC) {
-//         const screens = await mediaCapturer.getSources('screen', 0);
-//         const stream = await mediaCapturer.getStream(screens[0].id);
+    /**
+     * Show mac screen sharing permission
+     * @returns {void}
+     */
+    async showMacScreenSharingPermission() {
+      const timeout = 1000;
 
-//         setTimeout(() => {
-//           mediaCapturer.destroyStream(stream);
-//         }, timeout);
-//       }
-//     },
-//   },
-// };
+      if (IS_MAC) {
+        const screens = await mediaCapturer.getSources('screen', 0);
+        const stream = await mediaCapturer.getStream(screens[0].id);
+
+        setTimeout(() => {
+          mediaCapturer.destroyStream(stream);
+        }, timeout);
+      }
+    },
+  },
+};
 </script>
 
 <style scoped lang="stylus">
