@@ -24,11 +24,11 @@ export default {
     const channel = getters['channels/getChannelById'](id) || { users: [] };
 
     const users = channel.users.map(user => {
-      // users.push(Object.assign(user, getters['users/getUserById'](user.userId)));
-      return Object.assign(user, getters['users/getUserById'](user.userId));
+      return {
+        ...user,
+        ...getters['users/getUserById'](user.userId),
+      };
     });
-
-    console.log('users', users);
 
     const sorted = users.sort(sortAny([
       {
@@ -37,8 +37,6 @@ export default {
         order: 'asc',
       },
     ]));
-
-    console.log(sorted);
 
     return sorted;
   },
@@ -97,20 +95,18 @@ export default {
    *
    * @param {object} state – global state
    * @param {object} getters – global getters
-   * @returns {null|string}
+   * @returns {array}
    */
   getUsersWhoShareMedia: (state, getters) => {
     const selectedChannelId = getters['me/getSelectedChannelId'];
     const selectedChannel = getters['channels/getChannelById'](selectedChannelId);
 
     if (selectedChannel) {
-      const usersWhoSharesScreen = selectedChannel.users.filter(user => user.screen).map(user => user.userId);
-      const usersWhoSharesCamera = selectedChannel.users.filter(user => user.camera).map(user => user.userId);
+      const usersWhoShares = selectedChannel.users
+        .filter(user => user.camera || user.screen)
+        .map(user => user.userId);
 
-      return [
-        ...usersWhoSharesCamera,
-        ...usersWhoSharesScreen,
-      ];
+      return usersWhoShares;
     }
 
     return [];
