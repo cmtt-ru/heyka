@@ -61,42 +61,39 @@ class WindowManager {
       sendInputEvent: this.sendInputEvent,
     };
 
-    ipcMain.on('window-manager-event', (event, options) => {
+    ipcMain.handle('window-manager-event', async (event, options) => {
       if (this.events[options.event] === undefined) {
         return;
       }
       this.events[options.event].call(this, options);
-      event.returnValue = true;
+
+      return true;
     });
 
-    ipcMain.on('window-manager-api', (event, method, id, ...params) => {
+    ipcMain.handle('window-manager-api', async (event, method, id, ...params) => {
       if (this.windows[id] === undefined || this.windows[id].browserWindow[method] === undefined) {
         return;
       }
 
       try {
-        this.windows[id].browserWindow[method](...params);
-        event.returnValue = true;
+        return this.windows[id].browserWindow[method](...params);
       } catch (err) {
         console.log(err);
-        event.returnValue = false;
       }
+
+      return true;
     });
 
-    ipcMain.on('window-manager-create', (event, options) => {
+    ipcMain.handle('window-manager-create', async (event, options) => {
       const windowId = this.createWindow(options);
 
-      event.returnValue = {
+      return {
         id: windowId,
       };
     });
 
-    ipcMain.on('window-manager-is-main-window', (event, options) => {
-      event.returnValue = this.mainWindowId === options.id;
-    });
-
-    ipcMain.on('window-manager-is-fullscreen', (event, options) => {
-      event.returnValue = this.getWindow(options.id).isFullScreen();
+    ipcMain.handle('window-manager-is-fullscreen', async (event, options) => {
+      return this.getWindow(options.id).isFullScreen();
     });
 
     app.on('ready', () => {
