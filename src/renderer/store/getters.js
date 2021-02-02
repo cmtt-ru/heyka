@@ -17,28 +17,25 @@ export default {
    * Get full users in Channel
    * @param {object} state – channels module state
    * @param {object} getters – channels module getters
-   * @param {string} id – channel id
    * @returns {array}
    */
   getUsersByChannel: (state, getters) => (id) => {
     const channel = getters['channels/getChannelById'](id) || { users: [] };
 
-    const users = channel.users.map(user => {
+    const users = channel.users.map(mediaState => {
       return {
-        ...user,
-        ...getters['users/getUserById'](user.userId),
+        user: getters['users/getUserById'](mediaState.userId),
+        mediaState,
       };
     });
 
-    const sorted = users.sort(sortAny([
+    return users.sort(sortAny([
       {
         key: 'name',
         type: 'string',
         order: 'asc',
       },
     ]));
-
-    return sorted;
   },
 
   /**
@@ -266,7 +263,7 @@ export default {
   },
 
   /**
-   * Get array with users in  our channel
+   * Get array with users in our channel
    *
    * @param {object} state – global state
    * @param {object} getters – global getters
@@ -281,5 +278,4 @@ export default {
 
     return getters.getUsersByChannel(channelId);
   },
-
 };
