@@ -121,9 +121,16 @@ if (IS_DEV) {
   }
 }
 
-ipcMain.on('open-webrtc-internals', (event) => {
-  event.returnValue = true;
+ipcMain.handle('open-webrtc-internals', async (event) => {
   createWebrtcInternals();
+
+  return true;
+});
+
+ipcMain.handle('open-chrome-tracing', async (event) => {
+  createChromeTracing();
+
+  return true;
 });
 
 ipcMain.on('exit-fullscreen', (event) => {
@@ -145,4 +152,17 @@ function createWebrtcInternals() {
   });
 
   win.loadURL('chrome://webrtc-internals');
+}
+
+/**
+ * Create chrome tracing window
+ * @returns {void}
+ */
+function createChromeTracing() {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+  });
+
+  win.loadURL('chrome://tracing');
 }
