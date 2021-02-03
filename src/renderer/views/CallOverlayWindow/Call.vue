@@ -131,7 +131,7 @@ export default {
 
     getSpeakingUserId() {
       if (this.getSpeakingUser) {
-        return this.getSpeakingUser.id;
+        return this.getSpeakingUser.userid;
       }
 
       return false;
