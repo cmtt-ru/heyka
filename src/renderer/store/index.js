@@ -7,7 +7,7 @@ import getters from './getters';
 import state from './state';
 import mutations from './mutations';
 import mediaDevices from '@sdk/classes/mediaDevices';
-import createMutationsSharer from 'vuex-shared-mutations';
+import createMutationsSharer, { BroadcastChannelStrategy } from 'vuex-shared-mutations';
 import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
@@ -60,7 +60,9 @@ const plugins = [
       'janus/SET_OPTIONS',
       'janus/SET_SHARING_SOURCE',
     ],
+    strategy: new BroadcastChannelStrategy({ key: 'vuex' }),
   }),
+
 ];
 
 /**
