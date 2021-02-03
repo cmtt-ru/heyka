@@ -193,10 +193,14 @@ export default {
 
       if (speakingUsers.length) {
         const speakingUserId = speakingUsers[0].userId;
-        const speakingUser = getters['users/getUserById'](speakingUserId);
+        const speakingUser = {
+          ...speakingUsers[0],
+          ...getters['users/getUserById'](speakingUserId),
+        };
 
         if (speakingUser) {
-          lastSpeakingUser = speakingUser;
+          lastSpeakingUser = { ...speakingUser };
+          lastSpeakingUser.speaking = false;
 
           return speakingUser;
         }
