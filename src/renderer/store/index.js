@@ -12,7 +12,6 @@ import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import broadcastState from '@sdk/classes/broadcastState';
-import { ipcRenderer } from 'electron';
 import createPersistedState from 'vuex-persistedstate';
 import cloneDeep from 'clone-deep';
 import { throttle } from 'throttle-debounce';
@@ -181,12 +180,12 @@ if (IS_MAIN_WINDOW) {
    * Handle power monitor events
    */
   /** Sleep / Awake */
-  ipcRenderer.on('power-monitor-suspend', (event, state) => {
+  window.ipcRenderer.on('power-monitor-suspend', (event, state) => {
     store.dispatch('me/setSuspendState', state);
   });
 
   /** Lock / Unlock screen */
-  ipcRenderer.on('power-monitor-lock-screen', (event, state) => {
+  window.ipcRenderer.on('power-monitor-lock-screen', (event, state) => {
     store.dispatch('me/setLockScreenState', state);
   });
 } else {

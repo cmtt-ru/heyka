@@ -1,7 +1,6 @@
 import API from '@api';
 import themes from '@sdk/themes';
 import i18n from '@sdk/translations/i18n';
-import { ipcRenderer } from 'electron';
 import dateFormat from 'dateformat';
 import { v4 as uuidV4 } from 'uuid';
 import { heykaStore } from '@/store/localStore';
@@ -66,7 +65,7 @@ export default {
    * @returns {void}
    */
   setAutorun({ commit }, autorun) {
-    ipcRenderer.send('app-toggle-autolaunch', autorun);
+    window.ipcRenderer.send('app-toggle-autolaunch', autorun);
     commit('SET_AUTORUN', autorun);
     heykaStore.set('autorun', autorun);
   },

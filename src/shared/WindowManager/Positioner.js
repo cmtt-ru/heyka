@@ -2,7 +2,7 @@
 
 import { screen } from 'electron';
 import TrayManager from '../../main/classes/TrayManager';
-import { IS_LINUX } from '../../sdk/Constants';
+import { IS_LINUX } from '../../main/Constants';
 
 const DEFAULT_MARGIN = 0;
 
