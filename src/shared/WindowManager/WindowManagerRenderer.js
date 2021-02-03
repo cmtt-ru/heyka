@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron';
 import { EventEmitter } from 'events';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 
@@ -12,11 +11,11 @@ class WindowManager {
    * @param {object} options window options
    * @returns {Window}
    */
-  create(options) {
+  async create(options) {
     const onClose = options.onClose;
 
     delete options.onClose;
-    const windowData = ipcRenderer.sendSync('window-manager-create', options);
+    const windowData = await window.ipcRenderer.invoke('window-manager-create', options);
 
     return new Window(windowData.id, onClose);
   }
@@ -26,9 +25,9 @@ class WindowManager {
    * @returns {void}
    */
   getCurrentWindowId() {
-    const substr = process.argv.find(argv => argv.indexOf('--window-id') === 0);
+    const substr = window.navigator.userAgent.split(' ').find(argv => argv.indexOf('window-id') === 0);
 
-    return substr.split('=')[1];
+    return substr.split(':')[1];
   }
 
   /**
@@ -41,10 +40,10 @@ class WindowManager {
 
   /**
    * Set will quit flag
-   * @returns {void}
+   * @returns {Promise}
    */
-  willQuit() {
-    ipcRenderer.sendSync('window-manager-event', {
+  async willQuit() {
+    return window.ipcRenderer.invoke('window-manager-event', {
       event: 'willQuit',
     });
   }
@@ -65,18 +64,18 @@ class Window extends EventEmitter {
     this.windowId = windowId;
     this.onClose = onClose;
 
-    ipcRenderer.on(`window-close-${windowId}`, () => {
+    window.ipcRenderer.on(`window-close-${windowId}`, () => {
       this.onClose();
       this.emit('close');
     });
 
-    ipcRenderer.on(`window-blur-${windowId}`, () => {
+    window.ipcRenderer.on(`window-blur-${windowId}`, () => {
       this.emit('blur');
     });
-    ipcRenderer.on(`window-focus-${windowId}`, () => {
+    window.ipcRenderer.on(`window-focus-${windowId}`, () => {
       this.emit('focus');
     });
-    ipcRenderer.on(`window-hide-${windowId}`, () => {
+    window.ipcRenderer.on(`window-hide-${windowId}`, () => {
       this.emit('hide');
     });
   }
@@ -84,11 +83,11 @@ class Window extends EventEmitter {
   /**
    * All signals sent to main process
    * @param {string} event - event name
-   * @param {object} data - any data
-   * @returns {void}
+   * @param {object} data – event data
+   * @returns {Promise}
    */
-  action(event, data) {
-    ipcRenderer.sendSync('window-manager-event', {
+  async action(event, data) {
+    return window.ipcRenderer.invoke('window-manager-event', {
       event,
       id: this.windowId,
       data,
@@ -101,8 +100,8 @@ class Window extends EventEmitter {
    * @param {object} params - params
    * @returns {void}
    */
-  api(method, ...params) {
-    ipcRenderer.sendSync('window-manager-api',
+  async api(method, ...params) {
+    return window.ipcRenderer.invoke('window-manager-api',
       method,
       this.windowId,
       ...params
@@ -113,10 +112,10 @@ class Window extends EventEmitter {
    * Open url in window - send signal to main process
    * @param {string} route route to move to
    * @param {string} url url to move to (if not index.html)
-   * @returns {void}
+   * @returns {Promise}
    */
-  openUrl(route, url) {
-    ipcRenderer.sendSync('window-manager-event', {
+  async openUrl(route, url) {
+    return window.ipcRenderer.invoke('window-manager-event', {
       event: 'openurl',
       id: this.windowId,
       url,
@@ -138,10 +137,10 @@ class Window extends EventEmitter {
    * @param {number} width - window width
    * @param {number} height - window height
    * @param {number} margin - window margin to screen bounds
-   * @returns {void}
+   * @returns {Promise}
    */
-  setSize(width, height, margin) {
-    ipcRenderer.sendSync('window-manager-event', {
+  async setSize(width, height, margin) {
+    return window.ipcRenderer.invoke('window-manager-event', {
       event: 'size',
       id: this.windowId,
       width,
@@ -155,10 +154,10 @@ class Window extends EventEmitter {
    *
    * @param {string} position - window position (eg. 'center', 'bottomRight')
    * @param {number} margin - window pos margin
-   * @returns {void}
+   * @returns {Promise}
    */
-  setPosition(position, margin) {
-    ipcRenderer.sendSync('window-manager-event', {
+  async setPosition(position, margin) {
+    return window.ipcRenderer.invoke('window-manager-event', {
       event: 'position',
       id: this.windowId,
       position,
@@ -170,8 +169,8 @@ class Window extends EventEmitter {
    * Whether window is in fullscreen mode
    * @returns {boolean}
    */
-  isFullscreen() {
-    return ipcRenderer.sendSync('window-manager-is-fullscreen', {
+  async isFullscreen() {
+    return window.ipcRenderer.invoke('window-manager-is-fullscreen', {
       id: this.windowId,
     });
   }

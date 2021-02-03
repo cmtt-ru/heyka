@@ -6,7 +6,7 @@ import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
-import { IS_WIN, IS_DEV, IS_LINUX } from '../../sdk/Constants';
+import { IS_WIN, IS_DEV, IS_LINUX } from '../../main/Constants';
 
 let icon;
 
@@ -27,8 +27,9 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   show: false,
   icon: icon,
   webPreferences: Object.freeze({
-    nodeIntegration: true,
+    // nodeIntegration: true,
     webSecurity: true,
+    preload: path.join(__static, 'preload.js'),
   }),
 });
 
@@ -61,42 +62,39 @@ class WindowManager {
       sendInputEvent: this.sendInputEvent,
     };
 
-    ipcMain.on('window-manager-event', (event, options) => {
+    ipcMain.handle('window-manager-event', async (event, options) => {
       if (this.events[options.event] === undefined) {
         return;
       }
       this.events[options.event].call(this, options);
-      event.returnValue = true;
+
+      return true;
     });
 
-    ipcMain.on('window-manager-api', (event, method, id, ...params) => {
+    ipcMain.handle('window-manager-api', async (event, method, id, ...params) => {
       if (this.windows[id] === undefined || this.windows[id].browserWindow[method] === undefined) {
         return;
       }
 
       try {
-        this.windows[id].browserWindow[method](...params);
-        event.returnValue = true;
+        return this.windows[id].browserWindow[method](...params);
       } catch (err) {
         console.log(err);
-        event.returnValue = false;
       }
+
+      return true;
     });
 
-    ipcMain.on('window-manager-create', (event, options) => {
+    ipcMain.handle('window-manager-create', async (event, options) => {
       const windowId = this.createWindow(options);
 
-      event.returnValue = {
+      return {
         id: windowId,
       };
     });
 
-    ipcMain.on('window-manager-is-main-window', (event, options) => {
-      event.returnValue = this.mainWindowId === options.id;
-    });
-
-    ipcMain.on('window-manager-is-fullscreen', (event, options) => {
-      event.returnValue = this.getWindow(options.id).isFullScreen();
+    ipcMain.handle('window-manager-is-fullscreen', async (event, options) => {
+      return this.getWindow(options.id).isFullScreen();
     });
 
     app.on('ready', () => {
@@ -149,14 +147,14 @@ class WindowManager {
     const windowOptions = Object.assign(cloneDeep(DEFAULT_WINDOW_OPTIONS), cloneDeep(options.window));
 
     // add global argument so we can identify window by its id
-    windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
+    windowOptions.webPreferences.additionalArguments = [ 'window-id:' + windowId ];
 
     // add global argument with window's template
-    windowOptions.webPreferences.additionalArguments.push('--template=' + options.template);
+    windowOptions.webPreferences.additionalArguments.push('template:' + options.template);
 
     // add global argument if window is Main Window (tm)
     if (options.isMainWindow) {
-      windowOptions.webPreferences.additionalArguments.push('--is-main-window');
+      windowOptions.webPreferences.additionalArguments.push('is-main-window');
     }
 
     if (IS_LINUX && options.displayId) {
@@ -179,6 +177,9 @@ class WindowManager {
 
     // create BrowserWindow!
     const browserWindow = new BrowserWindow(windowOptions);
+
+    browserWindow.webContents.userAgent = browserWindow.webContents.userAgent + ' ' +
+    windowOptions.webPreferences.additionalArguments.join(' ');
 
     // add window to WindowManager's array; also save options for later
     this.windows[windowId] = {

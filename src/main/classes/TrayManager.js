@@ -1,8 +1,8 @@
 import path from 'path';
 import OS from 'os';
 import { app, Menu, Tray, nativeImage, nativeTheme, ipcMain } from 'electron';
-import { IS_MAC, IS_LINUX } from '../../sdk/Constants';
-import { heykaStore } from '../../renderer/store/localStore';
+import { IS_MAC, IS_LINUX } from '../../main/Constants';
+import { heykaStore } from '../localStore';
 
 let animationTimer;
 const blurDebounce = 300;

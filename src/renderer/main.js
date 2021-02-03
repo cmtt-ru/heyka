@@ -1,4 +1,4 @@
-/* global buildRevision */
+
 import '@sdk/Constants';
 import HawkCatcher from '@hawk.so/javascript';
 import Vue from 'vue';

@@ -6,7 +6,7 @@ import './classes/AutoLaunch';
 import './classes/RemoteInfo';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import { IS_DEV, IS_WIN, IS_MAC } from '../sdk/Constants';
+import { IS_DEV, IS_WIN, IS_MAC } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
 
 console.time('init');
@@ -121,9 +121,10 @@ if (IS_DEV) {
   }
 }
 
-ipcMain.on('open-webrtc-internals', (event) => {
-  event.returnValue = true;
+ipcMain.handle('open-webrtc-internals', async (event) => {
   createWebrtcInternals();
+
+  return true;
 });
 
 ipcMain.on('exit-fullscreen', (event) => {

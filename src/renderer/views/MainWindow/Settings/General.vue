@@ -60,7 +60,6 @@
 
 import { UiSelect, UiSwitch } from '@components/Form';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
-import { ipcRenderer } from 'electron';
 import { heykaStore } from '@/store/localStore';
 
 export default {
@@ -305,7 +304,7 @@ export default {
       heykaStore.set('resizeWindow', this.localSettings.resizeWindow);
       heykaStore.set('devServer', this.localSettings.devServer);
       heykaStore.set('openPage', 'settings');
-      ipcRenderer.send('remote-restart');
+      window.ipcRenderer.send('remote-restart');
     },
   },
 

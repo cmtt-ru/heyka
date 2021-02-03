@@ -1,22 +1,23 @@
 <template>
   <div>
-    <janus />
-    <notifications />
-    <transition name="wireframe-fade">
-      <wireframe
-        v-if="loading"
-        class="wireframe"
-      />
-    </transition>
-    <router-view />
-    <app-status :show="!$store.getters['app/getConnectionStatus']" />
+    <div>
+      <janus />
+      <notifications />
+      <transition name="wireframe-fade">
+        <wireframe
+          v-if="loading"
+          class="wireframe"
+        />
+      </transition>
+      <router-view />
+      <app-status :show="!$store.getters['app/getConnectionStatus']" />
     <!--    <performance-monitor />-->
+    </div>
   </div>
 </template>
 
 <script>
 import Wireframe from '@views/MainWindow/Wireframe';
-import { ipcRenderer } from 'electron';
 import Janus from '@components/Janus.vue';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import Notifications from '@components/Notifications';
@@ -86,26 +87,26 @@ export default {
     /**
      * Global Shortcuts stuff
     */
-    ipcRenderer.on('hotkey-mic', (event, state) => {
+    window.ipcRenderer.on('hotkey-mic', (event, state) => {
       this.$store.dispatch('me/microphoneState', !this.mediaState.microphone);
     });
 
     /**
      * Auto update stuff
      */
-    ipcRenderer.on('update-error', (event, error) => {
+    window.ipcRenderer.on('update-error', (event, error) => {
       cnsl.error('update-error', error);
     });
 
-    ipcRenderer.on('update-downloaded', () => {
+    window.ipcRenderer.on('update-downloaded', () => {
       if (!this.updateNotificationShown) {
         this.showUpdateNotification();
         this.updateNotificationShown = true;
       }
     });
 
-    ipcRenderer.send('update-check');
-    ipcRenderer.send('tray-animation', false);
+    window.ipcRenderer.send('update-check');
+    window.ipcRenderer.send('tray-animation', false);
 
     this.showMacScreenSharingPermission();
 
@@ -117,6 +118,8 @@ export default {
   mounted() {
     // send signal to index.html so that we can hide super-global wireframe there
     window.removeWireframe();
+
+    window.ipcRenderer.send('page-rendered', 'Hello from Main!');
 
     /**
      * Deep link for login
@@ -150,7 +153,7 @@ export default {
       this.loading = false;
     }, WIREFRAME_MAX_TIME);
 
-    ipcRenderer.send('start-is-ready');
+    window.ipcRenderer.send('start-is-ready');
   },
 
   beforeDestroy() {
@@ -159,9 +162,9 @@ export default {
 
   destroyed() {
     broadcastEvents.removeAllListeners('open-channel');
-    ipcRenderer.removeAllListeners('update-error');
-    ipcRenderer.removeAllListeners('update-downloaded');
-    ipcRenderer.removeAllListeners('hotkey-mic');
+    window.ipcRenderer.removeAllListeners('update-error');
+    window.ipcRenderer.removeAllListeners('update-downloaded');
+    window.ipcRenderer.removeAllListeners('hotkey-mic');
   },
 
   methods: {
@@ -182,7 +185,7 @@ export default {
               type: 1,
               action: () => {
                 WindowManager.willQuit();
-                ipcRenderer.send('update-install');
+                window.ipcRenderer.send('update-install');
                 // electron.remote.app.relaunch();
                 // electron.remote.app.quit();
               },
