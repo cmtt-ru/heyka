@@ -53,12 +53,13 @@
       <list :filter-by="''">
         <list-item
           v-for="user in users"
-          :key="user.id"
-          :filter-key="user.name"
+          :key="user.user.id"
+          :filter-key="user.user.name"
           button
         >
           <channel-user-item
-            :user="user"
+            :user="user.user"
+            :media-state="user.mediaState"
             :channel-id="channelId"
           />
         </list-item>
@@ -141,6 +142,7 @@ export default {
     texts() {
       return this.$t('workspace.channel');
     },
+
     /**
      * Get users array
      * @returns {array} array of users
