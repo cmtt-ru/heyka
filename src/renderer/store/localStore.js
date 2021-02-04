@@ -1,48 +1,55 @@
+/* eslint-disable require-jsdoc */
 /**
  * Class for local storage
  */
-class Store extends window.Conf {
+class Store {
   /**
    * Inits deep link class
-   * @param {object} options name for store and other stuff
+   * @param {string} name name for store
    * @returns {void}
    */
-  constructor(options) {
-    const defaultCwd = window.ipcRenderer.sendSync('remote-getPath', 'userData');
+  constructor(name) {
+    this.name = name;
+  }
 
-    options = {
-      name: 'config',
-      ...options,
-    };
+  get(key, defaultValue) {
+    return window.ipcRenderer.invoke('localstore-get', {
+      store: this.name,
+      key,
+      defaultValue,
+    });
+  }
 
-    if (options.cwd) {
-      options.cwd = defaultCwd + options.cwd;
-    } else {
-      options.cwd = defaultCwd;
-    }
+  getSync(key, defaultValue) {
+    return window.ipcRenderer.sendSync('localstore-getSync', {
+      store: this.name,
+      key,
+      defaultValue,
+    });
+  }
 
-    options.configName = options.name;
-    delete options.name;
-    super(options);
+  set(key, value) {
+    window.ipcRenderer.send('localstore-set', {
+      store: this.name,
+      key,
+      value,
+    });
+  }
+
+  has(key) {
+    return window.ipcRenderer.invoke('localstore-has', {
+      store: this.name,
+      key,
+    });
   }
 }
 
 /* Stores that are used in our app */
 
-export const heykaStore = new Store({
-  name: 'app',
-});
+export const heykaStore = new Store('heykaStore');
 
-export const meStore = new Store({
-  name: 'store-module-me',
-});
+export const meStore = new Store('meStore');
 
-export const codeFileStore = new Store({
-  name: 'signin-code',
-  encryptionKey: '1234543',
-});
+export const codeFileStore = new Store('codeFileStore');
 
-export const authFileStore = new Store({
-  name: 'auth',
-  encryptionKey: '1234543',
-});
+export const authFileStore = new Store('authFileStore');

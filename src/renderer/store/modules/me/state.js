@@ -26,14 +26,14 @@ const state = () => {
    * @type MediaState
    */
   const initialMediaState = {
-    microphone: meStore.get('microphone', false),
+    microphone: meStore.getSync('microphone', false),
     speakers: true,
     screen: false,
     camera: false,
     speaking: false,
   };
 
-  const onlineStatus = meStore.get('onlineStatus', 'online');
+  const onlineStatus = meStore.getSync('onlineStatus', 'online');
 
   /**
    * @namespace MeState
@@ -41,7 +41,7 @@ const state = () => {
   return {
     id: null,
     email: null,
-    selectedWorkspaceId: meStore.get('selectedWorkspaceId'),
+    selectedWorkspaceId: meStore.getSync('selectedWorkspaceId'),
     selectedChannelId: null,
     mediaState: initialMediaState,
     previousMediaState: initialMediaState,

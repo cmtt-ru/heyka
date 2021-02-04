@@ -86,8 +86,9 @@ export default {
       localSettings: {
         mode: this.$store.state.app.runAppFrom,
         resizeWindow: this.$store.state.app.resizeWindow,
-        devServer: heykaStore.get('devServer') || false,
+        devServer: this.$store.state.app.devServer,
       },
+      devServer: this.$store.state.app.devServer,
 
     };
   },
@@ -133,15 +134,6 @@ export default {
      */
     resizeWindow() {
       return this.$store.state.app.resizeWindow;
-    },
-
-    /**
-     * Is dev server
-     *
-     * @returns {boolean}
-     */
-    devServer() {
-      return heykaStore.get('devServer') || false;
     },
 
     /**
