@@ -1,6 +1,6 @@
 import { app } from 'electron';
-const path = require('path');
-const Conf = require('conf');
+import path from 'path';
+import Conf from 'conf';
 
 /**
  * Class for local storage

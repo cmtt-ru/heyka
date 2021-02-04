@@ -78,7 +78,7 @@ app.on('ready', async () => {
   /**
    * Vue devtools chrome extension
    */
-  if (IS_DEV) {
+  if (IS_DEV && IS_MAC) {
     installExtension(VUEJS_DEVTOOLS)
       .then(() => {})
       .catch(err => {
@@ -127,6 +127,12 @@ ipcMain.handle('open-webrtc-internals', async (event) => {
   return true;
 });
 
+ipcMain.handle('open-chrome-tracing', async (event) => {
+  createChromeTracing();
+
+  return true;
+});
+
 ipcMain.on('exit-fullscreen', (event) => {
   const focusedWindow = BrowserWindow.getFocusedWindow();
 
@@ -146,4 +152,17 @@ function createWebrtcInternals() {
   });
 
   win.loadURL('chrome://webrtc-internals');
+}
+
+/**
+ * Create chrome tracing window
+ * @returns {void}
+ */
+function createChromeTracing() {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+  });
+
+  win.loadURL('chrome://tracing');
 }

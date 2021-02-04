@@ -21,7 +21,7 @@ const WEB_URL = IS_DEV ? process.env.VUE_APP_WEB_DEV_URL : process.env.VUE_APP_W
 const COOKIE_URL = API_URL.split('.').splice(-2)
   .join('.');
 
-module.exports = {
+export {
   IS_DEV,
   IS_WIN,
   IS_MAC,
@@ -31,5 +31,5 @@ module.exports = {
 
   API_URL,
   WEB_URL,
-  COOKIE_URL,
+  COOKIE_URL
 };
