@@ -1,18 +1,16 @@
 <template>
   <div>
-    <div>
-      <janus />
-      <notifications />
-      <transition name="wireframe-fade">
-        <wireframe
-          v-if="loading"
-          class="wireframe"
-        />
-      </transition>
-      <router-view />
-      <app-status :show="!$store.getters['app/getConnectionStatus']" />
+    <janus />
+    <notifications />
+    <transition name="wireframe-fade">
+      <wireframe
+        v-if="loading"
+        class="wireframe"
+      />
+    </transition>
+    <router-view />
+    <app-status :show="!$store.getters['app/getConnectionStatus']" />
     <!--    <performance-monitor />-->
-    </div>
   </div>
 </template>
 
