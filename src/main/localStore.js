@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, ipcMain } from 'electron';
 import path from 'path';
 import Conf from 'conf';
 
@@ -8,26 +8,26 @@ import Conf from 'conf';
 class Store extends Conf {
   /**
  * Inits deep link class
- * @param {object} options name for store and other stuff
+ * @param {object} opt name for store and other stuff
  * @returns {void}
  */
-  constructor(options) {
+  constructor(opt) {
     const defaultCwd = app.getPath('userData');
 
-    options = {
+    opt = {
       name: 'config',
-      ...options,
+      ...opt,
     };
 
-    if (options.cwd) {
-      options.cwd = path.isAbsolute(options.cwd) ? options.cwd : path.join(defaultCwd, options.cwd);
+    if (opt.cwd) {
+      opt.cwd = path.isAbsolute(opt.cwd) ? opt.cwd : path.join(defaultCwd, opt.cwd);
     } else {
-      options.cwd = defaultCwd;
+      opt.cwd = defaultCwd;
     }
 
-    options.configName = options.name;
-    delete options.name;
-    super(options);
+    opt.configName = opt.name;
+    delete opt.name;
+    super(opt);
   }
 }
 
@@ -49,4 +49,31 @@ export const codeFileStore = new Store({
 export const authFileStore = new Store({
   name: 'auth',
   encryptionKey: '1234543',
+});
+
+const stores = {
+  heykaStore,
+  meStore,
+  codeFileStore,
+  authFileStore,
+};
+
+ipcMain.handle('localstore-get', async (event, options) => {
+  return stores[options.store].get(options.key, options.defaultValue);
+});
+
+ipcMain.on('localstore-getSync', (event, options) => {
+  event.returnValue = stores[options.store].get(options.key, options.defaultValue);
+});
+
+ipcMain.handle('localstore-has', async (event, options) => {
+  if (stores[options.store].has(options.key)) {
+    return true;
+  }
+
+  return false;
+});
+
+ipcMain.on('localstore-set', async (event, options) => {
+  stores[options.store].set(options.key, options.value);
 });
