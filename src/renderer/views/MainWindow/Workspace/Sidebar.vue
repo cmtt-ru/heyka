@@ -189,8 +189,7 @@ import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import SidebarUserItem from '@components/SidebarUserItem';
 import Mousetrap from 'mousetrap';
-import { heykaStore } from '@/store/localStore';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 const MANY_CHANNELS = 4;
 
@@ -209,7 +208,6 @@ export default {
       MANY_CHANNELS,
       inputActive: false,
       searchText: '',
-      showMore: heykaStore.get('showMoreChannels', true),
     };
   },
 
@@ -218,6 +216,10 @@ export default {
     ...mapGetters({
       channels: 'channels/getChannels',
       getAllUsers: 'users/getAllUsers',
+    }),
+
+    ...mapState('app', {
+      showMore: 'showMoreChannels',
     }),
 
     /**
@@ -344,8 +346,7 @@ export default {
      * @returns {void}
      */
     toggleChannelsHandler() {
-      this.showMore = !this.showMore;
-      heykaStore.set('showMoreChannels', this.showMore);
+      this.$store.commit('app/SET_CHANNELS_EXPANDED', !this.showMore);
     },
 
     /**

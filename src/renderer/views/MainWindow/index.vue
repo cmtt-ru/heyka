@@ -58,8 +58,10 @@ export default {
   async created() {
     try {
       /** Open specific page if it was cached before restart */
-      if (heykaStore.get('openPage')) {
-        this.$router.push({ name: heykaStore.get('openPage') });
+      const route = await heykaStore.get('openPage');
+
+      if (route) {
+        this.$router.push({ name: route });
         heykaStore.set('openPage', null);
       }
 
