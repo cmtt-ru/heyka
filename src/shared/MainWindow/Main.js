@@ -123,6 +123,8 @@ class MainWindow {
         y: this.window.getPosition()[1],
       };
 
+      this.window.webContents.closeDevTools();
+
       const newInfo = this.positioner.getCoordsAndScreen(newPos);
 
       newInfo.size = this.window.getSize();
