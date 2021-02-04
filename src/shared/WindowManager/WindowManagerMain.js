@@ -147,14 +147,12 @@ class WindowManager {
     const windowOptions = Object.assign(cloneDeep(DEFAULT_WINDOW_OPTIONS), cloneDeep(options.window));
 
     // add global argument so we can identify window by its id
-    windowOptions.webPreferences.additionalArguments = [ 'window-id:' + windowId ];
-
     // add global argument with window's template
-    windowOptions.webPreferences.additionalArguments.push('template:' + options.template);
+    const newUserAgent = [`window-id:${windowId}`, `template:${options.template}`];
 
     // add global argument if window is Main Window (tm)
     if (options.isMainWindow) {
-      windowOptions.webPreferences.additionalArguments.push('is-main-window');
+      newUserAgent.push('is-main-window');
     }
 
     if (IS_LINUX && options.displayId) {
@@ -178,8 +176,8 @@ class WindowManager {
     // create BrowserWindow!
     const browserWindow = new BrowserWindow(windowOptions);
 
-    browserWindow.webContents.userAgent = browserWindow.webContents.userAgent + ' ' +
-    windowOptions.webPreferences.additionalArguments.join(' ');
+    browserWindow.webContents.userAgent += ' ' +
+    newUserAgent.join(' ');
 
     // add window to WindowManager's array; also save options for later
     this.windows[windowId] = {
