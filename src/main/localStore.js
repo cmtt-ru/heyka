@@ -51,6 +51,8 @@ export const authFileStore = new Store({
   encryptionKey: '1234543',
 });
 
+// ----------//
+
 const stores = {
   heykaStore,
   meStore,
@@ -59,14 +61,26 @@ const stores = {
 };
 
 ipcMain.handle('localstore-get', async (event, options) => {
+  if (!stores[options.store]) {
+    return undefined;
+  }
+
   return stores[options.store].get(options.key, options.defaultValue);
 });
 
 ipcMain.on('localstore-getSync', (event, options) => {
+  if (!stores[options.store]) {
+    event.returnValue = undefined;
+
+    return;
+  }
   event.returnValue = stores[options.store].get(options.key, options.defaultValue);
 });
 
 ipcMain.handle('localstore-has', async (event, options) => {
+  if (!stores[options.store]) {
+    return undefined;
+  }
   if (stores[options.store].has(options.key)) {
     return true;
   }
@@ -75,5 +89,8 @@ ipcMain.handle('localstore-has', async (event, options) => {
 });
 
 ipcMain.on('localstore-set', async (event, options) => {
+  if (!stores[options.store]) {
+    return;
+  }
   stores[options.store].set(options.key, options.value);
 });
