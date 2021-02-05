@@ -42,7 +42,6 @@
           :height="44"
           size="medium"
           icon="fullscreen"
-          @click="expandHandler"
         />
       </div>
     </div>
