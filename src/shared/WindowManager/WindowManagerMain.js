@@ -215,6 +215,7 @@ class WindowManager {
 
     // listen to "close" event so we can prevent closing if needed
     browserWindow.on('close', e => {
+      browserWindow.webContents.closeDevTools();
       console.log('closing:', windowId, this.mainWindowId);
       if (this.windows[windowId].options.preventClose && !this.quitting) {
         e.preventDefault();
@@ -234,6 +235,8 @@ class WindowManager {
     });
 
     const prepareWindow = () => {
+      console.log('prepareWindow', options.template);
+
       // positioning stuff
       // browserWindow.setAlwaysOnTop(true, 'floating', 3);
       const position = this.__getWindowPosition(browserWindow, options.position, options.margin);
@@ -296,7 +299,7 @@ class WindowManager {
       }
     } else {
     // listen to "ready-to-show" event so we can show and position our window
-      browserWindow.on('ready-to-show', () => {
+      browserWindow.once('ready-to-show', () => {
         prepareWindow();
       });
     }
