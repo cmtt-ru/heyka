@@ -1,91 +1,117 @@
 <template>
   <div>
-    <div v-if="!slackUsers.length">
-      <div class="top-info-text">
-        {{ texts.noWorkspaces }}
-      </div>
-      <ui-button
-        :type="17"
-        :wide="true"
-        class="link"
-        icon="slack"
-        size="large"
-        @click="slackConnect"
-      >
-        {{ texts.connect }}
-      </ui-button>
+    <div v-if="loading">
+      {{ texts.webWait }}
     </div>
-
     <div v-else>
-      <div
-        v-if="!invitesSentTo.length"
-        class="top-info-text"
-      >
-        {{ texts.canInviteBeginning }}{{ slackWorkspace.name }}{{ texts.canInviteEnd }}
-      </div>
-      <div
-        v-else
-        class="top-info-text"
-      >
-        {{ texts.successInviteStart }}{{ $tc("slackInvite.successInviteMiddle", invitesSentTo.length) }}{{ texts.successInviteEnd }}
-      </div>
-      <ui-input
-        ref="top_slack_invite"
-        v-model="filterKey"
-        icon="search"
-        placeholder="Search"
-        class="user-search"
-      />
-      <list
-        selectable
-        :filter-by="filterKey"
-        @multipick="selectUser"
-      >
-        <list-item
-          v-for="user in notInvitedSlackUsers"
-          :key="user.id"
-          :filter-key="user.name"
-          :selectable-content="user"
-          button
-          class="user"
-        >
-          <avatar
-            class="user__avatar"
-            :image="user.avatar32"
-            :user-id="user.id"
-            :size="32"
-          />
-          <div
-            v-textfade
-            class="user__inner"
-          >
-            <div
-              class="user__real-name"
-            >
-              {{ user.realName }}
-            </div>
-            <div class="user__name">
-              @{{ user.name }}
-            </div>
-          </div>
-          <svg-icon
-            class="user__check"
-            name="check"
-            width="16"
-            height="16"
-          />
-        </list-item>
-      </list>
-      <div
-        v-if="selectedUsers.length"
-        class="submit-button-wrapper"
-      >
+      <div v-if="!slackUsers.length">
+        <div class="top-info-text">
+          {{ texts.noWorkspaces }}
+        </div>
         <ui-button
-          :type="1"
-          @click="sendOneInvite"
+          :type="17"
+          :wide="true"
+          class="link"
+          icon="slack"
+          size="large"
+          @click="slackConnect"
         >
-          {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
+          {{ texts.connect }}
         </ui-button>
+      </div>
+
+      <div v-else>
+        <div
+          v-if="!invitesSentTo.length"
+          class="top-info-text"
+        >
+          {{ texts.canInviteBeginning }}{{ slackWorkspace.name }}{{ texts.canInviteEnd }}
+        </div>
+        <div
+          v-else
+          class="top-info-text"
+        >
+          {{ texts.successInviteStart }}{{ $tc("slackInvite.successInviteMiddle", invitesSentTo.length) }}{{ texts.successInviteEnd }}
+        </div>
+        <div class="user-search__wrapper">
+          <ui-input
+            ref="top_slack_invite"
+            v-model="filterKey"
+            icon="search"
+            placeholder="Search"
+            class="user-search"
+          />
+        </div>
+
+        <div class="select-all__wrapper">
+          <div
+            v-if="!selectedUsers.length"
+            class="select-all"
+            @click="selectAllUsers"
+          >
+            {{ texts.selectAll }}
+          </div>
+          <div
+            v-else
+            class="select-all select-all--deselect"
+            @click="deselectAllUsers"
+          >
+            {{ texts.deselectAll }}
+          </div>
+        </div>
+        <list
+          ref="userList"
+          class="user-list"
+          selectable
+          :filter-by="filterKey"
+          @multipick="selectUser"
+        >
+          <list-item
+            v-for="user in notInvitedSlackUsers"
+            :key="user.id"
+            :filter-key="user.name + user.realName"
+            :selectable-content="user"
+            button
+            class="user"
+          >
+            <avatar
+              class="user__avatar"
+              :image="user.avatar32"
+              :user-id="user.id"
+              :size="32"
+            />
+            <div
+              v-textfade
+              class="user__inner"
+            >
+              <div
+                class="user__real-name"
+              >
+                {{ user.realName }}
+              </div>
+              <div class="user__name">
+                @{{ user.name }}
+              </div>
+            </div>
+            <svg-icon
+              class="user__check"
+              name="check"
+              width="16"
+              height="16"
+            />
+          </list-item>
+        </list>
+        <div
+          class="submit-button-wrapper"
+        >
+          <ui-button
+            :type="1"
+            :disabled="!selectedUsers.length"
+            @click="sendOneInvite"
+          >
+            {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
+          </ui-button>
+        </div>
       </div>
     </div>
   </div>
@@ -110,6 +136,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       slackUsers: [],
       slackWorkspace: null,
       selectedUsers: [],
@@ -169,6 +196,7 @@ export default {
       } catch (err) {
         console.log(err);
       }
+      this.loading = false;
     },
 
     async slackConnect() {
@@ -179,6 +207,14 @@ export default {
 
     selectUser(data) {
       this.selectedUsers = data;
+    },
+
+    selectAllUsers() {
+      this.$refs.userList.selectAll();
+    },
+
+    deselectAllUsers() {
+      this.$refs.userList.deselectAll();
     },
 
     async sendOneInvite() {
@@ -202,20 +238,40 @@ export default {
 <style lang="stylus" scoped>
 
 .top-info-text
-  margin 4px 0 22px
+  margin 4px 0 16px
 
-.user-search
-  margin-bottom 18px
+.user-search__wrapper
+  background-color var(--new-bg-04)
+  padding 6px 0 12px //! bottom is 20px while scrolled and 12px in idle, why
   position sticky
   top -0.5px
   z-index 10
-  background-color var(--new-bg-04)
 
 /deep/ .input
   padding-left 54px
 
 /deep/ .input__icon
-  padding-left 12px
+  padding-left 10px
+
+.select-all
+  font-weight 500
+  font-size 12px
+  line-height 18px
+  color var(--new-UI-01)
+  cursor pointer
+  margin 0 0 0 auto
+
+  &--deselect
+    color var(--new-signal-03)
+
+  &__wrapper
+    margin-bottom 12px
+    width 100%
+    display flex
+    flex-direction row-reverse
+
+.user-list
+  margin-bottom 65px
 
 .user
   padding 4px 10px
