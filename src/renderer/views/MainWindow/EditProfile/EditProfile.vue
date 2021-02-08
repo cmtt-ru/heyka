@@ -6,6 +6,7 @@
     <div>
       <div class="user">
         <ui-image
+          ref="avatarInput"
           :key="me.avatarFileId || me.id"
           :image="userAvatar(me.id, 64)"
           class="user__avatar"
@@ -13,6 +14,14 @@
           @input="setNewAvatar"
         />
         <div
+          v-if="!profile.avatarFileId"
+          class="edit-link"
+          @click="selectAvatar"
+        >
+          Загрузить фото
+        </div>
+        <div
+          v-else
           class="edit-link edit-link--warning"
           @click="deleteImage"
         >
@@ -147,6 +156,10 @@ export default {
       this.$router.back();
     },
 
+    selectAvatar() {
+      this.$refs.avatarInput.clickInput();
+    },
+
     /**
      * update avatar with mew image file id
      * @param {string} fileId - new image file id from uploader
@@ -170,6 +183,8 @@ export default {
     },
 
     async deleteImage() {
+      this.$refs.avatarInput.clearInput();
+
       try {
         this.$set(this.profile, 'avatarFileId', null);
         await this.$API.user.editProfile({ avatarFileId: null });
