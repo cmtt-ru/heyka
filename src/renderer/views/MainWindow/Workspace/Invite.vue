@@ -81,7 +81,7 @@
         <tab name="Slack">
           <slack-invite />
         </tab>
-        <tab name="MS Teams">
+        <tab name="Teams">
           Work in progress
         </tab>
       </tabs>
