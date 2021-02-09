@@ -18,7 +18,6 @@
       >
         {{ user.name }}
       </div>
-      <!-- <div>TODO: user role</div> -->
 
       <ui-button
         v-if="isMe"
@@ -194,6 +193,8 @@ export default {
      * @returns {object} – user
      */
     user() {
+      console.log(this.$store.getters['users/getUserById'](this.userId));
+
       return this.$store.getters['users/getUserById'](this.userId);
     },
 
