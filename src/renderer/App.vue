@@ -18,9 +18,11 @@ export default {
     Mousetrap.bind(['command+i', 'ctrl+i'], () => {
       WindowManager.getCurrentWindow().action('console');
     });
+
     Mousetrap.bind(['command+r', 'ctrl+r'], () => {
       WindowManager.getCurrentWindow().action('reload');
     });
+
     Mousetrap.bind('up up down down left right left right b a enter', function () {
       console.log('%ckonami code!', 'color: green; font: 4rem/1 Tahoma;');
     });
