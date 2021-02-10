@@ -8,20 +8,20 @@
       <router-view />
     </template>
 
-    <performance-monitor />
+    <!-- <performance-monitor /> -->
   </layout>
 </template>
 
 <script>
 import Layout from './../Layout';
 import Sidebar from './Sidebar';
-import PerformanceMonitor from '@components/PerformanceMonitor';
+// import PerformanceMonitor from '@components/PerformanceMonitor';
 
 export default {
   components: {
     Layout,
     Sidebar,
-    PerformanceMonitor,
+    // PerformanceMonitor,
   },
   data() {
     return {

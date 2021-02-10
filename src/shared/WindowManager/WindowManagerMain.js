@@ -284,6 +284,7 @@ class WindowManager {
       } else {
         browserWindow.show();
       }
+      // browserWindow.webContents.toggleDevTools();
     };
 
     if (options.showFast) {
