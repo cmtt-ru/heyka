@@ -49,9 +49,11 @@ class CallWindow {
     this.frameWindow = null;
     this.streamingOverlayWindow = null;
     this.lastMediaSharingMode = null;
+
     broadcastEvents.on('closeOverlay', () => {
       this.closeOverlay();
     });
+
     broadcastEvents.on('click-streaming-panel', (val) => {
       this.resizeStreamingOverlay(val ? 'streamingMax' : 'streaming');
     });
@@ -63,10 +65,12 @@ class CallWindow {
    * @param {('hide'|'close')} action - 'hide' or 'close'
    * @returns {void}
    */
-  manageWindow(window, action) {
+  async manageWindow(window, action) {
     if (window) {
-      window.action(action);
+      return window.action(action);
     }
+
+    return false;
   }
 
   /**
@@ -74,9 +78,9 @@ class CallWindow {
    * @param {boolean} mediaSharingMode - media sharing Mode
    * @returns {void}
    */
-  showOverlay(mediaSharingMode = false) {
+  async showOverlay(mediaSharingMode = false) {
     if (this.overlayWindow === null) {
-      this.overlayWindow = WindowManager.create({
+      this.overlayWindow = await WindowManager.create({
         route: '/call-overlay',
         template: 'overlay',
         showInactive: true,
@@ -92,7 +96,7 @@ class CallWindow {
         },
       });
     } else {
-      this.overlayWindow.action('showInactive');
+      await this.overlayWindow.action('showInactive');
     }
   }
 
@@ -100,20 +104,24 @@ class CallWindow {
    * Hide call overlay
    * @returns {void}
    */
-  hideOverlay() {
+  async hideOverlay() {
     if (this.overlayWindow) {
-      this.overlayWindow.action('hide');
+      return this.overlayWindow.action('hide');
     }
+
+    return false;
   }
 
   /**
    * Close call overlay
    * @returns {void}
    */
-  closeOverlay() {
+  async closeOverlay() {
     if (this.overlayWindow) {
-      this.overlayWindow.action('close');
+      return this.overlayWindow.action('close');
     }
+
+    return false;
   }
 
   /**
@@ -122,7 +130,7 @@ class CallWindow {
    * @param {string} type - overlay type (from OVERLAY_WINDOW_SIZES)
    * @returns {void}
    */
-  resizeOverlay(type) {
+  async resizeOverlay(type) {
     if (this.overlayWindow === null) {
       return;
     }
@@ -131,11 +139,11 @@ class CallWindow {
 
     const OVERLAY_MARGIN = 50;
 
-    this.overlayWindow.api('setResizable', true);
-    this.overlayWindow.api('setMinimumSize', template.minWidth, template.minHeight);
-    this.overlayWindow.api('setMaximumSize', template.maxWidth, template.maxHeight);
-    this.overlayWindow.api('setResizable', template.resizable);
-    this.overlayWindow.setSize(template.width, template.height, OVERLAY_MARGIN);
+    await this.overlayWindow.api('setResizable', true);
+    await this.overlayWindow.api('setMinimumSize', template.minWidth, template.minHeight);
+    await this.overlayWindow.api('setMaximumSize', template.maxWidth, template.maxHeight);
+    await this.overlayWindow.api('setResizable', template.resizable);
+    await this.overlayWindow.setSize(template.width, template.height, OVERLAY_MARGIN);
   }
 
   /**
@@ -157,9 +165,9 @@ class CallWindow {
    * Show sharing window
    * @returns {void}
    */
-  showSharing() {
+  async showSharing() {
     if (this.sharingWindow === null) {
-      this.sharingWindow = WindowManager.create({
+      this.sharingWindow = await WindowManager.create({
         route: '/call-sharing',
         template: IS_DEV ? 'sharingSelectDev' : 'sharingSelect',
         position: 'center',
@@ -168,7 +176,7 @@ class CallWindow {
         },
       });
     } else {
-      this.sharingWindow.action('showInactive');
+      await this.sharingWindow.action('showInactive');
     }
   }
 
@@ -176,20 +184,24 @@ class CallWindow {
    * Hide sharing window
    * @returns {void}
    */
-  hideSharing() {
+  async hideSharing() {
     if (this.sharingWindow) {
-      this.sharingWindow.action('hide');
+      return this.sharingWindow.action('hide');
     }
+
+    return false;
   }
 
   /**
    * Close sharing window
    * @returns {void}
    */
-  closeSharing() {
+  async closeSharing() {
     if (this.sharingWindow) {
-      this.sharingWindow.action('close');
+      return this.sharingWindow.action('close');
     }
+
+    return false;
   }
 
   /**
@@ -197,7 +209,7 @@ class CallWindow {
    * @param {number} userId - if found, open expanded view with this user
    * @returns {void}
    */
-  showGrid(userId) {
+  async showGrid(userId) {
     if (this.gridWindow === null) {
       let route = '/call-window';
 
@@ -205,7 +217,7 @@ class CallWindow {
         route = `/call-window/expanded/${userId}`;
       }
 
-      this.gridWindow = WindowManager.create({
+      this.gridWindow = await WindowManager.create({
         route: route,
         position: 'center',
         template: 'call',
@@ -224,9 +236,11 @@ class CallWindow {
 
       this.gridTimeout = null;
 
-      broadcastEvents.on('exit-fullscreen', () => {
-        if (this.gridWindow.isFullscreen()) {
-          this.gridWindow.action('fullscreen');
+      broadcastEvents.on('exit-fullscreen', async () => {
+        const isFullscreen = await this.gridWindow.isFullscreen();
+
+        if (isFullscreen) {
+          await this.gridWindow.action('fullscreen');
         }
       });
 
@@ -252,7 +266,7 @@ class CallWindow {
         }
       });
     } else {
-      this.gridWindow.action('show');
+      await this.gridWindow.action('show');
 
       if (userId) {
         this.gridWindow.routerPush({
@@ -267,20 +281,24 @@ class CallWindow {
    * Hide grid (main) window
    * @returns {void}
    */
-  hideGrid() {
+  async hideGrid() {
     if (this.gridWindow) {
-      this.gridWindow.action('hide');
+      return this.gridWindow.action('hide');
     }
+
+    return false;
   }
 
   /**
    * Close grid (main) window
    * @returns {void}
    */
-  closeGrid() {
+  async closeGrid() {
     if (this.gridWindow) {
-      this.gridWindow.action('close');
+      return this.gridWindow.action('close');
     }
+
+    return false;
   }
 
   /**
@@ -289,9 +307,9 @@ class CallWindow {
    * @param {number?} sourceIndex Source index
    * @returns {void}
    */
-  showFrame(displayId, sourceIndex) {
+  async showFrame(displayId, sourceIndex) {
     if (this.frameWindow === null) {
-      this.frameWindow = WindowManager.create({
+      this.frameWindow = await WindowManager.create({
         template: 'frame',
         route: '/board-holder',
         ignoreMouseEvents: true,
@@ -305,33 +323,35 @@ class CallWindow {
         },
       });
     } else {
-      this.frameWindow.action('showInactive');
+      await this.frameWindow.action('showInactive');
     }
 
-    this.hideOverlay();
-    this.showStreamingOverlay();
+    await this.hideOverlay();
+    await this.showStreamingOverlay();
   }
 
   /**
    * Show frame window console
    * @returns {void}
    */
-  showFrameConsole() {
+  async showFrameConsole() {
     if (this.frameWindow !== null) {
-      this.frameWindow.action('console');
+      return this.frameWindow.action('console');
     }
+
+    return false;
   }
 
   /**
    * Hide frame window
    * @returns {void}
    */
-  closeFrame() {
+  async closeFrame() {
     if (this.frameWindow) {
-      this.frameWindow.action('softClose');
-      this.closeStreamingOverlay();
-      this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
-      this.overlayWindow.action('showInactive');
+      await this.frameWindow.action('softClose');
+      await this.closeStreamingOverlay();
+      await this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
+      await this.overlayWindow.action('showInactive');
     }
   }
 
@@ -339,9 +359,9 @@ class CallWindow {
    * Show streaming overlay window
    * @returns {void}
    */
-  showStreamingOverlay() {
+  async showStreamingOverlay() {
     if (this.streamingOverlayWindow === null) {
-      this.streamingOverlayWindow = WindowManager.create({
+      this.streamingOverlayWindow = await WindowManager.create({
         route: '/call-overlay/streaming',
         template: 'overlay',
         showInactive: true,
@@ -357,7 +377,7 @@ class CallWindow {
         },
       });
     } else {
-      this.streamingOverlayWindow.action('showInactive');
+      await this.streamingOverlayWindow.action('showInactive');
     }
   }
 
@@ -365,22 +385,24 @@ class CallWindow {
    * Close streaming overlay window
    * @returns {void}
    */
-  closeStreamingOverlay() {
+  async closeStreamingOverlay() {
     if (this.streamingOverlayWindow) {
-      this.streamingOverlayWindow.action('softClose');
+      return this.streamingOverlayWindow.action('softClose');
     }
+
+    return false;
   }
 
   /**
    * Close ALL call windows
    * @returns {void}
    */
-  closeAll() {
-    this.manageWindow(this.frameWindow, 'softClose');
-    this.manageWindow(this.gridWindow, 'close');
-    this.manageWindow(this.sharingWindow, 'close');
-    this.manageWindow(this.overlayWindow, 'softClose');
-    this.manageWindow(this.streamingOverlayWindow, 'softClose');
+  async closeAll() {
+    await this.manageWindow(this.frameWindow, 'softClose');
+    await this.manageWindow(this.gridWindow, 'close');
+    await this.manageWindow(this.sharingWindow, 'close');
+    await this.manageWindow(this.overlayWindow, 'softClose');
+    await this.manageWindow(this.streamingOverlayWindow, 'softClose');
   }
 
   /**
