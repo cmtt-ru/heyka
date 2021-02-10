@@ -236,8 +236,6 @@ class CallWindow {
         },
       });
 
-      this.hideOverlay();
-
       this.gridTimeout = null;
 
       broadcastEvents.on('exit-fullscreen', async () => {
