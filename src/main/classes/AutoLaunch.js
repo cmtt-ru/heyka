@@ -1,7 +1,7 @@
 import { ipcMain, app } from 'electron';
 import AutoLaunch from 'auto-launch'; // ! Not Mac App Store friendly
-import { IS_DEV } from '../../sdk/Constants';
-import { heykaStore } from '../../renderer/store/localStore';
+import { IS_DEV } from '../../main/Constants';
+import { heykaStore } from '../localStore';
 const autoLauncher = new AutoLaunch({
   name: app.name,
 });

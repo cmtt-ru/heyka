@@ -6,7 +6,7 @@ import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
-import { IS_WIN, IS_DEV, IS_LINUX } from '../../sdk/Constants';
+import { IS_WIN, IS_DEV, IS_LINUX } from '../../main/Constants';
 
 let icon;
 
@@ -27,8 +27,9 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   show: false,
   icon: icon,
   webPreferences: Object.freeze({
-    nodeIntegration: true,
+    // nodeIntegration: true,
     webSecurity: true,
+    preload: path.join(__static, 'preload.js'),
   }),
 });
 
@@ -146,14 +147,12 @@ class WindowManager {
     const windowOptions = Object.assign(cloneDeep(DEFAULT_WINDOW_OPTIONS), cloneDeep(options.window));
 
     // add global argument so we can identify window by its id
-    windowOptions.webPreferences.additionalArguments = [ '--window-id=' + windowId ];
-
     // add global argument with window's template
-    windowOptions.webPreferences.additionalArguments.push('--template=' + options.template);
+    const newUserAgent = [`window-id:${windowId}`, `template:${options.template}`];
 
     // add global argument if window is Main Window (tm)
     if (options.isMainWindow) {
-      windowOptions.webPreferences.additionalArguments.push('--is-main-window');
+      newUserAgent.push('is-main-window');
     }
 
     if (IS_LINUX && options.displayId) {
@@ -176,6 +175,9 @@ class WindowManager {
 
     // create BrowserWindow!
     const browserWindow = new BrowserWindow(windowOptions);
+
+    browserWindow.webContents.userAgent += ' ' +
+    newUserAgent.join(' ');
 
     // add window to WindowManager's array; also save options for later
     this.windows[windowId] = {
@@ -213,6 +215,7 @@ class WindowManager {
 
     // listen to "close" event so we can prevent closing if needed
     browserWindow.on('close', e => {
+      browserWindow.webContents.closeDevTools();
       console.log('closing:', windowId, this.mainWindowId);
       if (this.windows[windowId].options.preventClose && !this.quitting) {
         e.preventDefault();
@@ -232,6 +235,8 @@ class WindowManager {
     });
 
     const prepareWindow = () => {
+      console.log('prepareWindow', options.template);
+
       // positioning stuff
       // browserWindow.setAlwaysOnTop(true, 'floating', 3);
       const position = this.__getWindowPosition(browserWindow, options.position, options.margin);
@@ -293,7 +298,7 @@ class WindowManager {
       }
     } else {
     // listen to "ready-to-show" event so we can show and position our window
-      browserWindow.on('ready-to-show', () => {
+      browserWindow.once('ready-to-show', () => {
         prepareWindow();
       });
     }

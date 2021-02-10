@@ -25,6 +25,7 @@ module.exports = {
   },
 
   configureWebpack: {
+    target: 'web',
     resolve: {
       alias: {
         '@static': path.resolve(__dirname, 'public'),

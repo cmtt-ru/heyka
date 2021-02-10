@@ -120,7 +120,6 @@ import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import logout from '@api/auth/logout';
 import { mapGetters, mapState } from 'vuex';
-import { ipcRenderer } from 'electron';
 
 export default {
   components: {
@@ -170,7 +169,7 @@ export default {
      * @returns {void}
      */
     quitAppHandler() {
-      ipcRenderer.send('remote-quit');
+      window.ipcRenderer.send('remote-quit');
     },
   },
 };
