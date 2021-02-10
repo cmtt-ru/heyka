@@ -28,9 +28,9 @@ class PushWindow {
    * Show push window
    * @returns {void}
    */
-  _show() {
+  async _show() {
     if (this.window === null) {
-      this.window = WindowManager.create({
+      this.window = await WindowManager.create({
         route: '/push-window',
         position: 'topRight',
         margin: 0,
@@ -44,7 +44,7 @@ class PushWindow {
 
       });
     } else {
-      this.window.action('showInactive');
+      await this.window.action('showInactive');
     }
   }
 

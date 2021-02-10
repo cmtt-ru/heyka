@@ -180,8 +180,8 @@ export default {
             {
               text: texts.install,
               type: 1,
-              action: () => {
-                WindowManager.willQuit();
+              action: async () => {
+                await WindowManager.willQuit();
                 ipcRenderer.send('update-install');
                 // electron.remote.app.relaunch();
                 // electron.remote.app.quit();

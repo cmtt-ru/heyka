@@ -15,6 +15,10 @@ import permissions from '@sdk/classes/permissions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import network from '@sdk/classes/network';
 
+if (IS_DEV) {
+  Vue.config.performance = true;
+}
+
 if (isMainWindow()) {
   require('@classes/pushWindow');
   require('@classes/intercom');
