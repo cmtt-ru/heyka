@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 export default {
 
   /**
@@ -52,7 +54,9 @@ export default {
    * @constructor
    */
   SET_MEDIA_STATE(state, mediaState) {
-    state.mediaState = mediaState;
+    Object.keys(mediaState).forEach(key => {
+      Vue.set(state.mediaState, key, mediaState[key]);
+    });
   },
 
   /**
