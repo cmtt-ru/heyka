@@ -17,16 +17,15 @@ export default {
    * Get full users in Channel
    * @param {object} state – channels module state
    * @param {object} getters – channels module getters
-   * @param {string} id – channel id
    * @returns {array}
    */
   getUsersByChannel: (state, getters) => (id) => {
-    const ch = getters['channels/getChannelById'](id) || { users: [] };
+    const channel = getters['channels/getChannelById'](id) || { users: [] };
 
-    const users = ch.users.map(user => {
+    const users = channel.users.map(mediaState => {
       return {
-        ...user,
-        ...getters['users/getUserById'](user.userId),
+        user: getters['users/getUserById'](mediaState.userId),
+        mediaState,
       };
     });
 
@@ -93,20 +92,18 @@ export default {
    *
    * @param {object} state – global state
    * @param {object} getters – global getters
-   * @returns {null|string}
+   * @returns {array}
    */
   getUsersWhoShareMedia: (state, getters) => {
     const selectedChannelId = getters['me/getSelectedChannelId'];
     const selectedChannel = getters['channels/getChannelById'](selectedChannelId);
 
     if (selectedChannel) {
-      const usersWhoSharesScreen = selectedChannel.users.filter(user => user.screen).map(user => user.userId);
-      const usersWhoSharesCamera = selectedChannel.users.filter(user => user.camera).map(user => user.userId);
+      const usersWhoShares = selectedChannel.users
+        .filter(user => user.camera || user.screen)
+        .map(user => user.userId);
 
-      return [
-        ...usersWhoSharesCamera,
-        ...usersWhoSharesScreen,
-      ];
+      return usersWhoShares;
     }
 
     return [];
@@ -266,7 +263,7 @@ export default {
   },
 
   /**
-   * Get array with users in  our channel
+   * Get array with users in our channel
    *
    * @param {object} state – global state
    * @param {object} getters – global getters
@@ -281,5 +278,4 @@ export default {
 
     return getters.getUsersByChannel(channelId);
   },
-
 };
