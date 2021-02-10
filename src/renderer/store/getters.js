@@ -5,6 +5,7 @@ import { sortAny } from '@libs/arrays';
  * @type {null}
  */
 let lastSpeakingUser = null;
+let lastChannelId = null;
 /**
  * Last user who shares media
  * @type {null}
@@ -189,6 +190,12 @@ export default {
     const selectedChannel = getters['channels/getChannelById'](selectedChannelId);
 
     if (selectedChannel) {
+      // remove "last talked" user if we changed channel or user left
+      if (lastChannelId !== selectedChannelId || !selectedChannel.users.find(el => el.userId === lastSpeakingUser?.userId)) {
+        lastSpeakingUser = null;
+      }
+      lastChannelId = selectedChannelId;
+
       const speakingUsers = selectedChannel.users.filter(u => u.speaking && u.microphone);
 
       if (speakingUsers.length) {

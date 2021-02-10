@@ -260,7 +260,6 @@ class CallWindow {
       });
 
       this.gridWindow.on('focus', () => {
-        console.log('grid-focus');
         clearTimeout(this.gridTimeout);
         if (this.streamingOverlayWindow) {
           this.streamingOverlayWindow.action('hide');
@@ -271,7 +270,6 @@ class CallWindow {
       });
 
       this.gridWindow.on('hide', () => {
-        console.log('grid-hide');
         clearTimeout(this.gridTimeout);
         if (this.streamingOverlayWindow) {
           this.streamingOverlayWindow.action('show');
@@ -341,11 +339,11 @@ class CallWindow {
       await this.frameWindow.action('showInactive');
     }
 
-    this.hideGrid();
+    await this.hideGrid();
 
-    setTimeout(() => {
-      this.hideOverlay();
-      this.showStreamingOverlay();
+    setTimeout(async () => {
+      await this.hideOverlay();
+      await this.showStreamingOverlay();
     }, BLUR_TIME);
   }
 
