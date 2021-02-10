@@ -20,9 +20,7 @@ if (TrayManager.isInTray()) {
     preventClose: true,
     margin: 20,
     isMainWindow: true,
-    window: {
-      show: true,
-    },
+    showFast: true,
   };
 
   if (IS_MAC) {
@@ -35,9 +33,7 @@ if (TrayManager.isInTray()) {
     template: resizeable ? 'mainDev' : 'main',
     isMainWindow: true,
     preventClose: true,
-    window: {
-      show: true,
-    },
+    showFast: true,
   };
 }
 
