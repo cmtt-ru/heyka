@@ -130,7 +130,7 @@ export default {
 
     getSpeakingUserId() {
       if (this.getSpeakingUser) {
-        return this.getSpeakingUser.userid;
+        return this.getSpeakingUser.userId;
       }
 
       return false;
