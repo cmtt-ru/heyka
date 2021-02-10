@@ -10,6 +10,15 @@ import {ipcRenderer} from "electron";
       Open WebRTC Internals
     </ui-button>
     <br><br>
+    <ui-button
+      :type="1"
+      size="small"
+      class="l-mr-8"
+      @click="openChromeTracing"
+    >
+      Open Chrome Tracing
+    </ui-button>
+    <br><br>
     <router-link :to="{name: 'drawing'}">
       Рисование
     </router-link>
@@ -65,7 +74,11 @@ export default {
   },
   methods: {
     openWebrtcInternals() {
-      ipcRenderer.sendSync('open-webrtc-internals');
+      ipcRenderer.invoke('open-webrtc-internals');
+    },
+
+    openChromeTracing() {
+      ipcRenderer.invoke('open-chrome-tracing');
     },
 
     openFrameWindow() {
