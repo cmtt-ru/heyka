@@ -286,10 +286,16 @@ class WindowManager {
       }
     };
 
-    if (windowOptions.show) {
-      prepareWindow();
-      console.log('prepareWindow');
-      browserWindow.webContents.toggleDevTools();
+    if (options.showFast) {
+      if (options.template === 'maintray') {
+        const WAIT_FOR_TRAY_ICON_TO_APPEAR = 200;
+
+        setTimeout(() => {
+          prepareWindow();
+        }, WAIT_FOR_TRAY_ICON_TO_APPEAR);
+      } else {
+        prepareWindow();
+      }
     } else {
     // listen to "ready-to-show" event so we can show and position our window
       browserWindow.once('ready-to-show', () => {
