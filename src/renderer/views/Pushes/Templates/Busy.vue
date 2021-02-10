@@ -24,7 +24,7 @@
         {{ user.name }}
       </div>
       <div class="push__content__info">
-        {{ texts[data.text] }}
+        {{ texts[data.text || 'noResponse'] }}
       </div>
     </div>
   </div>
