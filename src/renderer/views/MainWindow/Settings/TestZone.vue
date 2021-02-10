@@ -77,7 +77,7 @@ export default {
     },
 
     openChromeTracing() {
-      ipcRenderer.invoke('open-chrome-tracing');
+      window.ipcRenderer.invoke('open-chrome-tracing');
     },
 
     openFrameWindow() {
