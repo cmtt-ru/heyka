@@ -176,7 +176,7 @@ export default {
       return;
     }
 
-    if (!data) {
+    if (data === undefined) {
       console.error('Process Conversation Data --> `data` is not defined');
 
       return;
