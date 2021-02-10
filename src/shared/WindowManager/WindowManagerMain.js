@@ -82,7 +82,7 @@ class WindowManager {
         console.log(err);
       }
 
-      return true;
+      return false;
     });
 
     ipcMain.handle('window-manager-create', async (event, options) => {
