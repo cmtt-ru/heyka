@@ -6,7 +6,7 @@
       icon="close"
       size="tiny"
       :height="22"
-      @click="$emit('button-click', {action: 'busy', showResponse: true})"
+      @click="$emit('button-click', {action: 'busy', showResponse: true, text: 'isbusy'})"
     />
     <div class="push__image">
       <avatar
@@ -99,6 +99,7 @@ export default {
     this.$emit('default-close-response', {
       action: 'busy',
       showResponse: true,
+      text: 'declined',
     });
     this.$emit('child-mounted');
   },
