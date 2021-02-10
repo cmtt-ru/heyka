@@ -252,7 +252,6 @@ class CallWindow {
       });
 
       this.gridWindow.on('hide', () => {
-        console.log('grid-hide');
         clearTimeout(this.gridTimeout);
         if (this.streamingOverlayWindow) {
           this.streamingOverlayWindow.action('show');
