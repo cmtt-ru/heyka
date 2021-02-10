@@ -52,13 +52,13 @@ export default {
     if (IS_LINUX) {
       return;
     }
-    window.addEventListener('mousemove', event => {
+    window.addEventListener('mousemove', async event => {
       if (event.target === document.documentElement || event.target === document.getElementById('push-wrapper')) {
         if (ignoreMouse === true) {
           return;
         }
 
-        pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
+        await pushWindow.api('setIgnoreMouseEvents', true, { forward: true });
         ignoreMouse = true;
 
         if (ignoreMouseTimeout) {
@@ -72,7 +72,7 @@ export default {
         if (ignoreMouse === false) {
           return;
         }
-        pushWindow.api('setIgnoreMouseEvents', false);
+        await pushWindow.api('setIgnoreMouseEvents', false);
         ignoreMouse = false;
       }
     });
