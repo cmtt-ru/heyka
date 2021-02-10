@@ -3,7 +3,6 @@ import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import initialProcess from '@api/initialProcess';
 import callWindow from '@classes/callWindow';
-import { ipcRenderer } from 'electron';
 import router from '@/router';
 import sounds from '@sdk/classes/sounds';
 import connectionCheck from '@sdk/classes/connectionCheck';
@@ -177,7 +176,7 @@ export default {
 
     commit('janus/SET_OPTIONS', connectionOptions);
 
-    ipcRenderer.send('remote-register-mute-shortcut');
+    window.ipcRenderer.send('remote-register-mute-shortcut');
 
     commit('channels/ADD_USER', {
       userId: state.me.id,
@@ -197,7 +196,7 @@ export default {
     callWindow.showOverlay();
 
     if (state.me.mediaState.microphone === true) {
-      ipcRenderer.send('tray-animation', true);
+      window.ipcRenderer.send('tray-animation', true);
     }
   },
 
@@ -247,7 +246,7 @@ export default {
       commit('channels/CLEAR_CONVERSATION_EVENTS', { channelId: id });
     }
 
-    ipcRenderer.send('remote-unregister-mute-shortcut');
+    window.ipcRenderer.send('remote-unregister-mute-shortcut');
 
     dispatch('me/setChannelId', null);
 
@@ -255,7 +254,7 @@ export default {
 
     callWindow.closeAll();
 
-    ipcRenderer.send('tray-animation', false);
+    window.ipcRenderer.send('tray-animation', false);
   },
 
   /**
@@ -265,7 +264,6 @@ export default {
    * @returns {void}
    */
   async openGrid({ state }, userId) {
-    await callWindow.hideOverlay();
     await callWindow.showGrid(userId);
   },
 

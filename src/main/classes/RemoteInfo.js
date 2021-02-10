@@ -1,4 +1,5 @@
 import { ipcMain, app, nativeTheme, systemPreferences } from 'electron';
+import shutdown from 'electron-shutdown-command';
 
 /**
  * Subscribe to ipc events which replaced "remote" module
@@ -21,6 +22,10 @@ ipcMain.on('remote-shouldUseDarkColors', (event) => {
 
 ipcMain.handle('remote-systemPreferences-microphone', async (event) => {
   return systemPreferences.getMediaAccessStatus('microphone');
+});
+
+ipcMain.on('remote-shutdown', (event) => {
+  shutdown();
 });
 
 ipcMain.on('remote-quit', () => {

@@ -1,5 +1,3 @@
 import AudioCheck from '@sdk/classes/AudioCheck';
-import { ipcRenderer } from 'electron';
-import shutdown from 'electron-shutdown-command';
 
-export default new AudioCheck(ipcRenderer.invoke, shutdown);
+export default new AudioCheck(window.ipcRenderer.invoke, () => window.ipcRenderer.send('remote-shutdown'));

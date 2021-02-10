@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
 import { CHANGELOG } from '@/changelog';
 
 export default {
@@ -42,7 +41,7 @@ export default {
     },
   },
   mounted() {
-    ipcRenderer.send('page-rendered', 'Hello from Main!');
+    window.ipcRenderer.send('page-rendered', 'Hello from Main!');
   },
 };
 </script>

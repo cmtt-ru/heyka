@@ -1,6 +1,8 @@
-import OS from 'os';
+import UAParser from 'ua-parser-js';
 import i18n from '@sdk/translations/i18n';
 import { heykaStore } from '@/store/localStore';
+
+const parsedUserAgent = new UAParser().getResult();
 
 export default {
   /**
@@ -13,8 +15,8 @@ export default {
     return {
       name: state.appName,
       version: state.appVersion,
-      system: OS.type(), // TODO: make prettier
-      systemVer: OS.release(),
+      system: parsedUserAgent.os.name,
+      systemVer: parsedUserAgent.os.version,
     };
   },
 
@@ -111,13 +113,13 @@ export default {
    * @param {object} getters – vuex getters
    * @returns {function(*): any}
    */
-  loadSelectedDevice: (state, getters) => (deviceType) => {
+  loadSelectedDevice: (state, getters) => async (deviceType) => {
     const deviceTypeCapitalized = deviceType.charAt(0).toUpperCase() + deviceType.slice(1);
-    let deviceId = heykaStore.get(`selected${deviceTypeCapitalized}`, 'default');
+    let deviceId = await heykaStore.get(`selected${deviceTypeCapitalized}`, 'default');
     let device = getters.getDevice(deviceType, deviceId);
 
     if (!device) {
-      const deviceLabel = heykaStore.get(`selected${deviceTypeCapitalized}Label`);
+      const deviceLabel = await heykaStore.get(`selected${deviceTypeCapitalized}Label`);
 
       device = getters['getDeviceByLabel'](deviceType, deviceLabel);
 

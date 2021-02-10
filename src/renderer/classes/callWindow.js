@@ -212,7 +212,8 @@ class CallWindow {
    * @returns {void}
    */
   async showGrid(userId) {
-    if (this.gridWindow === null) {
+    console.log('WindowManager.create Grid', this.gridWindow);
+    if (!this.gridWindow) {
       let route = '/call-window';
 
       if (userId) {
@@ -231,6 +232,7 @@ class CallWindow {
           this.gridWindow.removeAllListeners('hide');
           this.gridWindow = null;
           broadcastEvents.removeAllListeners('exit-fullscreen');
+          console.log('closing Grid');
         },
       });
 
@@ -274,6 +276,7 @@ class CallWindow {
         }
       });
     } else {
+      console.log("gridWindow.action('show')");
       await this.gridWindow.action('show');
 
       if (userId) {

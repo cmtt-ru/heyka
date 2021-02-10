@@ -4,9 +4,10 @@ import { app, ipcMain, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import './classes/AutoLaunch';
 import './classes/RemoteInfo';
+import './classes/HttpServer';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import { IS_DEV, IS_WIN, IS_MAC } from '../sdk/Constants';
+import { IS_DEV, IS_WIN, IS_MAC } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
 
 console.time('init');
@@ -78,7 +79,7 @@ app.on('ready', async () => {
   /**
    * Vue devtools chrome extension
    */
-  if (IS_DEV) {
+  if (IS_DEV && IS_MAC) {
     installExtension(VUEJS_DEVTOOLS)
       .then(() => {})
       .catch(err => {
