@@ -242,7 +242,6 @@ class CallWindow {
       });
 
       this.gridWindow.on('focus', () => {
-        console.log('grid-focus');
         clearTimeout(this.gridTimeout);
         if (this.streamingOverlayWindow) {
           this.streamingOverlayWindow.action('hide');
