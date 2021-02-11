@@ -81,6 +81,9 @@ class CallWindow {
    * @returns {void}
    */
   async showOverlay(mediaSharingMode = false) {
+    if (this.streamingOverlayWindow) {
+      return;
+    }
     if (this.overlayWindow === null) {
       this.overlayWindow = await WindowManager.create({
         route: '/call-overlay',
