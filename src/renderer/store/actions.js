@@ -9,6 +9,7 @@ import connectionCheck from '@sdk/classes/connectionCheck';
 import Logger from '@sdk/classes/logger';
 
 const cnsl = new Logger('Initial', '#db580e');
+const PLAY_SOUND_TIMEOUT = 10;
 
 export default {
 
@@ -143,7 +144,9 @@ export default {
       }
     }
 
-    sounds.play('me-joined');
+    setTimeout(() => {
+      sounds.play('me-joined');
+    }, PLAY_SOUND_TIMEOUT);
   },
 
   /**
