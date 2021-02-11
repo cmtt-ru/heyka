@@ -340,11 +340,10 @@ class CallWindow {
       await this.frameWindow.action('showInactive');
     }
 
-    await this.hideGrid();
-
     setTimeout(async () => {
       await this.hideOverlay();
       await this.showStreamingOverlay();
+      await this.hideGrid();
     }, BLUR_TIME);
   }
 
