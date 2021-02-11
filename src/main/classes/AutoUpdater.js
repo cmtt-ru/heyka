@@ -1,5 +1,8 @@
 import { autoUpdater } from 'electron-updater';
+import WindowManager from '../../shared/WindowManager/WindowManagerMain';
 import { ipcMain } from 'electron';
+
+console.log(WindowManager);
 
 /**
  * Check for update timeout
@@ -25,7 +28,10 @@ export default {
     });
 
     ipcMain.on('update-install', () => {
-      setImmediate(() => autoUpdater.quitAndInstall());
+      WindowManager.willQuit();
+      setImmediate(() => {
+        autoUpdater.quitAndInstall();
+      });
     });
 
     autoUpdater.on('error', (error) => {
