@@ -68,6 +68,7 @@ export default {
    * @returns {void}
    */
   startTimer() {
+    this.stopTimer();
     updateTimer = setInterval(() => {
       this.checkForUpdates();
     }, CHECK_FOR_UPDATE_TIMEOUT);
