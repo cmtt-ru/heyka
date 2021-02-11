@@ -111,7 +111,9 @@ export default {
   },
 
   beforeDestroy() {
-    this.$refs.push.$el.removeEventListener('wheel', (e) => this.onWheel(e));
+    if (this.$refs.push) {
+      this.$refs.push.$el.removeEventListener('wheel', this.onWheel);
+    }
   },
 
   methods: {
@@ -149,7 +151,7 @@ export default {
     },
 
     attachWheelListener() {
-      this.$refs.push.$el.addEventListener('wheel', (e) => this.onWheel(e));
+      this.$refs.push.$el.addEventListener('wheel', this.onWheel);
     },
 
     /**

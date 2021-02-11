@@ -81,6 +81,9 @@ class CallWindow {
    * @returns {void}
    */
   async showOverlay(mediaSharingMode = false) {
+    if (this.streamingOverlayWindow) {
+      return;
+    }
     if (this.overlayWindow === null) {
       this.overlayWindow = await WindowManager.create({
         route: '/call-overlay',
@@ -337,11 +340,10 @@ class CallWindow {
       await this.frameWindow.action('showInactive');
     }
 
-    await this.hideGrid();
-
     setTimeout(async () => {
       await this.hideOverlay();
       await this.showStreamingOverlay();
+      await this.hideGrid();
     }, BLUR_TIME);
   }
 

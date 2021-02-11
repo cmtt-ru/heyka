@@ -1,4 +1,5 @@
 import { autoUpdater } from 'electron-updater';
+import WindowManager from '../../shared/WindowManager/WindowManagerMain';
 import { ipcMain } from 'electron';
 
 /**
@@ -25,7 +26,10 @@ export default {
     });
 
     ipcMain.on('update-install', () => {
-      setImmediate(() => autoUpdater.quitAndInstall());
+      WindowManager.willQuit();
+      setImmediate(() => {
+        autoUpdater.quitAndInstall();
+      });
     });
 
     autoUpdater.on('error', (error) => {
