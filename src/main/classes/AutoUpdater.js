@@ -2,8 +2,6 @@ import { autoUpdater } from 'electron-updater';
 import WindowManager from '../../shared/WindowManager/WindowManagerMain';
 import { ipcMain } from 'electron';
 
-console.log(WindowManager);
-
 /**
  * Check for update timeout
  * @type {number}
