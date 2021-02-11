@@ -6,7 +6,7 @@
       icon="close"
       size="tiny"
       :height="22"
-      @click="$emit('button-click', {action: 'busy', showResponse: true, text: 'isbusy'})"
+      @click="$emit('button-click', {action: 'busy', showResponse: true, text: 'declined'})"
     />
     <div class="push__image">
       <avatar
@@ -53,7 +53,7 @@
           :type="2"
           size="small"
           class="push__button"
-          @click="$emit('button-click', {action: 'busy', showResponse: true})"
+          @click="$emit('button-click', {action: 'busy', text: 'busy', showResponse: true})"
         >
           {{ texts.busy }}
         </ui-button>
