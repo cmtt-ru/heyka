@@ -87,6 +87,17 @@ export default {
   },
 
   /**
+   * Set app muteHotkey mode
+   *
+   * @param {AppState} state – module app state
+   * @param {string} muteHotkey – new muteHotkey mode
+   * @constructor
+   */
+  SET_MUTE_HOTKEY(state, muteHotkey) {
+    state.muteHotkey = muteHotkey;
+  },
+
+  /**
    * Set app closeOverlayButton mode
    *
    * @param {AppState} state – module app state
