@@ -60,6 +60,7 @@ const state = () => {
     autorun: heykaStore.getSync('autorun', true),
     resizeWindow: heykaStore.getSync('resizeWindow', false),
     muteMic: heykaStore.getSync('muteMic', false),
+    muteHotkey: heykaStore.getSync('muteHotkey', true),
     closeOverlayButton: heykaStore.getSync('closeOverlayButton', true),
     devServer: heykaStore.getSync('devServer', false),
     showMoreChannels: heykaStore.getSync('showMoreChannels', true),

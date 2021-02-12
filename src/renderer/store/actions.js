@@ -7,6 +7,7 @@ import router from '@/router';
 import sounds from '@sdk/classes/sounds';
 import connectionCheck from '@sdk/classes/connectionCheck';
 import Logger from '@sdk/classes/logger';
+import { heykaStore } from '@/store/localStore';
 
 const cnsl = new Logger('Initial', '#db580e');
 const PLAY_SOUND_TIMEOUT = 10;
@@ -156,7 +157,7 @@ export default {
    * @param {object} connectionOptions Connection options object
    * @returns {object} selected channel
    */
-  selectChannelWithoutAPICall({ commit, dispatch, getters, state }, { id, connectionOptions }) {
+  async selectChannelWithoutAPICall({ commit, dispatch, getters, state }, { id, connectionOptions }) {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
@@ -179,7 +180,9 @@ export default {
 
     commit('janus/SET_OPTIONS', connectionOptions);
 
-    window.ipcRenderer.send('remote-register-mute-shortcut');
+    if (await heykaStore.get('muteHotkey')) {
+      window.ipcRenderer.send('remote-register-mute-shortcut');
+    }
 
     commit('channels/ADD_USER', {
       userId: state.me.id,
