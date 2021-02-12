@@ -50,11 +50,10 @@
     </div>
 
     <div class="l-pl-12 l-pr-12">
-      <list :filter-by="''">
+      <list>
         <list-item
           v-for="user in users"
           :key="user.user.id"
-          :filter-key="user.user.name"
           button
         >
           <channel-user-item
