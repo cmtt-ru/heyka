@@ -66,14 +66,15 @@
       </list>
 
       <div class="l-flex last-block l-mt-4">
-        <ui-button
-          :type="9"
-          icon="add"
-          style="margin-left: 6px"
-          @click="inviteLinkHandler"
-        >
-          {{ texts.invite }}
-        </ui-button>
+        <router-link :to="{name: 'channel-invite'}">
+          <ui-button
+            :type="9"
+            icon="add"
+            style="margin-left: 6px"
+          >
+            {{ texts.invite }}
+          </ui-button>
+        </router-link>
 
         <ui-button
           :type="14"
