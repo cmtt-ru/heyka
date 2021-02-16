@@ -1,21 +1,27 @@
 <template>
-  <pseudo-popup @close="closeHandler">
+  <pseudo-popup
+    :header-has-shadow="false"
+    @close="closeHandler"
+  >
     <template #header>
-      Invite to channel
+      {{ texts.header }}
     </template>
 
     <template #body>
-      <tabs>
+      <tabs v-model="selectedTab">
         <tab
           selected
-          name="User list"
+          :name="texts.userTab"
         >
-          <div class="user-search__wrapper">
+          <div
+            v-sticky.top="-0.5"
+            class="user-search__wrapper"
+          >
             <ui-input
               ref="top_slack_invite"
               v-model="filterKey"
               icon="search"
-              placeholder="Search"
+              :placeholder="$t('techTexts.search')"
               class="user-search"
             />
           </div>
@@ -27,7 +33,7 @@
             @multipick="selectUser"
           >
             <list-item
-              v-for="user in getAllUsers"
+              v-for="user in workspaceUsers"
               :key="user.id"
               :filter-key="user.name"
               :selectable-content="user"
@@ -49,8 +55,16 @@
                 >
                   {{ user.name }}
                 </div>
-                <div class="user__name">
-                  @{{ user.id }}
+                <div
+                  v-if="userChannelName(user.id)"
+                  class="user__channel"
+                >
+                  <svg-icon
+                    class="user__channel__icon"
+                    name="channel"
+                    size="small"
+                  />
+                  <div>{{ userChannelName(user.id).name }}</div>
                 </div>
               </div>
               <svg-icon
@@ -61,20 +75,9 @@
               />
             </list-item>
           </list>
-          <div
-            class="submit-button-wrapper"
-          >
-            <ui-button
-              :type="1"
-              :disabled="!selectedUsers.length"
-              @click="sendOneInvite"
-            >
-              {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
-            </ui-button>
-          </div>
         </tab>
 
-        <tab name="Guest link">
+        <tab :name="texts.guestTab">
           <div class="link-wrapper">
             <ui-button
               v-show="!linkCopied"
@@ -103,6 +106,57 @@
           </div>
         </tab>
       </tabs>
+    </template>
+
+    <template #footer>
+      <div
+        v-if="selectedTab === texts.userTab"
+        class="submit-button-wrapper"
+      >
+        <ui-button
+          :type="2"
+          class="l-mr-12"
+          @click="closeHandler"
+        >
+          Cancel
+        </ui-button>
+        <ui-button
+          :type="1"
+          :disabled="!selectedUsers.length"
+          @click="sendInvites"
+        >
+          {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
+        </ui-button>
+      </div>
+      <!-- <div >
+        <ui-button
+          v-if="!isEditMode"
+          :type="1"
+          size="small"
+          @click="submitHandler"
+        >
+          {{ texts.buttonCreate }}
+        </ui-button>
+
+        <ui-button
+          v-if="isEditMode"
+          :type="1"
+          size="small"
+          @click="submitHandler"
+        >
+          {{ texts.buttonSave }}
+        </ui-button>
+
+        <ui-button
+          :type="2"
+          class="l-mr-6"
+          size="small"
+          @click="cancelHandler"
+        >
+          {{ texts.buttonCancel }}
+        </ui-button>
+      </div> -->
+      <div v-else />
     </template>
   </pseudo-popup>
 </template>
@@ -134,6 +188,7 @@ export default {
       filterKey: '',
       linkCopied: false,
       selectedUsers: [],
+      selectedTab: null,
     };
   },
 
@@ -142,6 +197,8 @@ export default {
       selectedWorkspaceId: 'me/getSelectedWorkspaceId',
       getAllUsers: 'users/getAllUsers',
       userAvatar: 'users/getUserAvatarUrl',
+      getUsersInAllChannels: 'channels/getUsersInAllChannels',
+      getChannelById: 'channels/getChannelById',
     }),
 
     /**
@@ -150,6 +207,14 @@ export default {
      */
     texts() {
       return this.$t('workspace.channelInvite');
+    },
+
+    /**
+     * Workspace users (without guests)
+     * @returns {object}
+     */
+    workspaceUsers() {
+      return this.getAllUsers.filter(user => user.role !== 'guest');
     },
 
   },
@@ -168,14 +233,32 @@ export default {
       }
     },
 
-    selectUser(data) {
-      this.selectedUsers = data;
+    userChannelName(userId) {
+      const id = this.getUsersInAllChannels[userId];
+
+      if (!id) {
+        return null;
+      }
+
+      return this.getChannelById(id);
     },
 
-    async sendOneInvite() {
+    selectUser(data) {
+      this.selectedUsers = data;
+      console.log(data);
+    },
+
+    async sendInvites() {
       try {
         for (const user of this.selectedUsers) {
-          await this.$API.workspace.inviteSlackUser(this.selectedWorkspaceId, { slackUserId: user.id });
+          await this.$store.dispatch('app/sendPush', {
+            userId: user.userId,
+            isResponseNeeded: true,
+            message: {
+              action: 'invite',
+              channelId: this.$store.getters['me/getSelectedChannelId'],
+            },
+          });
         }
         this.invitesSentTo = [...this.invitesSentTo, ...this.selectedUsers.map(el => el.id)];
         this.selectedUsers = [];
@@ -202,9 +285,17 @@ export default {
 .user-search__wrapper
   background-color var(--new-bg-04)
   padding 6px 0 12px
-  position sticky
-  top -0.5px
-  z-index 10
+  z-index 1
+  position relative
+
+  &.ui-sticked:after
+    content ''
+    position absolute
+    bottom 0
+    width calc(100% + 32px)
+    height 1px
+    left -16px
+    background-color var(--new-UI-06)
 
 /deep/ .input
   padding-left 54px
@@ -212,11 +303,9 @@ export default {
 /deep/ .input__icon
   padding-left 10px
 
-.user-list
-  margin-bottom 65px
-
 .user
   padding 4px 10px
+  line-height 16px
   display flex
   flex-direction row
   align-items center
@@ -257,6 +346,16 @@ export default {
     flex-direction column
     align-items flex-start
     flex-grow 1
+
+  &__channel
+    font-size 12px
+    color var(--new-UI-04)
+    display flex
+    flex-direction row
+    align-items center
+
+    &__icon
+      color var(--new-signal-02)
 
 .link-wrapper
   width 200px
