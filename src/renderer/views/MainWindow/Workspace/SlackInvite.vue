@@ -38,7 +38,7 @@
             ref="top_slack_invite"
             v-model="filterKey"
             icon="search"
-            placeholder="Search"
+            :placeholder="$t('techTexts.search')"
             class="user-search"
           />
         </div>
