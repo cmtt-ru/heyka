@@ -53,7 +53,7 @@ export const workspaceRoutes = {
       component: Invite,
     },
     {
-      path: 'channel-invite',
+      path: 'channel-invite/:id',
       name: 'channel-invite',
       component: ChannelInvite,
     },

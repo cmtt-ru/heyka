@@ -33,15 +33,17 @@
             @multipick="selectUser"
           >
             <list-item
-              v-for="user in workspaceUsers"
+              v-for="user in notInvitedUsers"
               :key="user.id"
               :filter-key="user.name"
               :selectable-content="user"
+              :class="{'user--offline': user.onlineStatus==='offline' }"
               button
               class="user"
             >
               <avatar
                 class="user__avatar"
+                :status="user.onlineStatus==='online'? '' : user.onlineStatus"
                 :image="userAvatar(user.id, 32)"
                 :user-id="user.id"
                 :size="32"
@@ -66,6 +68,12 @@
                   />
                   <div>{{ userChannelName(user.id).name }}</div>
                 </div>
+                <div
+                  v-if="user.onlineStatus==='offline'"
+                  class="user__channel"
+                >
+                  {{ $t('techTexts.offline') }}
+                </div>
               </div>
               <svg-icon
                 class="user__check"
@@ -78,31 +86,48 @@
         </tab>
 
         <tab :name="texts.guestTab">
-          <div class="link-wrapper">
+          <div v-show="!linkCopied">
+            <div class="top-info-text">
+              {{ texts.linkText }}
+            </div>
             <ui-button
-              v-show="!linkCopied"
+
               :type="1"
               :wide="true"
               class="link"
-              @click="copyLinkHandler"
+              size="large"
+              @click="generateLinkHandler"
             >
-              {{ texts.copy }}
-            </ui-button>
-            <ui-button
-              v-show="linkCopied"
-              :type="5"
-              :wide="true"
-              class="link"
-              @click="copyLinkHandler"
-            >
-              {{ texts.copied }}
+              {{ texts.generateUrl }}
             </ui-button>
           </div>
-          <div
-            v-show="linkCopied"
-            class="link__copied-text"
-          >
-            {{ texts.expires }}
+          <div v-show="linkCopied">
+            <div class="top-info-text">
+              {{ texts.linkDisableTimeout }}
+            </div>
+
+            <ui-input
+              v-model="tempURL"
+              readonly
+              class="l-mb-12"
+            />
+            <ui-button
+              :type="1"
+              :wide="true"
+              size="large"
+              class="link l-mb-12"
+              @click="copyLinkHandler"
+            >
+              {{ texts.copyLink }}
+            </ui-button>
+            <ui-button
+              :type="3"
+              :wide="true"
+              size="large"
+              class="link"
+            >
+              {{ texts.deactivateLink }}
+            </ui-button>
           </div>
         </tab>
       </tabs>
@@ -114,14 +139,16 @@
         class="submit-button-wrapper"
       >
         <ui-button
-          :type="2"
+          :type="3"
           class="l-mr-12"
+          size="large"
           @click="closeHandler"
         >
-          Cancel
+          {{ $t('techTexts.cancel') }}
         </ui-button>
         <ui-button
           :type="1"
+          size="large"
           :disabled="!selectedUsers.length"
           @click="sendInvites"
         >
@@ -148,7 +175,7 @@
         </ui-button>
 
         <ui-button
-          :type="2"
+          :type="3"
           class="l-mr-6"
           size="small"
           @click="cancelHandler"
@@ -156,7 +183,16 @@
           {{ texts.buttonCancel }}
         </ui-button>
       </div> -->
-      <div v-else />
+      <div v-else>
+        <ui-button
+          :type="3"
+          class="l-mr-12"
+          size="large"
+          @click="closeHandler"
+        >
+          {{ $t('techTexts.close') }}
+        </ui-button>
+      </div>
     </template>
   </pseudo-popup>
 </template>
@@ -169,7 +205,6 @@ import { UiInput } from '@components/Form';
 import Avatar from '@components/Avatar';
 import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
-import { WEB_URL } from '@sdk/Constants';
 
 export default {
   components: {
@@ -187,8 +222,10 @@ export default {
     return {
       filterKey: '',
       linkCopied: false,
+      tempURL: '',
       selectedUsers: [],
       selectedTab: null,
+      invitesSentTo: [],
     };
   },
 
@@ -210,6 +247,14 @@ export default {
     },
 
     /**
+     * Channel id
+     * @returns {string}
+     */
+    channelId() {
+      return this.$route.params?.id;
+    },
+
+    /**
      * Workspace users (without guests)
      * @returns {object}
      */
@@ -217,20 +262,25 @@ export default {
       return this.getAllUsers.filter(user => user.role !== 'guest');
     },
 
+    notInvitedUsers() {
+      return this.workspaceUsers.filter(el => !this.invitesSentTo.includes(el.id));
+    },
+
   },
 
   methods: {
-    async copyLinkHandler() {
+    async generateLinkHandler() {
       try {
-        const codeData = await this.$API.workspace.inviteByCode(this.selectedWorkspaceId);
-
-        const link = `${WEB_URL}/auth?invite=${codeData.code}`;
-
-        navigator.clipboard.writeText(link);
+        this.tempURL = await this.$store.dispatch('channels/copyInviteLink', this.channelId);
         this.linkCopied = true;
       } catch (err) {
         console.log(err);
       }
+    },
+
+    copyLinkHandler() {
+      navigator.clipboard.writeText(this.tempURL);
+      this.linkCopied = true;
     },
 
     userChannelName(userId) {
@@ -245,22 +295,23 @@ export default {
 
     selectUser(data) {
       this.selectedUsers = data;
-      console.log(data);
     },
 
     async sendInvites() {
       try {
         for (const user of this.selectedUsers) {
+          console.log(user);
           await this.$store.dispatch('app/sendPush', {
-            userId: user.userId,
+            userId: user.id,
             isResponseNeeded: true,
             message: {
               action: 'invite',
-              channelId: this.$store.getters['me/getSelectedChannelId'],
+              channelId: this.channelId,
             },
           });
         }
         this.invitesSentTo = [...this.invitesSentTo, ...this.selectedUsers.map(el => el.id)];
+        console.log(this.invitesSentTo);
         this.selectedUsers = [];
         document.getElementsByClassName('pseudo-popup__body')[0].scrollTo(0, 0);
       } catch (err) {
@@ -282,6 +333,9 @@ export default {
 
 <style lang="stylus" scoped>
 
+.top-info-text
+  margin 42px 0 28px
+
 .user-search__wrapper
   background-color var(--new-bg-04)
   padding 6px 0 12px
@@ -297,7 +351,7 @@ export default {
     left -16px
     background-color var(--new-UI-06)
 
-/deep/ .input
+/deep/ .user-search .input
   padding-left 54px
 
 /deep/ .input__icon
@@ -315,6 +369,10 @@ export default {
 
   &:hover
     background-color var(--new-UI-06)
+
+  &--offline
+    opacity 0.5
+    pointer-events none
 
   &__check
     margin 0 5px
@@ -357,17 +415,10 @@ export default {
     &__icon
       color var(--new-signal-02)
 
-.link-wrapper
-  width 200px
-  margin 20px auto 20px 0
-
 .link__copied-text
   font-size 12px
   margin-top 20px
   color var(--text-1)
-
-.email-inputs
-  margin-bottom 30px
 
 .success
   display inline-block
