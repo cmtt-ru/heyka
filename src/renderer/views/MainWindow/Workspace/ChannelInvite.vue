@@ -14,7 +14,7 @@
           :name="texts.userTab"
         >
           <div
-            v-sticky.top="-0.5"
+            v-sticky.top="43"
             class="user-search__wrapper"
           >
             <ui-input
@@ -33,11 +33,11 @@
             @multipick="selectUser"
           >
             <list-item
-              v-for="user in notInvitedUsers"
+              v-for="user in workspaceUsers"
               :key="user.id"
               :filter-key="user.name"
               :selectable-content="user"
-              :class="{'user--offline': user.onlineStatus==='offline' }"
+              :class="{'user--offline': isUserHidden(user) }"
               button
               class="user"
             >
@@ -73,6 +73,12 @@
                   class="user__channel"
                 >
                   {{ $t('techTexts.offline') }}
+                </div>
+                <div
+                  v-if="getUsersInAllChannels[user.id] === channelId"
+                  class="user__channel"
+                >
+                  {{ $t('texts.userInSameChannel') }}
                 </div>
               </div>
               <svg-icon
@@ -225,7 +231,6 @@ export default {
       tempURL: '',
       selectedUsers: [],
       selectedTab: null,
-      invitesSentTo: [],
     };
   },
 
@@ -262,10 +267,6 @@ export default {
       return this.getAllUsers.filter(user => user.role !== 'guest');
     },
 
-    notInvitedUsers() {
-      return this.workspaceUsers.filter(el => !this.invitesSentTo.includes(el.id));
-    },
-
   },
 
   methods: {
@@ -281,6 +282,14 @@ export default {
     copyLinkHandler() {
       navigator.clipboard.writeText(this.tempURL);
       this.linkCopied = true;
+    },
+
+    isUserHidden(user) {
+      if (user.onlineStatus === 'offline' || this.getUsersInAllChannels[user.id] === this.channelId) {
+        return true;
+      }
+
+      return false;
     },
 
     userChannelName(userId) {
@@ -310,10 +319,8 @@ export default {
             },
           });
         }
-        this.invitesSentTo = [...this.invitesSentTo, ...this.selectedUsers.map(el => el.id)];
-        console.log(this.invitesSentTo);
-        this.selectedUsers = [];
-        document.getElementsByClassName('pseudo-popup__body')[0].scrollTo(0, 0);
+        //! уведомление об успешном приглашении
+        this.$router.back();
       } catch (err) {
         console.error(err);
       }

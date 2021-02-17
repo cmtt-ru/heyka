@@ -286,6 +286,7 @@ export default {
   align-items center
   justify-content flex-start
   background-color var(--app-bg)
+  z-index 1
 
   &.ui-sticked
     box-shadow 0 0 8px 0 #808080
