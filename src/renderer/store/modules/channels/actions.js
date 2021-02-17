@@ -109,9 +109,11 @@ export default {
    */
   async copyInviteLink({ dispatch }, channelId) {
     const { token } = await API.channel.invite(channelId);
+    let url = '';
 
     if (token) {
-      navigator.clipboard.writeText(`${WEB_URL}/guest/${token}`);
+      url = `${WEB_URL}/guest/${token}`;
+      navigator.clipboard.writeText(url);
 
       const texts = i18n.t('workspace.channel');
 
@@ -122,6 +124,8 @@ export default {
       };
 
       await dispatch('app/addNotification', notification, { root: true });
+
+      return url;
     }
   },
 

@@ -66,7 +66,7 @@
       </list>
 
       <div class="l-flex last-block l-mt-4">
-        <router-link :to="{name: 'channel-invite'}">
+        <router-link :to="{name: 'channel-invite', params: { id: channelId }}">
           <ui-button
             :type="9"
             icon="add"
@@ -75,14 +75,6 @@
             {{ texts.invite }}
           </ui-button>
         </router-link>
-
-        <ui-button
-          :type="14"
-          class="l-ml-auto"
-          @click="revokeInviteHandler"
-        >
-          {{ texts.revokeInvite }}
-        </ui-button>
       </div>
     </div>
 
