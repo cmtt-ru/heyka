@@ -65,7 +65,10 @@
         </list-item>
       </list>
 
-      <div class="l-flex last-block l-mt-4">
+      <div
+        v-if="isConnected"
+        class="l-flex last-block l-mt-4"
+      >
         <router-link :to="{name: 'channel-invite', params: { id: channelId }}">
           <ui-button
             :type="9"
