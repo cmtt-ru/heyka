@@ -275,7 +275,6 @@ export default {
 
   async mounted() {
     try {
-      await new Promise(resolve => setTimeout(resolve, parseInt('3000')));
       const { token, id, expiredAt } = await this.$API.channel.getInvite(this.channelId);
       let url;
 
