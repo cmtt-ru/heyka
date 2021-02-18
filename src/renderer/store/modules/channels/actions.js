@@ -108,12 +108,12 @@ export default {
    * @returns {Promise<void>}
    */
   async copyInviteLink({ dispatch }, channelId) {
-    const { token, expiredAt } = await API.channel.invite(channelId);
+    const invite = await API.channel.invite(channelId);
 
     let url = '';
 
-    if (token) {
-      url = `${WEB_URL}/guest/${token}`;
+    if (invite.token) {
+      url = `${WEB_URL}/guest/${invite.token}`;
       navigator.clipboard.writeText(url);
 
       const texts = i18n.t('workspace.channel');
@@ -128,7 +128,7 @@ export default {
 
       return {
         url,
-        expiredAt,
+        ...invite,
       };
     }
   },
