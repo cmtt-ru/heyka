@@ -227,22 +227,6 @@ export default {
     },
 
     /**
-     * Invite link handler
-     * @returns {void}
-     */
-    inviteLinkHandler() {
-      this.$store.dispatch('channels/copyInviteLink', this.channelId);
-    },
-
-    /**
-     * Revoke invites handler
-     * @returns {void}
-     */
-    revokeInviteHandler() {
-      this.$store.dispatch('channels/revokeInviteLinks', this.channelId);
-    },
-
-    /**
      * Audio lags handler
      * @returns {void}
      */

@@ -43,7 +43,7 @@
             >
               <avatar
                 class="user__avatar"
-                :status="isUserOffline(user)? '' : user.onlineStatus"
+                :status="user.onlineStatus === 'online' ? '' : user.onlineStatus"
                 :image="userAvatar(user.id, 32)"
                 :user-id="user.id"
                 :size="32"
@@ -92,7 +92,7 @@
         </tab>
 
         <tab :name="texts.guestTab">
-          <div v-show="!linkCopied">
+          <div v-show="!hasLink">
             <div class="top-info-text">
               {{ texts.linkText }}
             </div>
@@ -107,7 +107,7 @@
               {{ texts.generateUrl }}
             </ui-button>
           </div>
-          <div v-show="linkCopied">
+          <div v-show="hasLink">
             <div class="top-info-text">
               {{ $tc("workspace.channelInvite.linkDisableTimeout", fancyTimer) }}
             </div>
@@ -131,6 +131,7 @@
               :wide="true"
               size="large"
               class="link"
+              @click="deactivateInvite"
             >
               {{ texts.deactivateLink }}
             </ui-button>
@@ -161,34 +162,7 @@
           {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
         </ui-button>
       </div>
-      <!-- <div >
-        <ui-button
-          v-if="!isEditMode"
-          :type="1"
-          size="small"
-          @click="submitHandler"
-        >
-          {{ texts.buttonCreate }}
-        </ui-button>
 
-        <ui-button
-          v-if="isEditMode"
-          :type="1"
-          size="small"
-          @click="submitHandler"
-        >
-          {{ texts.buttonSave }}
-        </ui-button>
-
-        <ui-button
-          :type="3"
-          class="l-mr-6"
-          size="small"
-          @click="cancelHandler"
-        >
-          {{ texts.buttonCancel }}
-        </ui-button>
-      </div> -->
       <div v-else>
         <ui-button
           :type="3"
@@ -215,6 +189,7 @@ import { WEB_URL } from '@sdk/Constants';
 import { msToTime } from '@libs/texts';
 
 let nowInterval;
+let inviteId;
 
 export default {
   components: {
@@ -231,7 +206,7 @@ export default {
   data() {
     return {
       filterKey: '',
-      linkCopied: false,
+      hasLink: false,
       tempURL: null,
       expiredAt: null,
       selectedUsers: [],
@@ -280,6 +255,11 @@ export default {
       }
       const deltaTime = this.expiredAt - this.now;
 
+      if (deltaTime <= 0) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.hasLink = false;
+      }
+
       return msToTime(deltaTime);
     },
 
@@ -295,15 +275,18 @@ export default {
 
   async mounted() {
     try {
-      const { token, expiredAt } = await this.$API.channel.getInvite(this.channelId);
+      await new Promise(resolve => setTimeout(resolve, parseInt('3000')));
+      const { token, id, expiredAt } = await this.$API.channel.getInvite(this.channelId);
       let url;
 
       if (token) {
         url = `${WEB_URL}/guest/${token}`;
       }
+      inviteId = id;
       this.tempURL = url;
+      console.log(expiredAt);
       this.expiredAt = new Date(expiredAt).getTime();
-      this.linkCopied = true;
+      this.hasLink = true;
     } catch (err) {
 
     }
@@ -316,11 +299,13 @@ export default {
   methods: {
     async generateLinkHandler() {
       try {
-        const { url, expiredAt } = await this.$store.dispatch('channels/copyInviteLink', this.channelId);
+        const { url, id, expiredAt } = await this.$store.dispatch('channels/copyInviteLink', this.channelId);
 
         this.tempURL = url;
+        inviteId = id;
+        console.log(expiredAt);
         this.expiredAt = new Date(expiredAt).getTime();
-        this.linkCopied = true;
+        this.hasLink = true;
       } catch (err) {
         console.log(err);
       }
@@ -328,7 +313,24 @@ export default {
 
     copyLinkHandler() {
       navigator.clipboard.writeText(this.tempURL);
-      this.linkCopied = true;
+      this.hasLink = true;
+    },
+
+    async deactivateInvite() {
+      try {
+        await this.$API.channel.deleteInvite(inviteId);
+        this.hasLink = false;
+
+        const notification = {
+          data: {
+            text: this.texts.linkDeactivatedNotif,
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
+      } catch (err) {
+
+      }
     },
 
     isUserOffline(user) {
