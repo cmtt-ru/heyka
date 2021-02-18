@@ -40,7 +40,7 @@ export default {
   },
 
   /**
-   * Get user who share's screen or camera
+   * Get user who shares screen or camera
    *
    * @param {object} state – global state
    * @param {object} getters – global getters
@@ -82,6 +82,32 @@ export default {
         lastUserWhoSharesMedia = usersWhoSharesCamera[0].userId;
 
         return usersWhoSharesCamera[0].userId;
+      }
+    }
+
+    return null;
+  },
+
+  /**
+   * Get last user who shares screen
+   *
+   * @param {object} state – global state
+   * @param {object} getters – global getters
+   * @returns {null|string}
+   */
+  getUserWhoSharesScreen: (state, getters) => {
+    const selectedChannelId = getters['me/getSelectedChannelId'];
+    const selectedChannel = getters['channels/getChannelById'](selectedChannelId);
+
+    if (selectedChannel) {
+      const usersWhoSharesScreen = selectedChannel.users.filter(user => user.screen);
+
+      if (usersWhoSharesScreen.length > 0) {
+        const sortedSharings = usersWhoSharesScreen.sort((a, b) => Date.parse(b.startScreenTs || 0) - Date.parse(a.startScreenTs || 0));
+
+        lastUserWhoSharesMedia = sortedSharings[0].userId;
+
+        return sortedSharings[0].userId;
       }
     }
 
