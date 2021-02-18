@@ -108,7 +108,8 @@ export default {
    * @returns {Promise<void>}
    */
   async copyInviteLink({ dispatch }, channelId) {
-    const { token } = await API.channel.invite(channelId);
+    const { token, expiredAt } = await API.channel.invite(channelId);
+
     let url = '';
 
     if (token) {
@@ -125,7 +126,10 @@ export default {
 
       await dispatch('app/addNotification', notification, { root: true });
 
-      return url;
+      return {
+        url,
+        expiredAt,
+      };
     }
   },
 

@@ -37,13 +37,13 @@
               :key="user.id"
               :filter-key="user.name"
               :selectable-content="user"
-              :class="{'user--offline': isUserHidden(user) }"
+              :class="{'user--offline': isUserOffline(user) || isUserInSameChannel(user) }"
               button
               class="user"
             >
               <avatar
                 class="user__avatar"
-                :status="user.onlineStatus==='online'? '' : user.onlineStatus"
+                :status="isUserOffline(user)? '' : user.onlineStatus"
                 :image="userAvatar(user.id, 32)"
                 :user-id="user.id"
                 :size="32"
@@ -58,7 +58,7 @@
                   {{ user.name }}
                 </div>
                 <div
-                  v-if="userChannelName(user.id)"
+                  v-if="userChannelName(user.id) && !isUserInSameChannel(user)"
                   class="user__channel"
                 >
                   <svg-icon
@@ -69,16 +69,16 @@
                   <div>{{ userChannelName(user.id).name }}</div>
                 </div>
                 <div
-                  v-if="user.onlineStatus==='offline'"
+                  v-if="isUserOffline(user)"
                   class="user__channel"
                 >
                   {{ $t('techTexts.offline') }}
                 </div>
                 <div
-                  v-if="getUsersInAllChannels[user.id] === channelId"
+                  v-if="isUserInSameChannel(user)"
                   class="user__channel"
                 >
-                  {{ $t('texts.userInSameChannel') }}
+                  {{ texts.userInSameChannel }}
                 </div>
               </div>
               <svg-icon
@@ -109,7 +109,7 @@
           </div>
           <div v-show="linkCopied">
             <div class="top-info-text">
-              {{ texts.linkDisableTimeout }}
+              {{ $tc("workspace.channelInvite.linkDisableTimeout", fancyTimer) }}
             </div>
 
             <ui-input
@@ -211,6 +211,10 @@ import { UiInput } from '@components/Form';
 import Avatar from '@components/Avatar';
 import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
+import { WEB_URL } from '@sdk/Constants';
+import { msToTime } from '@libs/texts';
+
+let nowInterval;
 
 export default {
   components: {
@@ -228,9 +232,11 @@ export default {
     return {
       filterKey: '',
       linkCopied: false,
-      tempURL: '',
+      tempURL: null,
+      expiredAt: null,
       selectedUsers: [],
       selectedTab: null,
+      now: Date.now(),
     };
   },
 
@@ -238,6 +244,7 @@ export default {
     ...mapGetters({
       selectedWorkspaceId: 'me/getSelectedWorkspaceId',
       getAllUsers: 'users/getAllUsers',
+      myId: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
       getUsersInAllChannels: 'channels/getUsersInAllChannels',
       getChannelById: 'channels/getChannelById',
@@ -264,15 +271,55 @@ export default {
      * @returns {object}
      */
     workspaceUsers() {
-      return this.getAllUsers.filter(user => user.role !== 'guest');
+      return this.getAllUsers.filter(user => user.role !== 'guest' && user.id !== this.myId);
     },
 
+    fancyTimer() {
+      if (!this.expiredAt) {
+        return '';
+      }
+      const deltaTime = this.expiredAt - this.now;
+
+      return msToTime(deltaTime);
+    },
+
+  },
+
+  created() {
+    const second = 1000;
+
+    nowInterval = setInterval(() => {
+      this.now += second;
+    }, second);
+  },
+
+  async mounted() {
+    try {
+      const { token, expiredAt } = await this.$API.channel.getInvite(this.channelId);
+      let url;
+
+      if (token) {
+        url = `${WEB_URL}/guest/${token}`;
+      }
+      this.tempURL = url;
+      this.expiredAt = new Date(expiredAt).getTime();
+      this.linkCopied = true;
+    } catch (err) {
+
+    }
+  },
+
+  beforeDestroy() {
+    clearInterval(nowInterval);
   },
 
   methods: {
     async generateLinkHandler() {
       try {
-        this.tempURL = await this.$store.dispatch('channels/copyInviteLink', this.channelId);
+        const { url, expiredAt } = await this.$store.dispatch('channels/copyInviteLink', this.channelId);
+
+        this.tempURL = url;
+        this.expiredAt = new Date(expiredAt).getTime();
         this.linkCopied = true;
       } catch (err) {
         console.log(err);
@@ -284,8 +331,16 @@ export default {
       this.linkCopied = true;
     },
 
-    isUserHidden(user) {
-      if (user.onlineStatus === 'offline' || this.getUsersInAllChannels[user.id] === this.channelId) {
+    isUserOffline(user) {
+      if (user.onlineStatus === 'offline') {
+        return true;
+      }
+
+      return false;
+    },
+
+    isUserInSameChannel(user) {
+      if (this.getUsersInAllChannels[user.id] === this.channelId) {
         return true;
       }
 
