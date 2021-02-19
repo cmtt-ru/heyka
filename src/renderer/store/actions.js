@@ -157,7 +157,7 @@ export default {
    * @param {object} connectionOptions Connection options object
    * @returns {object} selected channel
    */
-  async selectChannelWithoutAPICall({ commit, dispatch, getters, state }, { id, connectionOptions }) {
+  selectChannelWithoutAPICall({ commit, dispatch, getters, state }, { id, connectionOptions }) {
     if (id === getters['me/getSelectedChannelId']) {
       return;
     }
