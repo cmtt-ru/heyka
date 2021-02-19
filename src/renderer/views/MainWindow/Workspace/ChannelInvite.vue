@@ -310,8 +310,16 @@ export default {
       }
     },
 
-    copyLinkHandler() {
+    async copyLinkHandler() {
       navigator.clipboard.writeText(this.tempURL);
+
+      const notification = {
+        data: {
+          text: this.$t('workspace.channel').inviteCopied,
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
       this.hasLink = true;
     },
 
