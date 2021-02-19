@@ -107,7 +107,7 @@
           <ui-button
             :type="1"
             :disabled="!selectedUsers.length"
-            @click="sendOneInvite"
+            @click="sendInvites"
           >
             {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
           </ui-button>
@@ -136,9 +136,8 @@ export default {
 
   data() {
     return {
-      loading: true,
+      loading: false,
       slackUsers: [],
-      slackWorkspace: null,
       selectedUsers: [],
       filterKey: '',
       invitesSentTo: [],
@@ -163,6 +162,10 @@ export default {
       return this.slackUsers.filter(el => !this.invitesSentTo.includes(el.id));
     },
 
+    slackWorkspace() {
+      return this.getWorkspaceById(this.selectedWorkspaceId).slack || null;
+    },
+
   },
 
   async mounted() {
@@ -178,7 +181,9 @@ export default {
       }
     });
 
-    this.getSlackUsers();
+    if (this.slackWorkspace) {
+      await this.getSlackUsers();
+    }
   },
 
   beforeDestroy() {
@@ -189,14 +194,15 @@ export default {
 
     async getSlackUsers() {
       try {
+        this.loading = true;
         const users = await this.$API.workspace.getSlackUsers(this.selectedWorkspaceId);
 
         this.slackUsers = users;
-        this.slackWorkspace = this.getWorkspaceById(this.selectedWorkspaceId).slack;
       } catch (err) {
         console.log(err);
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
 
     async slackConnect() {
@@ -217,7 +223,7 @@ export default {
       this.$refs.userList.deselectAll();
     },
 
-    async sendOneInvite() {
+    async sendInvites() {
       try {
         for (const user of this.selectedUsers) {
           await this.$API.workspace.inviteSlackUser(this.selectedWorkspaceId, { slackUserId: user.id });
