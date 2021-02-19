@@ -18,7 +18,7 @@
           class="edit-link"
           @click="selectAvatar"
         >
-          Загрузить фото
+          {{ texts.uploadPhoto }}
         </div>
         <div
           v-else
@@ -97,7 +97,6 @@ export default {
         name: null,
         avatarFileId: null,
       },
-      socialName: null,
     };
   },
 
@@ -277,6 +276,18 @@ $SAVE_FADE_TIME = 2s
 .input-wrapper
   flex-grow 2
 
+.edit-link
+  font-weight 500
+  font-size 12px
+  line-height 18px
+  letter-spacing -0.24px
+  color var(--new-UI-01)
+  cursor pointer
+  margin-top 8px
+
+  &--warning
+    color var(--new-signal-03)
+
 .user
   padding 0
   margin 0 0 12px 0
@@ -290,17 +301,7 @@ $SAVE_FADE_TIME = 2s
     margin 6px 14px 6px 0
     flex-shrink 0
 
-.edit-link
-  font-weight 500
-  font-size 12px
-  line-height 18px
-  letter-spacing -0.24px
-  color var(--new-UI-01)
-  cursor pointer
-  margin-top 8px
-
-  &--warning
-    color var(--new-signal-03)
+  & .edit-link
     margin-top 0
 
 .block-title
