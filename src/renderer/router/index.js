@@ -5,6 +5,7 @@ import { authRoutes } from './authRoutes';
 import { callRoutes } from './callRoutes';
 import { settingsRoutes } from './settingsRoutes';
 import { styleguideRoutes } from './styleguideRoutes';
+import { editProfileRoutes } from './editProfileRoutes';
 
 const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindow');
 const NoWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/NoWorkspace');
@@ -29,6 +30,7 @@ const routes = [
       authRoutes,
       settingsRoutes,
       styleguideRoutes,
+      editProfileRoutes,
 
       /* No workspace page */
       {
