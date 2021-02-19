@@ -1,7 +1,7 @@
 <template>
   <popover>
     <div class="buttons">
-      <router-link :to="{ name: 'edit-profile'}">
+      <router-link :to="{ name: 'edit-profile-main'}">
         <ui-button
           :type="11"
         >
