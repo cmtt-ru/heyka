@@ -61,15 +61,16 @@
         {{ texts.resetPass }}
       </div>
     </div>
-    <div
+    <!-- <div
       ref="savedText"
       class="saved-text"
     >
       {{ texts.saved }}
-    </div>
+    </div> -->
     <ui-button
       :type="1"
-      size="small"
+      size="large"
+      class="l-mt-24"
       @click="submit"
     >
       {{ $t('workspace.editChannel.buttonSave') }}
@@ -176,7 +177,7 @@ export default {
     async submit() {
       try {
         await this.$API.user.editProfile(this.profile);
-        this.savedAnimation();
+        // this.savedAnimation();
       } catch (err) {
         console.log(err);
       }
@@ -188,7 +189,7 @@ export default {
       try {
         this.$set(this.profile, 'avatarFileId', null);
         await this.$API.user.editProfile({ avatarFileId: null });
-        this.savedAnimation();
+        // this.savedAnimation();
       } catch (err) {
         console.log(err);
       }
@@ -290,7 +291,6 @@ $SAVE_FADE_TIME = 2s
 
 .user
   padding 0
-  margin 0 0 12px 0
   box-sizing border-box
   display flex
   flex-direction row
@@ -298,7 +298,7 @@ $SAVE_FADE_TIME = 2s
   justify-content flex-start
 
   &__avatar
-    margin 6px 14px 6px 0
+    margin-right 14px
     flex-shrink 0
 
   & .edit-link
