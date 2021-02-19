@@ -7,7 +7,6 @@ import router from '@/router';
 import sounds from '@sdk/classes/sounds';
 import connectionCheck from '@sdk/classes/connectionCheck';
 import Logger from '@sdk/classes/logger';
-import { heykaStore } from '@/store/localStore';
 
 const cnsl = new Logger('Initial', '#db580e');
 const PLAY_SOUND_TIMEOUT = 10;
