@@ -134,22 +134,6 @@ export default {
 
   },
 
-  mounted() {
-    DeepLink.on('slack-connect', ([status, error]) => {
-      if (status === 'false') {
-        this.$store.dispatch('app/addNotification', {
-          data: {
-            text: decodeURIComponent(error),
-          },
-        });
-      }
-    });
-  },
-
-  beforeDestroy() {
-    DeepLink.removeAllListeners('slack-connect');
-  },
-
   methods: {
     async copyLinkHandler() {
       try {
