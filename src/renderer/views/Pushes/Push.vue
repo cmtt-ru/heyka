@@ -20,6 +20,13 @@
 <script>
 import Vue from 'vue';
 import { VueHammer } from 'vue2-hammer';
+import { throttle } from 'throttle-debounce';
+
+/**
+ * Scroll throttle timeout
+ * @type {number}
+ */
+const THROTTLE_TIMEOUT = 100;
 
 Vue.use(VueHammer);
 VueHammer.config.pan = {
@@ -32,7 +39,11 @@ const THRESHOLD = 90;
 /* distance that push travels to the side during closing sequence */
 const SIDETRAVEL = 100;
 
+/* default push height */
 const DEFAULT_HEIGHT = 100;
+
+/* deltaX for wheel event to trigger push swipeout */
+const MIN_DELTA_SWIPE = 20;
 
 export default {
 
@@ -99,6 +110,12 @@ export default {
     this.mounted = true;
   },
 
+  beforeDestroy() {
+    if (this.$refs.push) {
+      this.$refs.push.$el.removeEventListener('wheel', this.onWheel);
+    }
+  },
+
   methods: {
     /**
      * 1. flag "mounted" to true (so we can show push)
@@ -121,6 +138,7 @@ export default {
       this.$emit('mounted', this.id);
       this.$nextTick(() => {
         this.mounted = true;
+        this.$nextTick(() => this.attachWheelListener());
       });
 
       setTimeout(() => {
@@ -132,6 +150,10 @@ export default {
       }, this.lifespan);
     },
 
+    attachWheelListener() {
+      this.$refs.push.$el.addEventListener('wheel', this.onWheel);
+    },
+
     /**
      * Handle clicked button: strart closing sequence and trigger button action if found one
      *
@@ -139,6 +161,10 @@ export default {
      * @returns {void}
     */
     clickHandler(response) {
+      if (this.styles.transform !== null) {
+        return;
+      }
+
       if (response) {
         this.$emit('response', {
           response,
@@ -221,6 +247,20 @@ export default {
         });
       }
     },
+
+    onWheel: throttle(THROTTLE_TIMEOUT, true, function (event) {
+      event.preventDefault();
+      const deltaX = event.deltaX;
+
+      if (deltaX === 0 || deltaX < MIN_DELTA_SWIPE) {
+        return;
+      }
+      this.styles.transform = `translateX(200px)`;
+      this.styles.opacity = 0;
+      this.$nextTick(() => {
+        this.close();
+      });
+    }),
 
     /**
      * Handle every panning event: translate push and add opacity if over THRESHOLD

@@ -92,6 +92,7 @@ export default {
 
   data() {
     return {
+      socialName: null,
       profile: {
         name: null,
         avatarFileId: null,

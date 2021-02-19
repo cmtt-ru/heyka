@@ -1,11 +1,10 @@
 <template>
   <div
-    v-if="myId"
     class="appbar"
     :class="{'appbar--mac': IS_MAC}"
   >
     <div
-      v-if="myWorkspace"
+      v-if="myWorkspace && myId"
       class="workspace"
     >
       <div
@@ -31,6 +30,7 @@
 
     <div v-if="!IS_MAC">
       <ui-button
+        v-if="!tray"
         :type="7"
         class="control__button"
         size="medium"
@@ -39,6 +39,7 @@
         @click="minimizeWindowHandler"
       />
       <ui-button
+        v-if="!tray"
         :type="7"
         class="control__button control__button--win-close"
         size="medium"
@@ -52,11 +53,18 @@
       v-if="IS_MAC"
       class="mac-controls-wrapper"
     >
-      <div class="mac-controls" />
-      <div class="mac-controls" />
+      <div
+        v-if="!tray"
+        class="mac-controls"
+      />
+      <div
+        v-if="!tray"
+        class="mac-controls"
+      />
     </div>
 
     <div
+      v-if="myId"
       class="user"
       :class="{'user--mac': IS_MAC}"
     >
@@ -125,6 +133,7 @@ export default {
   data() {
     return {
       IS_MAC,
+      tray: false,
     };
   },
 
@@ -173,6 +182,12 @@ export default {
         return this.$t('tooltips.speakerOn');
       }
     },
+  },
+
+  created() {
+    if (this.$store.state.app.runAppFrom === 'tray') {
+      this.tray = true;
+    }
   },
 
   methods: {

@@ -4,9 +4,10 @@ import { app, ipcMain, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import './classes/AutoLaunch';
 import './classes/RemoteInfo';
+import './classes/HttpServer';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import { IS_DEV, IS_WIN, IS_MAC } from '../sdk/Constants';
+import { IS_DEV, IS_WIN, IS_MAC } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
 
 console.time('init');
@@ -30,14 +31,14 @@ app.setAsDefaultProtocolClient('heyka');
  * Create Splash window
  * @returns {void}
  */
-function createLoadingScreen() {
-  loadingScreenID = WindowManager.createWindow({
-    position: 'center',
-    template: 'splash',
-    url: 'splash.html',
-  });
-  console.timeEnd('before-load');
-}
+// function createLoadingScreen() {
+// loadingScreenID = WindowManager.createWindow({
+//     position: 'center',
+//     template: 'splash',
+//     url: 'splash.html',
+// });
+// console.timeEnd('before-load');
+// }
 
 app.on('window-all-closed', () => {
   if (!IS_MAC) {
@@ -64,7 +65,7 @@ app.on('second-instance', () => {
 app.on('ready', async () => {
   createProtocol('heyka');
   // load splash screen (fast) and start loading main screen (not so fast)
-  createLoadingScreen();
+  // createLoadingScreen();
   mainWindowId = MainWindowManager.createWindow();
 
   ipcMain.on('page-rendered', () => {
@@ -78,7 +79,7 @@ app.on('ready', async () => {
   /**
    * Vue devtools chrome extension
    */
-  if (IS_DEV) {
+  if (IS_DEV && IS_MAC) {
     installExtension(VUEJS_DEVTOOLS)
       .then(() => {})
       .catch(err => {
@@ -121,9 +122,16 @@ if (IS_DEV) {
   }
 }
 
-ipcMain.on('open-webrtc-internals', (event) => {
-  event.returnValue = true;
+ipcMain.handle('open-webrtc-internals', async (event) => {
   createWebrtcInternals();
+
+  return true;
+});
+
+ipcMain.handle('open-chrome-tracing', async (event) => {
+  createChromeTracing();
+
+  return true;
 });
 
 ipcMain.on('exit-fullscreen', (event) => {
@@ -145,4 +153,17 @@ function createWebrtcInternals() {
   });
 
   win.loadURL('chrome://webrtc-internals');
+}
+
+/**
+ * Create chrome tracing window
+ * @returns {void}
+ */
+function createChromeTracing() {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+  });
+
+  win.loadURL('chrome://tracing');
 }

@@ -7,12 +7,11 @@ import getters from './getters';
 import state from './state';
 import mutations from './mutations';
 import mediaDevices from '@sdk/classes/mediaDevices';
-import createMutationsSharer from 'vuex-shared-mutations';
+import createMutationsSharer, { BroadcastChannelStrategy } from 'vuex-shared-mutations';
 import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import broadcastState from '@sdk/classes/broadcastState';
-import { ipcRenderer } from 'electron';
 import createPersistedState from 'vuex-persistedstate';
 import cloneDeep from 'clone-deep';
 import { throttle } from 'throttle-debounce';
@@ -61,7 +60,9 @@ const plugins = [
       'janus/SET_OPTIONS',
       'janus/SET_SHARING_SOURCE',
     ],
+    strategy: new BroadcastChannelStrategy({ key: 'vuex' }),
   }),
+
 ];
 
 /**
@@ -181,12 +182,12 @@ if (IS_MAIN_WINDOW) {
    * Handle power monitor events
    */
   /** Sleep / Awake */
-  ipcRenderer.on('power-monitor-suspend', (event, state) => {
+  window.ipcRenderer.on('power-monitor-suspend', (event, state) => {
     store.dispatch('me/setSuspendState', state);
   });
 
   /** Lock / Unlock screen */
-  ipcRenderer.on('power-monitor-lock-screen', (event, state) => {
+  window.ipcRenderer.on('power-monitor-lock-screen', (event, state) => {
     store.dispatch('me/setLockScreenState', state);
   });
 } else {
