@@ -179,7 +179,9 @@ export default {
 
     commit('janus/SET_OPTIONS', connectionOptions);
 
-    window.ipcRenderer.send('remote-register-mute-shortcut');
+    if (state.app.muteHotkey) {
+      window.ipcRenderer.send('remote-register-mute-shortcut');
+    }
 
     commit('channels/ADD_USER', {
       userId: state.me.id,
