@@ -25,7 +25,7 @@
           v-if="!invitesSentTo.length"
           class="top-info-text"
         >
-          {{ texts.canInviteBeginning }}{{ slackWorkspace.name }}{{ texts.canInviteEnd }}
+          {{ $t('slackInvite.canInvite', [slackWorkspace.name]) }}
         </div>
         <div
           v-else
@@ -287,16 +287,24 @@ export default {
 
   &__check
     margin 0 5px
+    padding 1px
+    box-sizing border-box
     flex-shrink 0
-    color white
-    display none
+    color var(--new-bg-04)
+    border 1px solid var(--new-UI-05)
+    border-radius 50%
 
   &.list-item--selected
-    background-color var(--new-UI-01)
-    color var(--new-UI-09)
+    background-color initial
+
+    &:hover
+      background-color var(--new-UI-06)
 
     & .user__check
-      display initial
+      background-color var(--new-UI-01)
+      color var(--new-UI-09)
+      padding 2px
+      border none
 
   &__avatar
     margin-right 12px
