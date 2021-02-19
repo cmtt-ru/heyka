@@ -45,6 +45,10 @@
       v-model="muteMic"
       :text="texts.nomic"
     />
+    <ui-switch
+      v-model="muteHotkey"
+      :text="texts.muteHotkey"
+    />
 
     <div class="settings__label">
       {{ texts.serverLabel }}
@@ -231,6 +235,18 @@ export default {
       },
       set(value) {
         this.$store.dispatch('app/setMuteMic', value);
+      },
+    },
+
+    /**
+     * Mute mic hotkey enable/disable
+     */
+    muteHotkey: {
+      get() {
+        return this.$store.state.app.muteHotkey;
+      },
+      set(value) {
+        this.$store.dispatch('app/setMuteHotkey', value);
       },
     },
 
