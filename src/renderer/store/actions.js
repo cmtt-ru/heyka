@@ -180,7 +180,7 @@ export default {
 
     commit('janus/SET_OPTIONS', connectionOptions);
 
-    if (await heykaStore.get('muteHotkey')) {
+    if (state.app.muteHotkey) {
       window.ipcRenderer.send('remote-register-mute-shortcut');
     }
 
