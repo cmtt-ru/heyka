@@ -69,7 +69,7 @@
                   <div>{{ userChannelName(user.id).name }}</div>
                 </div>
                 <div
-                  v-if="isUserOffline(user)"
+                  v-if="isUserOffline(user) && !userChannelName(user.id)"
                   class="user__channel"
                 >
                   {{ $t('techTexts.offline') }}
