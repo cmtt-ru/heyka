@@ -189,8 +189,7 @@ import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import SidebarUserItem from '@components/SidebarUserItem';
 import Mousetrap from 'mousetrap';
-import { heykaStore } from '@/store/localStore';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 const MANY_CHANNELS = 4;
 
@@ -209,7 +208,6 @@ export default {
       MANY_CHANNELS,
       inputActive: false,
       searchText: '',
-      showMore: heykaStore.get('showMoreChannels', true),
     };
   },
 
@@ -218,6 +216,10 @@ export default {
     ...mapGetters({
       channels: 'channels/getChannels',
       getAllUsers: 'users/getAllUsers',
+    }),
+
+    ...mapState('app', {
+      showMore: 'showMoreChannels',
     }),
 
     /**
@@ -344,8 +346,7 @@ export default {
      * @returns {void}
      */
     toggleChannelsHandler() {
-      this.showMore = !this.showMore;
-      heykaStore.set('showMoreChannels', this.showMore);
+      this.$store.commit('app/SET_CHANNELS_EXPANDED', !this.showMore);
     },
 
     /**
@@ -402,6 +403,14 @@ $ANIM = 250ms
 
   &::placeholder
     font-weight 500
+
+.search-wrapper
+  position sticky
+  top 0
+  z-index 20
+  background-color var(--new-bg-01)
+  padding 12px 0
+  margin-top -12px
 
 .search
   height 28px
@@ -475,17 +484,16 @@ $ANIM = 250ms
   font-size 12px
   font-weight bold
   position sticky
-  top 0
+  top 52px
   z-index 10
   padding 2px 0 2px 8px
-  margin-top 16px
 
 .router-link-active .channel-header__add
   color var(--new-UI-01)
 
 .user-header
   margin-top 22px
-  top 27px
+  top 79px
   bottom 0
 
 .user-anchor

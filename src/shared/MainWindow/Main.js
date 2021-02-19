@@ -4,8 +4,8 @@ import DeepLink from '../DeepLink/DeepLinkMain';
 import Positioner from '../WindowManager/Positioner';
 import Autoupdater from '../../main/classes/AutoUpdater';
 import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electron';
-import { heykaStore } from '../../renderer/store/localStore';
-import { IS_DEV, IS_MAC } from '../../sdk/Constants';
+import { heykaStore } from '../../main/localStore';
+import { IS_DEV, IS_MAC } from '../../main/Constants';
 
 const resizeable = heykaStore.get('resizeWindow', false);
 
@@ -18,6 +18,9 @@ if (TrayManager.isInTray()) {
     position: 'tray',
     template: 'maintray',
     preventClose: true,
+    margin: 20,
+    isMainWindow: true,
+    showFast: true,
   };
 
   if (IS_MAC) {
@@ -28,7 +31,9 @@ if (TrayManager.isInTray()) {
     position: 'center',
     windowPosition: heykaStore.get('windowPosition'),
     template: resizeable ? 'mainDev' : 'main',
+    isMainWindow: true,
     preventClose: true,
+    showFast: true,
   };
 }
 
