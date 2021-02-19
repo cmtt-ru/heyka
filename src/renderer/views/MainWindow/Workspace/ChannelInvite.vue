@@ -383,7 +383,6 @@ export default {
             },
           });
         }
-        //! уведомление об успешном приглашении
         this.$router.back();
       } catch (err) {
         console.error(err);
