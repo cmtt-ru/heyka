@@ -97,7 +97,6 @@ import EditableList from '@components/List/EditableList';
 import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
-import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import SlackInvite from './SlackInvite';
 
 export default {
@@ -160,14 +159,6 @@ export default {
     resetEmails() {
       this.emails = [ '' ];
       this.emailsSent = false;
-    },
-
-    async slackConnect() {
-      const url = await this.$API.workspace.connectWithSlack(this.selectedWorkspaceId);
-
-      console.log(url);
-
-      navigator.clipboard.writeText(url.redirect);
     },
 
     /**
