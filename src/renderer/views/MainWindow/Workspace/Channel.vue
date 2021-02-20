@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="channel"
-      v-sticky
+      v-sticky="{ offset: 0, rootSelector: '.layout__column--content' }"
       class="channel-info"
     >
       <svg-icon
@@ -276,7 +276,7 @@ export default {
   z-index 1
 
   &.ui-sticked
-    box-shadow 0 0 8px 0 #808080
+    box-shadow 0 0 0 1px var(--new-UI-06)
 
   &__type
     margin-left 3px
