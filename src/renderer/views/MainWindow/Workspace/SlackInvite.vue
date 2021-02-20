@@ -102,6 +102,7 @@
           </list-item>
         </list>
         <div
+          v-sticky.bottom
           class="submit-button-wrapper"
         >
           <ui-button
@@ -276,9 +277,6 @@ export default {
     display flex
     flex-direction row-reverse
 
-.user-list
-  margin-bottom 65px
-
 .user
   padding 4px 10px
   display flex
@@ -333,12 +331,20 @@ export default {
     line-height 16px
 
 .submit-button-wrapper
-  position absolute
-  bottom 0
   width 100%
-  padding 16px
+  box-sizing border-box
+  padding 16px 0
   background-color var(--new-bg-04)
-  box-shadow inset -2px 0 0 1px var(--new-UI-06)
-  transform translateX(-16px)
+  box-shadow none
+  position: relative
+
+  &.ui-sticked:after
+    content ''
+    position absolute
+    top 0
+    width calc(100% + 32px)
+    height 1px
+    left -16px
+    background-color var(--new-UI-06)
 
 </style>
