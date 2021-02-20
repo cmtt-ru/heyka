@@ -1,5 +1,8 @@
 <template>
-  <pseudo-popup @close="closeHandler">
+  <pseudo-popup
+    :header-has-shadow="false"
+    @close="closeHandler"
+  >
     <template #header>
       {{ texts.header }}
     </template>

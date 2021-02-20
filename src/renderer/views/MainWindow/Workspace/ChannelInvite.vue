@@ -14,7 +14,7 @@
           :name="texts.userTab"
         >
           <div
-            v-sticky.top="43"
+            v-sticky.top="{ offset: 43, rootSelector: '.layout__column--content' }"
             class="user-search__wrapper"
           >
             <ui-input

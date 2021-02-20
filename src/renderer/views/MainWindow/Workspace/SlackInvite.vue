@@ -33,9 +33,11 @@
         >
           {{ texts.successInviteStart }}{{ $tc("slackInvite.successInviteMiddle", invitesSentTo.length) }}{{ texts.successInviteEnd }}
         </div>
-        <div class="user-search__wrapper">
+        <div
+          v-sticky.top="{ offset: 43, rootSelector: '.layout__column--content' }"
+          class="user-search__wrapper"
+        >
           <ui-input
-            ref="top_slack_invite"
             v-model="filterKey"
             icon="search"
             :placeholder="$t('techTexts.search')"
@@ -102,7 +104,7 @@
           </list-item>
         </list>
         <div
-          v-sticky.bottom
+          v-sticky.bottom="{ offset: 0, rootSelector: '.layout__column--content' }"
           class="submit-button-wrapper"
         >
           <ui-button
@@ -250,9 +252,17 @@ export default {
 .user-search__wrapper
   background-color var(--new-bg-04)
   padding 6px 0 12px
-  position sticky
-  top -0.5px
-  z-index 10
+  z-index 1
+  position relative
+
+  &.ui-sticked:after
+    content ''
+    position absolute
+    bottom 0
+    width calc(100% + 32px)
+    height 1px
+    left -16px
+    background-color var(--new-UI-06)
 
 /deep/ .input
   padding-left 54px
