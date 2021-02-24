@@ -21,6 +21,18 @@
         </ui-button>
       </router-link>
 
+      <router-link
+        v-if="permissions['channel.update']"
+        :to="{ name: 'channel-members', params: { id }}"
+      >
+        <ui-button
+          :type="11"
+          data-popover-close
+        >
+          {{ texts.members }}
+        </ui-button>
+      </router-link>
+
       <ui-button
         v-if="permissions['channel.delete']"
         :type="11"
