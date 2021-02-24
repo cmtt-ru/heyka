@@ -11,48 +11,45 @@
       >
         <ui-input
           v-model="channelModel.name"
-          class="l-mt-6 l-mb-12"
-          icon="channel"
+          class="l-mt-8"
+          :class="{'l-mb-16': !channelModel.isPrivate}"
+          :icon="channelIcon"
           :placeholder="texts.name"
           required
         />
       </ui-form>
 
-      <ui-input
-        v-model="channelModel.description"
-        class="l-mb-24"
-        disabled
-        :placeholder="texts.description"
-      />
-
       <ui-switch
-        v-model="channelModel.private"
-        class="l-mb-16"
-        disabled
+        v-if="!isEditMode"
+        v-model="channelModel.isPrivate"
         :text="texts.private"
       />
 
-      <ui-switch
-        v-model="channelModel.chat"
-        class="l-mb-10"
-        disabled
-        :text="texts.chat"
-      />
+      <p
+        v-if="channelModel.isPrivate"
+        class="edit-channel-label"
+        :class="{'l-mt-8': channelModel.isPrivate, 'l-mt-12': !channelModel.isPrivate}"
+      >
+        {{ texts.privateLabel }}
+      </p>
 
       <ui-button
         v-if="isEditMode"
         :type="14"
+        class="l-mb-12"
+        :class="{'l-mt-12': channelModel.isPrivate}"
         @click="deleteHandler"
       >
         {{ texts.buttonDelete }}
       </ui-button>
-    </template>
 
-    <template #footer>
       <ui-button
         v-if="!isEditMode"
         :type="1"
-        size="small"
+        size="large"
+        class="l-mt-16"
+        wide
+        :disabled="channelModel.name === ''"
         @click="submitHandler"
       >
         {{ texts.buttonCreate }}
@@ -61,19 +58,11 @@
       <ui-button
         v-if="isEditMode"
         :type="1"
-        size="small"
+        size="large"
+        wide
         @click="submitHandler"
       >
         {{ texts.buttonSave }}
-      </ui-button>
-
-      <ui-button
-        :type="2"
-        class="l-mr-6"
-        size="small"
-        @click="cancelHandler"
-      >
-        {{ texts.buttonCancel }}
       </ui-button>
     </template>
   </pseudo-popup>
@@ -91,7 +80,6 @@ import { mapGetters } from 'vuex';
  */
 const CHANNEL_MODEL = {
   name: '',
-  description: '',
   isPrivate: false,
 };
 
@@ -103,11 +91,13 @@ export default {
     UiButton,
     PseudoPopup,
   },
+
   data() {
     return {
       channelModel: {},
     };
   },
+
   computed: {
     ...mapGetters({
       getChannelById: 'channels/getChannelById',
@@ -127,6 +117,18 @@ export default {
      */
     channelId() {
       return this.$route.params?.id;
+    },
+
+    /**
+     * Channel icon
+     * @returns {string}
+     */
+    channelIcon() {
+      if (this.channelModel.isPrivate) {
+        return 'lock';
+      } else {
+        return 'channel';
+      }
     },
 
     /**
@@ -172,6 +174,7 @@ export default {
         this.channelModel = cloneDeep(CHANNEL_MODEL);
       }
     },
+
     /**
      * Create new channel handler
      * @returns {void}
@@ -202,7 +205,7 @@ export default {
         id: this.channelId,
         channel: {
           name: this.channelModel.name,
-          // isPrivate: this.channelModel.isPrivate,
+          isPrivate: this.channelModel.isPrivate,
         },
       });
 
@@ -250,5 +253,8 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-
+  .edit-channel-label
+    line-height 22px
+    color var(--new-UI-03)
+    font-weight 400
 </style>
