@@ -12,7 +12,7 @@
         <ui-input
           v-model="channelModel.name"
           class="l-mt-8"
-          :class="{'l-mb-16': !channelModel.isPrivate}"
+          :class="{'l-mb-16': !isEditMode || !channelModel.isPrivate}"
           :icon="channelIcon"
           :placeholder="texts.name"
           required
