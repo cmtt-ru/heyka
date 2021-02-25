@@ -14,7 +14,6 @@
           :name="texts.userTab"
         >
           <div
-            v-sticky.top="{ offset: 43, rootSelector: '.layout__column--content' }"
             class="user-search__wrapper"
           >
             <ui-input
@@ -140,39 +139,19 @@
       </tabs>
     </template>
 
-    <template #footer>
-      <div
-        v-if="selectedTab === texts.userTab"
-        class="submit-button-wrapper"
+    <template
+      v-if="selectedTab === texts.userTab"
+      #footer
+    >
+      <ui-button
+        :type="1"
+        size="large"
+        :disabled="!selectedUsers.length"
+        wide
+        @click="sendInvites"
       >
-        <ui-button
-          :type="3"
-          class="l-mr-12"
-          size="large"
-          @click="closeHandler"
-        >
-          {{ $t('techTexts.cancel') }}
-        </ui-button>
-        <ui-button
-          :type="1"
-          size="large"
-          :disabled="!selectedUsers.length"
-          @click="sendInvites"
-        >
-          {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
-        </ui-button>
-      </div>
-
-      <div v-else>
-        <ui-button
-          :type="3"
-          class="l-mr-12"
-          size="large"
-          @click="closeHandler"
-        >
-          {{ $t('techTexts.close') }}
-        </ui-button>
-      </div>
+        {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
+      </ui-button>
     </template>
   </pseudo-popup>
 </template>
@@ -407,10 +386,11 @@ export default {
   margin 42px 0 28px
 
 .user-search__wrapper
+  position sticky
   background-color var(--new-bg-04)
   padding 6px 0 12px
   z-index 1
-  position relative
+  top 0
 
   &.ui-sticked:after
     content ''
