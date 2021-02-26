@@ -14,6 +14,7 @@
           :name="texts.userTab"
         >
           <div
+            v-sticky.top="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
             class="user-search__wrapper"
           >
             <ui-input
@@ -386,11 +387,10 @@ export default {
   margin 42px 0 28px
 
 .user-search__wrapper
-  position sticky
+  position relative
   background-color var(--new-bg-04)
   padding 6px 0 12px
   z-index 1
-  top 0
 
   &.ui-sticked:after
     content ''
@@ -399,7 +399,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-UI-06)
+    background-color var(--shadow-10)
 
 /deep/ .user-search .input
   padding-left 54px
