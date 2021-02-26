@@ -9,7 +9,6 @@
 
     <template #body>
       <div
-        v-sticky.top="{ offset: 44, rootSelector: '.layout__column--content' }"
         class="user-search__wrapper"
       >
         <ui-input
@@ -26,7 +25,7 @@
         :filter-by="filterKey"
       >
         <list-item
-          v-for="user in workspaceUsers"
+          v-for="user in members"
           :key="user.id"
           :filter-key="user.name"
           class="user"
@@ -47,17 +46,19 @@
             </div>
 
             <div
+              v-if="user.channelRelation.role === 'admin'"
               class="user__label"
             >
-              Admin
+              {{ texts.admin }}
             </div>
           </div>
           <ui-button
+            v-if="user.channelRelation.role !== 'admin'"
             class="user__leave"
             :type="7"
             size="small"
             icon="close"
-            @click="userLeaveChannel(user.id)"
+            @click="deleteMember(user.id)"
           />
         </list-item>
       </list>
@@ -66,6 +67,7 @@
 </template>
 
 <script>
+import API from '@api';
 import UiButton from '@components/UiButton';
 import { List, ListItem } from '@components/List';
 import { UiInput } from '@components/Form';
@@ -86,17 +88,13 @@ export default {
   data() {
     return {
       filterKey: '',
+      members: [],
     };
   },
 
   computed: {
     ...mapGetters({
-      selectedWorkspaceId: 'me/getSelectedWorkspaceId',
-      getAllUsers: 'users/getAllUsers',
-      myId: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
-      getUsersInAllChannels: 'channels/getUsersInAllChannels',
-      getChannelById: 'channels/getChannelById',
     }),
 
     /**
@@ -114,14 +112,10 @@ export default {
     channelId() {
       return this.$route.params?.id;
     },
+  },
 
-    /**
-     * Workspace users (without guests)
-     * @returns {object}
-     */
-    workspaceUsers() {
-      return this.getAllUsers.filter(user => user.role !== 'guest' && user.id !== this.myId);
-    },
+  async mounted() {
+    this.updateMembersList();
   },
 
   methods: {
@@ -130,8 +124,17 @@ export default {
      * @param {string} userId – user id
      * @returns {void}
      */
-    userLeaveChannel(userId) {
-      console.log('leave', userId);
+    async deleteMember(userId) {
+      await API.channel.deleteMembers(this.channelId, [ userId ]);
+      await this.updateMembersList();
+    },
+
+    /**
+     * Update members list
+     * @returns {void}
+     */
+    async updateMembersList() {
+      this.members = await API.channel.getMembers(this.channelId);
     },
 
     /**
@@ -152,7 +155,8 @@ export default {
   background-color var(--new-bg-04)
   padding 6px 0 12px
   z-index 1
-  position relative
+  position sticky
+  top 0
 
   &.ui-sticked:after
     content ''
