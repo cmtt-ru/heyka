@@ -22,7 +22,7 @@
       </router-link>
 
       <router-link
-        v-if="permissions['channel.update']"
+        v-if="permissions['channel.manageMembers']"
         :to="{ name: 'channel-members', params: { id }}"
       >
         <ui-button
@@ -49,11 +49,21 @@
       >
         {{ texts.invite }}
       </ui-button>
+
+      <ui-button
+        v-if="channel.isPrivate && !permissions['channel.manageMembers']"
+        :type="11"
+        data-popover-close
+        @click="leaveChannel"
+      >
+        {{ texts.leave }}
+      </ui-button>
     </div>
   </popover>
 </template>
 
 <script>
+import API from '@api';
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 
@@ -89,6 +99,14 @@ export default {
     texts() {
       return this.$t('popover.channel');
     },
+
+    /**
+     * Get current channel
+     * @returns {object}
+     */
+    channel() {
+      return this.$store.getters['channels/getChannelById'](this.id);
+    },
   },
 
   methods: {
@@ -114,6 +132,14 @@ export default {
      */
     async inviteHandler() {
       this.$store.dispatch('channels/copyInviteLink', this.id);
+    },
+
+    /**
+     * Leave channel
+     * @returns {Promise<void>}
+     */
+    async leaveChannel() {
+      await API.channel.leave(this.id);
     },
   },
 };
