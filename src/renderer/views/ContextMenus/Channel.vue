@@ -22,7 +22,7 @@
       </router-link>
 
       <router-link
-        v-if="permissions['channel.manageMembers']"
+        v-if="channel.isPrivate && permissions['channel.manageMembers']"
         :to="{ name: 'channel-members', params: { id }}"
       >
         <ui-button

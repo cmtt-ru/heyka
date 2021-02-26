@@ -86,7 +86,7 @@
     >
       <list-item
         v-for="channel in showedChannels"
-        :key="channel.name"
+        :key="channel.id"
         :filter-key="channel.name"
         button
         @dblclick.native="dbclickChannelHandler(channel)"
