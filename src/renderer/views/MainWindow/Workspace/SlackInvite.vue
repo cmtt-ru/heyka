@@ -34,7 +34,7 @@
           {{ texts.successInviteStart }}{{ $tc("slackInvite.successInviteMiddle", invitesSentTo.length) }}{{ texts.successInviteEnd }}
         </div>
         <div
-          v-sticky.top="{ offset: 43, rootSelector: '.layout__column--content' }"
+          v-sticky.top="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
           class="user-search__wrapper"
         >
           <ui-input
@@ -104,12 +104,14 @@
           </list-item>
         </list>
         <div
-          v-sticky.bottom="{ offset: 0, rootSelector: '.layout__column--content' }"
+          v-sticky.bottom="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
           class="submit-button-wrapper"
         >
           <ui-button
             :type="1"
             :disabled="!selectedUsers.length"
+            size="large"
+            wide
             @click="sendInvites"
           >
             {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
@@ -262,7 +264,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-UI-06)
+    background-color var(--shadow-10)
 
 /deep/ .input
   padding-left 54px
