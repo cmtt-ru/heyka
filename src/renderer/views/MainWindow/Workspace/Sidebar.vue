@@ -409,8 +409,10 @@ $ANIM = 250ms
   top 0
   z-index 20
   background-color var(--new-bg-01)
-  padding 12px 0
+  padding 12px
   margin-top -12px
+  width 100%
+  margin-left -12px
 
 .search
   height 28px
