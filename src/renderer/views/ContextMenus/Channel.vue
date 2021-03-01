@@ -1,14 +1,6 @@
 <template>
   <popover>
     <div class="buttons">
-      <ui-button
-        :type="11"
-        data-popover-close
-        @click="hideHandler"
-      >
-        {{ texts.hide }}
-      </ui-button>
-
       <router-link
         v-if="permissions['channel.update']"
         :to="{ name: 'edit-channel', params: { id }}"
@@ -43,14 +35,6 @@
       </ui-button>
 
       <ui-button
-        :type="11"
-        data-popover-close
-        @click="inviteHandler"
-      >
-        {{ texts.invite }}
-      </ui-button>
-
-      <ui-button
         v-if="channel.isPrivate && !permissions['channel.manageMembers']"
         :type="11"
         data-popover-close
@@ -58,6 +42,15 @@
       >
         {{ texts.leave }}
       </ui-button>
+
+      <router-link :to="{name: 'channel-invite', params: { id }}">
+        <ui-button
+          :type="11"
+          data-popover-close
+        >
+          {{ texts.invite }}
+        </ui-button>
+      </router-link>
     </div>
   </popover>
 </template>
@@ -124,14 +117,6 @@ export default {
      */
     deleteHandler() {
       this.$store.dispatch('channels/deleteChannel', this.id);
-    },
-
-    /**
-     * Copy invite link
-     * @returns {void}
-     */
-    async inviteHandler() {
-      this.$store.dispatch('channels/copyInviteLink', this.id);
     },
 
     /**
