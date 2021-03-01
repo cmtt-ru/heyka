@@ -363,7 +363,16 @@ export default {
             },
           });
         }
+
         this.$router.back();
+
+        const notification = {
+          data: {
+            text: this.texts.invitationsSent,
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
       } catch (err) {
         console.error(err);
       }
