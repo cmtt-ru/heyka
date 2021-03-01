@@ -8,7 +8,7 @@
         class="settings-close"
         @click="$router.go(-1)"
       >
-        {{ $t('techTexts.done') }}
+        {{ $t('techTexts.close') }}
       </div>
     </template>
 
