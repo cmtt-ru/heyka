@@ -2,6 +2,7 @@
 
 import { app, ipcMain, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+import log from 'electron-log';
 import './classes/AutoLaunch';
 import './classes/RemoteInfo';
 import './classes/HttpServer';
@@ -9,6 +10,8 @@ import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { IS_DEV, IS_WIN, IS_MAC } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
+
+log.catchErrors();
 
 console.time('init');
 console.time('before-load');
