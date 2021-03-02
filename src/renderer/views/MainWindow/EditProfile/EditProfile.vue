@@ -178,6 +178,14 @@ export default {
       try {
         await this.$API.user.editProfile(this.profile);
         // this.savedAnimation();
+
+        const notification = {
+          data: {
+            text: this.texts.saved,
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
       } catch (err) {
         console.log(err);
       }
