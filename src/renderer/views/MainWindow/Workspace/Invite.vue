@@ -97,7 +97,6 @@ import EditableList from '@components/List/EditableList';
 import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
-import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import SlackInvite from './SlackInvite';
 
 export default {
@@ -134,22 +133,6 @@ export default {
 
   },
 
-  mounted() {
-    DeepLink.on('slack-connect', ([status, error]) => {
-      if (status === 'false') {
-        this.$store.dispatch('app/addNotification', {
-          data: {
-            text: decodeURIComponent(error),
-          },
-        });
-      }
-    });
-  },
-
-  beforeDestroy() {
-    DeepLink.removeAllListeners('slack-connect');
-  },
-
   methods: {
     async copyLinkHandler() {
       try {
@@ -176,14 +159,6 @@ export default {
     resetEmails() {
       this.emails = [ '' ];
       this.emailsSent = false;
-    },
-
-    async slackConnect() {
-      const url = await this.$API.workspace.connectWithSlack(this.selectedWorkspaceId);
-
-      console.log(url);
-
-      navigator.clipboard.writeText(url.redirect);
     },
 
     /**
