@@ -8,7 +8,7 @@ import './classes/RemoteInfo';
 import './classes/HttpServer';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import { IS_DEV, IS_WIN, IS_MAC } from '../main/Constants';
+import { IS_DEV, IS_WIN, IS_MAC, IS_LINUX } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
 
 log.catchErrors();
@@ -29,6 +29,10 @@ protocol.registerSchemesAsPrivileged([ {
   },
 } ]);
 app.setAsDefaultProtocolClient('heyka');
+
+if (IS_LINUX) {
+  app.disableHardwareAcceleration();
+}
 
 /**
  * Create Splash window
