@@ -14,56 +14,56 @@
           class="l-mt-8"
           :class="{'l-mb-16': !isEditMode || !channelModel.isPrivate}"
           :icon="channelIcon"
+          :minlength="2"
           :placeholder="texts.name"
           required
         />
+
+        <ui-switch
+          v-if="!isEditMode"
+          v-model="channelModel.isPrivate"
+          :text="texts.private"
+        />
+
+        <p
+          v-if="channelModel.isPrivate"
+          class="edit-channel-label"
+          :class="{'l-mt-8': channelModel.isPrivate, 'l-mt-12': !channelModel.isPrivate}"
+        >
+          {{ texts.privateLabel }}
+        </p>
+
+        <ui-button
+          v-if="isEditMode"
+          :type="14"
+          class="l-mb-12"
+          :class="{'l-mt-12': channelModel.isPrivate}"
+          @click="deleteHandler"
+        >
+          {{ texts.buttonDelete }}
+        </ui-button>
+
+        <ui-button
+          v-if="!isEditMode"
+          :type="1"
+          size="large"
+          class="l-mt-16"
+          wide
+          submit
+        >
+          {{ texts.buttonCreate }}
+        </ui-button>
+
+        <ui-button
+          v-if="isEditMode"
+          :type="1"
+          size="large"
+          wide
+          submit
+        >
+          {{ texts.buttonSave }}
+        </ui-button>
       </ui-form>
-
-      <ui-switch
-        v-if="!isEditMode"
-        v-model="channelModel.isPrivate"
-        :text="texts.private"
-      />
-
-      <p
-        v-if="channelModel.isPrivate"
-        class="edit-channel-label"
-        :class="{'l-mt-8': channelModel.isPrivate, 'l-mt-12': !channelModel.isPrivate}"
-      >
-        {{ texts.privateLabel }}
-      </p>
-
-      <ui-button
-        v-if="isEditMode"
-        :type="14"
-        class="l-mb-12"
-        :class="{'l-mt-12': channelModel.isPrivate}"
-        @click="deleteHandler"
-      >
-        {{ texts.buttonDelete }}
-      </ui-button>
-
-      <ui-button
-        v-if="!isEditMode"
-        :type="1"
-        size="large"
-        class="l-mt-16"
-        wide
-        :disabled="channelModel.name === ''"
-        @click="submitHandler"
-      >
-        {{ texts.buttonCreate }}
-      </ui-button>
-
-      <ui-button
-        v-if="isEditMode"
-        :type="1"
-        size="large"
-        wide
-        @click="submitHandler"
-      >
-        {{ texts.buttonSave }}
-      </ui-button>
     </template>
   </pseudo-popup>
 </template>
