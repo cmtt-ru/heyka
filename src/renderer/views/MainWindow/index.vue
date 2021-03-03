@@ -24,7 +24,6 @@ import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
 // import PerformanceMonitor from '@components/PerformanceMonitor';
 import Logger from '@sdk/classes/logger';
-import { prepareTokens } from '@api/tokens';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { mapGetters } from 'vuex';
 import { heykaStore } from '@/store/localStore';
@@ -64,9 +63,6 @@ export default {
         this.$router.push({ name: route });
         heykaStore.set('openPage', null);
       }
-
-      /** Prepare tokens */
-      await prepareTokens();
 
       /** Check authorization */
       await this.$API.auth.check();

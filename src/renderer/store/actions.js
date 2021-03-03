@@ -260,6 +260,10 @@ export default {
     callWindow.closeAll();
 
     window.ipcRenderer.send('tray-animation', false);
+
+    if (router.history.current.name === 'channel-invite') {
+      router.replace({ name: 'workspace' });
+    }
   },
 
   /**
