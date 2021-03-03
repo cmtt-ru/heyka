@@ -65,23 +65,19 @@
         </list-item>
       </list>
 
-      <div class="l-flex last-block l-mt-4">
-        <ui-button
-          :type="9"
-          icon="add"
-          style="margin-left: 6px"
-          @click="inviteLinkHandler"
-        >
-          {{ texts.invite }}
-        </ui-button>
-
-        <ui-button
-          :type="14"
-          class="l-ml-auto"
-          @click="revokeInviteHandler"
-        >
-          {{ texts.revokeInvite }}
-        </ui-button>
+      <div
+        v-if="isConnected"
+        class="l-flex last-block l-mt-4"
+      >
+        <router-link :to="{name: 'channel-invite', params: { id: channelId }}">
+          <ui-button
+            :type="9"
+            icon="add"
+            style="margin-left: 6px"
+          >
+            {{ texts.invite }}
+          </ui-button>
+        </router-link>
       </div>
     </div>
 
@@ -231,22 +227,6 @@ export default {
     },
 
     /**
-     * Invite link handler
-     * @returns {void}
-     */
-    inviteLinkHandler() {
-      this.$store.dispatch('channels/copyInviteLink', this.channelId);
-    },
-
-    /**
-     * Revoke invites handler
-     * @returns {void}
-     */
-    revokeInviteHandler() {
-      this.$store.dispatch('channels/revokeInviteLinks', this.channelId);
-    },
-
-    /**
      * Audio lags handler
      * @returns {void}
      */
@@ -293,6 +273,7 @@ export default {
   align-items center
   justify-content flex-start
   background-color var(--app-bg)
+  z-index 1
 
   &.ui-sticked
     box-shadow 0 0 8px 0 #808080
