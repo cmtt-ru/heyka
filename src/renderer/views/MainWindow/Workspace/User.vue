@@ -19,14 +19,14 @@
         {{ user.name }}
       </div>
 
-      <ui-button
+      <!-- <ui-button
         v-if="isMe"
         v-popover.click="{name: 'UserMore'}"
         :type="7"
         class="user__more"
         size="small"
         icon="more"
-      />
+      /> -->
     </div>
 
     <div v-if="user.onlineStatus==='offline'">
