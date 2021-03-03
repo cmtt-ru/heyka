@@ -1,5 +1,8 @@
 <template>
-  <pseudo-popup @close="closeHandler">
+  <pseudo-popup
+    :header-has-shadow="false"
+    @close="closeHandler"
+  >
     <template #header>
       {{ texts.header }}
     </template>
@@ -60,12 +63,6 @@
           <div v-if="emailsSent">
             <div class="success">
               {{ texts.sendSuccess }} {{ $tc("workspace.invite.inviteAmount", emails.length) }}
-              <svg-icon
-                class="success__tick"
-                name="check"
-                stroke="var(--color-1)"
-                size="medium"
-              />
             </div>
             <ui-button
               :type="1"

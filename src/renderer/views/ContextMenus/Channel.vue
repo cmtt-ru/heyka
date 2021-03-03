@@ -1,14 +1,6 @@
 <template>
   <popover>
     <div class="buttons">
-      <ui-button
-        :type="11"
-        data-popover-close
-        @click="hideHandler"
-      >
-        {{ texts.hide }}
-      </ui-button>
-
       <router-link
         v-if="permissions['channel.update']"
         :to="{ name: 'edit-channel', params: { id }}"
@@ -18,6 +10,18 @@
           data-popover-close
         >
           {{ texts.edit }}
+        </ui-button>
+      </router-link>
+
+      <router-link
+        v-if="channel.isPrivate && permissions['channel.manageMembers']"
+        :to="{ name: 'channel-members', params: { id }}"
+      >
+        <ui-button
+          :type="11"
+          data-popover-close
+        >
+          {{ texts.members }}
         </ui-button>
       </router-link>
 
@@ -31,17 +35,28 @@
       </ui-button>
 
       <ui-button
+        v-if="channel.isPrivate && !permissions['channel.manageMembers']"
         :type="11"
         data-popover-close
-        @click="inviteHandler"
+        @click="leaveChannel"
       >
-        {{ texts.invite }}
+        {{ texts.leave }}
       </ui-button>
+
+      <router-link :to="{name: 'channel-invite', params: { id }}">
+        <ui-button
+          :type="11"
+          data-popover-close
+        >
+          {{ texts.invite }}
+        </ui-button>
+      </router-link>
     </div>
   </popover>
 </template>
 
 <script>
+import API from '@api';
 import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 
@@ -77,6 +92,14 @@ export default {
     texts() {
       return this.$t('popover.channel');
     },
+
+    /**
+     * Get current channel
+     * @returns {object}
+     */
+    channel() {
+      return this.$store.getters['channels/getChannelById'](this.id);
+    },
   },
 
   methods: {
@@ -97,11 +120,11 @@ export default {
     },
 
     /**
-     * Copy invite link
-     * @returns {void}
+     * Leave channel
+     * @returns {Promise<void>}
      */
-    async inviteHandler() {
-      this.$store.dispatch('channels/copyInviteLink', this.id);
+    async leaveChannel() {
+      await API.channel.leave(this.id);
     },
   },
 };

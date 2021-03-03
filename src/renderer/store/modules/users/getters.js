@@ -6,17 +6,25 @@ export default {
    * Get all users from workspace based on online status
    *
    * @param {UserState} state – user module state
+   * @param {object} getters – vuex getters
    * @returns {Array.<User>}
    */
-  getAllUsers: state => {
+  getAllUsers: (state, getters) => {
     /** @type {Array.<User>} */
-    const users = Object.values(state.collection);
+    const users = getters['getAllUsersByFrequency'];
 
-    return users.sort(sortByPriority({
-      key: 'onlineStatus',
-      priority: ['online', 'idle', 'offline'],
-      name: 'name',
-    })) || [];
+    const onlineUsers = [];
+    const offlineUsers = [];
+
+    users.forEach(u => {
+      if (u.onlineStatus === 'offline') {
+        onlineUsers.push(u);
+      } else {
+        offlineUsers.push(u);
+      }
+    });
+
+    return offlineUsers.concat(onlineUsers);
   },
 
   /**

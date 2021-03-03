@@ -1,111 +1,117 @@
 <template>
-  <div>
-    <div
-      v-if="channel"
-      v-sticky
-      class="channel-info"
-    >
-      <svg-icon
-        class="channel-info__type"
-        :name="dynamicIcon"
-        :color="dynamicIconColor"
-        size="large"
-      />
-
+  <pseudo-popup>
+    <template #custom-header>
       <div
-        v-textfade
-        class="channel-info__name"
+        v-if="channel"
+        class="channel-header"
       >
-        {{ channel.name }}
-      </div>
+        <svg-icon
+          class="channel-header__type"
+          :name="dynamicIcon"
+          :color="dynamicIconColor"
+          size="large"
+        />
 
-      <ui-button
-        :key="channel.id"
-        v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
-        :type="16"
-        class="channel-info__more"
-        icon="more"
-      />
-
-      <ui-button
-        v-if="!isConnected"
-        :disabled="janusInProgress"
-        :type="1"
-        class="channel-info__connect"
-        size="small"
-        @click.native="clickConnectHandler()"
-      >
-        {{ texts.join }}
-      </ui-button>
-
-      <ui-button
-        v-if="isConnected"
-        :type="4"
-        class="channel-info__connect"
-        size="small"
-        @click.native="clickDisconnectHandler()"
-      >
-        {{ texts.disconnect }}
-      </ui-button>
-    </div>
-
-    <div class="l-pl-12 l-pr-12">
-      <list :filter-by="''">
-        <list-item
-          v-for="user in users"
-          :key="user.user.id"
-          :filter-key="user.user.name"
-          button
+        <div
+          v-textfade
+          class="channel-header__name"
         >
-          <channel-user-item
-            :user="user.user"
-            :media-state="user.mediaState"
-            :channel-id="channelId"
-          />
-        </list-item>
-      </list>
+          {{ channel.name }}
+        </div>
 
-      <div
-        v-if="isConnected"
-        class="l-flex last-block l-mt-4"
-      >
-        <router-link :to="{name: 'channel-invite', params: { id: channelId }}">
-          <ui-button
-            :type="9"
-            icon="add"
-            style="margin-left: 6px"
-          >
-            {{ texts.invite }}
-          </ui-button>
-        </router-link>
+        <ui-button
+          :key="channel.id"
+          v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
+          :type="16"
+          class="channel-header__more"
+          icon="more"
+        />
+
+        <ui-button
+          v-if="!isConnected"
+          :disabled="janusInProgress"
+          :type="1"
+          class="channel-header__connect"
+          size="small"
+          @click.native="clickConnectHandler()"
+        >
+          {{ texts.join }}
+        </ui-button>
+
+        <ui-button
+          v-if="isConnected"
+          :type="4"
+          class="channel-header__connect"
+          size="small"
+          @click.native="clickDisconnectHandler()"
+        >
+          {{ texts.disconnect }}
+        </ui-button>
       </div>
-    </div>
+    </template>
 
-    <div class="bottom-block l-flex">
-      <ui-button
-        v-if="selectedChannelId"
-        :type="14"
-        class="l-mr-4"
-        @click="audioLagsHandler"
-      >
-        {{ texts.audioLags }}
-      </ui-button>
+    <template #custom-body>
+      <div class="channel-user-list">
+        <list :filter-by="''">
+          <list-item
+            v-for="user in sortedUsers"
+            :key="user.user.id"
+            :filter-key="user.user.name"
+            button
+          >
+            <channel-user-item
+              :user="user.user"
+              :media-state="user.mediaState"
+              :channel-id="channelId"
+            />
+          </list-item>
+        </list>
 
-      <ui-button
-        class="l-ml-auto"
-        :type="14"
-        @click="openIntercom"
-      >
-        {{ texts.support }}
-      </ui-button>
-    </div>
-  </div>
+        <div
+          v-if="isConnected"
+          class="l-flex last-block l-mt-4"
+        >
+          <router-link :to="{name: 'channel-invite', params: { id: channelId }}">
+            <ui-button
+              :type="9"
+              icon="add"
+              style="margin-left: 6px"
+            >
+              {{ texts.invite }}
+            </ui-button>
+          </router-link>
+        </div>
+      </div>
+    </template>
+
+    <template #custom-footer>
+      <div class="channel-footer l-flex">
+        <ui-button
+          v-if="selectedChannelId"
+          :type="14"
+          class="l-mr-4"
+          @click="audioLagsHandler"
+        >
+          {{ texts.audioLags }}
+        </ui-button>
+
+        <ui-button
+          class="l-ml-auto"
+          :type="14"
+          @click="openIntercom"
+        >
+          {{ texts.support }}
+        </ui-button>
+      </div>
+    </template>
+  </pseudo-popup>
 </template>
 
 <script>
 import { List, ListItem } from '@components/List';
 import ChannelUserItem from '@components/ChannelUserItem';
 import UiButton from '@components/UiButton';
+import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
 import API from '@api';
 import intercom from '@classes/intercom';
@@ -114,7 +120,7 @@ const ICON_MAP = {
   public: 'channel',
   publicOnline: 'channelOnAir',
   private: 'lock',
-  temp: 'time',
+  temp: 'clock',
   default: 'channel',
 };
 
@@ -124,6 +130,7 @@ export default {
     ListItem,
     ChannelUserItem,
     UiButton,
+    PseudoPopup,
   },
 
   computed: {
@@ -145,6 +152,15 @@ export default {
      */
     users() {
       return this.$store.getters.getUsersByChannel(this.channelId);
+    },
+
+    /**
+     * Display temporary users (guests) last
+     * @returns {array} array of sorted users
+     */
+    sortedUsers() {
+      return [...this.users.filter(user => user.user.role !== 'guest'),
+        ...this.users.filter(user => user.user.role === 'guest')];
     },
 
     /**
@@ -263,7 +279,8 @@ export default {
 
 <style lang="stylus" scoped>
 
-.channel-info
+.channel-header
+  flex-grow 1
   height 52px
   padding 0 12px 0 8px
   width 100%
@@ -274,9 +291,6 @@ export default {
   justify-content flex-start
   background-color var(--app-bg)
   z-index 1
-
-  &.ui-sticked
-    box-shadow 0 0 8px 0 #808080
 
   &__type
     margin-left 3px
@@ -296,15 +310,14 @@ export default {
   &__connect
     flex-shrink 0
 
+.channel-user-list
+  padding 0 12px
+
 .last-block
   margin-bottom 48px
 
-.bottom-block
-  position fixed
-  bottom 0
+.channel-footer
+  flex-grow 1
   padding 8px 12px 8px 18px
-  box-sizing border-box
-  background-color var(--app-bg)
-  width calc(100% - 220px)
 
 </style>

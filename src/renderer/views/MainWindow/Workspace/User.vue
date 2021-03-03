@@ -19,14 +19,14 @@
         {{ user.name }}
       </div>
 
-      <ui-button
+      <!-- <ui-button
         v-if="isMe"
         v-popover.click="{name: 'UserMore'}"
         :type="7"
         class="user__more"
         size="small"
         icon="more"
-      />
+      /> -->
     </div>
 
     <div v-if="user.onlineStatus==='offline'">
@@ -193,8 +193,6 @@ export default {
      * @returns {object} – user
      */
     user() {
-      console.log(this.$store.getters['users/getUserById'](this.userId));
-
       return this.$store.getters['users/getUserById'](this.userId);
     },
 

@@ -14,7 +14,7 @@
           :name="texts.userTab"
         >
           <div
-            v-sticky.top="43"
+            v-sticky.top="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
             class="user-search__wrapper"
           >
             <ui-input
@@ -140,39 +140,19 @@
       </tabs>
     </template>
 
-    <template #footer>
-      <div
-        v-if="selectedTab === texts.userTab"
-        class="submit-button-wrapper"
+    <template
+      v-if="selectedTab === texts.userTab"
+      #footer
+    >
+      <ui-button
+        :type="1"
+        size="large"
+        :disabled="!selectedUsers.length"
+        wide
+        @click="sendInvites"
       >
-        <ui-button
-          :type="3"
-          class="l-mr-12"
-          size="large"
-          @click="closeHandler"
-        >
-          {{ $t('techTexts.cancel') }}
-        </ui-button>
-        <ui-button
-          :type="1"
-          size="large"
-          :disabled="!selectedUsers.length"
-          @click="sendInvites"
-        >
-          {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
-        </ui-button>
-      </div>
-
-      <div v-else>
-        <ui-button
-          :type="3"
-          class="l-mr-12"
-          size="large"
-          @click="closeHandler"
-        >
-          {{ $t('techTexts.close') }}
-        </ui-button>
-      </div>
+        {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
+      </ui-button>
     </template>
   </pseudo-popup>
 </template>
@@ -383,8 +363,16 @@ export default {
             },
           });
         }
-        //! уведомление об успешном приглашении
+
         this.$router.back();
+
+        const notification = {
+          data: {
+            text: this.texts.invitationsSent,
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
       } catch (err) {
         console.error(err);
       }
@@ -408,10 +396,10 @@ export default {
   margin 42px 0 28px
 
 .user-search__wrapper
+  position relative
   background-color var(--new-bg-04)
   padding 6px 0 12px
   z-index 1
-  position relative
 
   &.ui-sticked:after
     content ''
@@ -420,7 +408,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-UI-06)
+    background-color var(--shadow-10)
 
 /deep/ .user-search .input
   padding-left 54px
