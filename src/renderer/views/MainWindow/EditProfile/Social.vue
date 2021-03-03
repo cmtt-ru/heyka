@@ -10,7 +10,6 @@
           icon="slack"
           wide
           class="login-button"
-          :class="{'login-button--connected': socialAuth.slack}"
           @click="socialHandler('slack')"
         >
           Slack
@@ -191,10 +190,6 @@ $SAVE_FADE_TIME = 2s
 .login-button
   margin-bottom 12px
   align-items center
-
-  &--connected
-    background-color rgba(21, 117, 241, 0.15)
-    box-shadow none
 
 .close-button-wrapper
   display inline
