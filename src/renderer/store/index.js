@@ -48,6 +48,7 @@ const plugins = [
       'me/getSelectedChannelId',
       'users/UPDATE_USER',
       'users/SET_COLLECTION',
+      'channels/UPDATE_CHANNEL',
       'channels/ADD_USER',
       'channels/REMOVE_USER',
       'channels/SET_USER_MEDIA_STATE',
