@@ -120,7 +120,7 @@ const ICON_MAP = {
   public: 'channel',
   publicOnline: 'channelOnAir',
   private: 'lock',
-  temp: 'time',
+  temp: 'clock',
   default: 'channel',
 };
 
