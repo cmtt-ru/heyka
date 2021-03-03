@@ -33,9 +33,11 @@
         >
           {{ texts.successInviteStart }}{{ $tc("slackInvite.successInviteMiddle", invitesSentTo.length) }}{{ texts.successInviteEnd }}
         </div>
-        <div class="user-search__wrapper">
+        <div
+          v-sticky.top="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
+          class="user-search__wrapper"
+        >
           <ui-input
-            ref="top_slack_invite"
             v-model="filterKey"
             icon="search"
             :placeholder="$t('techTexts.search')"
@@ -102,11 +104,14 @@
           </list-item>
         </list>
         <div
+          v-sticky.bottom="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
           class="submit-button-wrapper"
         >
           <ui-button
             :type="1"
             :disabled="!selectedUsers.length"
+            size="large"
+            wide
             @click="sendInvites"
           >
             {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
@@ -249,9 +254,17 @@ export default {
 .user-search__wrapper
   background-color var(--new-bg-04)
   padding 6px 0 12px
-  position sticky
-  top -0.5px
-  z-index 10
+  z-index 1
+  position relative
+
+  &.ui-sticked:after
+    content ''
+    position absolute
+    bottom 0
+    width calc(100% + 32px)
+    height 1px
+    left -16px
+    background-color var(--shadow-10)
 
 /deep/ .input
   padding-left 54px
@@ -276,9 +289,6 @@ export default {
     display flex
     flex-direction row-reverse
 
-.user-list
-  margin-bottom 65px
-
 .user
   padding 4px 10px
   display flex
@@ -296,7 +306,7 @@ export default {
     padding 1px
     box-sizing border-box
     flex-shrink 0
-    color var(--new-bg-04)
+    color transparent
     border 1px solid var(--new-UI-05)
     border-radius 50%
 
@@ -333,12 +343,20 @@ export default {
     line-height 16px
 
 .submit-button-wrapper
-  position absolute
-  bottom 0
   width 100%
-  padding 16px
+  box-sizing border-box
+  padding 16px 0
   background-color var(--new-bg-04)
-  box-shadow inset -2px 0 0 1px var(--new-UI-06)
-  transform translateX(-16px)
+  box-shadow none
+  position: relative
+
+  &.ui-sticked:after
+    content ''
+    position absolute
+    top 0
+    width calc(100% + 32px)
+    height 1px
+    left -16px
+    background-color var(--new-UI-06)
 
 </style>
