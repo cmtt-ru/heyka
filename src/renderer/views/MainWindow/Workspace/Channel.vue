@@ -53,34 +53,31 @@
       <list :filter-by="''">
         <list-item
           v-for="user in users"
-          :key="user.id"
-          :filter-key="user.name"
+          :key="user.user.id"
+          :filter-key="user.user.name"
           button
         >
           <channel-user-item
-            :user="user"
+            :user="user.user"
+            :media-state="user.mediaState"
             :channel-id="channelId"
           />
         </list-item>
       </list>
 
-      <div class="l-flex last-block l-mt-4">
-        <ui-button
-          :type="9"
-          icon="add"
-          style="margin-left: 6px"
-          @click="inviteLinkHandler"
-        >
-          {{ texts.invite }}
-        </ui-button>
-
-        <ui-button
-          :type="14"
-          class="l-ml-auto"
-          @click="revokeInviteHandler"
-        >
-          {{ texts.revokeInvite }}
-        </ui-button>
+      <div
+        v-if="isConnected"
+        class="l-flex last-block l-mt-4"
+      >
+        <router-link :to="{name: 'channel-invite', params: { id: channelId }}">
+          <ui-button
+            :type="9"
+            icon="add"
+            style="margin-left: 6px"
+          >
+            {{ texts.invite }}
+          </ui-button>
+        </router-link>
       </div>
     </div>
 
@@ -141,6 +138,7 @@ export default {
     texts() {
       return this.$t('workspace.channel');
     },
+
     /**
      * Get users array
      * @returns {array} array of users
@@ -229,22 +227,6 @@ export default {
     },
 
     /**
-     * Invite link handler
-     * @returns {void}
-     */
-    inviteLinkHandler() {
-      this.$store.dispatch('channels/copyInviteLink', this.channelId);
-    },
-
-    /**
-     * Revoke invites handler
-     * @returns {void}
-     */
-    revokeInviteHandler() {
-      this.$store.dispatch('channels/revokeInviteLinks', this.channelId);
-    },
-
-    /**
      * Audio lags handler
      * @returns {void}
      */
@@ -291,6 +273,7 @@ export default {
   align-items center
   justify-content flex-start
   background-color var(--app-bg)
+  z-index 1
 
   &.ui-sticked
     box-shadow 0 0 8px 0 #808080
@@ -317,11 +300,11 @@ export default {
   margin-bottom 48px
 
 .bottom-block
-  position absolute
+  position fixed
   bottom 0
-  padding 8px 12px
+  padding 8px 12px 8px 18px
   box-sizing border-box
   background-color var(--app-bg)
-  width 100%
+  width calc(100% - 220px)
 
 </style>

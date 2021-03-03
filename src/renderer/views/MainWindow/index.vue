@@ -2,6 +2,12 @@
   <div>
     <janus />
     <notifications />
+    <transition name="wireframe-fade">
+      <wireframe
+        v-if="loading"
+        class="wireframe"
+      />
+    </transition>
     <router-view />
     <app-status :show="!$store.getters['app/getConnectionStatus']" />
     <!--    <performance-monitor />-->
@@ -9,7 +15,7 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
+import Wireframe from '@views/MainWindow/Wireframe';
 import Janus from '@components/Janus.vue';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import Notifications from '@components/Notifications';
@@ -18,7 +24,6 @@ import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
 // import PerformanceMonitor from '@components/PerformanceMonitor';
 import Logger from '@sdk/classes/logger';
-import { prepareTokens } from '@api/tokens';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { mapGetters } from 'vuex';
 import { heykaStore } from '@/store/localStore';
@@ -26,16 +31,20 @@ import { client } from '@api/socket/client';
 
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
+const WIREFRAME_MAX_TIME = 10000;
+
 export default {
   components: {
     Janus,
     Notifications,
     AppStatus,
+    Wireframe,
     // PerformanceMonitor,
   },
   data() {
     return {
       updateNotificationShown: false,
+      loading: true,
     };
   },
 
@@ -48,13 +57,12 @@ export default {
   async created() {
     try {
       /** Open specific page if it was cached before restart */
-      if (heykaStore.get('openPage')) {
-        this.$router.push({ name: heykaStore.get('openPage') });
+      const route = await heykaStore.get('openPage');
+
+      if (route) {
+        this.$router.push({ name: route });
         heykaStore.set('openPage', null);
       }
-
-      /** Prepare tokens */
-      await prepareTokens();
 
       /** Check authorization */
       await this.$API.auth.check();
@@ -63,6 +71,7 @@ export default {
     } catch (e) {
       cnsl.log('redirecting to login', e);
     }
+    this.loading = false;
 
     broadcastEvents.on('open-channel', id => {
       this.$router.push({
@@ -74,26 +83,26 @@ export default {
     /**
      * Global Shortcuts stuff
     */
-    ipcRenderer.on('hotkey-mic', (event, state) => {
+    window.ipcRenderer.on('hotkey-mic', (event, state) => {
       this.$store.dispatch('me/microphoneState', !this.mediaState.microphone);
     });
 
     /**
      * Auto update stuff
      */
-    ipcRenderer.on('update-error', (event, error) => {
+    window.ipcRenderer.on('update-error', (event, error) => {
       cnsl.error('update-error', error);
     });
 
-    ipcRenderer.on('update-downloaded', () => {
+    window.ipcRenderer.on('update-downloaded', () => {
       if (!this.updateNotificationShown) {
         this.showUpdateNotification();
         this.updateNotificationShown = true;
       }
     });
 
-    ipcRenderer.send('update-check');
-    ipcRenderer.send('tray-animation', false);
+    window.ipcRenderer.send('update-check');
+    window.ipcRenderer.send('tray-animation', false);
 
     this.showMacScreenSharingPermission();
 
@@ -103,11 +112,27 @@ export default {
   },
 
   mounted() {
+    // send signal to index.html so that we can hide super-global wireframe there
+    window.removeWireframe();
+
+    window.ipcRenderer.send('page-rendered', 'Hello from Main!');
+
     /**
      * Deep link for login
      */
-    DeepLink.on('login', ([ code ]) => {
-      console.log('useAuthLink', code);
+    DeepLink.on('login', ([code, error = '']) => {
+      console.log('DeepLink login', code, error);
+
+      if (code === 'false') {
+        this.$store.dispatch('app/addNotification', {
+          data: {
+            text: decodeURIComponent(error),
+          },
+        });
+
+        return;
+      }
+
       this.$store.dispatch('useAuthLink', code);
     });
 
@@ -116,11 +141,15 @@ export default {
      */
     DeepLink.on('workspace', async ([ workspaceId ]) => {
       console.log('workspaceId', workspaceId);
-      await this.$store.dispatch('workspaces/updateList');
+      await this.$store.dispatch('initial');
       await this.$store.dispatch('changeWorkspace', workspaceId);
     });
 
-    ipcRenderer.send('start-is-ready');
+    setTimeout(() => {
+      this.loading = false;
+    }, WIREFRAME_MAX_TIME);
+
+    window.ipcRenderer.send('start-is-ready');
   },
 
   beforeDestroy() {
@@ -129,9 +158,9 @@ export default {
 
   destroyed() {
     broadcastEvents.removeAllListeners('open-channel');
-    ipcRenderer.removeAllListeners('update-error');
-    ipcRenderer.removeAllListeners('update-downloaded');
-    ipcRenderer.removeAllListeners('hotkey-mic');
+    window.ipcRenderer.removeAllListeners('update-error');
+    window.ipcRenderer.removeAllListeners('update-downloaded');
+    window.ipcRenderer.removeAllListeners('hotkey-mic');
   },
 
   methods: {
@@ -152,7 +181,7 @@ export default {
               type: 1,
               action: () => {
                 WindowManager.willQuit();
-                ipcRenderer.send('update-install');
+                window.ipcRenderer.send('update-install');
                 // electron.remote.app.relaunch();
                 // electron.remote.app.quit();
               },
@@ -189,5 +218,18 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+.wireframe
+  z-index 2000
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  right 0
+
+.wireframe-fade-leave-active
+  transition all 0.2s ease
+
+.wireframe-fade-enter, .wireframe-fade-leave-to
+  opacity 0
 
 </style>

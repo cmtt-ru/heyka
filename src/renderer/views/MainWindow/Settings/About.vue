@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
 import { CHANGELOG } from '@/changelog';
 import UiButton from '@components/UiButton';
 
@@ -72,9 +71,9 @@ export default {
 
   methods: {
     checkforUpdatesHandler() {
-      ipcRenderer.send('update-check');
+      window.ipcRenderer.send('update-check');
 
-      ipcRenderer.once('update-not-available', () => {
+      window.ipcRenderer.once('update-not-available', () => {
         this.noUpdate();
       });
     },

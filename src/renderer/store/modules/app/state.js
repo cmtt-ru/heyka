@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron';
 import { heykaStore } from '@/store/localStore';
 
 /**
@@ -55,14 +54,16 @@ const state = () => {
    */
   return {
     appName: 'Heyka Desktop',
-    appVersion: ipcRenderer.sendSync('remote-getVersion'),
-    language: heykaStore.get('language', 'en'),
-    runAppFrom: heykaStore.get('runAppFrom', 'window'),
-    autorun: heykaStore.get('autorun', true),
-    resizeWindow: heykaStore.get('resizeWindow', false),
-    muteMic: heykaStore.get('muteMic', false),
-    closeOverlayButton: heykaStore.get('closeOverlayButton', true),
-    theme: heykaStore.get('theme', {
+    appVersion: window.ipcRenderer.sendSync('remote-getVersion'),
+    language: heykaStore.getSync('language', 'en'),
+    runAppFrom: heykaStore.getSync('runAppFrom', 'window'),
+    autorun: heykaStore.getSync('autorun', true),
+    resizeWindow: heykaStore.getSync('resizeWindow', false),
+    muteMic: heykaStore.getSync('muteMic', false),
+    closeOverlayButton: heykaStore.getSync('closeOverlayButton', true),
+    devServer: heykaStore.getSync('devServer', false),
+    showMoreChannels: heykaStore.getSync('showMoreChannels', true),
+    theme: heykaStore.getSync('theme', {
       name: 'light',
       auto: false,
     }),
@@ -81,7 +82,7 @@ const state = () => {
       microphone: null,
       camera: null,
     },
-    collectAnalytics: heykaStore.get('collectAnalytics', true),
+    collectAnalytics: heykaStore.getSync('collectAnalytics', true),
     privacyLogs: [],
     microphoneVolume: -100,
     notifications: [],
@@ -89,6 +90,7 @@ const state = () => {
     search: '',
     animationChannel: null,
     connectionStatus: {
+      visible: true,
       internet: true,
       api: false,
       socket: false,

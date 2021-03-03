@@ -3,6 +3,7 @@ import { meStore } from '@/store/localStore';
 /**
  * @typedef {object} MeState
  * @property {string} id – my id
+ * @property {string} email – user id
  * @property {string} selectedWorkspaceId – selected workspace id
  * @property {string} selectedChannelId – selected channel id
  * @property {MediaState} mediaState – my media state
@@ -25,21 +26,22 @@ const state = () => {
    * @type MediaState
    */
   const initialMediaState = {
-    microphone: meStore.get('microphone', false),
+    microphone: meStore.getSync('microphone', false),
     speakers: true,
     screen: false,
     camera: false,
     speaking: false,
   };
 
-  const onlineStatus = meStore.get('onlineStatus', 'online');
+  const onlineStatus = meStore.getSync('onlineStatus', 'online');
 
   /**
    * @namespace MeState
    */
   return {
     id: null,
-    selectedWorkspaceId: meStore.get('selectedWorkspaceId'),
+    email: null,
+    selectedWorkspaceId: meStore.getSync('selectedWorkspaceId'),
     selectedChannelId: null,
     mediaState: initialMediaState,
     previousMediaState: initialMediaState,

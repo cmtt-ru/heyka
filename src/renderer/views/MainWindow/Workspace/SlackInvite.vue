@@ -38,7 +38,7 @@
             ref="top_slack_invite"
             v-model="filterKey"
             icon="search"
-            placeholder="Search"
+            :placeholder="$t('techTexts.search')"
             class="user-search"
           />
         </div>
@@ -248,7 +248,7 @@ export default {
 
 .user-search__wrapper
   background-color var(--new-bg-04)
-  padding 6px 0 12px //! bottom is 20px while scrolled and 12px in idle, why
+  padding 6px 0 12px
   position sticky
   top -0.5px
   z-index 10

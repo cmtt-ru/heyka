@@ -1,5 +1,5 @@
 import { app } from 'electron';
-import { IS_MAC } from '../../sdk/Constants';
+import { IS_MAC } from '../../main/Constants';
 
 /**
  * A class that handles Deep Links in main process

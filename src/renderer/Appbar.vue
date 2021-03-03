@@ -4,7 +4,7 @@
     :class="{'appbar--mac': IS_MAC}"
   >
     <div
-      v-if="myWorkspace && myInfo.id"
+      v-if="myWorkspace && myId"
       class="workspace"
     >
       <div
@@ -30,6 +30,7 @@
 
     <div v-if="!IS_MAC">
       <ui-button
+        v-if="!tray"
         :type="7"
         class="control__button"
         size="medium"
@@ -38,6 +39,7 @@
         @click="minimizeWindowHandler"
       />
       <ui-button
+        v-if="!tray"
         :type="7"
         class="control__button control__button--win-close"
         size="medium"
@@ -51,16 +53,23 @@
       v-if="IS_MAC"
       class="mac-controls-wrapper"
     >
-      <div class="mac-controls" />
-      <div class="mac-controls" />
+      <div
+        v-if="!tray"
+        class="mac-controls"
+      />
+      <div
+        v-if="!tray"
+        class="mac-controls"
+      />
     </div>
 
     <div
-      v-if="myInfo.id"
+      v-if="myId"
       class="user"
       :class="{'user--mac': IS_MAC}"
     >
       <ui-button
+        v-if="myWorkspace"
         v-tooltip="speakerTooltip"
         :type="7"
         class="user__button"
@@ -71,6 +80,7 @@
         @click="switchProp('speakers')"
       />
       <ui-button
+        v-if="myWorkspace"
         v-tooltip="microphoneTooltip"
         :type="7"
         class="user__button"
@@ -84,8 +94,8 @@
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
-        :image="userAvatar(myInfo.id, 32)"
-        :user-id="myInfo.id"
+        :image="userAvatar(myId, 32)"
+        :user-id="myId"
         :status="myInfo.onlineStatus"
         :size="32"
       />
@@ -123,6 +133,7 @@ export default {
   data() {
     return {
       IS_MAC,
+      tray: false,
     };
   },
 
@@ -134,6 +145,7 @@ export default {
       mediaState: 'me/getMediaState',
       userAvatar: 'users/getUserAvatarUrl',
       myWorkspace: 'myWorkspace',
+      myId: 'me/getMyId',
     }),
 
     /**
@@ -170,6 +182,12 @@ export default {
         return this.$t('tooltips.speakerOn');
       }
     },
+  },
+
+  created() {
+    if (this.$store.state.app.runAppFrom === 'tray') {
+      this.tray = true;
+    }
   },
 
   methods: {

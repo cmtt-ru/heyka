@@ -72,9 +72,8 @@ export default {
     const userIndex = searchIndexByKey(users, 'userId', userId);
 
     if (userIndex !== undefined) {
-      Vue.set(users, userIndex, {
-        ...users[userIndex],
-        ...userMediaState,
+      Object.keys(userMediaState).forEach(key => {
+        Vue.set(users[userIndex], key, userMediaState[key]);
       });
     }
   },
