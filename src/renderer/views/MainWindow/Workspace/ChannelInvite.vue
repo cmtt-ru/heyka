@@ -1,6 +1,7 @@
 <template>
   <pseudo-popup
     :header-has-shadow="false"
+    cancel-text
     @close="closeHandler"
   >
     <template #header>
