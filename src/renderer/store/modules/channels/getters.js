@@ -22,6 +22,20 @@ export default {
     ]));
   },
 
+  getUsersInAllChannels: state => {
+    const users = {};
+
+    for (const channelId in state.collection) {
+      if (state.collection[channelId].users.length > 0) {
+        for (const user of state.collection[channelId].users) {
+          users[user.userId] = channelId;
+        }
+      }
+    }
+
+    return users;
+  },
+
   /**
    * Get channel by id
    *

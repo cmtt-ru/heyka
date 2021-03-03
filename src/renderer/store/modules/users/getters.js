@@ -3,12 +3,29 @@ import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   /**
-   * Get all users from workspace
+   * Get all users from workspace based on online status
    *
    * @param {UserState} state – user module state
    * @returns {Array.<User>}
    */
   getAllUsers: state => {
+    /** @type {Array.<User>} */
+    const users = Object.values(state.collection);
+
+    return users.sort(sortByPriority({
+      key: 'onlineStatus',
+      priority: ['online', 'idle', 'offline'],
+      name: 'name',
+    })) || [];
+  },
+
+  /**
+   * Get all users from workspace based on online status AND calls frequency
+   *
+   * @param {UserState} state – user module state
+   * @returns {Array.<User>}
+   */
+  getAllUsersByFrequency: state => {
     /** @type {Array.<User>} */
     const users = Object.values(state.collection);
 
