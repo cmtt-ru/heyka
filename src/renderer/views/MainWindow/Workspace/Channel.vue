@@ -54,7 +54,7 @@
       <div class="channel-user-list">
         <list :filter-by="''">
           <list-item
-            v-for="user in users"
+            v-for="user in sortedUsers"
             :key="user.user.id"
             :filter-key="user.user.name"
             button
@@ -151,17 +151,16 @@ export default {
      * @returns {array} array of users
      */
     users() {
-      /**
-       * For test purpose
-       */
-      // return this.$store.getters['users/getAllUsers'].map(u => {
-      //   return {
-      //     user: u,
-      //     mediaState: {},
-      //   };
-      // });
-
       return this.$store.getters.getUsersByChannel(this.channelId);
+    },
+
+    /**
+     * Display temporary users (guests) last
+     * @returns {array} array of sorted users
+     */
+    sortedUsers() {
+      return [...this.users.filter(user => user.user.role !== 'guest'),
+        ...this.users.filter(user => user.user.role === 'guest')];
     },
 
     /**
