@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 export default {
 
   /**
@@ -9,6 +11,17 @@ export default {
    */
   SET_USER_ID(state, id) {
     state.id = id;
+  },
+
+  /**
+   * Sets user email
+   *
+   * @param {MeState} state – module me state
+   * @param {string} email – user email
+   * @constructor
+   */
+  SET_USER_EMAIL(state, email) {
+    state.email = email;
   },
 
   /**
@@ -41,7 +54,9 @@ export default {
    * @constructor
    */
   SET_MEDIA_STATE(state, mediaState) {
-    state.mediaState = mediaState;
+    Object.keys(mediaState).forEach(key => {
+      Vue.set(state.mediaState, key, mediaState[key]);
+    });
   },
 
   /**

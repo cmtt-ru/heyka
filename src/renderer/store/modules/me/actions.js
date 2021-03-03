@@ -1,7 +1,6 @@
 import API from '@api';
 import callWindow from '@classes/callWindow';
 import * as sockets from '@api/socket';
-import { ipcRenderer } from 'electron';
 import { meStore } from '@/store/localStore';
 import Logger from '@sdk/classes/logger';
 import sounds from '@sdk/classes/sounds';
@@ -111,9 +110,9 @@ export default {
       await API.user.setMediaState(mediaState);
 
       if (mediaState.microphone === true) {
-        ipcRenderer.send('tray-animation', true);
+        window.ipcRenderer.send('tray-animation', true);
       } else {
-        ipcRenderer.send('tray-animation', false);
+        window.ipcRenderer.send('tray-animation', false);
       }
     }
   },
@@ -309,12 +308,12 @@ export default {
   },
 
   /**
-   * Update me data
+   * Update social data
    * @param {function} commit – vuex commit
    * @param {object} data – me data
    * @returns {void}
    */
-  async update({ commit }, data) {
+  async updateSocial({ commit }, data) {
     const filteredData = {
       socialAuth: data.socialAuth,
     };

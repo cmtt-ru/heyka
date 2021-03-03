@@ -108,10 +108,13 @@ export default {
    * @returns {Promise<void>}
    */
   async copyInviteLink({ dispatch }, channelId) {
-    const { token } = await API.channel.invite(channelId);
+    const invite = await API.channel.invite(channelId);
 
-    if (token) {
-      navigator.clipboard.writeText(`${WEB_URL}/guest/${token}`);
+    let url = '';
+
+    if (invite.token) {
+      url = `${WEB_URL}/guest/${invite.token}`;
+      navigator.clipboard.writeText(url);
 
       const texts = i18n.t('workspace.channel');
 
@@ -122,6 +125,11 @@ export default {
       };
 
       await dispatch('app/addNotification', notification, { root: true });
+
+      return {
+        url,
+        ...invite,
+      };
     }
   },
 
@@ -176,7 +184,7 @@ export default {
       return;
     }
 
-    if (!data) {
+    if (data === undefined) {
       console.error('Process Conversation Data --> `data` is not defined');
 
       return;

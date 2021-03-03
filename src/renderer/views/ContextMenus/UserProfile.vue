@@ -1,6 +1,9 @@
 <template>
   <popover :min-width="200">
-    <div class="buttons">
+    <div
+      v-if="myWorkspace"
+      class="buttons"
+    >
       <router-link :to="{ name: 'user', params: { id: myId }}">
         <ui-button
           data-popover-close
@@ -22,9 +25,15 @@
       </router-link>
     </div>
 
-    <div class="delimiter" />
+    <div
+      v-if="myWorkspace"
+      class="delimiter"
+    />
 
-    <div class="buttons">
+    <div
+      v-if="myWorkspace"
+      class="buttons"
+    >
       <ui-button
         data-popover-close
         :type="11"
@@ -111,7 +120,6 @@ import Popover from '@components/Popover';
 import UiButton from '@components/UiButton';
 import logout from '@api/auth/logout';
 import { mapGetters, mapState } from 'vuex';
-import { ipcRenderer } from 'electron';
 
 export default {
   components: {
@@ -122,6 +130,7 @@ export default {
   computed: {
     ...mapGetters({
       myId: 'me/getMyId',
+      myWorkspace: 'myWorkspace',
     }),
 
     ...mapState('me', {
@@ -160,7 +169,7 @@ export default {
      * @returns {void}
      */
     quitAppHandler() {
-      ipcRenderer.send('remote-quit');
+      window.ipcRenderer.send('remote-quit');
     },
   },
 };

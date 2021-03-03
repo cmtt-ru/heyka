@@ -1,6 +1,8 @@
-import OS from 'os';
+import UAParser from 'ua-parser-js';
 import i18n from '@sdk/translations/i18n';
 import { heykaStore } from '@/store/localStore';
+
+const parsedUserAgent = new UAParser().getResult();
 
 export default {
   /**
@@ -13,8 +15,8 @@ export default {
     return {
       name: state.appName,
       version: state.appVersion,
-      system: OS.type(), // TODO: make prettier
-      systemVer: OS.release(),
+      system: parsedUserAgent.os.name,
+      systemVer: parsedUserAgent.os.version,
     };
   },
 
@@ -89,14 +91,6 @@ export default {
   getSelectedDevices: (state) => state.selectedDevices,
 
   /**
-   * Get mic volume
-   *
-   * @param {AppState} state – module app state
-   * @returns {object}
-   */
-  getMicrophoneVolume: (state) => state.microphoneVolume,
-
-  /**
    * Get fluent channel id (for animations!)
    *
    * @param {AppState} state – module app state
@@ -119,13 +113,13 @@ export default {
    * @param {object} getters – vuex getters
    * @returns {function(*): any}
    */
-  loadSelectedDevice: (state, getters) => (deviceType) => {
+  loadSelectedDevice: (state, getters) => async (deviceType) => {
     const deviceTypeCapitalized = deviceType.charAt(0).toUpperCase() + deviceType.slice(1);
-    let deviceId = heykaStore.get(`selected${deviceTypeCapitalized}`, 'default');
+    let deviceId = await heykaStore.get(`selected${deviceTypeCapitalized}`, 'default');
     let device = getters.getDevice(deviceType, deviceId);
 
     if (!device) {
-      const deviceLabel = heykaStore.get(`selected${deviceTypeCapitalized}Label`);
+      const deviceLabel = await heykaStore.get(`selected${deviceTypeCapitalized}Label`);
 
       device = getters['getDeviceByLabel'](deviceType, deviceLabel);
 
@@ -140,7 +134,11 @@ export default {
   },
 
   getConnectionStatus: state => {
-    return state.connectionStatus.internet && state.connectionStatus.api && state.connectionStatus.socket;
+    if (state.connectionStatus.visible) {
+      return state.connectionStatus.internet && state.connectionStatus.api && state.connectionStatus.socket;
+    }
+
+    return true;
   },
 
 };

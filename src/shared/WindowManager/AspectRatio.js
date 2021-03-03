@@ -1,5 +1,5 @@
 import { screen } from 'electron';
-import { IS_WIN } from '../../sdk/Constants';
+import { IS_WIN } from '../../main/Constants';
 
 const directions = {
   LEFT: 1,

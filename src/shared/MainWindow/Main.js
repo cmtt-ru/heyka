@@ -4,10 +4,12 @@ import DeepLink from '../DeepLink/DeepLinkMain';
 import Positioner from '../WindowManager/Positioner';
 import Autoupdater from '../../main/classes/AutoUpdater';
 import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electron';
-import { heykaStore } from '../../renderer/store/localStore';
-import { IS_DEV, IS_MAC } from '../../sdk/Constants';
+import { heykaStore } from '../../main/localStore';
+import { IS_DEV, IS_MAC } from '../../main/Constants';
 
 const resizeable = heykaStore.get('resizeWindow', false);
+
+const MUTE_SHORTCUT = 'CommandOrControl+Shift+M';
 
 let params = {};
 
@@ -16,6 +18,9 @@ if (TrayManager.isInTray()) {
     position: 'tray',
     template: 'maintray',
     preventClose: true,
+    margin: 20,
+    isMainWindow: true,
+    showFast: true,
   };
 
   if (IS_MAC) {
@@ -26,7 +31,9 @@ if (TrayManager.isInTray()) {
     position: 'center',
     windowPosition: heykaStore.get('windowPosition'),
     template: resizeable ? 'mainDev' : 'main',
+    isMainWindow: true,
     preventClose: true,
+    showFast: true,
   };
 }
 
@@ -138,7 +145,7 @@ class MainWindow {
      */
     this.window.webContents.on('did-finish-load', () => {
       WindowManager.closeAll();
-      globalShortcut.unregister('CommandOrControl+Shift+M');
+      globalShortcut.unregister(MUTE_SHORTCUT);
     });
 
     /**
@@ -146,13 +153,17 @@ class MainWindow {
      */
 
     ipcMain.on('remote-register-mute-shortcut', () => {
-      globalShortcut.register('CommandOrControl+Shift+M', () => {
+      if (globalShortcut.isRegistered(MUTE_SHORTCUT)) {
+        return;
+      }
+
+      globalShortcut.register(MUTE_SHORTCUT, () => {
         this.window.webContents.send('hotkey-mic');
       });
     });
 
     ipcMain.on('remote-unregister-mute-shortcut', () => {
-      globalShortcut.unregister('CommandOrControl+Shift+M');
+      globalShortcut.unregister(MUTE_SHORTCUT);
     });
 
     /**

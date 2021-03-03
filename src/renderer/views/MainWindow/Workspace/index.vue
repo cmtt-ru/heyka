@@ -7,6 +7,8 @@
     <template #content-body>
       <router-view />
     </template>
+
+    <!-- <performance-monitor /> -->
   </layout>
 </template>
 

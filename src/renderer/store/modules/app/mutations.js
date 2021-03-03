@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { heykaStore } from '@/store/localStore';
 
 /**
  * Max length of privacy log array
@@ -222,6 +223,18 @@ export default {
    */
   ANIMATION_CHANNEL_ID(state, id) {
     state.animationChannel = id;
+  },
+
+  /**
+   * Set showMoreChannels
+   *
+   * @param {AppState} state – module app state
+   * @param {boolean} value – value
+   * @constructor
+   */
+  SET_CHANNELS_EXPANDED(state, value) {
+    state.showMoreChannels = value;
+    heykaStore.set('showMoreChannels', true);
   },
 
   /**

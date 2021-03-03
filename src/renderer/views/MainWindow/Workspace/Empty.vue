@@ -1,6 +1,12 @@
 <template>
   <div class="empty-message">
     <div class="empty-message__inner">
+      <svg-icon
+        class="empty-message__doggo"
+        name="doggo"
+        width="100"
+        height="81"
+      />
       <p>{{ texts.empty }}</p>
     </div>
 
@@ -17,7 +23,6 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
 import { CHANGELOG } from '@/changelog';
 
 export default {
@@ -36,7 +41,7 @@ export default {
     },
   },
   mounted() {
-    ipcRenderer.send('page-rendered', 'Hello from Main!');
+    window.ipcRenderer.send('page-rendered', 'Hello from Main!');
   },
 };
 </script>
@@ -51,7 +56,11 @@ export default {
     position relative
     align-items center
     justify-content center
-    color var(--text-1)
+    color var(--new-UI-04)
+    white-space pre-line
+
+    &__doggo
+      margin-bottom 14px
 
   .changelog
     position absolute

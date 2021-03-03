@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="layout">
     <div
       class="layout__appbar"
       :class="{'layout__appbar--mac': IS_MAC}"
@@ -14,7 +14,7 @@
       <slot name="header" />
     </div>
     <div
-      class="layout"
+      class="layout__content"
     >
       <div
         class="layout__column layout__column--sidebar"
@@ -53,9 +53,12 @@ export default {
 <style lang="stylus" scoped>
 
   .layout
-    display flex
-    width 100%
-    height calc(100vh - 96px)
+    background-color var(--new-bg-03)
+
+    &__content
+      display flex
+      width 100%
+      height calc(100vh - 96px)
 
     &__appbar
       width 100%

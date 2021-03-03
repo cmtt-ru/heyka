@@ -3,13 +3,13 @@ import { mapKeys } from '@libs/arrays';
 import * as sockets from '@api/socket';
 import initialProcess from '@api/initialProcess';
 import callWindow from '@classes/callWindow';
-import { ipcRenderer } from 'electron';
 import router from '@/router';
 import sounds from '@sdk/classes/sounds';
 import connectionCheck from '@sdk/classes/connectionCheck';
 import Logger from '@sdk/classes/logger';
 
 const cnsl = new Logger('Initial', '#db580e');
+const PLAY_SOUND_TIMEOUT = 10;
 
 export default {
 
@@ -28,6 +28,7 @@ export default {
     }
 
     cnsl.log('start');
+    connectionCheck.resetConnectionStatus();
 
     try {
       /** Wait until internet goes online */
@@ -42,18 +43,40 @@ export default {
 
       if (userId) {
         commit('me/SET_USER_ID', userId);
-        dispatch('me/update', authenticatedUser);
+        commit('me/SET_USER_EMAIL', authenticatedUser.email);
+        dispatch('me/updateSocial', authenticatedUser);
 
         /** Update workspace list */
         cnsl.log('...wait for workspace list');
-        await dispatch('workspaces/updateList');
+        const updateListState = await dispatch('workspaces/updateList');
 
-        /** Get specific workspace data */
-        cnsl.log('...wait for current workspace');
-        await dispatch('updateCurrentWorkspaceState');
+        if (updateListState) {
+          /** Get specific workspace data */
+          cnsl.log('...wait for current workspace');
+          await dispatch('updateCurrentWorkspaceState');
 
-        cnsl.log('...wait for sockets init');
-        await sockets.init();
+          cnsl.log('...wait for sockets init');
+          await sockets.init();
+
+          connectionCheck.appStatusVisibleState(true);
+
+          const routes = [
+            'auth',
+            'auth',
+            'auth-email-signin',
+            'auth-email-reset',
+            'no-workspace',
+          ];
+
+          if (routes.indexOf(router.history.current.name) >= 0) {
+            await router.replace({ name: 'workspace' });
+          }
+        } else {
+          cnsl.log('...workspace list is empty');
+          connectionCheck.appStatusVisibleState(false);
+
+          await router.replace({ name: 'no-workspace' });
+        }
       } else {
         console.error('AUTH REQUIRED');
       }
@@ -121,7 +144,9 @@ export default {
       }
     }
 
-    sounds.play('me-joined');
+    setTimeout(() => {
+      sounds.play('me-joined');
+    }, PLAY_SOUND_TIMEOUT);
   },
 
   /**
@@ -147,11 +172,14 @@ export default {
         userId: state.me.id,
         channelId: state.me.selectedChannelId,
       });
+
+      commit('channels/CLEAR_CONVERSATION_DATA', { channelId: id });
+      commit('channels/CLEAR_CONVERSATION_EVENTS', { channelId: id });
     }
 
     commit('janus/SET_OPTIONS', connectionOptions);
 
-    ipcRenderer.send('remote-register-mute-shortcut');
+    window.ipcRenderer.send('remote-register-mute-shortcut');
 
     commit('channels/ADD_USER', {
       userId: state.me.id,
@@ -165,13 +193,13 @@ export default {
 
     dispatch('me/setChannelId', id);
 
-    const isAnybodySharingMedia = getters['isAnybodySharingMedia'];
-    const isMediaSharing = isAnybodySharingMedia && !state.me.mediaState.screen;
+    // const isAnybodySharingMedia = getters['isAnybodySharingMedia'];
+    // const isMediaSharing = isAnybodySharingMedia && !state.me.mediaState.screen;
 
-    callWindow.showOverlay(isMediaSharing);
+    callWindow.showOverlay();
 
     if (state.me.mediaState.microphone === true) {
-      ipcRenderer.send('tray-animation', true);
+      window.ipcRenderer.send('tray-animation', true);
     }
   },
 
@@ -181,8 +209,14 @@ export default {
    * @param {string} id – channel id
    * @returns {object} unselected channel
    */
-  async unselectChannel({ commit, dispatch, state }, id = state.me.selectedChannelId) {
+  async unselectChannel({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
     commit('app/ANIMATION_CHANNEL_ID', null);
+    const channel = getters['channels/getChannelById'](id);
+
+    if (channel.isTemporary) {
+      router.replace({ name: 'workspace' });
+    }
+
     try {
       await API.channel.unselect(id);
     } catch (err) {
@@ -204,11 +238,8 @@ export default {
    */
   unselectChannelWithoutAPICall({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
     const channel = getters['channels/getChannelById'](id);
-    let isTemporary = false;
 
     if (channel) {
-      isTemporary = channel.isTemporary;
-
       commit('channels/REMOVE_USER', {
         userId: state.me.id,
         channelId: id,
@@ -218,7 +249,7 @@ export default {
       commit('channels/CLEAR_CONVERSATION_EVENTS', { channelId: id });
     }
 
-    ipcRenderer.send('remote-unregister-mute-shortcut');
+    window.ipcRenderer.send('remote-unregister-mute-shortcut');
 
     dispatch('me/setChannelId', null);
 
@@ -226,8 +257,9 @@ export default {
 
     callWindow.closeAll();
 
-    ipcRenderer.send('tray-animation', false);
-    if (isTemporary) {
+    window.ipcRenderer.send('tray-animation', false);
+
+    if (router.history.current.name === 'channel-invite') {
       router.replace({ name: 'workspace' });
     }
   },
@@ -239,8 +271,7 @@ export default {
    * @returns {void}
    */
   async openGrid({ state }, userId) {
-    callWindow.hideOverlay();
-    callWindow.showGrid(userId);
+    await callWindow.showGrid(userId);
   },
 
   /**
@@ -289,7 +320,7 @@ export default {
    * @returns {void}
    */
   async openSharingWindow() {
-    callWindow.showSharing();
+    return callWindow.showSharing();
   },
 
   /**
@@ -297,7 +328,7 @@ export default {
    * @returns {void}
    */
   async closeSharingWindow() {
-    callWindow.closeSharing();
+    await callWindow.closeSharing();
   },
 
   /**
@@ -339,10 +370,6 @@ export default {
       await API.auth.signinByLink(authLink);
 
       await dispatch('initial');
-
-      await router.replace({
-        name: 'workspace',
-      });
     } catch (err) {
       console.log(`Code ${authLink} is invalid:`, err);
     }
