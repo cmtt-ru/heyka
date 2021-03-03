@@ -3,7 +3,6 @@ const Channel = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/W
 const User = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/User');
 const WorkspaceEmpty = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Empty');
 const DrawingTest = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/DrawingTest');
-const EditProfile = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/EditProfile');
 const EditChannel = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/EditChannel');
 const Invite = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/Invite');
 const ChannelInvite = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Workspace/ChannelInvite');
@@ -26,11 +25,6 @@ export const workspaceRoutes = {
       path: 'user/:id',
       name: 'user',
       component: User,
-    },
-    {
-      path: 'edit-profile',
-      name: 'edit-profile',
-      component: EditProfile,
     },
     {
       path: 'drawing',
