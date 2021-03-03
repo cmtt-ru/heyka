@@ -215,7 +215,7 @@ export default {
 
     ...mapGetters({
       channels: 'channels/getChannels',
-      getAllUsers: 'users/getAllUsers',
+      getAllUsers: 'users/getAllUsersByFrequency',
     }),
 
     ...mapState('app', {
