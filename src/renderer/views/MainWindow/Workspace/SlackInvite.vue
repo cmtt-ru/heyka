@@ -306,7 +306,7 @@ export default {
     padding 1px
     box-sizing border-box
     flex-shrink 0
-    color var(--new-bg-04)
+    color transparent
     border 1px solid var(--new-UI-05)
     border-radius 50%
 

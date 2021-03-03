@@ -64,12 +64,6 @@
           <div v-if="emailsSent">
             <div class="success">
               {{ texts.sendSuccess }} {{ $tc("workspace.invite.inviteAmount", emails.length) }}
-              <svg-icon
-                class="success__tick"
-                name="check"
-                stroke="var(--color-1)"
-                size="medium"
-              />
             </div>
             <ui-button
               :type="1"
