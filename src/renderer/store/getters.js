@@ -79,9 +79,11 @@ export default {
       }
 
       if (usersWhoSharesCamera.length > 0) {
-        lastUserWhoSharesMedia = usersWhoSharesCamera[0].userId;
+        const sortedBySpeakingTs = usersWhoSharesCamera.sort((a, b) => Date.parse(b.startSpeakingTs || 0) - Date.parse(a.startSpeakingTs || 0));
 
-        return usersWhoSharesCamera[0].userId;
+        lastUserWhoSharesMedia = sortedBySpeakingTs[0].userId;
+
+        return sortedBySpeakingTs[0].userId;
       }
     }
 
