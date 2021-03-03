@@ -1,5 +1,8 @@
 <template>
-  <pseudo-popup @close="cancelHandler">
+  <pseudo-popup
+    cancel-text
+    @close="cancelHandler"
+  >
     <template #header>
       {{ title }}
     </template>
