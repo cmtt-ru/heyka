@@ -9,6 +9,7 @@
 
     <template #body>
       <div
+        v-sticky.top="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
         class="user-search__wrapper"
       >
         <ui-input

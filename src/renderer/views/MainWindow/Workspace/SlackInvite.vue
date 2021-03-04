@@ -34,7 +34,7 @@
           {{ texts.successInviteStart }}{{ $tc("slackInvite.successInviteMiddle", invitesSentTo.length) }}{{ texts.successInviteEnd }}
         </div>
         <div
-          v-sticky.top="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
+          v-sticky.top="{ offset: -0.1, rootSelector: '.pseudo-popup__body' }"
           class="user-search__wrapper"
         >
           <ui-input
@@ -357,6 +357,6 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-UI-06)
+    background-color var(--shadow-10)
 
 </style>

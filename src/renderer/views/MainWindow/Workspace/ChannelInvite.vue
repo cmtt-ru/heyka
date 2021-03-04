@@ -15,7 +15,7 @@
           :name="texts.userTab"
         >
           <div
-            v-sticky.top="{ offset: 0, rootSelector: '.pseudo-popup__body' }"
+            v-sticky.top="{ offset: -0.1, rootSelector: '.pseudo-popup__body' }"
             class="user-search__wrapper"
           >
             <ui-input
