@@ -112,6 +112,23 @@ export default {
   },
 
   /**
+   * Set muteHotkey mode
+   *
+   * @param {function} commit – store commit
+   * @param {string} muteHotkey – app muteHotkey mode
+   * @returns {void}
+   */
+  setMuteHotkey({ commit }, muteHotkey) {
+    commit('SET_MUTE_HOTKEY', muteHotkey);
+    heykaStore.set('muteHotkey', muteHotkey);
+    if (muteHotkey) {
+      window.ipcRenderer.send('remote-register-mute-shortcut');
+    } else {
+      window.ipcRenderer.send('remote-unregister-mute-shortcut');
+    }
+  },
+
+  /**
    * Set closeOverlayButton mode
    *
    * @param {function} commit – store commit

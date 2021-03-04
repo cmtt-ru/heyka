@@ -60,6 +60,8 @@ function createLocalServer(portIndex = 0) {
  * @returns {void}
 */
 function destroyLocalServer() {
-  localAuthServer.close();
-  localAuthServer = null;
+  if (localAuthServer) {
+    localAuthServer.close();
+    localAuthServer = null;
+  }
 }

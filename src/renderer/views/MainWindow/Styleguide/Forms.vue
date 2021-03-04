@@ -2,7 +2,7 @@
   <div>
     <ui-form
       :error.sync="formError"
-      @submit="submit()"
+      @submit="submit"
     >
       <h3 class="l-mt-24">
         Switch
