@@ -3,12 +3,37 @@ import { getUserAvatarUrl } from '@libs/image';
 
 export default {
   /**
-   * Get all users from workspace
+   * Get all users from workspace based on online status
+   *
+   * @param {UserState} state – user module state
+   * @param {object} getters – vuex getters
+   * @returns {Array.<User>}
+   */
+  getAllUsers: (state, getters) => {
+    /** @type {Array.<User>} */
+    const users = getters['getAllUsersByFrequency'];
+
+    const onlineUsers = [];
+    const offlineUsers = [];
+
+    users.forEach(u => {
+      if (u.onlineStatus === 'offline') {
+        onlineUsers.push(u);
+      } else {
+        offlineUsers.push(u);
+      }
+    });
+
+    return offlineUsers.concat(onlineUsers);
+  },
+
+  /**
+   * Get all users from workspace based on online status AND calls frequency
    *
    * @param {UserState} state – user module state
    * @returns {Array.<User>}
    */
-  getAllUsers: state => {
+  getAllUsersByFrequency: state => {
     /** @type {Array.<User>} */
     const users = Object.values(state.collection);
 

@@ -89,8 +89,9 @@
     >
       <list-item
         v-for="channel in filteredChannelItems"
-        :key="channel.name"
+        :key="channel.id"
         :similarity="channel.similarity"
+        button
         @dblclick.native="dbclickChannelHandler(channel)"
       >
         <transition name="list-channel">
@@ -221,7 +222,7 @@ export default {
 
     ...mapGetters({
       channels: 'channels/getChannels',
-      getAllUsers: 'users/getAllUsers',
+      getAllUsers: 'users/getAllUsersByFrequency',
     }),
 
     ...mapState('app', {
@@ -415,8 +416,10 @@ $ANIM = 250ms
   top 0
   z-index 20
   background-color var(--new-bg-01)
-  padding 12px 0
+  padding 12px
   margin-top -12px
+  width 100%
+  margin-left -12px
 
 .search
   height 28px
@@ -510,27 +513,25 @@ $ANIM = 250ms
   position relative
 
 .connected-channel
-  margin-top 16px
-  margin-bottom 0px
+  margin-top 4px
+  margin-bottom 12px
 
 .connected-channel-enter
   opacity 0
-  transform translateY(45px)
-  margin-bottom -45px
-  margin-top 0px
+  transform translateY(44px)
+  margin-bottom -49px
 
 .connected-channel-enter-to
-  margin-top 16px
+  margin-bottom 12px
   transition all $ANIM ease
 
-.connected-channel-leave
-  margin-top 16px
+//.connected-channel-leave
 
 .connected-channel-leave-to
   opacity 0
-  transform translateY(45px)
-  margin-bottom -45px
-  margin-top 0px
+  transform translateY(44px)
+  margin-bottom -49px
+  margin-top 0
   transition all $ANIM ease
 
 .list-channel-enter
