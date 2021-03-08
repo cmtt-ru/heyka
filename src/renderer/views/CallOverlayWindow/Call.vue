@@ -420,6 +420,10 @@ export default {
     async insertStream(stream) {
       const video = this.$refs.video;
 
+      if (video.srcObject) {
+        video.style.backgroundImage = `url(${this.getFrameFromVideo()})`;
+      }
+
       video.srcObject = stream;
 
       video.onloadedmetadata = () => {
@@ -547,6 +551,9 @@ export default {
         height 100%
         object-fit cover
         background-color #000000
+        background-size cover
+        background-position center
+        background-repeat no-repeat
 
       &__preloader
         position absolute
