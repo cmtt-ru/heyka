@@ -247,12 +247,10 @@ export default {
     if (myId === undefined) {
       return null;
     }
-    const commonInfo = getters['users/getUserById'](myId);
-    const myMedia = getters['me/getMediaState'];
 
     return {
-      ...commonInfo,
-      ...myMedia,
+      user: getters['users/getUserById'](myId),
+      mediaState: getters['me/getMediaState'],
     };
   },
 

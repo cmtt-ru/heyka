@@ -91,8 +91,6 @@ export default {
 
   computed: {
     ...mapGetters({
-      selectedChannel: 'myChannel',
-      me: 'myInfo',
       socialAuth: 'me/getSocialAuth',
     }),
 
