@@ -59,7 +59,7 @@ export default {
 
         lastUserWhoSharesMedia = sortedSharings[0].userId;
 
-        return sortedSharings[0].userId;
+        return lastUserWhoSharesMedia;
       }
 
       const speakingUserWithCamera = usersWhoSharesCamera.filter(user => user.speaking);
