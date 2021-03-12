@@ -96,7 +96,7 @@
         class="user__avatar"
         :image="userAvatar(myId, 32)"
         :user-id="myId"
-        :status="myInfo.onlineStatus"
+        :status="myInfo.user.onlineStatus"
         :size="32"
       />
     </div>
@@ -154,8 +154,8 @@ export default {
      */
     icons() {
       return {
-        microphone: ICON_MAP.microphone[this.myInfo.microphone],
-        speakers: ICON_MAP.speakers[this.myInfo.speakers],
+        microphone: ICON_MAP.microphone[this.myInfo.mediaState.microphone],
+        speakers: ICON_MAP.speakers[this.myInfo.mediaState.speakers],
       };
     },
 
