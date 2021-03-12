@@ -90,6 +90,8 @@ export default {
       isMediaPlaying: false,
       isStreamActive: false,
       isNeedToWaitVideo: true,
+
+      userWhoSharesMedia: null,
     };
   },
   computed: {
@@ -137,7 +139,7 @@ export default {
     },
 
     sharingUser() {
-      const user = this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
+      const user = this.$store.getters['users/getUserById'](this.userWhoSharesMedia);
 
       if (!user) {
         return;
@@ -145,6 +147,10 @@ export default {
 
       const channel = this.$store.getters['channels/getChannelById'](this.selectedChannelId);
       const mediaState = channel.users.filter(c => c.userId === user.id)[0];
+
+      if (!mediaState) {
+        return;
+      }
 
       return {
         user,
@@ -231,6 +237,7 @@ export default {
     },
 
     getUserWhoSharesMedia(userId) {
+      this.userWhoSharesMedia = userId;
       this.loadCurrentVideo();
     },
 
@@ -251,6 +258,8 @@ export default {
     }
 
     this.showPreloader(this.isLocalMediaSharing);
+
+    this.userWhoSharesMedia = this.getUserWhoSharesMedia;
 
     // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
   },
@@ -324,7 +333,7 @@ export default {
      * @returns {void}
      */
     loadCurrentVideo() {
-      const userId = this.getUserWhoSharesMedia;
+      const userId = this.userWhoSharesMedia;
 
       let publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === userId);
 
@@ -382,14 +391,14 @@ export default {
      * @returns {void}
      */
     expandHandler() {
-      if (this.getUserWhoSharesMedia) {
+      if (this.userWhoSharesMedia) {
         broadcastEvents.removeAllListeners('grid-expanded-ready');
         /** Wait until expanded grid appears and send video frame */
         broadcastEvents.once('grid-expanded-ready', () => {
           broadcastEvents.dispatch('grid-expanded-set-video-frame', this.getFrameFromVideo());
         });
 
-        broadcastActions.dispatch('openGrid', this.getUserWhoSharesMedia);
+        broadcastActions.dispatch('openGrid', this.userWhoSharesMedia);
       }
     },
 
