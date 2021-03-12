@@ -18,16 +18,20 @@ import { throttle } from 'throttle-debounce';
 import Logger from '@sdk/classes/logger';
 import router from '@/router';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
-import { measureModules } from '@libs/vuexMeasurer';
 
-measureModules(modules);
-measureModules({
-  root: {
-    actions,
-    getters,
-    mutations,
-  },
-});
+/**
+ * Enable this code for deep store debugging
+ */
+// import { measureModules } from '@libs/vuexMeasurer';
+//
+// measureModules(modules);
+// measureModules({
+//   root: {
+//     actions,
+//     getters,
+//     mutations,
+//   },
+// });
 
 const cnsl = new Logger('Vuex index', '#17A589');
 
