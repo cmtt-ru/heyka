@@ -72,7 +72,7 @@ export default {
 
   computed: {
     ...mapGetters({
-      user: 'myInfo',
+      myId: 'me/getMyId',
       selectedChannel: 'myChannel',
       userById: 'users/getUserById',
     }),
@@ -108,7 +108,7 @@ export default {
         return;
       }
 
-      if (this.user.id !== newVal) {
+      if (this.myId !== newVal) {
         this.changeHeader(this.userById(newVal).name, 'connect');
       }
     },

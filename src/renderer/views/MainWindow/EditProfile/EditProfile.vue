@@ -7,8 +7,8 @@
       <div class="user">
         <ui-image
           ref="avatarInput"
-          :key="me.avatarFileId || me.id"
-          :image="userAvatar(me.id, 64)"
+          :key="me.user.avatarFileId || me.user.id"
+          :image="userAvatar(me.user.id, 64)"
           class="user__avatar"
           :size="64"
           @input="setNewAvatar"
@@ -35,14 +35,14 @@
       <ui-input
         v-model="profile.name"
         class="user__input"
-        :placeholder="me.name"
+        :placeholder="me.user.name"
       />
 
       <div class="block-title">
         {{ texts.emailLabel }}
       </div>
       <div>
-        {{ me.email }}
+        {{ me.user.email }}
       </div>
       <div
         class="edit-link"
@@ -122,7 +122,7 @@ export default {
      * @returns {string}
      */
     vuexName() {
-      return this.me.name;
+      return this.me.user.name;
     },
 
     /**
@@ -130,7 +130,7 @@ export default {
      * @returns {string}
      */
     vuexAvatarFileId() {
-      return this.me.avatarFileId;
+      return this.me.user.avatarFileId;
     },
   },
 
@@ -223,7 +223,7 @@ export default {
 
     async resetHandler() {
       try {
-        await this.$API.auth.discardPass({ email: this.me.email });
+        await this.$API.auth.discardPass({ email: this.me.user.email });
       } catch (err) {
         console.log('ERROR:', err);
       }
