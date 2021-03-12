@@ -91,6 +91,9 @@ export default {
       isStreamActive: false,
       isNeedToWaitVideo: true,
 
+      /**
+       * Used for real changes of `getUserWhoSharesMedia` getter, to prevent re-renders
+       */
       userWhoSharesMedia: null,
     };
   },
@@ -539,33 +542,6 @@ export default {
       if (!this.isMediaPlaying && this.$refs.video) {
         console.log(`Video event --> timeUpdate`, this.$refs.video.currentTime);
         this.setMediaPlaying(this.$refs.video.currentTime !== 0);
-      }
-    },
-
-    toggleUsers() {
-      var u1 = JSON.parse('{"userId":"4f37cf73-11e3-4a28-9eb0-d21173ea19b5","channelId":"5a8b6e8e-7ee5-4834-9efc-bd2c3dff8060","userMediaState":{"microphone":true,"speakers":true,"screen":false,"camera":true,"speaking":false}}');
-      var u2 = JSON.parse('{"userId":"4042dab6-18ca-4965-8190-dd5601b03a1b","channelId":"5a8b6e8e-7ee5-4834-9efc-bd2c3dff8060","userMediaState":{"microphone":true,"speakers":true,"screen":false,"camera":true,"speaking":false}}');
-      var us = [u1, u2];
-
-      if (this.i === undefined) {
-        this.i = 0;
-      }
-
-      if (this.i === 0) {
-        this.i = 1;
-        us[0].userMediaState.speaking = false;
-        this.$store.commit('channels/SET_USER_MEDIA_STATE', us[0]);
-
-        us[1].userMediaState.speaking = true;
-        this.$store.commit('channels/SET_USER_MEDIA_STATE', us[1]);
-      } else {
-        this.i = 0;
-
-        us[1].userMediaState.speaking = false;
-        this.$store.commit('channels/SET_USER_MEDIA_STATE', us[1]);
-
-        us[0].userMediaState.speaking = true;
-        this.$store.commit('channels/SET_USER_MEDIA_STATE', us[0]);
       }
     },
   },
