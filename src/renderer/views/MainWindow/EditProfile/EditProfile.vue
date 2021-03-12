@@ -7,7 +7,7 @@
       <div class="user">
         <ui-image
           ref="avatarInput"
-          :key="me.avatarFileId || me.user.id"
+          :key="me.user.avatarFileId || me.user.id"
           :image="userAvatar(me.user.id, 64)"
           class="user__avatar"
           :size="64"
