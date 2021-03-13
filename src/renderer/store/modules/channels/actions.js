@@ -210,6 +210,10 @@ export default {
       case 'socket-reconnecting':
         commit('ADD_CONVERSATION_DATA', commitData);
         break;
+
+      case 'mini-chat':
+        commit('ADD_CONVERSATION_EVENT', commitData);
+        break;
     }
   },
 };
