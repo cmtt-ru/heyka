@@ -72,6 +72,8 @@ import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
+import { linkify } from '@libs/texts';
+import xss from 'xss';
 
 export default {
   components: {
@@ -113,6 +115,8 @@ export default {
       myId: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
       isSharingFullScreen: 'janus/isSharingFullScreen',
+      miniChatLastMessageTimestamp: 'channels/getMiniChatLastMessageTimestamp',
+      miniChatMessages: 'channels/getMiniChatMessages',
     }),
 
     /**
@@ -250,6 +254,14 @@ export default {
 
     isNeedToShowPreloader(val) {
       this.showPreloader(val);
+    },
+
+    miniChatLastMessageTimestamp(val) {
+      const lastMessage = this.miniChatMessages.slice(-1)[0];
+
+      if (this.myId !== lastMessage.userId) {
+        this.showLinkPush(lastMessage.userId, lastMessage.data.message);
+      }
     },
   },
 
@@ -543,6 +555,42 @@ export default {
         console.log(`Video event --> timeUpdate`, this.$refs.video.currentTime);
         this.setMediaPlaying(this.$refs.video.currentTime !== 0);
       }
+    },
+
+    async showLinkPush(userId, message) {
+      const sanitizedMessage = xss(message);
+      const textWithLinks = linkify(sanitizedMessage);
+
+      if (textWithLinks.indexOf('</a>') > -1) {
+        const htmlLink = this.parseHTML(textWithLinks).querySelector('a');
+
+        if (htmlLink) {
+          const push = {
+            inviteId: 'id-' + Date.now(),
+            userId,
+            local: true,
+            name: 'link',
+            message: { action: 'fastLink' },
+            data: {
+              link: htmlLink.href,
+            },
+          };
+
+          broadcastActions.dispatch('app/addPush', push);
+        }
+      }
+    },
+
+    parseHTML(htmlStr) {
+      let tmp = document.implementation.createHTMLDocument('');
+
+      tmp.body.innerHTML = htmlStr;
+
+      if (tmp.length === 1) {
+        tmp = tmp[0];
+      }
+
+      return tmp;
     },
   },
 };

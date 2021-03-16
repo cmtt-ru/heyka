@@ -52,6 +52,7 @@ export default {
     busy: () => import('./Templates/Busy'),
     muted: () => import('./Templates/Muted'),
     mutedForAll: () => import('./Templates/MutedForAll'),
+    fastLink: () => import('./Templates/FastLink'),
   },
 
   props: {
