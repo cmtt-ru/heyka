@@ -34,6 +34,8 @@ import { heykaStore } from '@/store/localStore';
  * @property {string} search – workspace search
  *
  * @property {ConnectionStatus} connectionStatus - several connection status
+ *
+ * @property {number} miniChatLastMessageTimestamp - last mini chat message timestamp
  */
 
 /**
@@ -97,6 +99,7 @@ const state = () => {
       socket: false,
       janus: false,
     },
+    miniChatLastReadTimestamp: 0,
   };
 };
 

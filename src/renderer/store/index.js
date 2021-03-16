@@ -72,6 +72,7 @@ const plugins = [
       'channels/ADD_CONVERSATION_EVENT',
       'channels/CLEAR_CONVERSATION_EVENTS',
       'channels/REMOVE_CHANNEL',
+      'channels/SET_MINI_CHAT_READ_TIMESTAMP',
       'janus/SET_OPTIONS',
       'janus/SET_SHARING_SOURCE',
     ],

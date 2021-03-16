@@ -216,7 +216,7 @@ export default {
    * @param {object} notif – push
    * @returns {string} id
    */
-  async addPush({ commit, rootGetters }, { inviteId, userId, workspaceId, message, name }) {
+  async addPush({ commit, rootGetters }, { inviteId, userId, workspaceId, message, name, data }) {
     const push = {
       inviteId,
       userId,
@@ -235,7 +235,9 @@ export default {
       push.channel = rootGetters['channels/getChannelById'](message.channelId) || await API.channel.info(message.channelId);
     }
 
-    console.log(push);
+    if (data) {
+      push.data = data;
+    }
 
     commit('ADD_PUSH', push);
   },
@@ -372,5 +374,9 @@ export default {
     conversationBroadcast('mini-chat', rootGetters['me/getMyId'], {
       message,
     });
+  },
+
+  markMiniChatAsRead({ commit }) {
+    commit('SET_MINI_CHAT_READ_TIMESTAMP', Date.now());
   },
 };
