@@ -75,6 +75,8 @@ export default {
       myId: 'me/getMyId',
       selectedChannel: 'myChannel',
       userById: 'users/getUserById',
+      miniChatLastMessageTimestamp: 'channels/getMiniChatLastMessageTimestamp',
+      miniChatMessages: 'channels/getMiniChatMessages',
     }),
 
     userIdsInChannel() {
@@ -110,6 +112,14 @@ export default {
 
       if (this.myId !== newVal) {
         this.changeHeader(this.userById(newVal).name, 'connect');
+      }
+    },
+
+    miniChatLastMessageTimestamp(val) {
+      const lastMessage = this.miniChatMessages.slice(-1)[0];
+
+      if (this.myId !== lastMessage.userId) {
+        this.changeHeader(this.userById(lastMessage.userId).name, 'chat');
       }
     },
 
