@@ -373,4 +373,8 @@ export default {
       message,
     });
   },
+
+  markMiniChatAsRead({ commit }) {
+    commit('SET_MINI_CHAT_READ_TIMESTAMP', Date.now());
+  },
 };
