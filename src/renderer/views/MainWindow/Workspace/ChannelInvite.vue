@@ -19,7 +19,6 @@
             class="user-search__wrapper"
           >
             <ui-input
-              ref="top_slack_invite"
               v-model="filterKey"
               icon="search"
               :placeholder="$t('techTexts.search')"
@@ -28,16 +27,19 @@
           </div>
           <list
             ref="userList"
+            v-model="filteredWorkspaceUsers"
             class="user-list"
             selectable
             :filter-by="filterKey"
+            :items="workspaceUsers"
+            filter-key="name"
             @multipick="selectUser"
           >
             <list-item
-              v-for="user in workspaceUsers"
+              v-for="user in filteredWorkspaceUsers"
               :key="user.id"
-              :filter-key="user.name"
-              :selectable-content="user"
+              :similarity="user.similarity"
+              :select-data="user"
               :class="{'user--offline': isUserOffline(user) || isUserInSameChannel(user) }"
               button
               class="user"
@@ -190,6 +192,7 @@ export default {
       hasLink: false,
       tempURL: null,
       expiredAt: null,
+      filteredWorkspaceUsers: [],
       selectedUsers: [],
       selectedTab: null,
       now: Date.now(),
