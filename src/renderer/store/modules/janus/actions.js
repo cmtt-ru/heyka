@@ -21,6 +21,10 @@ export default {
     const sourceId = IS_LINUX ? source?.id : source?.display_id;
 
     if (source && sourceId) {
+      console.log('SETTING SHARING SOURCE', source);
+      console.log('sourceId: ', sourceId);
+      console.log('sourceIndex: ', source.index);
+
       // source.index is needed for OS where display_id is not defined
       callWindow.showFrame(sourceId, source.index);
     } else {
