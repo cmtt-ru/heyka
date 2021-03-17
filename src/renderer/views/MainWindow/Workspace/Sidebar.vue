@@ -81,13 +81,16 @@
 
     <list
       v-if="channels.length"
+      v-model="filteredChannelItems"
       :filter-by="searchText"
+      :items="showedChannels"
+      filter-key="name"
       class="channels-list"
     >
       <list-item
-        v-for="channel in showedChannels"
+        v-for="channel in filteredChannelItems"
         :key="channel.id"
-        :filter-key="channel.name"
+        :similarity="channel.similarity"
         button
         @dblclick.native="dbclickChannelHandler(channel)"
       >
@@ -153,13 +156,15 @@
 
     <list
       v-if="sidebarUsers.length"
+      v-model="filteredUserItems"
+      :items="sidebarUsers"
+      filter-key="name"
       :filter-by="searchText"
     >
       <list-item
-        v-for="user in sidebarUsers"
+        v-for="user in filteredUserItems"
         :key="user.id"
-        :filter-key="user.name"
-        button
+        :similarity="user.similarity"
       >
         <sidebar-user-item
           v-show="user.onlineStatus!=='offline' || searchText!==''"
@@ -208,6 +213,8 @@ export default {
       MANY_CHANNELS,
       inputActive: false,
       searchText: '',
+      filteredChannelItems: [],
+      filteredUserItems: [],
     };
   },
 

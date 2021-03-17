@@ -13,15 +13,18 @@
       placeholder="Filter by..."
     />
     <list
+      v-model="filteredElements"
       selectable
+      :items="elements"
       :filter-by="filterKey"
+      filter-key="name"
       @multipick="selectItem"
     >
       <list-item
-        v-for="user in elements"
+        v-for="user in filteredElements"
         :key="user.name"
-        :filter-key="user.name"
-        button
+        :similarity="user.similarity"
+        :select-data="user"
       >
         <div
           v-textfade
@@ -53,6 +56,7 @@ export default {
   data() {
     return {
       filterKey: '',
+      filteredElements: [],
       selectedArray: [],
       elements: [
         { name: 'Ivan Bushmin' },

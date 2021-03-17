@@ -63,16 +63,19 @@
         </div>
         <list
           ref="userList"
+          v-model="filteredSlackUsers"
           class="user-list"
           selectable
           :filter-by="filterKey"
+          :items="slackUsersForSearch"
+          filter-key="searchBy"
           @multipick="selectUser"
         >
           <list-item
-            v-for="user in notInvitedSlackUsers"
+            v-for="user in filteredSlackUsers"
             :key="user.id"
-            :filter-key="user.name + user.realName"
-            :selectable-content="user"
+            :similarity="user.similarity"
+            :select-data="user"
             button
             class="user"
           >
@@ -143,6 +146,7 @@ export default {
     return {
       loading: false,
       slackUsers: [],
+      filteredSlackUsers: [],
       selectedUsers: [],
       filterKey: '',
       invitesSentTo: [],
@@ -163,8 +167,17 @@ export default {
       return this.$t('slackInvite');
     },
 
-    notInvitedSlackUsers() {
-      return this.slackUsers.filter(el => !this.invitesSentTo.includes(el.id));
+    /**
+     * Concatenta usernames and real names of slack users for better search
+     * @returns {object}
+     */
+    slackUsersForSearch() {
+      return this.slackUsers.map(user => {
+        return {
+          ...user,
+          searchBy: user.realName + user.name,
+        };
+      }).filter(el => !this.invitesSentTo.includes(el.id));
     },
 
     slackWorkspace() {
@@ -230,11 +243,13 @@ export default {
 
     async sendInvites() {
       try {
+        console.log('this.selectedUsers', this.selectedUsers);
         for (const user of this.selectedUsers) {
           await this.$API.workspace.inviteSlackUser(this.selectedWorkspaceId, { slackUserId: user.id });
         }
         this.invitesSentTo = [...this.invitesSentTo, ...this.selectedUsers.map(el => el.id)];
         this.selectedUsers = [];
+        this.deselectAllUsers();
         document.getElementsByClassName('pseudo-popup__body')[0].scrollTo(0, 0);
       } catch (err) {
         console.error(err);
