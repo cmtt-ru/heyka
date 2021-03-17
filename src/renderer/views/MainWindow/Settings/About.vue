@@ -14,10 +14,14 @@
       {{ texts.version }} {{ info.version }}
     </div>
 
-    <a class="about-link">{{ texts.notice }}</a>
+    <a
+      class="about-link"
+      :href="termsLink"
+    >{{ texts.notice }}</a>
 
     <ui-button
       :type="1"
+      size="large"
       class="check-for-updates"
       @click="checkforUpdatesHandler"
     >
@@ -33,9 +37,21 @@
           {{ change.version }}
         </div>
 
-        <div class="changelog__text">
+        <div
+          v-if="change.text"
+          class="changelog__text"
+        >
           {{ change.text }}
         </div>
+
+        <ul>
+          <li
+            v-for="(item, i) in change.list"
+            :key="i"
+          >
+            {{ item }}
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -44,6 +60,7 @@
 <script>
 import { CHANGELOG } from '@/changelog';
 import UiButton from '@components/UiButton';
+import { WEB_URL } from '@sdk/Constants';
 
 export default {
 
@@ -66,6 +83,10 @@ export default {
      */
     texts() {
       return this.$t('settings.about');
+    },
+
+    termsLink() {
+      return `${WEB_URL}/terms-conditions`;
     },
   },
 
@@ -103,35 +124,48 @@ export default {
 
 .about-version
   padding-top 4px
+  font-weight 400
 
 .about-link
   padding-top 8px
   color var(--color-2)
+  font-weight 400
 
 .check-for-updates
-  margin 16px auto
+  margin-top 16px
 
 .changelog
   display flex
   flex-direction column
   text-align left
   width 100%
-  padding 20px 0
+  padding 0 0 20px 0
   box-sizing border-box
   align-items flex-start
   justify-content center
-  font-size 13px //? надо ли менять?
+  font-size 14px
+  font-weight 400
+  user-select text
 
   &__version
     font-weight bold
     font-size 18px
     line-height 28px
     padding-bottom 8px
+    margin-top 15px
+    user-select text
 
   &__text
     color var(--text-0)
     white-space pre-line
-    line-height 20px
-    margin-bottom 32px
+    line-height 19px
+    margin-bottom 10px
     user-select text
+
+  ul
+    padding-left 17px
+
+    li
+      margin-bottom 10px
+      user-select text
 </style>
