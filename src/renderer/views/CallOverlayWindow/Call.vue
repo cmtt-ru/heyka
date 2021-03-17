@@ -72,6 +72,7 @@ import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
+import Mousetrap from 'mousetrap';
 
 export default {
   components: {
@@ -241,6 +242,10 @@ export default {
   },
 
   async mounted() {
+    Mousetrap.bind(['command+w', 'ctrl+w'], () => {
+      return false;
+    });
+
     await janusVideoroomWrapper.init();
 
     if (this.isLocalMediaSharing) {
