@@ -72,7 +72,7 @@ import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
-import { linkify } from '@libs/texts';
+import * as linkify from 'linkifyjs';
 import xss from 'xss';
 import Mousetrap from 'mousetrap';
 
@@ -260,9 +260,6 @@ export default {
     miniChatLastMessageTimestamp(val) {
       const lastMessage = this.miniChatMessages.slice(-1)[0];
 
-      if (this.myId !== lastMessage.userId) {
-        this.showLinkPush(lastMessage.userId, lastMessage.data.message);
-      }
     },
   },
 
@@ -562,27 +559,25 @@ export default {
       }
     },
 
-    async showLinkPush(userId, message) {
+    async tryToShowLinkPush(userId, message) {
       const sanitizedMessage = xss(message);
-      const textWithLinks = linkify(sanitizedMessage);
+      const links = linkify.find(sanitizedMessage);
 
-      if (textWithLinks.indexOf('</a>') > -1) {
-        const htmlLink = this.parseHTML(textWithLinks).querySelector('a');
+      if (links.length > 0) {
+        const firstLink = links[0].href.replace('http://', 'https://');
 
-        if (htmlLink) {
-          const push = {
-            inviteId: 'id-' + Date.now(),
-            userId,
-            local: true,
-            name: 'link',
-            message: { action: 'fastLink' },
-            data: {
-              link: htmlLink.href,
-            },
-          };
+        const push = {
+          inviteId: 'id-' + Date.now(),
+          userId,
+          local: true,
+          name: 'link',
+          message: { action: 'fastLink' },
+          data: {
+            link: firstLink,
+          },
+        };
 
-          broadcastActions.dispatch('app/addPush', push);
-        }
+        broadcastActions.dispatch('app/addPush', push);
       }
     },
 
