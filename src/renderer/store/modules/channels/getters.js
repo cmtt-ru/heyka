@@ -86,6 +86,50 @@ export default {
   },
 
   /**
+   * Get mini chat messages
+   *
+   * @param {ChannelState} state – channels module state
+   * @param {object} getters – vuex getters
+   * @returns {object}
+   */
+  getMiniChatMessages: (state, getters) => {
+    const data = getters['getConversationEvents']('mini-chat');
+
+    return data || [];
+  },
+
+  /**
+   * Get mini chat last messages
+   *
+   * @param {ChannelState} state – channels module state
+   * @param {object} getters – vuex getters
+   * @returns {object}
+   */
+  getMiniChatLastMessageTimestamp: (state, getters) => {
+    const lastMessage = getters['getConversationEvents']('mini-chat').slice(-1)[0];
+
+    if (lastMessage) {
+      return lastMessage.data.timestamp;
+    }
+
+    return 0;
+  },
+
+  /**
+   * Is there new  mini chat messages
+   *
+   * @param {ChannelState} state – channels module state
+   * @param {object} getters – vuex getters
+   * @param {RootState} rootState – vuex getters
+   * @returns {boolean}
+   */
+  hasMiniChatNewMessages: (state, getters, rootState) => {
+    const lastMessageTimestamp = getters['getMiniChatLastMessageTimestamp'];
+
+    return lastMessageTimestamp > rootState.app.miniChatLastReadTimestamp;
+  },
+
+  /**
    * Get conversation data
    *
    * @param {ChannelState} state – channels module state
@@ -119,7 +163,7 @@ export default {
    * @param {object} rootGetters – vuex root getters
    * @returns {array}
    */
-  getConversationEvents: (state, getters, rootState, rootGetters) => {
+  getConversationEvents: (state, getters, rootState, rootGetters) => (action) => {
     const channelId = rootGetters['me/getSelectedChannelId'];
 
     if (!channelId) {
@@ -128,9 +172,15 @@ export default {
 
     const channel = getters['getChannelById'](channelId);
 
-    if (channel) {
-      return channel.conversationEvents || [];
+    if (channel && channel.conversationEvents) {
+      if (action) {
+        return channel.conversationEvents.filter(c => c.action === action);
+      }
+
+      return channel.conversationEvents;
     }
+
+    return [];
   },
 
 };
