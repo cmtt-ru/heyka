@@ -21,12 +21,12 @@
       >
         <avatar
           class="sharing-user__avatar"
-          :image="userAvatar(sharingUser.id, 12)"
-          :user-id="sharingUser.id"
+          :image="userAvatar(sharingUser.user.id, 12)"
+          :user-id="sharingUser.user.id"
           :size="12"
         />
         <div>
-          {{ sharingUser.name }}
+          {{ sharingUser.user.name }}
         </div>
       </div>
       <div
@@ -90,6 +90,11 @@ export default {
       isMediaPlaying: false,
       isStreamActive: false,
       isNeedToWaitVideo: true,
+
+      /**
+       * Used for real changes of `getUserWhoSharesMedia` getter, to prevent re-renders
+       */
+      userWhoSharesMedia: null,
     };
   },
   computed: {
@@ -137,7 +142,7 @@ export default {
     },
 
     sharingUser() {
-      const user = this.$store.getters['users/getUserById'](this.getUserWhoSharesMedia);
+      const user = this.$store.getters['users/getUserById'](this.userWhoSharesMedia);
 
       if (!user) {
         return;
@@ -146,7 +151,14 @@ export default {
       const channel = this.$store.getters['channels/getChannelById'](this.selectedChannelId);
       const mediaState = channel.users.filter(c => c.userId === user.id)[0];
 
-      return Object.assign({}, user, mediaState);
+      if (!mediaState) {
+        return;
+      }
+
+      return {
+        user,
+        mediaState,
+      };
     },
 
     isNeedToShowPreloader() {
@@ -162,7 +174,7 @@ export default {
         return false;
       }
 
-      return this.sharingUser.camera || this.sharingUser.screen;
+      return this.sharingUser.mediaState.camera || this.sharingUser.mediaState.screen;
     },
 
     /**
@@ -228,6 +240,7 @@ export default {
     },
 
     getUserWhoSharesMedia(userId) {
+      this.userWhoSharesMedia = userId;
       this.loadCurrentVideo();
     },
 
@@ -248,6 +261,8 @@ export default {
     }
 
     this.showPreloader(this.isLocalMediaSharing);
+
+    this.userWhoSharesMedia = this.getUserWhoSharesMedia;
 
     // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
   },
@@ -321,7 +336,7 @@ export default {
      * @returns {void}
      */
     loadCurrentVideo() {
-      const userId = this.getUserWhoSharesMedia;
+      const userId = this.userWhoSharesMedia;
 
       let publisher = janusVideoroomWrapper.getActivePublishers().find(p => p.userId === userId);
 
@@ -379,14 +394,14 @@ export default {
      * @returns {void}
      */
     expandHandler() {
-      if (this.getUserWhoSharesMedia) {
+      if (this.userWhoSharesMedia) {
         broadcastEvents.removeAllListeners('grid-expanded-ready');
         /** Wait until expanded grid appears and send video frame */
         broadcastEvents.once('grid-expanded-ready', () => {
           broadcastEvents.dispatch('grid-expanded-set-video-frame', this.getFrameFromVideo());
         });
 
-        broadcastActions.dispatch('openGrid', this.getUserWhoSharesMedia);
+        broadcastActions.dispatch('openGrid', this.userWhoSharesMedia);
       }
     },
 
@@ -419,6 +434,10 @@ export default {
      */
     async insertStream(stream) {
       const video = this.$refs.video;
+
+      if (video.srcObject) {
+        video.style.backgroundImage = `url(${this.getFrameFromVideo()})`;
+      }
 
       video.srcObject = stream;
 
@@ -547,6 +566,9 @@ export default {
         height 100%
         object-fit cover
         background-color #000000
+        background-size cover
+        background-position center
+        background-repeat no-repeat
 
       &__preloader
         position absolute
