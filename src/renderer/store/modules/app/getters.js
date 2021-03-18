@@ -113,13 +113,13 @@ export default {
    * @param {object} getters – vuex getters
    * @returns {function(*): any}
    */
-  loadSelectedDevice: (state, getters) => async (deviceType) => {
+  loadSelectedDevice: (state, getters) => (deviceType) => {
     const deviceTypeCapitalized = deviceType.charAt(0).toUpperCase() + deviceType.slice(1);
-    let deviceId = await heykaStore.get(`selected${deviceTypeCapitalized}`, 'default');
+    let deviceId = heykaStore.getSync(`selected${deviceTypeCapitalized}`, 'default');
     let device = getters.getDevice(deviceType, deviceId);
 
     if (!device) {
-      const deviceLabel = await heykaStore.get(`selected${deviceTypeCapitalized}Label`);
+      const deviceLabel = heykaStore.getSync(`selected${deviceTypeCapitalized}Label`);
 
       device = getters['getDeviceByLabel'](deviceType, deviceLabel);
 
