@@ -243,7 +243,6 @@ export default {
 
     async sendInvites() {
       try {
-        console.log('this.selectedUsers', this.selectedUsers);
         for (const user of this.selectedUsers) {
           await this.$API.workspace.inviteSlackUser(this.selectedWorkspaceId, { slackUserId: user.id });
         }
