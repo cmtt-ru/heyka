@@ -260,6 +260,9 @@ export default {
     miniChatLastMessageTimestamp(val) {
       const lastMessage = this.miniChatMessages.slice(-1)[0];
 
+      if (this.myId !== lastMessage.userId) {
+        this.tryToShowLinkPush(lastMessage.userId, lastMessage.data.message);
+      }
     },
   },
 
