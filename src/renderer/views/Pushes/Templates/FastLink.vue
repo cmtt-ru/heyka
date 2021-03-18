@@ -9,7 +9,7 @@
       icon="close"
       size="tiny"
       :height="22"
-      @click="$emit('button-click')"
+      @click.native.stop="$emit('button-click')"
     />
     <div class="push__image">
       <svg-icon
