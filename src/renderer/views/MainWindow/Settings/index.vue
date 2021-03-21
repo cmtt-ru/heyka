@@ -64,6 +64,14 @@
         >
           Test Zone
         </router-link>
+        <router-link
+          v-show="IS_DEV"
+          class="settings-link"
+          :to="{name: 'background-removal'}"
+          replace
+        >
+          Background Removal
+        </router-link>
         <div class="app-info">
           {{ prettyInfo }}
         </div>

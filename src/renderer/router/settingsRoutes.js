@@ -5,6 +5,7 @@ const Network = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/S
 const About = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/About');
 const Support = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/Support');
 const TestZone = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/TestZone');
+const BackgroundRemoval = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/Settings/BackgroundRemoval');
 
 export const settingsRoutes = {
   path: 'settings',
@@ -39,6 +40,11 @@ export const settingsRoutes = {
       path: 'test-zone',
       name: 'test-zone',
       component: TestZone,
+    },
+    {
+      path: 'background-removal',
+      name: 'background-removal',
+      component: BackgroundRemoval,
     },
   ],
 };
