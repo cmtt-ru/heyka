@@ -9,7 +9,7 @@
       icon="close"
       size="tiny"
       :height="22"
-      @click="$emit('button-click')"
+      @click.native.stop="$emit('button-click')"
     />
     <div class="push__image">
       <svg-icon
@@ -60,8 +60,10 @@ export default {
 
   methods: {
     clickHandler() {
-      this.$emit('button-click');
-      window.open(this.data.data.link);
+      this.$emit('button-click', {
+        action: 'mini-chat-link',
+        link: this.data.data.link,
+      });
     },
   },
 };

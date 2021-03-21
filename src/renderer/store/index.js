@@ -94,6 +94,8 @@ if (!IS_DEV) {
     filter(mutation) {
       const ignoreList = [
         'app/SET_MICROPHONE_VOLUME',
+        'me/SET_MEDIA_STATE',
+        'channels/SET_MEDIA_STATE',
       ];
 
       return !ignoreList.includes(mutation.type);

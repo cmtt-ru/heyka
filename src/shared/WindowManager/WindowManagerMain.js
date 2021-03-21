@@ -238,15 +238,18 @@ class WindowManager {
       console.log('prepareWindow', options.template);
 
       // positioning stuff
-      // browserWindow.setAlwaysOnTop(true, 'floating', 3);
       const position = this.__getWindowPosition(browserWindow, options.position, options.margin);
+
+      const nearestDisplay = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+
+      browserWindow.setPosition(nearestDisplay.workArea.x, nearestDisplay.workArea.y); // we need two moves cause of different dpi
 
       browserWindow.setPosition(position.x, position.y);
 
       if (options.displayId || options.sourceIndex) {
         let display = null;
 
-        if (options.displayId && typeof options.sourceIndex !== 'number') {
+        if ((options.displayId && typeof options.sourceIndex !== 'number') || IS_WIN) {
           display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
         } else {
           display = screen.getAllDisplays()[options.sourceIndex];
@@ -256,7 +259,7 @@ class WindowManager {
           browserWindow.setPosition(display.bounds.x, display.bounds.y);
 
           if (options.maximize) {
-            browserWindow.setSize(display.bounds.width, display.bounds.height);
+            browserWindow.setBounds(display.bounds);
             browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
           }
         }

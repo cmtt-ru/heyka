@@ -112,6 +112,9 @@ export default {
         case 'turn-mic-on':
           broadcastActions.dispatch('me/microphoneState', true);
           break;
+        case 'mini-chat-link':
+          window.open(data.data.link);
+          break;
         default:
           await broadcastActions.dispatch('app/sendPushResponse', {
             response,
