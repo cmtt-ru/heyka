@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="me"
     class="edit-profile-page"
   >
     <div>

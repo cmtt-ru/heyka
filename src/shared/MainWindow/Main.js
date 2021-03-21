@@ -23,6 +23,11 @@ if (TrayManager.isInTray()) {
     showFast: true,
   };
 
+  /**
+   * Electron bug with `win.setVisibleOnAllWorkspaces(true)`
+   * Mac dock icon appears even with `app.dock.hide()`
+   * @see: https://github.com/electron/electron/issues/25368
+   */
   if (IS_MAC) {
     app.dock.hide();
   }
