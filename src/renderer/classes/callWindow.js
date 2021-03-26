@@ -416,8 +416,8 @@ class CallWindow {
    */
   async closeAll() {
     await this.manageWindow(this.frameWindow, 'softClose');
-    await this.manageWindow(this.gridWindow, 'softclose');
-    await this.manageWindow(this.sharingWindow, 'softclose');
+    await this.manageWindow(this.gridWindow, 'softClose');
+    await this.manageWindow(this.sharingWindow, 'softClose');
     await this.manageWindow(this.overlayWindow, 'softClose');
     await this.manageWindow(this.streamingOverlayWindow, 'softClose');
   }
