@@ -397,6 +397,7 @@ class WindowManager {
       try {
         this.quitting = true;
 
+        this.windows[id].browserWindow.hide();
         this.windows[id].browserWindow.close();
         delete this.windows[id];
 
