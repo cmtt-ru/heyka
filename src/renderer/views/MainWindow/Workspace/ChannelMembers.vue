@@ -34,7 +34,7 @@
           <avatar
             class="user__avatar"
             :user-id="user.id"
-            :status="true"
+            :status="user.onlineStatus !== 'online'"
             :size="32"
           />
           <div
