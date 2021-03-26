@@ -395,8 +395,12 @@ class WindowManager {
   softCloseWindow({ id }) {
     if (this.windows[id] !== undefined) {
       try {
+        this.quitting = true;
+
         this.windows[id].browserWindow.close();
         delete this.windows[id];
+
+        this.quitting = false;
       } catch (e) {
         console.error('window already closed');
       }
