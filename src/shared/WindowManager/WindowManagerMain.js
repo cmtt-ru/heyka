@@ -28,6 +28,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   icon: icon,
   webPreferences: Object.freeze({
     // nodeIntegration: true,
+    contextIsolation: false,
     webSecurity: true,
     preload: path.join(__static, 'preload.js'),
   }),
