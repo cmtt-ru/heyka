@@ -199,8 +199,13 @@ export default {
       }
     }
 
-    state.selectedDevices = devices;
-    state.realSelectedDevices = realDevices;
+    Object.keys(devices).forEach(type => {
+      Vue.set(state.selectedDevices, type, devices[type]);
+    });
+
+    Object.keys(realDevices).forEach(type => {
+      Vue.set(state.realSelectedDevices, type, realDevices[type]);
+    });
   },
 
   /**
