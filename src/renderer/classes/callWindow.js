@@ -277,9 +277,10 @@ class CallWindow {
         } else if (this.overlayWindow) {
           this.overlayWindow.action('show');
         }
+
+        broadcastEvents.dispatch('grid-hide');
       });
     } else {
-      console.log("gridWindow.action('show')");
       await this.gridWindow.action('show');
 
       if (userId) {
@@ -343,7 +344,7 @@ class CallWindow {
     setTimeout(async () => {
       await this.hideOverlay();
       await this.showStreamingOverlay();
-      await this.hideGrid();
+      await this.closeGrid();
     }, BLUR_TIME);
   }
 
