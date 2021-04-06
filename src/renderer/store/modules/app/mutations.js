@@ -149,7 +149,11 @@ export default {
    * @constructor
    */
   REMOVE_PUSH(state, id) {
-    state.pushes = state.pushes.filter(el => el.inviteId != id);
+    const index = state.pushes.findIndex(push => push.inviteId === id);
+
+    if (index > -1) {
+      state.pushes.splice(index, 1);
+    }
   },
 
   /**
