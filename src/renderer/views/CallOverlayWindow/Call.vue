@@ -14,6 +14,8 @@
       <video
         ref="video"
         class="call-window__media__video"
+        autoplay
+        muted
       />
       <div
         v-if="sharingUser"
@@ -294,7 +296,6 @@ export default {
     const video = this.$refs['video'];
 
     if (video) {
-      video.onloadedmetadata = null;
       video.onplaying = null;
       video.onsuspend = null;
       video.ontimeupdate = null;
@@ -460,10 +461,6 @@ export default {
       }
 
       video.srcObject = stream;
-
-      video.onloadedmetadata = () => {
-        video.play();
-      };
 
       video.onplaying = () => {
         this.setMediaPlaying(true);
