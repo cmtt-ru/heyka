@@ -76,6 +76,9 @@ import * as linkify from 'linkifyjs';
 import xss from 'xss';
 import Mousetrap from 'mousetrap';
 
+const MUST_PLAY_TIMEOUT = 3000;
+let mustPlayTimer = null;
+
 export default {
   components: {
     CallControls,
@@ -211,6 +214,10 @@ export default {
 
       return false;
     },
+
+    mediaMustPlayButDoesnt() {
+      return this.isUserSharingMedia && !this.isMediaPlaying && !this.isStreamActive;
+    },
   },
 
   watch: {
@@ -264,6 +271,22 @@ export default {
         this.tryToShowLinkPush(lastMessage.userId, lastMessage.data.message);
       }
     },
+
+    mediaMustPlayButDoesnt(state) {
+      clearTimeout(mustPlayTimer);
+
+      if (state) {
+        /**
+         * Media must play. Setting timer and reconnect to Janus
+         */
+        mustPlayTimer = setTimeout(async () => {
+          console.log('Media must play --> reconnecting to janus');
+          await this.destroyJanusConnection();
+          await this.initJanusConnection();
+        }, MUST_PLAY_TIMEOUT);
+      }
+      console.log('Media must play -->', state);
+    },
   },
 
   async mounted() {
@@ -282,6 +305,14 @@ export default {
     this.userWhoSharesMedia = this.getUserWhoSharesMedia;
 
     // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
+
+    window.stop = () => {
+      this.destroyJanusConnection();
+    };
+
+    window.start = () => {
+      this.initJanusConnection();
+    };
   },
 
   beforeDestroy() {
