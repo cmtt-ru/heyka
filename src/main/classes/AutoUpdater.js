@@ -11,7 +11,7 @@ const CHECK_FOR_UPDATE_TIMEOUT = 600000;
 let updateTimer;
 
 autoUpdater.autoDownload = true;
-autoUpdater.autoInstallOnAppQuit = false;
+autoUpdater.autoInstallOnAppQuit = true;
 
 export default {
   /**
