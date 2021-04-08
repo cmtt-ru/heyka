@@ -50,6 +50,9 @@ export default {
     autoUpdater.on('update-available', () => {
       this.stopTimer();
       mainWindow.webContents.send('update-available');
+
+      updateDownloaded = false;
+      updateDownloading = true;
     });
 
     autoUpdater.on('update-not-available', () => {
