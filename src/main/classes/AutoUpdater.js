@@ -23,10 +23,13 @@ export default {
    */
   init(mainWindow) {
     ipcMain.on('update-check', () => {
+      console.log('\n-------- update check -------- ');
+      console.log('updateDownloaded', updateDownloaded);
+      console.log('updateDownloading', updateDownloading);
       if (updateDownloaded) {
-        mainWindow.webContents.send('update-downloaded');
+        mainWindow.webContents.send('update-downloaded', true);
       } else if (updateDownloading) {
-        mainWindow.webContents.send('update-not-available');
+        mainWindow.webContents.send('update-downloading');
       } else {
         this.checkForUpdates();
         this.startTimer();
