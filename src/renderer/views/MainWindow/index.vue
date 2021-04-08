@@ -94,8 +94,8 @@ export default {
       cnsl.error('update-error', error);
     });
 
-    window.ipcRenderer.on('update-downloaded', () => {
-      if (!this.updateNotificationShown) {
+    window.ipcRenderer.on('update-downloaded', (force) => {
+      if (!this.updateNotificationShown || force) {
         this.showUpdateNotification();
         this.updateNotificationShown = true;
       }

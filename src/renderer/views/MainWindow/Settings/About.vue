@@ -23,7 +23,7 @@
       :type="1"
       size="large"
       class="check-for-updates"
-      @click="checkforUpdatesHandler"
+      @click="checkForUpdatesHandler"
     >
       {{ texts.checkUpdates }}
     </ui-button>
@@ -91,11 +91,18 @@ export default {
   },
 
   methods: {
-    checkforUpdatesHandler() {
+    checkForUpdatesHandler() {
+      window.ipcRenderer.removeAllListeners('update-not-available');
+      window.ipcRenderer.removeAllListeners('update-downloading');
+
       window.ipcRenderer.send('update-check');
 
       window.ipcRenderer.once('update-not-available', () => {
         this.noUpdate();
+      });
+
+      window.ipcRenderer.once('update-downloading', () => {
+        this.updateDownloading();
       });
     },
 
@@ -107,9 +114,26 @@ export default {
       const texts = this.$t('autoUpdate');
 
       const notification = {
-        lifespan: 5000,
+        lifespan: 3000,
         data: {
           text: texts.noUpdate,
+        },
+      };
+
+      await this.$store.dispatch('app/addNotification', notification);
+    },
+
+    /**
+     * Show update downloading notification
+     * @returns {void}
+     */
+    async updateDownloading() {
+      const texts = this.$t('autoUpdate');
+
+      const notification = {
+        lifespan: 3000,
+        data: {
+          text: texts.downloading,
         },
       };
 
