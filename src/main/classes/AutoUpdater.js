@@ -9,6 +9,7 @@ import { ipcMain } from 'electron';
 const CHECK_FOR_UPDATE_TIMEOUT = 600000;
 
 let updateTimer;
+let updateDownloaded = false;
 
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
@@ -21,8 +22,12 @@ export default {
    */
   init(mainWindow) {
     ipcMain.on('update-check', () => {
-      this.checkForUpdates();
-      this.startTimer();
+      if (updateDownloaded) {
+        mainWindow.webContents.send('update-downloaded');
+      } else {
+        this.checkForUpdates();
+        this.startTimer();
+      }
     });
 
     ipcMain.on('update-install', () => {
@@ -55,6 +60,7 @@ export default {
     });
 
     autoUpdater.on('update-downloaded', () => {
+      updateDownloaded = true;
       mainWindow.webContents.send('update-downloaded');
     });
 
