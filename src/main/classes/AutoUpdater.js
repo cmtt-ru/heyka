@@ -10,6 +10,7 @@ const CHECK_FOR_UPDATE_TIMEOUT = 600000;
 
 let updateTimer;
 let updateDownloaded = false;
+let updateDownloading = false;
 
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
@@ -24,6 +25,8 @@ export default {
     ipcMain.on('update-check', () => {
       if (updateDownloaded) {
         mainWindow.webContents.send('update-downloaded');
+      } else if (updateDownloading) {
+        mainWindow.webContents.send('update-not-available');
       } else {
         this.checkForUpdates();
         this.startTimer();
@@ -57,10 +60,14 @@ export default {
         transferred: progressObj.transferred,
         total: progressObj.total,
       }));
+
+      updateDownloaded = false;
+      updateDownloading = true;
     });
 
     autoUpdater.on('update-downloaded', () => {
       updateDownloaded = true;
+      updateDownloading = false;
       mainWindow.webContents.send('update-downloaded');
     });
 
