@@ -34,22 +34,29 @@ export default {
   },
   async created() {
     await janusVideoroomWrapper.init();
+
+    window.addEventListener('beforeunload', function (e) {
+      janusVideoroomWrapper.leave();
+    });
+
     if (this.selectedChannelId) {
       janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
 
-    Mousetrap.bind('esc', () => {
-      window.ipcRenderer.send('exit-fullscreen');
-    });
+    if (IS_ELECTRON) {
+      Mousetrap.bind('esc', () => {
+        window.ipcRenderer.send('exit-fullscreen');
+      });
+    }
   },
 };
 </script>
 
-<style scoped lang="stylus">
-    .layout__popover
-        width 100vw
-        height 100vh
-        -webkit-app-region drag
-        background-color var(--app-bg)
-        color var(--text-0)
+<style lang="stylus" scoped>
+  .layout__popover
+    width 100vw
+    height 100vh
+    -webkit-app-region drag
+    background-color var(--app-bg)
+    color var(--text-0)
 </style>
