@@ -46,9 +46,8 @@
             >
               <avatar
                 class="user__avatar"
-                :status="user.onlineStatus === 'online' ? '' : user.onlineStatus"
-                :image="userAvatar(user.id, 32)"
                 :user-id="user.id"
+                :status="user.onlineStatus !== 'online'"
                 :size="32"
               />
               <div

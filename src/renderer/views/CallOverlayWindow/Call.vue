@@ -21,7 +21,6 @@
       >
         <avatar
           class="sharing-user__avatar"
-          :image="userAvatar(sharingUser.user.id, 12)"
           :user-id="sharingUser.user.id"
           :size="12"
         />
