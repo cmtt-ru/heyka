@@ -91,6 +91,14 @@ export default {
   getSelectedDevices: (state) => state.selectedDevices,
 
   /**
+   * Get selected microphone
+   *
+   * @param {AppState} state – module app state
+   * @returns {object}
+   */
+  getSelectedMicrophone: (state) => state.realSelectedDevices.microphone,
+
+  /**
    * Get fluent channel id (for animations!)
    *
    * @param {AppState} state – module app state
