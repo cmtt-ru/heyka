@@ -94,9 +94,8 @@
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
-        :image="userAvatar(myId, 32)"
         :user-id="myId"
-        :status="myInfo.user.onlineStatus"
+        :status="true"
         :size="32"
       />
     </div>
