@@ -9,9 +9,11 @@ import { ipcMain } from 'electron';
 const CHECK_FOR_UPDATE_TIMEOUT = 600000;
 
 let updateTimer;
+let updateDownloaded = false;
+let updateDownloading = false;
 
 autoUpdater.autoDownload = true;
-autoUpdater.autoInstallOnAppQuit = false;
+autoUpdater.autoInstallOnAppQuit = true;
 
 export default {
   /**
@@ -21,8 +23,14 @@ export default {
    */
   init(mainWindow) {
     ipcMain.on('update-check', () => {
-      this.checkForUpdates();
-      this.startTimer();
+      if (updateDownloaded) {
+        mainWindow.webContents.send('update-downloaded', true);
+      } else if (updateDownloading) {
+        mainWindow.webContents.send('update-downloading');
+      } else {
+        this.checkForUpdates();
+        this.startTimer();
+      }
     });
 
     ipcMain.on('update-install', () => {
@@ -39,6 +47,9 @@ export default {
     autoUpdater.on('update-available', () => {
       this.stopTimer();
       mainWindow.webContents.send('update-available');
+
+      updateDownloaded = false;
+      updateDownloading = true;
     });
 
     autoUpdater.on('update-not-available', () => {
@@ -52,9 +63,14 @@ export default {
         transferred: progressObj.transferred,
         total: progressObj.total,
       }));
+
+      updateDownloaded = false;
+      updateDownloading = true;
     });
 
     autoUpdater.on('update-downloaded', () => {
+      updateDownloaded = true;
+      updateDownloading = false;
       mainWindow.webContents.send('update-downloaded');
     });
 
