@@ -14,6 +14,8 @@
       <video
         ref="video"
         class="call-window__media__video"
+        autoplay
+        muted
       />
       <div
         v-if="sharingUser"
@@ -21,7 +23,6 @@
       >
         <avatar
           class="sharing-user__avatar"
-          :image="userAvatar(sharingUser.user.id, 12)"
           :user-id="sharingUser.user.id"
           :size="12"
         />
@@ -295,7 +296,6 @@ export default {
     const video = this.$refs['video'];
 
     if (video) {
-      video.onloadedmetadata = null;
       video.onplaying = null;
       video.onsuspend = null;
       video.ontimeupdate = null;
@@ -461,10 +461,6 @@ export default {
       }
 
       video.srcObject = stream;
-
-      video.onloadedmetadata = () => {
-        video.play();
-      };
 
       video.onplaying = () => {
         this.setMediaPlaying(true);

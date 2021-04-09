@@ -277,9 +277,10 @@ class CallWindow {
         } else if (this.overlayWindow) {
           this.overlayWindow.action('show');
         }
+
+        broadcastEvents.dispatch('grid-hide');
       });
     } else {
-      console.log("gridWindow.action('show')");
       await this.gridWindow.action('show');
 
       if (userId) {
@@ -343,7 +344,7 @@ class CallWindow {
     setTimeout(async () => {
       await this.hideOverlay();
       await this.showStreamingOverlay();
-      await this.hideGrid();
+      await this.closeGrid();
     }, BLUR_TIME);
   }
 
@@ -416,8 +417,8 @@ class CallWindow {
    */
   async closeAll() {
     await this.manageWindow(this.frameWindow, 'softClose');
-    await this.manageWindow(this.gridWindow, 'close');
-    await this.manageWindow(this.sharingWindow, 'close');
+    await this.manageWindow(this.gridWindow, 'softClose');
+    await this.manageWindow(this.sharingWindow, 'softClose');
     await this.manageWindow(this.overlayWindow, 'softClose');
     await this.manageWindow(this.streamingOverlayWindow, 'softClose');
   }
