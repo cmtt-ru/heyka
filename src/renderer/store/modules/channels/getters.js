@@ -106,10 +106,10 @@ export default {
    * @returns {object}
    */
   getMiniChatLastMessageTimestamp: (state, getters) => {
-    const lastMessage = getters['getConversationEvents']('mini-chat')?.slice(-1)[0];
+    const messages = getters['getConversationEvents']('mini-chat');
 
-    if (lastMessage) {
-      return lastMessage.data.timestamp;
+    if (messages.length > 0) {
+      return messages.slice(-1)[0].data.timestamp;
     }
 
     return 0;
