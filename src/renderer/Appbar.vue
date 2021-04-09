@@ -70,14 +70,14 @@
     >
       <ui-button
         v-if="myWorkspace"
-        v-tooltip="speakerTooltip"
+        v-tooltip="microphoneTooltip"
         :type="7"
         class="user__button"
         size="medium"
-        :icon="icons.speakers"
+        :icon="icons.microphone"
         header
         square
-        @click="switchProp('speakers')"
+        @click="switchProp('microphone')"
       />
       <router-link :to="{name: 'settings'}">
         <ui-button
