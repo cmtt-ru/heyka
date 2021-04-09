@@ -11,16 +11,14 @@
     <div class="push__image">
       <avatar
         class="push__avatar"
-        :size="40"
-        :image="avatarUrl(data.user, 40)"
         :user-id="data.userId"
+        :size="40"
       />
       <avatar
         v-if="data.workspaceId !== workspaceId"
         class="push__avatar--workspace"
-        :size="16"
-        :image="avatarUrl(data.workspace, 16)"
         :user-id="data.workspaceId"
+        :size="16"
       />
     </div>
     <div class="push__content">

@@ -11,9 +11,8 @@
     <div class="push__image">
       <avatar
         class="push__avatar"
-        :size="40"
-        :image="avatarUrl(user, 40)"
         :user-id="user.id"
+        :size="40"
       />
     </div>
     <div class="push__content">
