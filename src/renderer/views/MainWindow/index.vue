@@ -141,6 +141,9 @@ export default {
      */
     DeepLink.on('workspace', async ([ workspaceId ]) => {
       console.log('workspaceId', workspaceId);
+      if (this.$store.getters['me/getSelectedChannelId']) {
+        return;
+      }
       await this.$store.dispatch('initial');
       await this.$store.dispatch('changeWorkspace', workspaceId);
     });

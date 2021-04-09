@@ -13,16 +13,6 @@
           {{ texts.profile }}
         </ui-button>
       </router-link>
-
-      <router-link :to="{name: 'settings'}">
-        <ui-button
-          data-popover-close
-          :type="11"
-          icon="settings"
-        >
-          {{ texts.settings }}
-        </ui-button>
-      </router-link>
     </div>
 
     <div
