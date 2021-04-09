@@ -99,12 +99,14 @@ export default {
   getAnimationChannel: (state) => state.animationChannel,
 
   /**
-   * Get pushes
+   * Get pushes count
    *
    * @param {AppState} state – module app state
    * @returns {object}
    */
-  getPushes: (state) => state.pushes,
+  getPushesCount: (state) => {
+    return state.pushes.length;
+  },
 
   /**
    * Load specific device from storage and return it's value
