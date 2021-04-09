@@ -14,6 +14,8 @@
       <video
         ref="video"
         class="call-window__media__video"
+        autoplay
+        muted
       />
       <div
         v-if="sharingUser"
@@ -21,7 +23,6 @@
       >
         <avatar
           class="sharing-user__avatar"
-          :image="userAvatar(sharingUser.user.id, 12)"
           :user-id="sharingUser.user.id"
           :size="12"
         />
@@ -75,6 +76,9 @@ import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 import * as linkify from 'linkifyjs';
 import xss from 'xss';
 import Mousetrap from 'mousetrap';
+
+const MUST_PLAY_TIMEOUT = 3000;
+let mustPlayTimer = null;
 
 export default {
   components: {
@@ -211,6 +215,10 @@ export default {
 
       return false;
     },
+
+    mediaMustPlayButDoesnt() {
+      return this.isUserSharingMedia && !this.isMediaPlaying && !this.isStreamActive;
+    },
   },
 
   watch: {
@@ -258,11 +266,31 @@ export default {
     },
 
     miniChatLastMessageTimestamp(val) {
+      if (!this.miniChatMessages.length) {
+        return;
+      }
+
       const lastMessage = this.miniChatMessages.slice(-1)[0];
 
       if (this.myId !== lastMessage.userId) {
         this.tryToShowLinkPush(lastMessage.userId, lastMessage.data.message);
       }
+    },
+
+    mediaMustPlayButDoesnt(state) {
+      clearTimeout(mustPlayTimer);
+
+      if (state) {
+        /**
+         * Media must play. Setting timer and reconnect to Janus
+         */
+        mustPlayTimer = setTimeout(async () => {
+          console.log('Media must play --> reconnecting to janus');
+          await this.destroyJanusConnection();
+          await this.initJanusConnection();
+        }, MUST_PLAY_TIMEOUT);
+      }
+      console.log('Media must play -->', state);
     },
   },
 
@@ -291,7 +319,6 @@ export default {
     const video = this.$refs['video'];
 
     if (video) {
-      video.onloadedmetadata = null;
       video.onplaying = null;
       video.onsuspend = null;
       video.ontimeupdate = null;
@@ -457,10 +484,6 @@ export default {
       }
 
       video.srcObject = stream;
-
-      video.onloadedmetadata = () => {
-        video.play();
-      };
 
       video.onplaying = () => {
         this.setMediaPlaying(true);
