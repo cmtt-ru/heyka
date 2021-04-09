@@ -305,14 +305,6 @@ export default {
     this.userWhoSharesMedia = this.getUserWhoSharesMedia;
 
     // this.preloaderSrc = (await import(/* webpackChunkName: "video" */ '@assets/mp4/video-preloader.mp4')).default;
-
-    window.stop = () => {
-      this.destroyJanusConnection();
-    };
-
-    window.start = () => {
-      this.initJanusConnection();
-    };
   },
 
   beforeDestroy() {
