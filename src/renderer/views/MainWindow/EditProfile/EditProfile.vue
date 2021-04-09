@@ -77,7 +77,7 @@
       class="l-mt-24"
       @click="submit"
     >
-      {{ $t('workspace.invite.copied') }}
+      {{ $t('techTexts.saved') }}
     </ui-button>
   </div>
 </template>
@@ -87,7 +87,6 @@ import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
-import { setTimeout } from 'requestanimationframe-timer';
 
 export default {
   components: {
@@ -183,15 +182,10 @@ export default {
     async submit() {
       try {
         await this.$API.user.editProfile(this.profile);
+        this.savedAnimation();
       } catch (err) {
         console.log(err);
       }
-      this.saved = true;
-      const time = 5000;
-
-      setTimeout(() => {
-        this.saved = false;
-      }, time);
     },
 
     async deleteImage() {
@@ -200,28 +194,23 @@ export default {
       try {
         this.$set(this.profile, 'avatarFileId', null);
         await this.$API.user.editProfile({ avatarFileId: null });
-        // this.savedAnimation();
+        this.savedAnimation();
       } catch (err) {
         console.log(err);
       }
     },
 
     /**
-     * show "saved!" text after successful API request
+     * show "saved!" button after successful API request
      * @returns {void}
      */
     savedAnimation() {
-      const text = this.$refs.savedText;
-
-      if (text === undefined) {
-        return;
-      }
-      text.classList.add('saved-text--hiding');
-      const hideTime = 2000;
+      this.saved = true;
+      const time = 5000;
 
       setTimeout(() => {
-        text.classList.remove('saved-text--hiding');
-      }, hideTime);
+        this.saved = false;
+      }, time);
     },
 
     async resetHandler() {
