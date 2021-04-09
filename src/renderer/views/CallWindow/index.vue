@@ -39,14 +39,6 @@ export default {
       janusVideoroomWrapper.leave();
     });
 
-    window.join = () => {
-      janusVideoroomWrapper.join(this.myId, this.janusOptions);
-    };
-
-    window.leave = () => {
-      janusVideoroomWrapper.leave();
-    };
-
     if (this.selectedChannelId) {
       janusVideoroomWrapper.join(this.myId, this.janusOptions);
     }
