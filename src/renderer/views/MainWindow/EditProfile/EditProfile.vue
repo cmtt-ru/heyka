@@ -61,19 +61,23 @@
         {{ texts.resetPass }}
       </div>
     </div>
-    <!-- <div
-      ref="savedText"
-      class="saved-text"
-    >
-      {{ texts.saved }}
-    </div> -->
     <ui-button
+      v-if="!saved"
       :type="1"
       size="large"
       class="l-mt-24"
       @click="submit"
     >
       {{ $t('workspace.editChannel.buttonSave') }}
+    </ui-button>
+    <ui-button
+      v-else
+      :type="5"
+      wide
+      class="l-mt-24"
+      @click="submit"
+    >
+      {{ $t('workspace.invite.copied') }}
     </ui-button>
   </div>
 </template>
@@ -83,6 +87,7 @@ import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
+import { setTimeout } from 'requestanimationframe-timer';
 
 export default {
   components: {
@@ -98,6 +103,7 @@ export default {
         name: null,
         avatarFileId: null,
       },
+      saved: false,
     };
   },
 
@@ -177,18 +183,15 @@ export default {
     async submit() {
       try {
         await this.$API.user.editProfile(this.profile);
-        // this.savedAnimation();
-
-        const notification = {
-          data: {
-            text: this.texts.saved,
-          },
-        };
-
-        await this.$store.dispatch('app/addNotification', notification);
       } catch (err) {
         console.log(err);
       }
+      this.saved = true;
+      const time = 5000;
+
+      setTimeout(() => {
+        this.saved = false;
+      }, time);
     },
 
     async deleteImage() {
