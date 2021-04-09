@@ -91,6 +91,14 @@ export default {
   getSelectedDevices: (state) => state.selectedDevices,
 
   /**
+   * Get selected microphone
+   *
+   * @param {AppState} state – module app state
+   * @returns {object}
+   */
+  getSelectedMicrophone: (state) => state.realSelectedDevices.microphone,
+
+  /**
    * Get fluent channel id (for animations!)
    *
    * @param {AppState} state – module app state
@@ -99,12 +107,14 @@ export default {
   getAnimationChannel: (state) => state.animationChannel,
 
   /**
-   * Get pushes
+   * Get pushes count
    *
    * @param {AppState} state – module app state
    * @returns {object}
    */
-  getPushes: (state) => state.pushes,
+  getPushesCount: (state) => {
+    return state.pushes.length;
+  },
 
   /**
    * Load specific device from storage and return it's value

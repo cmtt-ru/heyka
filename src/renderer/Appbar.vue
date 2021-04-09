@@ -70,17 +70,6 @@
     >
       <ui-button
         v-if="myWorkspace"
-        v-tooltip="speakerTooltip"
-        :type="7"
-        class="user__button"
-        size="medium"
-        :icon="icons.speakers"
-        header
-        square
-        @click="switchProp('speakers')"
-      />
-      <ui-button
-        v-if="myWorkspace"
         v-tooltip="microphoneTooltip"
         :type="7"
         class="user__button"
@@ -90,13 +79,23 @@
         square
         @click="switchProp('microphone')"
       />
-
+      <router-link :to="{name: 'settings'}">
+        <ui-button
+          v-if="myWorkspace"
+          v-tooltip="$t('tooltips.settings')"
+          :type="7"
+          class="user__button"
+          size="medium"
+          icon="settings2"
+          header
+          square
+        />
+      </router-link>
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
-        :image="userAvatar(myId, 32)"
         :user-id="myId"
-        :status="myInfo.user.onlineStatus"
+        :status="true"
         :size="32"
       />
     </div>

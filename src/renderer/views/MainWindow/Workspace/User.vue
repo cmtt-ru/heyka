@@ -1,16 +1,15 @@
 <template>
   <div
     v-if="user"
-    class="l-p-12"
+    class="l-p-16"
   >
     <div class="user">
       <avatar
         :key="user.avatar"
         class="user__avatar"
-        :image="userAvatar(user.id, 40)"
         :user-id="user.id"
         :size="40"
-        :status="user.onlineStatus"
+        :status="true"
       />
       <div
         v-textfade
@@ -33,6 +32,7 @@
       <ui-button
         :type="17"
         wide
+        size="large"
         icon="slack"
         class="user-action"
         @click="_notImplemented()"
@@ -42,6 +42,7 @@
       <ui-button
         :type="17"
         wide
+        size="large"
         icon="ms-teams"
         class="user-action"
         @click="_notImplemented()"
@@ -55,6 +56,7 @@
         v-if="!isMe && !isInPrivateTalk"
         :type="1"
         wide
+        size="large"
         class="user-action"
         @click="startPrivateTalk(user.id)"
       >
@@ -64,6 +66,7 @@
         v-if="selectedChannel && !isMe"
         :type="17"
         wide
+        size="large"
         class="user-action"
         :disabled="inviteButtonDisabled[user.id]"
         @click="sendInvite"
@@ -97,7 +100,8 @@
         <ui-button
           v-if="isMe"
           :type="1"
-          :wide="true"
+          wide
+          size="large"
           class="user-action"
         >
           <div>{{ texts.edit }}</div>
@@ -266,7 +270,7 @@ export default {
 .user
   height 40px
   padding 0
-  margin-bottom 16px
+  margin 2px 0 16px
   width 100%
   box-sizing border-box
   display flex
@@ -323,7 +327,6 @@ export default {
 
   &__title
     font-weight bold
-    font-size 14px
     line-height 24px
     color var(--new-UI-02)
 

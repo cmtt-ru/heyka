@@ -61,19 +61,23 @@
         {{ texts.resetPass }}
       </div>
     </div>
-    <!-- <div
-      ref="savedText"
-      class="saved-text"
-    >
-      {{ texts.saved }}
-    </div> -->
     <ui-button
+      v-if="!saved"
       :type="1"
       size="large"
       class="l-mt-24"
       @click="submit"
     >
       {{ $t('workspace.editChannel.buttonSave') }}
+    </ui-button>
+    <ui-button
+      v-else
+      :type="5"
+      wide
+      class="l-mt-24"
+      @click="submit"
+    >
+      {{ $t('techTexts.saved') }}
     </ui-button>
   </div>
 </template>
@@ -98,6 +102,7 @@ export default {
         name: null,
         avatarFileId: null,
       },
+      saved: false,
     };
   },
 
@@ -177,15 +182,7 @@ export default {
     async submit() {
       try {
         await this.$API.user.editProfile(this.profile);
-        // this.savedAnimation();
-
-        const notification = {
-          data: {
-            text: this.texts.saved,
-          },
-        };
-
-        await this.$store.dispatch('app/addNotification', notification);
+        this.savedAnimation();
       } catch (err) {
         console.log(err);
       }
@@ -197,28 +194,23 @@ export default {
       try {
         this.$set(this.profile, 'avatarFileId', null);
         await this.$API.user.editProfile({ avatarFileId: null });
-        // this.savedAnimation();
+        this.savedAnimation();
       } catch (err) {
         console.log(err);
       }
     },
 
     /**
-     * show "saved!" text after successful API request
+     * show "saved!" button after successful API request
      * @returns {void}
      */
     savedAnimation() {
-      const text = this.$refs.savedText;
-
-      if (text === undefined) {
-        return;
-      }
-      text.classList.add('saved-text--hiding');
-      const hideTime = 2000;
+      this.saved = true;
+      const time = 5000;
 
       setTimeout(() => {
-        text.classList.remove('saved-text--hiding');
-      }, hideTime);
+        this.saved = false;
+      }, time);
     },
 
     async resetHandler() {

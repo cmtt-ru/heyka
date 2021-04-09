@@ -403,13 +403,14 @@ $ANIM = 250ms
 /deep/ .input
   padding-right 26px
   padding-left 33px
-  height 26px
+  height 30px
   min-height 26px
   box-sizing border-box
   font-weight 500
 
   &::placeholder
     font-weight 500
+    font-size 15px
 
 .search-wrapper
   position sticky
@@ -422,7 +423,7 @@ $ANIM = 250ms
   margin-left -12px
 
 .search
-  height 28px
+  height 32px
   display flex
   flex-direction row
   justify-content flex-start
@@ -493,7 +494,7 @@ $ANIM = 250ms
   font-size 12px
   font-weight bold
   position sticky
-  top 52px
+  top 56px
   z-index 10
   padding 2px 0 2px 8px
 
@@ -518,8 +519,8 @@ $ANIM = 250ms
 
 .connected-channel-enter
   opacity 0
-  transform translateY(44px)
-  margin-bottom -49px
+  transform translateY(52px)
+  margin-bottom -57px
 
 .connected-channel-enter-to
   margin-bottom 12px
@@ -529,15 +530,15 @@ $ANIM = 250ms
 
 .connected-channel-leave-to
   opacity 0
-  transform translateY(44px)
-  margin-bottom -49px
+  transform translateY(52px)
+  margin-bottom -57px
   margin-top 0
   transition all $ANIM ease
 
 .list-channel-enter
   opacity 0
-  transform translateY(-40px)
-  margin-top -45px
+  transform translateY(-48px)
+  margin-top -53px
 
 .list-channel-enter-to
   transition all $ANIM ease
@@ -547,8 +548,8 @@ $ANIM = 250ms
 
 .list-channel-leave-to
   opacity 0
-  transform translateY(-40px)
-  margin-top -45px
+  transform translateY(-48px)
+  margin-top -53px
   transition all $ANIM ease
 
 </style>
