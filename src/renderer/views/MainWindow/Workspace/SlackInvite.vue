@@ -81,7 +81,6 @@
           >
             <avatar
               class="user__avatar"
-              :image="user.avatar32"
               :user-id="user.id"
               :size="32"
             />

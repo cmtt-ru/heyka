@@ -68,13 +68,16 @@ export default {
    * @constructor
    */
   SET_USER_MEDIA_STATE(state, { userId, channelId, userMediaState }) {
-    const users = state.collection[channelId].users;
-    const userIndex = searchIndexByKey(users, 'userId', userId);
+    const channel = state.collection[channelId];
 
-    if (userIndex !== undefined) {
-      Object.keys(userMediaState).forEach(key => {
-        Vue.set(users[userIndex], key, userMediaState[key]);
-      });
+    if (channel) {
+      const userIndex = searchIndexByKey(channel.users, 'userId', userId);
+
+      if (userIndex !== undefined) {
+        Object.keys(userMediaState).forEach(key => {
+          Vue.set(channel.users[userIndex], key, userMediaState[key]);
+        });
+      }
     }
   },
 

@@ -213,9 +213,10 @@ export default {
    */
   async unselectChannel({ commit, dispatch, state, getters }, id = state.me.selectedChannelId) {
     commit('app/ANIMATION_CHANNEL_ID', null);
+
     const channel = getters['channels/getChannelById'](id);
 
-    if (channel.isTemporary) {
+    if (channel && channel.isTemporary) {
       router.replace({ name: 'workspace' });
     }
 

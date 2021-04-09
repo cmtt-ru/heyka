@@ -12,7 +12,7 @@ import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 export default {
   mounted() {
     window.addEventListener('beforeunload', function (e) {
-      janusVideoroomWrapper._disconnect();
+      janusVideoroomWrapper.leave();
     });
   },
 };
