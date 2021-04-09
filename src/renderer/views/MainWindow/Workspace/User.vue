@@ -7,10 +7,9 @@
       <avatar
         :key="user.avatar"
         class="user__avatar"
-        :image="userAvatar(user.id, 40)"
         :user-id="user.id"
         :size="40"
-        :status="user.onlineStatus"
+        :status="true"
       />
       <div
         v-textfade
