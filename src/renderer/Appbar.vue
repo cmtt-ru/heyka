@@ -79,18 +79,18 @@
         square
         @click="switchProp('speakers')"
       />
-      <ui-button
-        v-if="myWorkspace"
-        v-tooltip="microphoneTooltip"
-        :type="7"
-        class="user__button"
-        size="medium"
-        :icon="icons.microphone"
-        header
-        square
-        @click="switchProp('microphone')"
-      />
-
+      <router-link :to="{name: 'settings'}">
+        <ui-button
+          v-if="myWorkspace"
+          v-tooltip="$t('tooltips.settings')"
+          :type="7"
+          class="user__button"
+          size="medium"
+          icon="settings2"
+          header
+          square
+        />
+      </router-link>
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
