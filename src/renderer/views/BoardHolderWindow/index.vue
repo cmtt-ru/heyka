@@ -93,8 +93,8 @@ export default {
     },
 
     drawingNotifyUsers() {
-      for (const user of this.users) {
-        this.onNewUser(`${user.userId}(sender)`);
+      for (const { user } of this.users) {
+        this.onNewUser(`${user.id}(sender)`);
       }
     },
 
