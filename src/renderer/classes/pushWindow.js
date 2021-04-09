@@ -19,8 +19,8 @@ class PushWindow {
     this.closewWindowTimeout = null;
     this.amount = 0;
 
-    store.watch(() => store.getters['app/getPushes'], (pushes) => {
-      this._changeAmount(pushes.length);
+    store.watch(() => store.getters['app/getPushesCount'], count => {
+      this._changeAmount(count);
     });
   }
 
@@ -91,7 +91,7 @@ class PushWindow {
    * @returns {void}
    */
   _removePush(length) {
-    if (length === 0) {
+    if (length === 0 && this.window) {
       cnsl.log('no pushes left');
       this.closewWindowTimeout = setTimeout(() => {
         this.window.action('close');

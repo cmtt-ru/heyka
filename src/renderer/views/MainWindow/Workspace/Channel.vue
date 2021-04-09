@@ -1,110 +1,156 @@
 <template>
-  <pseudo-popup>
-    <template #custom-header>
+  <div class="channel-page-wrapper">
+    <div
+      v-if="users.length===0"
+      class="empty"
+    >
       <div
-        v-if="channel"
-        class="channel-header"
+        class="empty__name"
       >
         <svg-icon
-          class="channel-header__type"
+          class="empty__name__icon"
           :name="dynamicIcon"
           :color="dynamicIconColor"
           size="large"
         />
-
         <div
           v-textfade
-          class="channel-header__name"
+          class="empty__name__text"
         >
           {{ channel.name }}
         </div>
-
-        <ui-button
-          :key="channel.id"
-          v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
-          :type="16"
-          class="channel-header__more"
-          icon="more"
-        />
-
+      </div>
+      <div class="empty__desc">
+        {{ texts.emptyDesc }}
+      </div>
+      <div class="empty__button-row">
         <ui-button
           v-if="!isConnected"
           :disabled="janusInProgress"
           :type="1"
-          class="channel-header__connect"
-          size="small"
+          class="empty__button-connect"
+          size="large"
           @click.native="clickConnectHandler()"
         >
           {{ texts.join }}
         </ui-button>
-
         <ui-button
-          v-if="isConnected"
-          :type="4"
-          class="channel-header__connect"
-          size="small"
-          @click.native="clickDisconnectHandler()"
-        >
-          {{ texts.disconnect }}
-        </ui-button>
+          :key="channel.id"
+          v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
+          :type="16"
+          class="empty__button-more"
+          icon="more"
+        />
       </div>
-    </template>
+    </div>
 
-    <template #custom-body>
-      <div class="channel-user-list">
-        <list :filter-by="''">
-          <list-item
-            v-for="user in sortedUsers"
-            :key="user.user.id"
-            :filter-key="user.user.name"
-            button
-          >
-            <channel-user-item
-              :user="user.user"
-              :media-state="user.mediaState"
-              :channel-id="channelId"
-            />
-          </list-item>
-        </list>
-
+    <pseudo-popup v-else>
+      <template #custom-header>
         <div
-          v-if="isConnected"
-          class="l-flex last-block l-mt-4"
+          v-if="channel"
+          class="channel-header"
         >
-          <router-link :to="{name: 'channel-invite', params: { id: channelId }}">
-            <ui-button
-              :type="9"
-              icon="add"
-              style="margin-left: 6px"
-            >
-              {{ texts.invite }}
-            </ui-button>
-          </router-link>
+          <svg-icon
+            class="channel-header__type"
+            :name="dynamicIcon"
+            :color="dynamicIconColor"
+            size="large"
+          />
+
+          <div
+            v-textfade
+            class="channel-header__name"
+          >
+            {{ channel.name }}
+          </div>
+
+          <ui-button
+            :key="channel.id"
+            v-popover.click="{name: 'Channel', data: {id: channel.id}, permissions: $permissions.editChannel(channel.id)}"
+            :type="16"
+            class="channel-header__more"
+            icon="more"
+          />
+
+          <ui-button
+            v-if="!isConnected"
+            :disabled="janusInProgress"
+            :type="1"
+            class="channel-header__connect"
+            size="small"
+            @click.native="clickConnectHandler()"
+          >
+            {{ texts.join }}
+          </ui-button>
+
+          <ui-button
+            v-if="isConnected"
+            :type="4"
+            class="channel-header__connect"
+            size="small"
+            @click.native="clickDisconnectHandler()"
+          >
+            {{ texts.disconnect }}
+          </ui-button>
         </div>
-      </div>
-    </template>
+      </template>
 
-    <template #custom-footer>
-      <div class="channel-footer l-flex">
-        <ui-button
-          v-if="selectedChannelId"
-          :type="14"
-          class="l-mr-4"
-          @click="audioLagsHandler"
-        >
-          {{ texts.audioLags }}
-        </ui-button>
+      <template #custom-body>
+        <div class="channel-user-list">
+          <list :filter-by="''">
+            <list-item
+              v-for="user in sortedUsers"
+              :key="user.user.id"
+              :filter-key="user.user.name"
+              button
+            >
+              <channel-user-item
+                :user="user.user"
+                :media-state="user.mediaState"
+                :channel-id="channelId"
+              />
+            </list-item>
+          </list>
 
-        <ui-button
-          class="l-ml-auto"
-          :type="14"
-          @click="openIntercom"
-        >
-          {{ texts.support }}
-        </ui-button>
-      </div>
-    </template>
-  </pseudo-popup>
+          <div
+            v-if="isConnected"
+            class="l-flex last-block l-mt-4"
+          >
+            <router-link :to="{name: 'channel-invite', params: { id: channelId }}">
+              <ui-button
+                :type="9"
+                icon="add"
+                style="margin-left: 6px"
+              >
+                {{ texts.invite }}
+              </ui-button>
+            </router-link>
+          </div>
+        </div>
+      </template>
+
+      <template #custom-footer>
+        <div class="channel-footer l-flex">
+          <ui-button
+            v-if="selectedChannelId"
+            :type="14"
+            class="l-mr-4"
+            @click="audioLagsHandler"
+          >
+            {{ texts.audioLags }}
+          </ui-button>
+
+          <ui-button
+            class="l-ml-auto"
+            :type="14"
+            @click="openIntercom"
+          >
+            {{ texts.support }}
+          </ui-button>
+        </div>
+      </template>
+    </pseudo-popup>
+  </div>
 </template>
 
 <script>
@@ -279,6 +325,10 @@ export default {
 
 <style lang="stylus" scoped>
 
+.channel-page-wrapper
+  width 100%
+  height 100%
+
 .channel-header
   flex-grow 1
   height 52px
@@ -320,4 +370,46 @@ export default {
   flex-grow 1
   padding 8px 12px 8px 18px
 
+.empty
+  display flex
+  width 100%
+  height 100%
+  padding 26px
+  box-sizing border-box
+  flex-direction column
+  align-items center
+  justify-content center
+
+  &__name
+    font-weight bold
+    font-size 18px
+    line-height 28px
+    margin-bottom 8px
+    display flex
+    flex-direction row
+    align-items center
+    justify-content flex-start
+    max-width 100%
+
+    &__icon
+      color var(--new-UI-01)
+      margin 0 8px 0 -24px
+      width 24px
+      height 24px
+      flex-shrink 0
+
+  &__desc
+    font-size 14px
+    line-height 22px
+    margin-bottom 16px
+    color var(--new-UI-03)
+    text-align center
+
+  &__button-row
+    display flex
+
+  &__button-more
+    height 36px
+    width 42px
+    margin-left 8px
 </style>
