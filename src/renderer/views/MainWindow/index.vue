@@ -43,7 +43,7 @@ export default {
   },
   data() {
     return {
-      updateNotificationShown: false,
+      updateNotificationId: null,
       loading: true,
     };
   },
@@ -95,10 +95,7 @@ export default {
     });
 
     window.ipcRenderer.on('update-downloaded', (force) => {
-      if (!this.updateNotificationShown || force) {
-        this.showUpdateNotification();
-        this.updateNotificationShown = true;
-      }
+      this.showUpdateNotification();
     });
 
     window.ipcRenderer.send('update-check');
@@ -174,6 +171,11 @@ export default {
     async showUpdateNotification() {
       const texts = this.$t('autoUpdate');
 
+      if (this.updateNotificationId) {
+        await this.$store.dispatch('app/removeNotification', this.updateNotificationId);
+        this.updateNotificationId = null;
+      }
+
       const notification = {
         infinite: true,
         data: {
@@ -197,7 +199,7 @@ export default {
         },
       };
 
-      await this.$store.dispatch('app/addNotification', notification);
+      this.updateNotificationId = await this.$store.dispatch('app/addNotification', notification);
     },
 
     /**
