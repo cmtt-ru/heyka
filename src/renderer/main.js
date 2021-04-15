@@ -14,6 +14,16 @@ import { Mixin } from '@/mixins';
 import permissions from '@sdk/classes/permissions';
 import isMainWindow from '@shared/WindowManager/isMainWindow';
 import network from '@sdk/classes/network';
+import windowName from '@shared/WindowManager/currentWindowName';
+
+/**
+ * Retrieving log file path from main process
+ */
+const logPath = window.ipcRenderer.sendSync('log-manager-path', `renderer-${windowName()}`);
+
+window.electronLog.transports.file.resolvePath = () => logPath;
+window.electronLog.catchErrors();
+Object.assign(console, window.electronLog.functions);
 
 if (IS_DEV) {
   Vue.config.performance = true;
