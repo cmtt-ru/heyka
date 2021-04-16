@@ -434,7 +434,7 @@ export default {
           }
         }
 
-        this.$router.back();
+        this.__backOrRedirect();
 
         const notification = {
           data: {
@@ -464,7 +464,7 @@ export default {
      * @returns {void}
      */
     closeHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
   },
 
