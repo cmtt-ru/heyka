@@ -190,6 +190,7 @@ export default {
       if (status === 'false') {
         this.$store.dispatch('app/addNotification', {
           data: {
+            icon: 'warning',
             text: decodeURIComponent(error),
           },
         });

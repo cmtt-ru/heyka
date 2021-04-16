@@ -117,6 +117,7 @@ export default {
       this.$store.dispatch('app/addNotification', {
         lifespan: 3000,
         data: {
+          icon: 'tick',
           text,
         },
       });
