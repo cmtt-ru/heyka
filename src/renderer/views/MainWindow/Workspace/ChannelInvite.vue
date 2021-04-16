@@ -335,7 +335,6 @@ export default {
     }
 
     this.groups = await this.$API.group.getGroups(this.selectedWorkspaceId);
-    console.log(this.groups);
   },
 
   beforeDestroy() {
