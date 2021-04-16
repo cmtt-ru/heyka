@@ -159,7 +159,7 @@ export default {
      * @returns {void}
      */
     closeHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
 
     selectAvatar() {

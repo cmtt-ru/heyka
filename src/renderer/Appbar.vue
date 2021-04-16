@@ -84,6 +84,7 @@
         v-tooltip="$t('tooltips.settings')"
         :type="7"
         class="user__button"
+        :class="settingsClass"
         size="medium"
         icon="settings2"
         header
@@ -107,6 +108,8 @@ import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 import { getUserAvatarUrl } from '@libs/image';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+
+import Mousetrap from 'mousetrap';
 
 /**
  * Map media state points to corresponding icons
@@ -180,12 +183,23 @@ export default {
         return this.$t('tooltips.speakerOn');
       }
     },
+
+    settingsClass() {
+      if (this.$route.name === 'settings') {
+        return 'user__button--opened';
+      }
+
+      return '';
+    },
   },
 
   created() {
     if (this.$store.state.app.runAppFrom === 'tray') {
       this.tray = true;
     }
+    Mousetrap.bind(['command+,', 'ctrl+,'], () => {
+      this.toggleSettings();
+    });
   },
 
   methods: {
@@ -218,7 +232,7 @@ export default {
 
     toggleSettings() {
       if (this.$route.name === 'settings') {
-        this.$router.back();
+        this.__backOrRedirect();
       } else if (this.$route.name === 'styleguide') {
         this.$router.replace({ name: 'workspace' });
       } else {
@@ -302,6 +316,9 @@ export default {
 
   &__button
     margin-right 4px
+
+    &--opened
+      background-color var(--new-UI-07)
 
   &__avatar
     margin 0 11px 0 4px
