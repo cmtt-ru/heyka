@@ -123,6 +123,7 @@ export default {
       if (code === 'false') {
         this.$store.dispatch('app/addNotification', {
           data: {
+            icon: 'warning',
             text: decodeURIComponent(error),
           },
         });

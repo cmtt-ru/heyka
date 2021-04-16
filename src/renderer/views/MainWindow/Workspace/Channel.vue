@@ -298,6 +298,7 @@ export default {
       const notification = {
         lifespan: 3000,
         data: {
+          icon: 'warning',
           text: this.texts['audioLagsNotification'],
         },
       };
