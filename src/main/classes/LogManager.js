@@ -1,6 +1,7 @@
 import path from 'path';
 import log from 'electron-log';
-import { ipcMain } from 'electron';
+import { ipcMain, app } from 'electron';
+import os from 'os';
 
 let LOG_PATH = '';
 
@@ -21,3 +22,23 @@ ipcMain.on('log-manager-path', (event, name) => {
 log.catchErrors();
 
 Object.assign(console, log.functions);
+
+/**
+ * Sho app launched log and some useful information about computer
+ */
+const mb = 1048576;
+const cpus = os.cpus();
+
+console.log(`\n\n
+ █████╗ ██████╗ ██████╗     ██╗      █████╗ ██╗   ██╗███╗   ██╗ ██████╗██╗  ██╗███████╗██████╗
+██╔══██╗██╔══██╗██╔══██╗    ██║     ██╔══██╗██║   ██║████╗  ██║██╔════╝██║  ██║██╔════╝██╔══██╗
+███████║██████╔╝██████╔╝    ██║     ███████║██║   ██║██╔██╗ ██║██║     ███████║█████╗  ██║  ██║
+██╔══██║██╔═══╝ ██╔═══╝     ██║     ██╔══██║██║   ██║██║╚██╗██║██║     ██╔══██║██╔══╝  ██║  ██║
+██║  ██║██║     ██║         ███████╗██║  ██║╚██████╔╝██║ ╚████║╚██████╗██║  ██║███████╗██████╔╝
+╚═╝  ╚═╝╚═╝     ╚═╝         ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═════╝
+
+App version: ${app.getVersion()}
+OS: ${os.type()}
+CPU: ${cpus[0].model} / ${cpus.length} cores
+RAM: ${Math.round(os.totalmem() / mb)}MB
+`);
