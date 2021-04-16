@@ -89,6 +89,7 @@
               class="user__inner"
             >
               <div
+                v-textfade
                 class="user__real-name"
               >
                 {{ user.realName }}
@@ -307,7 +308,7 @@ export default {
   display flex
   flex-direction row
   align-items center
-  margin-bottom 2px
+  margin-bottom 4px
   border-radius 6px
   cursor pointer
   height 44px
@@ -348,7 +349,6 @@ export default {
 
   &__real-name
     font-weight 500
-    font-size 13px
     line-height 16px
 
   &__name

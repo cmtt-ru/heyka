@@ -507,6 +507,7 @@ export default {
   border-radius 6px
   cursor pointer
   height 44px
+  margin-bottom 4px
 
   &:hover
     background-color var(--new-UI-06)
