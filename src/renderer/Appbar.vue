@@ -79,18 +79,17 @@
         square
         @click="switchProp('microphone')"
       />
-      <router-link :to="{name: 'settings'}">
-        <ui-button
-          v-if="myWorkspace"
-          v-tooltip="$t('tooltips.settings')"
-          :type="7"
-          class="user__button"
-          size="medium"
-          icon="settings2"
-          header
-          square
-        />
-      </router-link>
+      <ui-button
+        v-if="myWorkspace"
+        v-tooltip="$t('tooltips.settings')"
+        :type="7"
+        class="user__button"
+        size="medium"
+        icon="settings2"
+        header
+        square
+        @click="toggleSettings"
+      />
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
@@ -215,6 +214,16 @@ export default {
         newState.speaking = false;
       }
       this.$store.dispatch('me/setMediaState', newState);
+    },
+
+    toggleSettings() {
+      if (this.$route.name === 'settings') {
+        this.$router.back();
+      } else if (this.$route.name === 'styleguide') {
+        this.$router.replace({ name: 'workspace' });
+      } else {
+        this.$router.push({ name: 'settings' });
+      }
     },
 
   },
