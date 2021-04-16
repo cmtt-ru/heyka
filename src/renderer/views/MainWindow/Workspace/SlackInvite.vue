@@ -310,6 +310,7 @@ export default {
   margin-bottom 2px
   border-radius 6px
   cursor pointer
+  height 44px
 
   &:hover
     background-color var(--new-UI-06)
@@ -354,6 +355,7 @@ export default {
     font-weight normal
     font-size 12px
     line-height 16px
+    margin-top 4px
 
 .submit-button-wrapper
   width 100%
