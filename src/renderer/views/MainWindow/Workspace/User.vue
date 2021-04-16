@@ -78,7 +78,7 @@
           <div>{{ texts.inviteButtonStart }}</div>
           <svg-icon
             class="icon-in-button"
-            name="channelOnAir"
+            name="channel"
             size="medium"
           />
           <div>{{ selectedChannel.name }}</div>
@@ -321,6 +321,7 @@ export default {
 
 .icon-in-button
   margin 0 4px
+  color var(--new-signal-02)
 
 .user-info
   margin-top 12px
