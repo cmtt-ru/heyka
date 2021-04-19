@@ -1,7 +1,6 @@
 <template>
   <div
     id="push-wrapper"
-    :style="$themes.getColors('navbar')"
     class="push-wrapper"
   >
     <push

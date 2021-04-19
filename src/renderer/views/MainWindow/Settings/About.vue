@@ -152,7 +152,7 @@ export default {
 
 .about-link
   padding-top 8px
-  color var(--color-2)
+  color var(--new-UI-01)
   font-weight 400
 
 .check-for-updates
@@ -180,7 +180,6 @@ export default {
     user-select text
 
   &__text
-    color var(--text-0)
     white-space pre-line
     line-height 19px
     margin-bottom 10px
