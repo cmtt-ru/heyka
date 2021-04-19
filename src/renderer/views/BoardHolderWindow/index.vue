@@ -1,7 +1,6 @@
 <template>
   <div
     class="layout__popover"
-    :style="$themes.getColors('popover')"
   >
     <div
       v-if="canDraw"
