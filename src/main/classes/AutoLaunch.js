@@ -15,7 +15,7 @@ if (!IS_DEV && heykaStore.get('autorun', true)) {
     autoLauncher.enable();
   })
     .catch(function (err) {
-      console.log(err);
+      console.error('AutoLaunch --> error', err);
     });
 }
 
@@ -29,7 +29,7 @@ ipcMain.on('app-toggle-autolaunch', (event, state) => {
       autoLauncher.enable();
     })
       .catch(function (err) {
-        console.log(err);
+        console.error('AutoLaunch --> error', err);
       });
   } else {
     autoLauncher.isEnabled().then(function (isEnabled) {
@@ -39,7 +39,7 @@ ipcMain.on('app-toggle-autolaunch', (event, state) => {
       autoLauncher.disable();
     })
       .catch(function (err) {
-        console.log(err);
+        console.error('AutoLaunch --> error', err);
       });
   }
 });

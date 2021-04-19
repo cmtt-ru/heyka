@@ -88,7 +88,7 @@ async function sendLogs() {
 
     await clearLogs();
   } catch (e) {
-    console.error('Error in uploading logs', e);
+    console.error('AutoLaunch --> error', e);
   }
 }
 
@@ -121,7 +121,7 @@ async function getLogFileNames() {
 
     return files.filter(f => extensions.includes(path.extname(f).toLowerCase()));
   } catch (e) {
-    console.error(e);
+    console.error('AutoLaunch --> error', e);
   }
 }
 
