@@ -1,7 +1,6 @@
 <template>
   <div
     class="layout__popover"
-    :style="$themes.getColors('popover')"
   >
     <router-view />
   </div>
@@ -57,6 +56,5 @@ export default {
     width 100vw
     height 100vh
     -webkit-app-region drag
-    background-color var(--app-bg)
-    color var(--text-0)
+    background-color var(--new-black)
 </style>
