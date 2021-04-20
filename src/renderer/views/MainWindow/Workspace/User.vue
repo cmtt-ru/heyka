@@ -244,6 +244,7 @@ export default {
       const notification = {
         lifespan: 3000,
         data: {
+          icon: 'tick',
           text: this.texts.inviteSent,
         },
       };

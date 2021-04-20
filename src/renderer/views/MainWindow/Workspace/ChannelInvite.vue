@@ -298,6 +298,7 @@ export default {
 
       const notification = {
         data: {
+          icon: 'tick',
           text: this.$t('workspace.channel').inviteCopied,
         },
       };
@@ -371,6 +372,7 @@ export default {
 
         const notification = {
           data: {
+            icon: 'tick',
             text: this.texts.invitationsSent,
           },
         };
