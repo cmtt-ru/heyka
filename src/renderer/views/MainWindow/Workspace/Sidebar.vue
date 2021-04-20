@@ -143,7 +143,10 @@
         href="#sidebar_user_anchor"
         class="channel-header__label"
       >{{ texts.usersHeader }}</a>
-      <router-link :to="{name: 'invite'}">
+      <router-link
+        v-if="canInvite"
+        :to="{name: 'invite'}"
+      >
         <ui-button
           v-tooltip="$t('tooltips.newUser')"
           :type="7"
@@ -173,7 +176,7 @@
       </list-item>
     </list>
     <router-link
-      v-if="!searchText"
+      v-if="!searchText && canInvite"
       :to="{name: 'invite'}"
       class="action-button"
     >
@@ -215,14 +218,17 @@ export default {
       searchText: '',
       filteredChannelItems: [],
       filteredUserItems: [],
+      workspaceSettings: {},
     };
   },
 
   computed: {
 
     ...mapGetters({
+      selectedWorkspaceId: 'me/getSelectedWorkspaceId',
       channels: 'channels/getChannels',
       getAllUsers: 'users/getAllUsersByFrequency',
+      myInfo: 'myInfo',
     }),
 
     ...mapState('app', {
@@ -295,18 +301,14 @@ export default {
     },
 
     /**
-     * Search string in vuex
+     * true if user can invite to workspace
      *
      * @returns {string}
      */
-    // searchText: {
-    //   get() {
-    //     return this.$store.state.app.search;
-    //   },
-    //   set(value) {
-    //     this.$store.commit('app/SET_SEARCH_TEXT', value);
-    //   },
-    // },
+    canInvite() {
+      return this.workspaceSettings.canUsersInvite ||
+      (this.myInfo.user && this.myInfo.user.role === 'admin');
+    },
 
   },
 
@@ -314,6 +316,10 @@ export default {
     Mousetrap.bind(['command+f', 'ctrl+f'], () => {
       this.activateInput(false);
     });
+  },
+
+  async mounted() {
+    this.workspaceSettings = await this.$API.workspace.getWorkspaceSettings(this.selectedWorkspaceId);
   },
 
   beforeDestroy() {

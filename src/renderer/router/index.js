@@ -66,4 +66,22 @@ const router = new VueRouter({
   routes,
 });
 
+Vue.mixin({
+  methods: {
+    __backOrRedirect(route) {
+      const originRoute = router.app.$route.fullPath;
+
+      router.back();
+      setTimeout(() => {
+      // If the route is not changed, we do the redirect
+        if (originRoute === router.app.$route.fullPath) {
+        // Redirect to the home path by default
+          router.replace(route || '/');
+        }
+      // eslint-disable-next-line no-magic-numbers
+      }, 10);
+    },
+  },
+});
+
 export default router;

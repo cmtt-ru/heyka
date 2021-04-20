@@ -159,7 +159,7 @@ export default {
      * @returns {void}
      */
     closeHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
 
     selectAvatar() {
@@ -307,7 +307,6 @@ $SAVE_FADE_TIME = 2s
 .block-title
   margin 24px 0 8px
   font-weight bold
-  font-size 14px
   line-height 24px
   color var(--new-UI-02)
 
