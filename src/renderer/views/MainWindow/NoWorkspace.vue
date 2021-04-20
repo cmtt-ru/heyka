@@ -92,7 +92,6 @@ export default {
         margin-bottom 4px
 
       p
-        font-size 14px
         line-height 22px
         font-weight 400
         margin-bottom 44px
