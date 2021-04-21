@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import createLogger from 'vuex/dist/logger';
 import modules from './modules';
 import actions from './actions';
 import getters from './getters';
@@ -84,24 +83,31 @@ const plugins = [
 /**
  * Vuex logger plugin
  */
-if (!IS_DEV) {
-  plugins.push(createLogger({
-    /**
-     * Filter mutations to be logged
-     * @param {object} mutation Mutation type and payload
-     * @returns {boolean}
-     */
-    filter(mutation) {
-      const ignoreList = [
-        'app/SET_MICROPHONE_VOLUME',
-        'me/SET_MEDIA_STATE',
-        'channels/SET_USER_MEDIA_STATE',
-      ];
+if (IS_DEV) {
+  plugins.push(store => {
+    const ignoreList = [
+      'app/SET_MICROPHONE_VOLUME',
+      'me/SET_MEDIA_STATE',
+      'channels/SET_USER_MEDIA_STATE',
+    ];
 
-      return !ignoreList.includes(mutation.type);
-    },
-    logActions: false,
-  }));
+    const payloadIgnoreList = [
+      'channels/SET_COLLECTION',
+      'users/SET_COLLECTION',
+    ];
+
+    store.subscribe((mutation, state) => {
+      if (!ignoreList.includes(mutation.type)) {
+        let payload = mutation.payload;
+
+        if (payloadIgnoreList.includes(mutation.type)) {
+          payload = 'ignored payload';
+        }
+
+        console.log(`%cmutation ${mutation.type}`, 'font-weight:bold', payload);
+      }
+    });
+  });
 }
 
 /**
