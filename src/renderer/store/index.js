@@ -83,7 +83,7 @@ const plugins = [
 /**
  * Vuex logger plugin
  */
-if (IS_DEV) {
+if (!IS_DEV) {
   plugins.push(store => {
     const ignoreList = [
       'app/SET_MICROPHONE_VOLUME',
