@@ -231,10 +231,9 @@ export default {
     },
 
     toggleSettings() {
-      console.log(this.$route);
-      if (this.$route.fullPath.includes('/settings')) {
+      if (this.$route.name === 'settings') {
         this.__backOrRedirect();
-      } else if (this.$route.fullPath.includes('/styleguide')) {
+      } else if (this.$route.name === 'styleguide') {
         this.$router.replace({ name: 'workspace' });
       } else {
         this.$router.push({ name: 'settings' });
