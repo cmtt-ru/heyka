@@ -46,7 +46,7 @@
       </div>
       <div
         class="edit-link"
-        @click="_notImplemented()"
+        @click="editEmail"
       >
         {{ texts.editEmail }}
       </div>
@@ -227,6 +227,20 @@ export default {
       };
 
       await this.$store.dispatch('app/addNotification', notification);
+    },
+
+    /**
+     * Open manage workspace
+     * @returns {void}
+     */
+    async editEmail() {
+      const { code } = await this.$API.auth.link();
+      const link = `${WEB_URL}/auth/email/change/${code}`;
+
+      if (IS_DEV) {
+        navigator.clipboard.writeText(link);
+      }
+      window.open(link);
     },
 
     /**
