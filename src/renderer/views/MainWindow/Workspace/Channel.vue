@@ -364,7 +364,7 @@ export default {
   padding 0 12px
 
 .last-block
-  margin-bottom 48px
+  margin-bottom 12px
 
 .channel-footer
   flex-grow 1
