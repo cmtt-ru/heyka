@@ -231,7 +231,6 @@ export default {
     },
 
     toggleSettings() {
-      console.log(this.$route);
       if (this.$route.fullPath.includes('/settings')) {
         this.__backOrRedirect();
       } else if (this.$route.fullPath.includes('/styleguide')) {
