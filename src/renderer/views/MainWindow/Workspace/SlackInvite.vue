@@ -131,6 +131,7 @@ import { List, ListItem } from '@components/List';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+import notify from '@libs/notify';
 
 export default {
   components: {
@@ -188,11 +189,7 @@ export default {
   async mounted() {
     DeepLink.on('slack-connect', ([status, error]) => {
       if (status === 'false') {
-        this.$store.dispatch('app/addNotification', {
-          data: {
-            text: decodeURIComponent(error),
-          },
-        });
+        notify(decodeURIComponent(error));
       } else {
         this.getSlackUsers();
       }
