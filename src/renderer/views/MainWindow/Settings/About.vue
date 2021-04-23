@@ -61,6 +61,7 @@
 import { CHANGELOG } from '@/changelog';
 import UiButton from '@components/UiButton';
 import { WEB_URL } from '@sdk/Constants';
+import notify from '@libs/notify';
 
 export default {
 
@@ -111,16 +112,9 @@ export default {
      * @returns {void}
      */
     async noUpdate() {
-      const texts = this.$t('autoUpdate');
-
-      const notification = {
+      notify('autoUpdate.noUpdate', {
         lifespan: 3000,
-        data: {
-          text: texts.noUpdate,
-        },
-      };
-
-      await this.$store.dispatch('app/addNotification', notification);
+      });
     },
 
     /**
@@ -128,16 +122,9 @@ export default {
      * @returns {void}
      */
     async updateDownloading() {
-      const texts = this.$t('autoUpdate');
-
-      const notification = {
+      notify('autoUpdate.downloading', {
         lifespan: 3000,
-        data: {
-          text: texts.downloading,
-        },
-      };
-
-      await this.$store.dispatch('app/addNotification', notification);
+      });
     },
   },
 };
