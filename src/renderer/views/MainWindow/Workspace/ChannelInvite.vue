@@ -219,6 +219,7 @@ import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
 import { msToTime } from '@libs/texts';
+import notify from '@libs/notify';
 
 let nowInterval;
 let inviteId;
@@ -359,14 +360,10 @@ export default {
     async copyLinkHandler() {
       navigator.clipboard.writeText(this.tempURL);
 
-      const notification = {
-        data: {
-          icon: 'tick',
-          text: this.$t('workspace.channel').inviteCopied,
-        },
-      };
+      notify('workspace.channel.inviteCopied', {
+        icon: 'tick',
+      });
 
-      await this.$store.dispatch('app/addNotification', notification);
       this.hasLink = true;
     },
 
@@ -375,13 +372,7 @@ export default {
         await this.$API.channel.deleteInvite(inviteId);
         this.hasLink = false;
 
-        const notification = {
-          data: {
-            text: this.texts.linkDeactivatedNotif,
-          },
-        };
-
-        await this.$store.dispatch('app/addNotification', notification);
+        notify('workspace.channelInvite.linkDeactivatedNotif');
       } catch (err) {
 
       }
@@ -437,14 +428,9 @@ export default {
 
         this.__backOrRedirect();
 
-        const notification = {
-          data: {
-            icon: 'tick',
-            text: this.texts.invitationsSent,
-          },
-        };
-
-        await this.$store.dispatch('app/addNotification', notification);
+        notify('workspace.channelInvite.invitationsSent', {
+          icon: 'tick',
+        });
       } catch (err) {
         console.error(err);
       }

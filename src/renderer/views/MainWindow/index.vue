@@ -28,6 +28,7 @@ import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { mapGetters } from 'vuex';
 import { heykaStore } from '@/store/localStore';
 import { client } from '@api/socket/client';
+import notify from '@sdk/libs/notify';
 
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
@@ -43,7 +44,7 @@ export default {
   },
   data() {
     return {
-      updateNotificationId: null,
+      updateNotifyClose: null,
       loading: true,
     };
   },
@@ -121,11 +122,8 @@ export default {
       console.log('DeepLink login', code, error);
 
       if (code === 'false') {
-        this.$store.dispatch('app/addNotification', {
-          data: {
-            icon: 'warning',
-            text: decodeURIComponent(error),
-          },
+        notify(decodeURIComponent(error), {
+          icon: 'warning',
         });
 
         return;
@@ -170,37 +168,27 @@ export default {
      * @returns {void}
      */
     async showUpdateNotification() {
-      const texts = this.$t('autoUpdate');
-
-      if (this.updateNotificationId) {
-        await this.$store.dispatch('app/removeNotification', this.updateNotificationId);
-        this.updateNotificationId = null;
+      if (this.updateNotifyClose) {
+        this.updateNotifyClose();
+        this.updateNotifyClose = null;
       }
 
-      const notification = {
-        infinite: true,
-        data: {
-          text: texts.message,
-          buttons: [
-            {
-              text: texts.install,
-              type: 1,
-              action: () => {
-                WindowManager.willQuit();
-                window.ipcRenderer.send('update-install');
-                // electron.remote.app.relaunch();
-                // electron.remote.app.quit();
-              },
+      this.updateNotifyClose = notify('autoUpdate.message', {
+        buttons: [
+          {
+            text: 'autoUpdate.install',
+            type: 1,
+            action: () => {
+              WindowManager.willQuit();
+              window.ipcRenderer.send('update-install');
             },
-            {
-              text: texts.later,
-              close: true,
-            },
-          ],
-        },
-      };
-
-      this.updateNotificationId = await this.$store.dispatch('app/addNotification', notification);
+          },
+          {
+            text: 'autoUpdate.later',
+            close: true,
+          },
+        ],
+      });
     },
 
     /**
