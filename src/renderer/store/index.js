@@ -10,7 +10,7 @@ import mediaDevices from '@sdk/classes/mediaDevices';
 import createMutationsSharer, { BroadcastChannelStrategy } from 'vuex-shared-mutations';
 import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
-import isMainWindow from '@shared/WindowManager/isMainWindow';
+import isMainWindow from '@sdk/libs/isMainWindow';
 import broadcastState from '@sdk/classes/broadcastState';
 import createPersistedState from 'vuex-persistedstate';
 import cloneDeep from 'clone-deep';

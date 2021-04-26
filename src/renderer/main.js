@@ -12,7 +12,7 @@ import SvgIcon from '@components/SvgIcon.vue';
 import '@sdk/directives';
 import { Mixin } from '@/mixins';
 import permissions from '@sdk/classes/permissions';
-import isMainWindow from '@shared/WindowManager/isMainWindow';
+import isMainWindow from '@sdk/libs/isMainWindow';
 import network from '@sdk/classes/network';
 
 if (IS_DEV) {
