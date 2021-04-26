@@ -370,7 +370,7 @@ export default {
   padding 2px 0
 
 .last-block
-  margin-bottom 48px
+  margin-bottom 12px
 
 .channel-footer
   flex-grow 1
