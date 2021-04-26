@@ -1,10 +1,7 @@
 <template>
   <div>
-    <div v-if="loading">
-      {{ texts.webWait }}
-    </div>
-    <div v-else>
-      <div v-if="!slackUsers.length">
+    <div>
+      <div v-if="slackWorkspace===null || (slackUsers && slackUsers.length==0)">
         <div class="top-info-text">
           {{ texts.noWorkspaces }}
         </div>
@@ -61,7 +58,17 @@
             {{ texts.deselectAll }}
           </div>
         </div>
+        <placeholder
+          v-if="loading"
+          class="users-placeholder"
+          avatar
+          two-lines
+          right-button
+          :height="44"
+          :gap="-2"
+        />
         <list
+          v-else
           ref="userList"
           v-model="filteredSlackUsers"
           class="user-list"
@@ -130,6 +137,8 @@ import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import { List, ListItem } from '@components/List';
 import Avatar from '@components/Avatar';
+import Placeholder from '@components/Placeholder';
+
 import { mapGetters } from 'vuex';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 
@@ -140,12 +149,13 @@ export default {
     List,
     ListItem,
     Avatar,
+    Placeholder,
   },
 
   data() {
     return {
       loading: false,
-      slackUsers: [],
+      slackUsers: null,
       filteredSlackUsers: [],
       selectedUsers: [],
       filterKey: '',
@@ -172,6 +182,10 @@ export default {
      * @returns {object}
      */
     slackUsersForSearch() {
+      if (!this.slackUsers) {
+        return [];
+      }
+
       return this.slackUsers.map(user => {
         return {
           ...user,
@@ -219,6 +233,7 @@ export default {
         this.slackUsers = users;
       } catch (err) {
         console.log(err);
+        this.slackUsers = [];
       } finally {
         this.loading = false;
       }
@@ -303,6 +318,10 @@ export default {
     width 100%
     display flex
     flex-direction row-reverse
+
+.users-placeholder
+  margin-top -4px
+  padding 0 14px 0 11px
 
 .user
   padding 4px 10px
