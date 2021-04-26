@@ -61,6 +61,7 @@ class WindowManager {
       openurl: this.openUrl,
       willQuit: this.willQuit,
       sendInputEvent: this.sendInputEvent,
+      maximize: this.maximizeWindow,
     };
 
     ipcMain.handle('window-manager-event', async (event, options) => {
@@ -591,6 +592,24 @@ class WindowManager {
       if (w !== this.mainWindowId) {
         this.windows[w].browserWindow.webContents.sendInputEvent(data);
       }
+    }
+  }
+
+  /**
+   * Maximize window
+   * @param {string} id - ID of window in question
+   * @returns {void}
+   */
+  maximizeWindow({ id }) {
+    if (this.windows[id] !== undefined) {
+      const browserWindow = this.windows[id].browserWindow;
+      const winBounds = browserWindow.getBounds();
+      const display = screen.getDisplayNearestPoint({
+        x: winBounds.x,
+        y: winBounds.y,
+      });
+
+      browserWindow.setBounds(display.bounds);
     }
   }
 }
