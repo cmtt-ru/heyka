@@ -124,6 +124,7 @@
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
+import notify from '@libs/notify';
 
 const DISABLE_AFTER_INVITE_TIMEOUT = 5000;
 
@@ -241,15 +242,10 @@ export default {
         },
       });
 
-      const notification = {
+      notify('workspace.user.inviteSent', {
         lifespan: 3000,
-        data: {
-          icon: 'tick',
-          text: this.texts.inviteSent,
-        },
-      };
-
-      this.$store.dispatch('app/addNotification', notification);
+        icon: 'tick',
+      });
 
       this.$set(this.inviteButtonDisabled, this.user.id, true);
 

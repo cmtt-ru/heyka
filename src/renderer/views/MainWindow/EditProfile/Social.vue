@@ -76,6 +76,7 @@ import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { WEB_URL } from '@sdk/Constants';
+import notify from '@libs/notify';
 
 export default {
   components: {
@@ -114,12 +115,9 @@ export default {
         text = decodeURIComponent(error);
       }
 
-      this.$store.dispatch('app/addNotification', {
+      notify(text, {
         lifespan: 3000,
-        data: {
-          icon: 'tick',
-          text,
-        },
+        icon: 'tick',
       });
 
       this.socialName = null;
