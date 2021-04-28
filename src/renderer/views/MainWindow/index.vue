@@ -173,7 +173,7 @@ export default {
         this.updateNotifyClose = null;
       }
 
-      this.updateNotifyClose = notify('autoUpdate.message', {
+      this.updateNotifyClose = await notify('autoUpdate.message', {
         buttons: [
           {
             text: 'autoUpdate.install',
