@@ -16,6 +16,7 @@
 
     <a
       class="about-link"
+      target="_blank"
       :href="termsLink"
     >{{ texts.notice }}</a>
 
