@@ -74,6 +74,7 @@ export default {
 
 .privacy-text
   line-height 22px
+  font-weight 400
 
 textarea
   outline none
