@@ -39,7 +39,7 @@
       >
         <div>{{ texts.inviteBySlackButton }}</div>
       </ui-button>
-      <ui-button
+      <!-- <ui-button
         :type="17"
         wide
         size="large"
@@ -48,23 +48,13 @@
         @click="_notImplemented()"
       >
         <div>{{ texts.inviteByTeamsButton }}</div>
-      </ui-button>
+      </ui-button> -->
     </div>
 
     <div v-else>
       <ui-button
-        v-if="!isMe && !isInPrivateTalk"
-        :type="1"
-        wide
-        size="large"
-        class="user-action"
-        @click="startPrivateTalk(user.id)"
-      >
-        <div>{{ texts.privateTalkButton }}</div>
-      </ui-button>
-      <ui-button
         v-if="selectedChannel && !isMe"
-        :type="17"
+        :type="isInSameChannel? 5: 1"
         wide
         size="large"
         class="user-action"
@@ -83,6 +73,16 @@
           />
           <div>{{ selectedChannel.name }}</div>
         </div>
+      </ui-button>
+      <ui-button
+        v-if="!isMe && !isInPrivateTalk"
+        :type="selectedChannel? 17: 1"
+        wide
+        size="large"
+        class="user-action"
+        @click="startPrivateTalk(user.id)"
+      >
+        <div>{{ texts.privateTalkButton }}</div>
       </ui-button>
     </div>
     <!--
@@ -227,11 +227,26 @@ export default {
 
       return false;
     },
+
+    /**
+     * True if you and this user are in the same channel
+     * @returns {boolean}
+     */
+    isInSameChannel() {
+      if (this.channelId && this.channelId.users.find(user => user.userId === this.userId)) {
+        return true;
+      }
+
+      return false;
+    },
   },
 
   methods: {
 
     async sendInvite() {
+      if (this.isInSameChannel) {
+        return;
+      }
       await this.$store.dispatch('app/sendPush', {
         userId: this.userId,
         isResponseNeeded: true,
