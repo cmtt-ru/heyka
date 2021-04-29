@@ -1,6 +1,6 @@
 import path from 'path';
 import log from 'electron-log';
-import { ipcMain, app } from 'electron';
+import { ipcMain, app, shell } from 'electron';
 import os from 'os';
 import osName from 'os-name';
 import AdmZip from 'adm-zip';
@@ -62,6 +62,13 @@ ipcMain.on('log-manager-path', (event, name) => {
  */
 ipcMain.on('log-manager-send', (event, name) => {
   sendLogs();
+});
+
+/**
+ * Event for opening logs folder
+ */
+ipcMain.on('log-manager-open-logs', (event, name) => {
+  openLogsFolder();
 });
 
 /**
@@ -133,6 +140,14 @@ async function clearLogs() {
   const files = await getLogFileNames();
 
   files.forEach(file => asyncFs.unlink(path.join(LOG_PATH, file)));
+}
+
+/**
+ * Open logs folder
+ * @returns {Promise<void>}
+ */
+function openLogsFolder() {
+  shell.openPath(LOG_PATH);
 }
 
 /**

@@ -53,7 +53,7 @@ export default {
     },
 
     openLogs() {
-      window.ipcRenderer.send('log-manager-send');
+      window.ipcRenderer.send('log-manager-open-logs');
     },
   },
 
