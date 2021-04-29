@@ -455,6 +455,7 @@ $ANIM = 250ms
       top 0
       bottom 0
       margin auto 0
+      color #A2A7AD
 
       &:hover
         color var(--new-UI-04)

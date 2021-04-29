@@ -352,7 +352,7 @@ export default {
 
   &__more
     color var(--new-UI-03)
-    margin 0 6px
+    margin 0 6px 0 15px
     flex-shrink 0
 
   &__connect
