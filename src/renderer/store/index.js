@@ -214,6 +214,15 @@ if (IS_MAIN_WINDOW) {
   window.ipcRenderer.on('power-monitor-lock-screen', (event, state) => {
     store.dispatch('me/setLockScreenState', state);
   });
+
+  /** Listen for esc+esc+esc hot key */
+  broadcastEvents.on('go-to-support', () => {
+    const mainWindow = WindowManager.getCurrentWindow();
+
+    router.push({ name: 'settings-support' }).catch(() => {});
+
+    mainWindow.api('show');
+  });
 } else {
   /** Request state */
   broadcastState.requestState();
