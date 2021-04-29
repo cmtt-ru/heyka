@@ -99,6 +99,19 @@ export default {
   },
 
   /**
+   * Get hand up statuses history
+   *
+   * @param {ChannelState} state – channels module state
+   * @param {object} getters – vuex getters
+   * @returns {object}
+   */
+  getHandUpHistory: (state, getters) => {
+    const data = getters['getConversationEvents']('hand-up');
+
+    return data || [];
+  },
+
+  /**
    * Get mini chat last messages
    *
    * @param {ChannelState} state – channels module state
