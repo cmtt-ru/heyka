@@ -49,10 +49,11 @@ export default {
   methods: {
     openReportPage() {
       window.open('https://cmtt-ru.slack.com/archives/CLA674QEN');
+      window.ipcRenderer.send('log-manager-send');
     },
 
     openLogs() {
-
+      window.ipcRenderer.send('log-manager-send');
     },
   },
 
@@ -67,4 +68,5 @@ export default {
 .about-link
   padding-top 12px
   color var(--new-UI-01)
+
 </style>
