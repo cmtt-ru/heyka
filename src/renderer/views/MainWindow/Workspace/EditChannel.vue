@@ -29,22 +29,12 @@
         />
 
         <p
-          v-if="channelModel.isPrivate"
+          v-if="channelModel.isPrivate && !isEditMode"
           class="edit-channel-label"
           :class="{'l-mt-8': channelModel.isPrivate, 'l-mt-12': !channelModel.isPrivate}"
         >
           {{ texts.privateLabel }}
         </p>
-
-        <ui-button
-          v-if="isEditMode"
-          :type="14"
-          class="l-mb-12"
-          :class="{'l-mt-12': channelModel.isPrivate}"
-          @click="deleteHandler"
-        >
-          {{ texts.buttonDelete }}
-        </ui-button>
 
         <ui-button
           v-if="!isEditMode"
@@ -63,8 +53,20 @@
           size="large"
           wide
           submit
+          class="l-mt-18 l-mb-12"
         >
           {{ texts.buttonSave }}
+        </ui-button>
+
+        <ui-button
+          v-if="isEditMode"
+          :type="17"
+          size="large"
+          class="edit-channel-delete"
+          wide
+          @click="deleteHandler"
+        >
+          {{ texts.buttonDelete }}
         </ui-button>
       </ui-form>
     </template>
@@ -259,4 +261,7 @@ export default {
     line-height 22px
     color var(--new-UI-03)
     font-weight 400
+
+  .edit-channel-delete
+    color var(--new-signal-03)
 </style>
