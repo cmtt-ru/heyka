@@ -115,6 +115,12 @@ export default {
         case 'mini-chat-link':
           window.open(data.data.link);
           break;
+
+        case 'open-grid':
+          broadcastActions.dispatch('openGrid');
+          broadcastEvents.dispatch('grid');
+          break;
+
         default:
           await broadcastActions.dispatch('app/sendPushResponse', {
             response,
