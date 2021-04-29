@@ -14,31 +14,21 @@
           selected
           :name="texts.link"
         >
+          <div
+            class="link__header"
+          >
+            {{ texts.linkHeader }}
+          </div>
           <div class="link-wrapper">
             <ui-button
-              v-show="!linkCopied"
               :type="1"
               :wide="true"
+              size="large"
               class="link"
               @click="copyLinkHandler"
             >
               {{ texts.copy }}
             </ui-button>
-            <ui-button
-              v-show="linkCopied"
-              :type="5"
-              :wide="true"
-              class="link"
-              @click="copyLinkHandler"
-            >
-              {{ texts.copied }}
-            </ui-button>
-          </div>
-          <div
-            v-show="linkCopied"
-            class="link__copied-text"
-          >
-            {{ texts.expires }}
           </div>
         </tab>
 
@@ -56,6 +46,8 @@
             />
             <ui-button
               :type="1"
+              :wide="true"
+              size="large"
               submit
             >
               {{ texts.send }}
@@ -79,9 +71,9 @@
         <tab name="Slack">
           <slack-invite />
         </tab>
-        <tab name="Teams">
+        <!-- <tab name="Teams">
           Work in progress
-        </tab>
+        </tab> -->
       </tabs>
     </template>
   </pseudo-popup>
@@ -110,7 +102,6 @@ export default {
 
   data() {
     return {
-      linkCopied: false,
       emails: [ '' ],
       emailsSent: false,
     };
@@ -139,7 +130,15 @@ export default {
         const link = `${WEB_URL}/auth?invite=${codeData.code}`;
 
         navigator.clipboard.writeText(link);
-        this.linkCopied = true;
+
+        const notification = {
+          data: {
+            text: this.texts.expires,
+            icon: 'tick',
+          },
+        };
+
+        await this.$store.dispatch('app/addNotification', notification);
       } catch (err) {
         console.log(err);
       }
@@ -173,13 +172,10 @@ export default {
 
 <style lang="stylus" scoped>
 .link-wrapper
-  width 200px
-  margin 20px auto 20px 0
+  padding 16px 0
 
-.link__copied-text
-  font-size 12px
-  margin-top 20px
-  color var(--text-1)
+.link__header
+  padding 4px
 
 .email-inputs
   margin-bottom 30px

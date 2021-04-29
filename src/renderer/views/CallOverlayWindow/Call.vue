@@ -683,14 +683,14 @@ export default {
   display flex
   flex-direction row
   background-color #000000
-  padding 4px
+  padding 6px
   border-radius 4px
   font-size 12px
   line-height 12px
   align-items center
 
   &__avatar
-    margin-right 4px
+    margin-right 6px
 
 .resize-border
   position absolute
