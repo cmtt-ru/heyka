@@ -67,9 +67,9 @@ export default {
    * @returns {object}
    */
   getHandUpStatusByUserId: (state, getters) => userId => {
-    const huiData = getters['getConversationData'](userId, 'hand-up')?.timestamp;
+    const huiData = getters['getConversationData'](userId, 'hand-up')?.state;
 
-    return huiData || 0;
+    return huiData || false;
   },
 
   /**

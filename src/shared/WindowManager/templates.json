@@ -79,7 +79,7 @@
     "width": 1500,
     "height": 1000,
     "minWidth": 800,
-    "minHeight": 600,
+    "minHeight": 770,
     "frame": true,
     "fullscreenable": true,
     "backgroundColor": "#000"
