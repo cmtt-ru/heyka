@@ -1,16 +1,40 @@
 <template>
   <div class="settings-page">
-    <a
-      class="about-link"
-      href="https://cmtt-ru.slack.com/archives/CLA674QEN"
-      target="_blank"
-    >{{ texts.tellerror }}</a>
+    <div class="settings__label">
+      {{ texts.title }}
+    </div>
+
+    <p class="text">
+      {{ texts.text }}
+    </p>
+
+    <div class="l-mt-24">
+      <ui-button
+        :type="1"
+        @click="openReportPage"
+      >
+        {{ texts.report }}
+      </ui-button>
+
+      <ui-button
+        :type="17"
+        class="l-ml-8"
+        @click="openLogs"
+      >
+        {{ texts.logs }}
+      </ui-button>
+    </div>
   </div>
 </template>
 
 <script>
+import UiButton from '@components/UiButton';
 
 export default {
+
+  components: {
+    UiButton,
+  },
 
   computed: {
     /**
@@ -22,11 +46,23 @@ export default {
     },
   },
 
+  methods: {
+    openReportPage() {
+      window.open('https://cmtt-ru.slack.com/archives/CLA674QEN');
+    },
+
+    openLogs() {
+
+    },
+  },
+
 };
 </script>
 
 <style scoped lang="stylus">
 @import './styles'
+.text
+  font-weight: 400
 
 .about-link
   padding-top 12px
