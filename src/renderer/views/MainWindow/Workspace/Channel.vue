@@ -162,6 +162,7 @@ import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
 import API from '@api';
 import intercom from '@classes/intercom';
+import notify from '@libs/notify';
 
 const ICON_MAP = {
   public: 'channel',
@@ -296,14 +297,9 @@ export default {
     async audioLagsHandler() {
       await API.app.reportBadConnection();
 
-      const notification = {
+      notify('workspace.channel.audioLagsNotification', {
         lifespan: 3000,
-        data: {
-          text: this.texts['audioLagsNotification'],
-        },
-      };
-
-      await this.$store.dispatch('app/addNotification', notification);
+      });
     },
 
     /**
