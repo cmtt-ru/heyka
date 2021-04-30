@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a @click.prevent="$router.go(-1)">Back</a>
+    <a @click.prevent="__backOrRedirect()">Back</a>
     <router-link :to="{name: 'workspace'}">
       Workspace
     </router-link>

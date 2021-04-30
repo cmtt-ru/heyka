@@ -70,6 +70,8 @@ class DeepLinkMain {
   deepLinkHandler(url) {
     const urlPaths = this.parseUrl(url);
 
+    console.log(`DeepLink --> link detected`, urlPaths);
+
     if (urlPaths) {
       if (this.isCommandAllowed(urlPaths.command)) {
         this.lastUrl = url;
@@ -89,7 +91,7 @@ class DeepLinkMain {
       }
     }
 
-    console.log(`deep link doesn't pass: ${url}`);
+    console.error(`DeepLink --> link doesn't pass: ${url}`);
   }
 
   /**
