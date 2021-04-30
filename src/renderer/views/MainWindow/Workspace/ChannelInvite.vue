@@ -413,37 +413,49 @@ export default {
     },
 
     async sendInvites() {
+      const ids = [];
+
       try {
         for (const user of this.selectedUsers) {
-          await this.sendOneInvite(user.id);
+          ids.push(user.id);
         }
+        const groups = [];
 
         for (const group of this.selectedGroups) {
-          const groupUsers = await this.$API.group.getMembers(group.id);
-
-          for (const user of groupUsers) {
-            await this.sendOneInvite(user.id);
-          }
+          groups.push(this.$API.group.getMembers(group.id));
         }
+        const groupUsers = [ ...(await Promise.all(groups)) ];
 
-        this.__backOrRedirect();
+        for (const user of groupUsers) {
+          ids.push(user.id);
+        }
+        this.sendAllInvites(ids);
 
-        notify('workspace.channelInvite.invitationsSent', {
-          icon: 'tick',
-        });
+        this.successInvitesHandler();
       } catch (err) {
         console.error(err);
+        notify(err.response.data.message, {
+          icon: 'warning',
+        });
       }
     },
 
-    async sendOneInvite(userId) {
-      await this.$store.dispatch('app/sendPush', {
-        userId,
+    sendAllInvites(users) {
+      this.$store.dispatch('app/sendMultiplePushes', {
+        users,
         isResponseNeeded: true,
         message: {
           action: 'invite',
           channelId: this.channelId,
         },
+      });
+    },
+
+    successInvitesHandler() {
+      this.__backOrRedirect();
+
+      notify('workspace.channelInvite.invitationsSent', {
+        icon: 'tick',
       });
     },
 

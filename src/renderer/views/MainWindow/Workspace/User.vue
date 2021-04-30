@@ -71,7 +71,7 @@
         </div>
       </ui-button>
       <ui-button
-        v-if="!isMe && !isInPrivateTalk"
+        v-if="!isMe"
         :type="selectedChannel? 17: 1"
         wide
         size="large"
@@ -214,23 +214,11 @@ export default {
     },
 
     /**
-     * Check if we are currently in a private talk
-     * @returns {boolean}
-     */
-    isInPrivateTalk() {
-      if (this.selectedChannel?.isTemporary === true) {
-        return true;
-      }
-
-      return false;
-    },
-
-    /**
      * True if you and this user are in the same channel
      * @returns {boolean}
      */
     isInSameChannel() {
-      if (this.channelId && this.channelId.users.find(user => user.userId === this.userId)) {
+      if (this.selectedChannel && this.selectedChannel.users.find(user => user.userId === this.userId)) {
         return true;
       }
 
