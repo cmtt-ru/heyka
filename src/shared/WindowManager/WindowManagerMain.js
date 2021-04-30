@@ -61,6 +61,7 @@ class WindowManager {
       openurl: this.openUrl,
       willQuit: this.willQuit,
       sendInputEvent: this.sendInputEvent,
+      maximize: this.maximizeWindow,
     };
 
     ipcMain.handle('window-manager-event', async (event, options) => {
@@ -80,7 +81,7 @@ class WindowManager {
       try {
         return this.windows[id].browserWindow[method](...params);
       } catch (err) {
-        console.log(err);
+        console.log('WindowManager --> api error', err);
       }
 
       return false;
@@ -119,7 +120,7 @@ class WindowManager {
    */
   willQuit() {
     this.quitting = true;
-    console.log('willQuit');
+    console.log('WindowManager --> willQuit');
   }
 
   /**
@@ -157,9 +158,9 @@ class WindowManager {
     }
 
     if (IS_LINUX && options.displayId) {
-      let display = null;
+      let display;
 
-      console.log('source index', options.sourceIndex);
+      console.log('WindowManager --> linux display index', options.sourceIndex);
 
       if (options.displayId && typeof options.sourceIndex !== 'number') {
         display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
@@ -167,7 +168,8 @@ class WindowManager {
         display = screen.getAllDisplays()[options.sourceIndex];
       }
 
-      console.log(display);
+      console.log('WindowManager --> linux display', display);
+
       windowOptions.x = display.bounds.x;
       windowOptions.y = display.bounds.y;
       windowOptions.width = display.bounds.width;
@@ -217,7 +219,9 @@ class WindowManager {
     // listen to "close" event so we can prevent closing if needed
     browserWindow.on('close', e => {
       browserWindow.webContents.closeDevTools();
-      console.log('closing:', windowId, this.mainWindowId);
+
+      console.log('WindowManager --> closing', options.template, windowId);
+
       if (this.windows[windowId].options.preventClose && !this.quitting) {
         e.preventDefault();
         browserWindow.hide();
@@ -226,17 +230,17 @@ class WindowManager {
 
     // listen to "closed" event so we can clean up stuff and tell renderer that window is closed
     browserWindow.on('closed', e => {
-      console.log('closed:', windowId, ', mainWindow:', this.mainWindowId);
+      console.log('WindowManager --> closed', options.template, windowId);
       try {
         delete this.windows[windowId];
         this.send(`window-close-${windowId}`);
       } catch (error) {
-        console.error('window already closed');
+        console.error('WindowManager --> window already closed', options.template, windowId);
       }
     });
 
     const prepareWindow = () => {
-      console.log('prepareWindow', options.template);
+      console.log('WindowManager --> prepare', options.template, windowId);
 
       // positioning stuff
       const position = this.__getWindowPosition(browserWindow, options.position, options.margin);
@@ -383,7 +387,7 @@ class WindowManager {
         this.windows[id].browserWindow.destroy();
         delete this.windows[id];
       } catch (e) {
-        console.error('window already closed');
+        console.error('WindowManager --> window already closed', id);
       }
     }
   }
@@ -404,7 +408,7 @@ class WindowManager {
 
         this.quitting = false;
       } catch (e) {
-        console.error('window already closed');
+        console.error('WindowManager --> window already closed', id);
       }
     }
   }
@@ -547,7 +551,7 @@ class WindowManager {
     try {
       this.windows[this.mainWindowId].browserWindow.webContents.send(event, data);
     } catch (err) {
-      console.log('could not send to renderer');
+      console.error('WindowManager --> could not send to renderer', err);
     }
   }
 
@@ -562,7 +566,7 @@ class WindowManager {
       try {
         this.windows[w].browserWindow.webContents.send(event, data);
       } catch (err) {
-        console.log('could not send, this window is destroyed:', w);
+        console.error(`WindowManager --> could not send, ${w} window is destroyed`);
       }
     }
   }
@@ -588,6 +592,24 @@ class WindowManager {
       if (w !== this.mainWindowId) {
         this.windows[w].browserWindow.webContents.sendInputEvent(data);
       }
+    }
+  }
+
+  /**
+   * Maximize window
+   * @param {string} id - ID of window in question
+   * @returns {void}
+   */
+  maximizeWindow({ id }) {
+    if (this.windows[id] !== undefined) {
+      const browserWindow = this.windows[id].browserWindow;
+      const winBounds = browserWindow.getBounds();
+      const display = screen.getDisplayNearestPoint({
+        x: winBounds.x,
+        y: winBounds.y,
+      });
+
+      browserWindow.setBounds(display.bounds);
     }
   }
 }

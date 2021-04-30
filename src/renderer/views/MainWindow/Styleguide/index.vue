@@ -6,7 +6,7 @@
       </div>
       <div
         class="settings-close"
-        @click="$router.go(-1)"
+        @click="__backOrRedirect()"
       >
         {{ texts.close }}
       </div>
@@ -101,22 +101,21 @@ export default {
   border-radius 4px
   font-size 14px
   text-decoration none
-  color var(--text-0)
   margin-top 2px
 
   &:hover:not(.router-link-exact-active)
-    background-color var(--item-bg-hover)
+    background-color var(--new-UI-06)
 
 .router-link-exact-active
-  background-color var(--item-bg-active)
+  background-color var(--new-UI-09)
   box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
 
 pre
   display inline-flex
-  background var(--item-bg-hover)
+  background var(--new-UI-06)
   padding 0 4px
   border-radius 4px
-  border 1px solid var(--stroke-3)
+  border 1px solid var(--new-stroke-01)
   font-size 12px
   margin-top 4px
   user-select text !important

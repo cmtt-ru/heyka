@@ -2,16 +2,13 @@
 
 import { app, ipcMain, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
-import log from 'electron-log';
+import './classes/LogManager';
 import './classes/AutoLaunch';
 import './classes/RemoteInfo';
 import './classes/HttpServer';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { IS_DEV, IS_WIN, IS_MAC, IS_LINUX } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
-
-log.catchErrors();
 
 console.time('init');
 console.time('before-load');
@@ -82,17 +79,6 @@ app.on('ready', async () => {
       loadingScreenID = null;
     }
   });
-
-  /**
-   * Vue devtools chrome extension
-   */
-  if (IS_DEV && IS_MAC) {
-    installExtension(VUEJS_DEVTOOLS)
-      .then(() => {})
-      .catch(err => {
-        console.log('Unable to install `vue-devtools`: \n', err);
-      });
-  }
 });
 
 // trigger flag in WindowManager so that windows won't prevent closing
