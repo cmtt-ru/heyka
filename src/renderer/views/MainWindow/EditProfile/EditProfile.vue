@@ -87,6 +87,7 @@ import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
+import notify from '@libs/notify';
 
 export default {
   components: {
@@ -220,13 +221,7 @@ export default {
         console.log('ERROR:', err);
       }
 
-      const notification = {
-        data: {
-          text: this.$t('notifications.login.passReset'),
-        },
-      };
-
-      await this.$store.dispatch('app/addNotification', notification);
+      notify('notifications.login.passReset');
     },
 
     /**

@@ -2,6 +2,7 @@ import API from '@api';
 import i18n from '@sdk/translations/i18n';
 import router from '@/router';
 import { WEB_URL } from '@sdk/Constants';
+import notify from '@libs/notify';
 
 export default {
   /**
@@ -75,29 +76,24 @@ export default {
 
     const texts = i18n.t('notifications.deleteChannel');
 
-    const notification = {
+    notify(`${texts.text} "${channel.name}"?`, {
       modal: true,
-      data: {
-        text: `${texts.text} "${channel.name}"?`,
-        buttons: [
-          {
-            text: texts.yes,
-            type: 12,
-            action: async () => {
-              /** Delete channel */
-              await API.channel.remove(channelId);
-              router.push({ name: 'workspace' });
-            },
+      buttons: [
+        {
+          text: texts.yes,
+          type: 12,
+          action: async () => {
+            /** Delete channel */
+            await API.channel.remove(channelId);
+            router.push({ name: 'workspace' });
           },
-          {
-            text: texts.no,
-            close: true,
-          },
-        ],
-      },
-    };
-
-    await dispatch('app/addNotification', notification, { root: true });
+        },
+        {
+          text: texts.no,
+          close: true,
+        },
+      ],
+    });
   },
 
   /**
@@ -116,15 +112,7 @@ export default {
       url = `${WEB_URL}/guest/${invite.token}`;
       navigator.clipboard.writeText(url);
 
-      const texts = i18n.t('workspace.channel');
-
-      const notification = {
-        data: {
-          text: texts.inviteCopied,
-        },
-      };
-
-      await dispatch('app/addNotification', notification, { root: true });
+      notify('workspace.channel.inviteCopied');
 
       return {
         url,
@@ -143,15 +131,7 @@ export default {
   async revokeInviteLinks({ dispatch }, channelId) {
     await API.channel.deleteAllInvites(channelId, true);
 
-    const texts = i18n.t('workspace.channel');
-
-    const notification = {
-      data: {
-        text: texts.invitesDeleted,
-      },
-    };
-
-    await dispatch('app/addNotification', notification, { root: true });
+    notify('workspace.channel.invitesDeleted');
   },
 
   /**
