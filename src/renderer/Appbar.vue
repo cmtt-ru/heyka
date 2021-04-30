@@ -185,7 +185,7 @@ export default {
     },
 
     settingsClass() {
-      if (this.$route.name === 'settings') {
+      if (this.$route.fullPath.includes('/settings')) {
         return 'user__button--opened';
       }
 
