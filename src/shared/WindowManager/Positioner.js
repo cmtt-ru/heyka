@@ -44,7 +44,7 @@ export default class Positioner {
       y: params.y + display.workArea.y,
     }, this.browserWindow.getBounds(), display.workArea);
 
-    console.log('retrieving:', finalPos);
+    console.log('Positioner --> moveXYscreen', finalPos);
 
     this.browserWindow.setPosition(display.workArea.x, display.workArea.y); // we need two moves cause of different dpi
     this.browserWindow.setPosition(finalPos.x, finalPos.y);
@@ -292,7 +292,7 @@ export default class Positioner {
   getCoordsAndScreen(position) {
     const display = screen.getDisplayNearestPoint(position);
 
-    console.log('saving screen: ', display.workArea);
+    console.log('Positioner --> saving screen', display.workArea);
 
     return {
       x: position.x - display.workArea.x,

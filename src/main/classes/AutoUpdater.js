@@ -1,6 +1,7 @@
 import { autoUpdater } from 'electron-updater';
 import WindowManager from '../../shared/WindowManager/WindowManagerMain';
 import { ipcMain } from 'electron';
+import { autoupdaterLogger } from './LogManager';
 
 /**
  * Check for update timeout
@@ -14,6 +15,8 @@ let updateDownloading = false;
 
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
+
+autoUpdater.logger = autoupdaterLogger;
 
 export default {
   /**
