@@ -6,7 +6,7 @@
       </div>
       <div
         class="settings-close"
-        @click="$router.go(-1)"
+        @click="__backOrRedirect()"
       >
         {{ texts.close }}
       </div>
