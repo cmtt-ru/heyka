@@ -250,17 +250,21 @@ class CallWindow {
       });
 
       this.gridWindow.on('blur', () => {
+        console.log('blur');
         broadcastEvents.dispatch('grid-expanded-blur');
         this.gridTimeout = setTimeout(() => {
           if (this.streamingOverlayWindow) {
             this.streamingOverlayWindow.action('showInactive');
-          } else if (this.overlayWindow) {
-            this.showOverlay();
           }
+          // uncomment next if need to show mini-overlay with blurred, but visible grid window
+          // else if (this.overlayWindow) {
+          //   this.showOverlay();
+          // }
         }, BLUR_TIME);
       });
 
       this.gridWindow.on('focus', () => {
+        console.log('focus');
         clearTimeout(this.gridTimeout);
         if (this.streamingOverlayWindow) {
           this.streamingOverlayWindow.action('hide');
@@ -272,13 +276,15 @@ class CallWindow {
 
       this.gridWindow.on('hide', () => {
         clearTimeout(this.gridTimeout);
-        if (this.streamingOverlayWindow) {
-          this.streamingOverlayWindow.action('show');
-        } else if (this.overlayWindow) {
-          this.overlayWindow.action('show');
-        }
-
-        broadcastEvents.dispatch('grid-hide');
+        setTimeout(() => {
+          console.log('hide');
+          if (this.streamingOverlayWindow) {
+            this.streamingOverlayWindow.action('show');
+          } else if (this.overlayWindow) {
+            this.overlayWindow.action('show');
+          }
+          broadcastEvents.dispatch('grid-hide');
+        }, BLUR_TIME);
       });
     } else {
       await this.gridWindow.action('show');
@@ -337,6 +343,10 @@ class CallWindow {
           this.frameWindow = null;
         },
       });
+
+      broadcastEvents.on('frame-window-resized', () => {
+        this.frameWindow.action('maximize');
+      });
     } else {
       await this.frameWindow.action('showInactive');
     }
@@ -366,6 +376,7 @@ class CallWindow {
    */
   async closeFrame() {
     if (this.frameWindow) {
+      broadcastEvents.removeAllListeners('frame-window-resized');
       await this.frameWindow.action('softClose');
       await this.closeStreamingOverlay();
       await this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');

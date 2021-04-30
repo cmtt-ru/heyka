@@ -103,6 +103,7 @@
               :key="user.user.id"
               :filter-key="user.user.name"
               button
+              class="channel-user-item"
             >
               <channel-user-item
                 :user="user.user"
@@ -161,6 +162,7 @@ import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
 import API from '@api';
 import intercom from '@classes/intercom';
+import notify from '@libs/notify';
 
 const ICON_MAP = {
   public: 'channel',
@@ -295,14 +297,9 @@ export default {
     async audioLagsHandler() {
       await API.app.reportBadConnection();
 
-      const notification = {
+      notify('workspace.channel.audioLagsNotification', {
         lifespan: 3000,
-        data: {
-          text: this.texts['audioLagsNotification'],
-        },
-      };
-
-      await this.$store.dispatch('app/addNotification', notification);
+      });
     },
 
     /**
@@ -354,7 +351,7 @@ export default {
 
   &__more
     color var(--new-UI-03)
-    margin 0 6px
+    margin 0 6px 0 15px
     flex-shrink 0
 
   &__connect
@@ -362,6 +359,10 @@ export default {
 
 .channel-user-list
   padding 0 12px
+
+.channel-user-item
+  margin-bottom 2px
+  padding 2px 0
 
 .last-block
   margin-bottom 48px

@@ -1,10 +1,7 @@
 <template>
   <div>
-    <div v-if="loading">
-      {{ texts.webWait }}
-    </div>
-    <div v-else>
-      <div v-if="!slackUsers.length">
+    <div>
+      <div v-if="slackWorkspace===null || (slackUsers && slackUsers.length==0)">
         <div class="top-info-text">
           {{ texts.noWorkspaces }}
         </div>
@@ -61,7 +58,17 @@
             {{ texts.deselectAll }}
           </div>
         </div>
+        <placeholder
+          v-if="loading"
+          class="users-placeholder"
+          avatar
+          two-lines
+          right-button
+          :height="44"
+          :gap="-2"
+        />
         <list
+          v-else
           ref="userList"
           v-model="filteredSlackUsers"
           class="user-list"
@@ -89,6 +96,7 @@
               class="user__inner"
             >
               <div
+                v-textfade
                 class="user__real-name"
               >
                 {{ user.realName }}
@@ -129,8 +137,11 @@ import UiButton from '@components/UiButton';
 import { UiInput } from '@components/Form';
 import { List, ListItem } from '@components/List';
 import Avatar from '@components/Avatar';
+import Placeholder from '@components/Placeholder';
+
 import { mapGetters } from 'vuex';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
+import notify from '@libs/notify';
 
 export default {
   components: {
@@ -139,12 +150,13 @@ export default {
     List,
     ListItem,
     Avatar,
+    Placeholder,
   },
 
   data() {
     return {
       loading: false,
-      slackUsers: [],
+      slackUsers: null,
       filteredSlackUsers: [],
       selectedUsers: [],
       filterKey: '',
@@ -171,6 +183,10 @@ export default {
      * @returns {object}
      */
     slackUsersForSearch() {
+      if (!this.slackUsers) {
+        return [];
+      }
+
       return this.slackUsers.map(user => {
         return {
           ...user,
@@ -188,11 +204,7 @@ export default {
   async mounted() {
     DeepLink.on('slack-connect', ([status, error]) => {
       if (status === 'false') {
-        this.$store.dispatch('app/addNotification', {
-          data: {
-            text: decodeURIComponent(error),
-          },
-        });
+        notify(decodeURIComponent(error));
       } else {
         this.getSlackUsers();
       }
@@ -217,6 +229,7 @@ export default {
         this.slackUsers = users;
       } catch (err) {
         console.log(err);
+        this.slackUsers = [];
       } finally {
         this.loading = false;
       }
@@ -302,14 +315,19 @@ export default {
     display flex
     flex-direction row-reverse
 
+.users-placeholder
+  margin-top -4px
+  padding 0 14px 0 11px
+
 .user
   padding 4px 10px
   display flex
   flex-direction row
   align-items center
-  margin-bottom 2px
+  margin-bottom 4px
   border-radius 6px
   cursor pointer
+  height 44px
 
   &:hover
     background-color var(--new-UI-06)
@@ -347,13 +365,13 @@ export default {
 
   &__real-name
     font-weight 500
-    font-size 13px
     line-height 16px
 
   &__name
     font-weight normal
     font-size 12px
     line-height 16px
+    margin-top 4px
 
 .submit-button-wrapper
   width 100%

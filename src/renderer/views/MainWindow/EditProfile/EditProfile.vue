@@ -87,6 +87,7 @@ import { UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
+import notify from '@libs/notify';
 
 export default {
   components: {
@@ -159,7 +160,7 @@ export default {
      * @returns {void}
      */
     closeHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
 
     selectAvatar() {
@@ -220,13 +221,7 @@ export default {
         console.log('ERROR:', err);
       }
 
-      const notification = {
-        data: {
-          text: this.$t('notifications.login.passReset'),
-        },
-      };
-
-      await this.$store.dispatch('app/addNotification', notification);
+      notify('notifications.login.passReset');
     },
 
     /**
@@ -307,7 +302,6 @@ $SAVE_FADE_TIME = 2s
 .block-title
   margin 24px 0 8px
   font-weight bold
-  font-size 14px
   line-height 24px
   color var(--new-UI-02)
 

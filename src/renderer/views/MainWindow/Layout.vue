@@ -91,7 +91,6 @@ export default {
     &__appbar
       width 100%
       height 48px
-      padding 8px
       box-sizing border-box
       background-color var(--new-bg-03)
       color var(--new-UI-02)

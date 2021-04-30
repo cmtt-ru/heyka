@@ -1,5 +1,6 @@
 <template>
   <div
+    id="header"
     class="appbar"
     :class="{'appbar--mac': IS_MAC}"
   >
@@ -79,18 +80,18 @@
         square
         @click="switchProp('microphone')"
       />
-      <router-link :to="{name: 'settings'}">
-        <ui-button
-          v-if="myWorkspace"
-          v-tooltip="$t('tooltips.settings')"
-          :type="7"
-          class="user__button"
-          size="medium"
-          icon="settings2"
-          header
-          square
-        />
-      </router-link>
+      <ui-button
+        v-if="myWorkspace"
+        v-tooltip="$t('tooltips.settings')"
+        :type="7"
+        class="user__button"
+        :class="settingsClass"
+        size="medium"
+        icon="settings2"
+        header
+        square
+        @click="toggleSettings"
+      />
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
@@ -109,6 +110,8 @@ import { mapGetters } from 'vuex';
 import { getUserAvatarUrl } from '@libs/image';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 
+import Mousetrap from 'mousetrap';
+
 /**
  * Map media state points to corresponding icons
  */
@@ -122,6 +125,8 @@ const ICON_MAP = {
     false: 'headphones-off',
   },
 };
+
+const windowId = WindowManager.getCurrentWindowId();
 
 export default {
   components: {
@@ -181,12 +186,37 @@ export default {
         return this.$t('tooltips.speakerOn');
       }
     },
+
+    settingsClass() {
+      if (this.$route.fullPath.includes('/settings')) {
+        return 'user__button--opened';
+      }
+
+      return '';
+    },
   },
 
   created() {
     if (this.$store.state.app.runAppFrom === 'tray') {
       this.tray = true;
     }
+    Mousetrap.bind(['command+,', 'ctrl+,'], () => {
+      this.toggleSettings();
+    });
+  },
+
+  mounted() {
+    window.ipcRenderer.on(`window-blur-${windowId}`, () => {
+      this.changeStyle('blur');
+    });
+    window.ipcRenderer.on(`window-focus-${windowId}`, () => {
+      this.changeStyle('focus');
+    });
+  },
+
+  beforeDestroy() {
+    window.ipcRenderer.removeAllListeners(`window-blur-${windowId}`);
+    window.ipcRenderer.removeAllListeners(`window-focus-${windowId}`);
   },
 
   methods: {
@@ -217,8 +247,24 @@ export default {
       this.$store.dispatch('me/setMediaState', newState);
     },
 
-  },
+    changeStyle(action) {
+      if (action === 'blur') {
+        document.getElementById('header').classList.add('appbar--blurred');
+      } else {
+        document.getElementById('header').classList.remove('appbar--blurred');
+      }
+    },
 
+    toggleSettings() {
+      if (this.$route.fullPath.includes('/settings')) {
+        this.__backOrRedirect();
+      } else if (this.$route.fullPath.includes('/styleguide')) {
+        this.$router.replace({ name: 'workspace' });
+      } else {
+        this.$router.push({ name: 'settings' });
+      }
+    },
+  },
 };
 </script>
 
@@ -275,6 +321,11 @@ export default {
   justify-content space-between
   align-items center
   position relative
+  padding 8px
+
+  &--blurred
+    opacity 0.8
+    background-color var(--new-UI-06)
 
   &--mac
     flex-direction row
@@ -293,6 +344,9 @@ export default {
 
   &__button
     margin-right 4px
+
+    &--opened
+      background-color var(--new-UI-07)
 
   &__avatar
     margin 0 11px 0 4px
