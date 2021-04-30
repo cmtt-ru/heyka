@@ -277,7 +277,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--shadow-10)
+    background-color var(--new-stroke-01)
 
 /deep/ .input
   padding-left 54px
@@ -331,7 +331,7 @@ export default {
 
     & .user__check
       background-color var(--new-UI-01)
-      color var(--new-UI-09)
+      color var(--new-white)
       padding 2px
       border none
 
@@ -370,6 +370,6 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--shadow-10)
+    background-color var(--new-stroke-01)
 
 </style>
