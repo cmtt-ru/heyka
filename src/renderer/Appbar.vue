@@ -1,5 +1,6 @@
 <template>
   <div
+    id="header"
     class="appbar"
     :class="{'appbar--mac': IS_MAC}"
   >
@@ -125,6 +126,8 @@ const ICON_MAP = {
   },
 };
 
+const windowId = WindowManager.getCurrentWindowId();
+
 export default {
   components: {
     UiButton,
@@ -202,6 +205,20 @@ export default {
     });
   },
 
+  mounted() {
+    window.ipcRenderer.on(`window-blur-${windowId}`, () => {
+      this.changeStyle('blur');
+    });
+    window.ipcRenderer.on(`window-focus-${windowId}`, () => {
+      this.changeStyle('focus');
+    });
+  },
+
+  beforeDestroy() {
+    window.ipcRenderer.removeAllListeners(`window-blur-${windowId}`);
+    window.ipcRenderer.removeAllListeners(`window-focus-${windowId}`);
+  },
+
   methods: {
 
     workspaceAvatar: getUserAvatarUrl,
@@ -230,6 +247,14 @@ export default {
       this.$store.dispatch('me/setMediaState', newState);
     },
 
+    changeStyle(action) {
+      if (action === 'blur') {
+        document.getElementById('header').classList.add('appbar--blurred');
+      } else {
+        document.getElementById('header').classList.remove('appbar--blurred');
+      }
+    },
+
     toggleSettings() {
       if (this.$route.fullPath.includes('/settings')) {
         this.__backOrRedirect();
@@ -239,9 +264,7 @@ export default {
         this.$router.push({ name: 'settings' });
       }
     },
-
   },
-
 };
 </script>
 
@@ -298,6 +321,11 @@ export default {
   justify-content space-between
   align-items center
   position relative
+  padding 8px
+
+  &--blurred
+    opacity 0.8
+    background-color var(--new-UI-06)
 
   &--mac
     flex-direction row
