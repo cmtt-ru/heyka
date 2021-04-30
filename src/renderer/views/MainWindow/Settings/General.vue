@@ -338,7 +338,6 @@ export default {
 .extra-info
   font-size 10px
   line-height 10px
-  color var(--text-1)
 
 .expand
 

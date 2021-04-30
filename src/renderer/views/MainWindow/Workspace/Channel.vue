@@ -103,6 +103,7 @@
               :key="user.user.id"
               :filter-key="user.user.name"
               button
+              class="channel-user-item"
             >
               <channel-user-item
                 :user="user.user"
@@ -339,7 +340,7 @@ export default {
   flex-direction row
   align-items center
   justify-content flex-start
-  background-color var(--app-bg)
+  background-color var(--new-bg-04)
   z-index 1
 
   &__type
@@ -353,7 +354,7 @@ export default {
     margin-left 8px
 
   &__more
-    color var(--icon-1)
+    color var(--new-UI-03)
     margin 0 6px
     flex-shrink 0
 
@@ -362,6 +363,10 @@ export default {
 
 .channel-user-list
   padding 0 12px
+
+.channel-user-item
+  margin-bottom 2px
+  padding 2px 0
 
 .last-block
   margin-bottom 48px

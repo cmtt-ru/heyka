@@ -1,7 +1,6 @@
 <template>
   <div
     class="layout__popover"
-    :style="$themes.getColors('popover')"
   >
     <div
       v-if="canDraw"
@@ -37,12 +36,14 @@ export default {
   components: {
     BoardHolder,
   },
+
   data() {
     return {
       drawingData: {},
       canDraw: false,
     };
   },
+
   computed: {
     ...mapState({
       janusOptions: 'janus',
@@ -53,6 +54,7 @@ export default {
       users: 'usersInMyChannel',
     }),
   },
+
   created() {
     this.canDraw = this.$store.getters['me/getAllowDraw'];
   },
@@ -62,21 +64,32 @@ export default {
       janusVideoroomWrapper.disconnectTextroom();
     });
 
+    window.addEventListener('resize', function (e) {
+      broadcastEvents.dispatch('frame-window-resized');
+    });
+
     cnsl.info('Hello from board holder window');
+
     await janusVideoroomWrapper.init();
+
     janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
     janusVideoroomWrapper.on('textroom-joined', this.onNewUser.bind(this));
-    cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store, this.$store.state.me.id);
+
+    cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store.state.me.id);
+
     janusVideoroomWrapper.connectTextroom(this.userId, 'receiver', this.janusOptions);
+
     broadcastEvents.on('toggleDrawing', (state) => {
       this.canDraw = state;
       this.drawingNotifyUsers();
     });
   },
+
   beforeDestroy() {
     janusVideoroomWrapper.disconnectTextroom();
     janusVideoroomWrapper.removeAllListeners('textroom-data');
   },
+
   methods: {
     /**
      * Handles new drawing data from the textroom plugin
