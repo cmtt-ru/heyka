@@ -56,7 +56,12 @@
           v-textfade
           class="user-action__inner"
         >
-          <div>{{ texts.inviteButtonStart }}</div>
+          <div v-if="isInSameChannel">
+            {{ texts.alreadyIn }}
+          </div>
+          <div v-else>
+            {{ texts.inviteButtonStart }}
+          </div>
           <svg-icon
             class="icon-in-button"
             name="channel"
@@ -324,7 +329,6 @@ export default {
 
 .icon-in-button
   margin 0 4px
-  color var(--new-signal-02)
 
 .user-info
   margin-top 12px
