@@ -25,14 +25,64 @@
               class="user-search"
             />
           </div>
+
           <list
-            ref="userList"
+            v-model="filteredGroups"
+            class="user-list"
+            selectable
+            :filter-by="filterKey"
+            :items="groups"
+            filter-key="name"
+            no-empty-text
+            @multipick="selectGroup"
+          >
+            <list-item
+              v-for="group in filteredGroups"
+              :key="group.id"
+              :similarity="group.similarity"
+              :select-data="group"
+              button
+              class="user"
+            >
+              <div class="user__avatar user__avatar--group">
+                <svg-icon
+                  name="group"
+                  :width="18"
+                  :height="18"
+                />
+              </div>
+              <div
+                v-textfade
+                class="user__inner"
+              >
+                <div
+                  class="user__real-name"
+                >
+                  {{ group.name }}
+                </div>
+                <div
+                  class="user__channel"
+                >
+                  <div>{{ $tc('manage.membersAmount', group.membersCount) }}</div>
+                </div>
+              </div>
+              <svg-icon
+                class="user__check"
+                name="check"
+                width="15"
+                height="15"
+              />
+            </list-item>
+          </list>
+
+          <list
             v-model="filteredWorkspaceUsers"
             class="user-list"
             selectable
             :filter-by="filterKey"
             :items="workspaceUsers"
             filter-key="name"
+            :no-empty-text="filteredGroups[0] && filteredGroups[0].similarity !== Infinity"
             @multipick="selectUser"
           >
             <list-item
@@ -149,11 +199,11 @@
       <ui-button
         :type="1"
         size="large"
-        :disabled="!selectedUsers.length"
+        :disabled="!selectedUsers.length && !selectedGroups.length"
         wide
         @click="sendInvites"
       >
-        {{ $tc("slackInvite.inviteUsers", selectedUsers.length) }}
+        {{ $tc("slackInvite.inviteUsers", invitesAmount) }}
       </ui-button>
     </template>
   </pseudo-popup>
@@ -191,6 +241,9 @@ export default {
       hasLink: false,
       tempURL: null,
       expiredAt: null,
+      groups: [],
+      filteredGroups: [],
+      selectedGroups: [],
       filteredWorkspaceUsers: [],
       selectedUsers: [],
       selectedTab: null,
@@ -246,6 +299,14 @@ export default {
       return msToTime(deltaTime);
     },
 
+    invitesAmount() {
+      const groupUsersCount = this.selectedGroups.reduce((val, el) => {
+        return val + el.membersCount;
+      }, 0);
+
+      return groupUsersCount + this.selectedUsers.length;
+    },
+
   },
 
   created() {
@@ -272,6 +333,8 @@ export default {
     } catch (err) {
 
     }
+
+    this.groups = await this.$API.group.getGroups(this.selectedWorkspaceId);
   },
 
   beforeDestroy() {
@@ -353,21 +416,25 @@ export default {
       this.selectedUsers = data;
     },
 
+    selectGroup(data) {
+      this.selectedGroups = data;
+    },
+
     async sendInvites() {
       try {
         for (const user of this.selectedUsers) {
-          console.log(user);
-          await this.$store.dispatch('app/sendPush', {
-            userId: user.id,
-            isResponseNeeded: true,
-            message: {
-              action: 'invite',
-              channelId: this.channelId,
-            },
-          });
+          await this.sendOneInvite(user.id);
         }
 
-        this.$router.back();
+        for (const group of this.selectedGroups) {
+          const groupUsers = await this.$API.group.getMembers(group.id);
+
+          for (const user of groupUsers) {
+            await this.sendOneInvite(user.id);
+          }
+        }
+
+        this.__backOrRedirect();
 
         const notification = {
           data: {
@@ -381,12 +448,23 @@ export default {
       }
     },
 
+    async sendOneInvite(userId) {
+      await this.$store.dispatch('app/sendPush', {
+        userId,
+        isResponseNeeded: true,
+        message: {
+          action: 'invite',
+          channelId: this.channelId,
+        },
+      });
+    },
+
     /**
      * Close handler
      * @returns {void}
      */
     closeHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
   },
 
@@ -428,6 +506,8 @@ export default {
   margin-bottom 2px
   border-radius 6px
   cursor pointer
+  height 44px
+  margin-bottom 4px
 
   &:hover
     background-color var(--new-UI-06)
@@ -461,6 +541,19 @@ export default {
     margin-right 12px
     flex-shrink 0
 
+    &--group
+      display flex
+      flex-direction row
+      justify-content center
+      align-items center
+      flex-shrink 0
+      width 32px
+      height 32px
+      border-radius 100%
+      background var(--new-UI-01-3)
+      border 1px solid var(--new-stroke-01)
+      color var(--new-UI-01)
+
   &__inner
     display flex
     flex-direction column
@@ -469,6 +562,7 @@ export default {
 
   &__channel
     font-size 12px
+    margin-top 4px
     color var(--new-UI-04)
     display flex
     flex-direction row
