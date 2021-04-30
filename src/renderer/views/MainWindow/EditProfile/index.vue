@@ -6,7 +6,7 @@
       </div>
       <div
         class="settings-close"
-        @click="$router.go(-1)"
+        @click="__backOrRedirect()"
       >
         {{ $t('techTexts.close') }}
       </div>
@@ -81,7 +81,6 @@ export default {
   font-size 14px
   line-height 16px
   text-decoration none
-  color var(--text-0)
   margin 2px 4px 4px
 
   &:hover:not(.router-link-exact-active)
@@ -92,10 +91,10 @@ export default {
 
 pre
   display inline-flex
-  background var(--item-bg-hover)
+  background var(--new-UI-06)
   padding 0 4px
   border-radius 4px
-  border 1px solid var(--stroke-3)
+  border 1px solid var(--new-stroke-01)
   font-size 12px
   margin-top 4px
   user-select text !important

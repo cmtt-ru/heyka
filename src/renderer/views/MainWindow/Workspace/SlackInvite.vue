@@ -96,6 +96,7 @@
               class="user__inner"
             >
               <div
+                v-textfade
                 class="user__real-name"
               >
                 {{ user.realName }}
@@ -292,7 +293,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--shadow-10)
+    background-color var(--new-stroke-01)
 
 /deep/ .input
   padding-left 54px
@@ -326,9 +327,10 @@ export default {
   display flex
   flex-direction row
   align-items center
-  margin-bottom 2px
+  margin-bottom 4px
   border-radius 6px
   cursor pointer
+  height 44px
 
   &:hover
     background-color var(--new-UI-06)
@@ -350,7 +352,7 @@ export default {
 
     & .user__check
       background-color var(--new-UI-01)
-      color var(--new-UI-09)
+      color var(--new-white)
       padding 2px
       border none
 
@@ -366,13 +368,13 @@ export default {
 
   &__real-name
     font-weight 500
-    font-size 13px
     line-height 16px
 
   &__name
     font-weight normal
     font-size 12px
     line-height 16px
+    margin-top 4px
 
 .submit-button-wrapper
   width 100%
@@ -389,6 +391,6 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--shadow-10)
+    background-color var(--new-stroke-01)
 
 </style>

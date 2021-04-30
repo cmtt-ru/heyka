@@ -164,7 +164,7 @@ export default {
      * @returns {void}
      */
     closeHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
   },
 
@@ -179,7 +179,7 @@ export default {
 .link__copied-text
   font-size 12px
   margin-top 20px
-  color var(--text-1)
+  color var(--new-UI-02)
 
 .email-inputs
   margin-bottom 30px
