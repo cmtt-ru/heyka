@@ -79,7 +79,7 @@ Vue.mixin({
           router.replace(route || '/');
         }
       // eslint-disable-next-line no-magic-numbers
-      }, 10);
+      }, 100);
     },
   },
 });
