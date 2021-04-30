@@ -321,7 +321,7 @@ $SAVE_FADE_TIME = 2s
   width 100%
   box-sizing border-box
   bottom 0
-  background-color var(--app-bg)
+  background-color var(--new-bg-04)
   opacity 0
   pointer-events none
 

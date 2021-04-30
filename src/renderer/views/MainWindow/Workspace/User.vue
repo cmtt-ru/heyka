@@ -132,16 +132,16 @@ const DISABLE_AFTER_INVITE_TIMEOUT = 5000;
  */
 const STATUS_COLORS = {
   online: {
-    'background-color': 'var(--color-1)',
-    'border-color': 'var(--color-1)',
+    'background-color': 'var(--new-signal-02)',
+    'border-color': 'var(--new-signal-02)',
   },
   idle: {
-    'background-color': 'var(--color-3)',
-    'border-color': 'var(--color-3)',
+    'background-color': 'var(--new-signal-01)',
+    'border-color': 'var(--new-signal-01)',
   },
   offline: {
     'background-color': 'transparent',
-    'border-color': 'var(--color-4)',
+    'border-color': 'var(--new-UI-05)',
   },
 };
 
@@ -306,7 +306,7 @@ export default {
     flex-shrink 0
     flex-grow 0
     margin-top -18px
-    color var(--icon-1)
+    color var(--new-UI-03)
 
 .user-action
   margin-bottom 12px

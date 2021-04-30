@@ -171,7 +171,7 @@ export default {
 .sharing-panel
   position relative
   background-color var(--new-UI-01)
-  color var(--new-UI-09)
+  color var(--new-white)
   width 100%
   height 42px
   flex-shrink 0
