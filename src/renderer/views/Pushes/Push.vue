@@ -50,6 +50,7 @@ export default {
   components: {
     invite: () => import('./Templates/Invite'),
     busy: () => import('./Templates/Busy'),
+    hand: () => import('./Templates/Hand'),
     muted: () => import('./Templates/Muted'),
     mutedForAll: () => import('./Templates/MutedForAll'),
     fastLink: () => import('./Templates/FastLink'),
