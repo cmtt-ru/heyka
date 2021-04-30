@@ -173,7 +173,7 @@ export default {
   /**
    * Send push
    *
-   * @param {function} commit – store commit
+   * @param {function} rootGetters – store rootGetters
    * @param {object} notif – push
    * @returns {string} id
    */
@@ -186,6 +186,28 @@ export default {
 
     const { inviteId } = await API.user.sendInvite({
       userId,
+      workspaceId,
+      channelId: message.channelId,
+      isResponseNeeded,
+      message,
+    });
+
+    return inviteId;
+  },
+
+  /**
+   * Send multipe pushes
+   *
+   * @param {function} rootGetters – store rootGetters
+   * @param {object} notif – push
+   *  @param {array} notif.users - array of user ids'
+   * @returns {string} id
+   */
+  async sendMultiplePushes({ rootGetters }, { users, isResponseNeeded = false, message }) {
+    const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
+
+    const { inviteId } = await API.user.sendInvites({
+      users,
       workspaceId,
       channelId: message.channelId,
       isResponseNeeded,
@@ -364,7 +386,7 @@ export default {
     commit('SET_MICROPHONE_VOLUME', volume);
   },
 
-  raiseHandInChannel({ rootGetters }, state) {
+  handUpInChannel({ rootGetters }, state) {
     conversationBroadcast('hand-up', rootGetters['me/getMyId'], { state });
   },
 

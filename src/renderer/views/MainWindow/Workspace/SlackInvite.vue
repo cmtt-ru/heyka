@@ -204,7 +204,7 @@ export default {
   async mounted() {
     DeepLink.on('slack-connect', ([status, error]) => {
       if (status === 'false') {
-        notify(decodeURIComponent(error));
+        notify(decodeURIComponent(error), { icon: 'warning' });
       } else {
         this.getSlackUsers();
       }

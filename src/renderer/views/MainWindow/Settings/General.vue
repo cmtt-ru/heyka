@@ -328,32 +328,4 @@ export default {
   min-height calc(100vh - 52px)
   display flex
   flex-direction column
-
-.extra-info
-  font-size 10px
-  line-height 10px
-
-.expand
-
-  &__header
-    cursor pointer
-    padding 6px 8px 8px
-    border-radius 4px
-    border-top 2px solid var(--line-stroke)
-    text-align center
-    margin-bottom 20px
-
-    &::-webkit-details-marker
-      opacity 0.5
-
-    &:hover
-      background-color var(--button-bg-4)
-
-.restart-container
-  flex-grow 2
-  display flex
-  flex-direction column
-  justify-content flex-end
-  align-items flex-start
-
 </style>

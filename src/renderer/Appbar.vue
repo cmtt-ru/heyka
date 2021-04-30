@@ -87,7 +87,7 @@
         class="user__button"
         :class="settingsClass"
         size="medium"
-        icon="settings2"
+        icon="settings"
         header
         square
         @click="toggleSettings"
