@@ -2,8 +2,9 @@
   <div class="settings-page">
     <a
       class="about-link"
-      href="https://cmtt-ru.slack.com/archives/CLA674QEN"
       target="_blank"
+      href="https://cmtt-ru.slack.com/archives/CLA674QEN"
+      @click="sendLogs"
     >{{ texts.tellerror }}</a>
   </div>
 </template>
@@ -22,6 +23,12 @@ export default {
     },
   },
 
+  methods: {
+    sendLogs() {
+      window.ipcRenderer.send('log-manager-send');
+    },
+  },
+
 };
 </script>
 
@@ -30,5 +37,5 @@ export default {
 
 .about-link
   padding-top 12px
-  color var(--color-2)
+  color var(--new-UI-01)
 </style>

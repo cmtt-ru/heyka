@@ -38,7 +38,7 @@ export default class AspectRatio {
     this.maxWidth = maxWidth;
     this.maxHeight = maxHeight;
 
-    console.log(aspectRatio, extraWidth, extraHeight, maxWidth, maxHeight);
+    console.log('AspectRatio -->', aspectRatio, extraWidth, extraHeight, maxWidth, maxHeight);
 
     if (IS_WIN) {
       this.window.hookWindowMessage(RESIZING_HOOK, (wParam) => {

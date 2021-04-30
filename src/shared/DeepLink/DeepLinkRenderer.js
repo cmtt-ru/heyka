@@ -23,6 +23,8 @@ class DeepLinkRenderer extends EventEmitter {
   deepLinkHandler(data) {
     this.emit('new-link', data);
     this.emit(data.command, data.paths);
+
+    console.log('DeepLink --> link detected)', data);
   }
 }
 

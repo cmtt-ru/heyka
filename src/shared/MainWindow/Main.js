@@ -40,6 +40,8 @@ if (TrayManager.isInTray()) {
     preventClose: true,
     showFast: true,
   };
+
+  console.log('MainWindow --> restore window position:', params.windowPosition);
 }
 
 /**
@@ -131,8 +133,8 @@ class MainWindow {
 
       newInfo.size = this.window.getSize();
 
-      console.log('saving:', newInfo);
       heykaStore.set('windowPosition', newInfo);
+      console.log('MainWindow --> save window position:', newInfo);
     }
 
     );
