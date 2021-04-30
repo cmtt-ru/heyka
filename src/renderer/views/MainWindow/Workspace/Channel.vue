@@ -103,6 +103,7 @@
               :key="user.user.id"
               :filter-key="user.user.name"
               button
+              class="channel-user-item"
             >
               <channel-user-item
                 :user="user.user"
@@ -362,6 +363,10 @@ export default {
 
 .channel-user-list
   padding 0 12px
+
+.channel-user-item
+  margin-bottom 2px
+  padding 2px 0
 
 .last-block
   margin-bottom 48px
