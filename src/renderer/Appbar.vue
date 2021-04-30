@@ -340,7 +340,7 @@ export default {
     &:hover, &:active
       mix-blend-mode initial
       background var(--new-system-02)
-      color var(--new-UI-09)
+      color var(--new-white)
 
      &:active
       background var(--new-system-02-2)
