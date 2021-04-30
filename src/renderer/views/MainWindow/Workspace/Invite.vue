@@ -150,7 +150,13 @@ export default {
 
         this.emailsSent = true;
       } catch (err) {
-        console.log(err);
+        const notification = {
+          data: {
+            text: err.response.data.message,
+          },
+        };
+
+        this.$store.dispatch('app/addNotification', notification);
       }
     },
 

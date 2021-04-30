@@ -46,6 +46,12 @@
       :text="texts.nomic"
     />
     <ui-switch
+      v-if="IS_MAC"
+      v-model="muteHotkey"
+      :text="texts.macMuteHotkey"
+    />
+    <ui-switch
+      v-else
       v-model="muteHotkey"
       :text="texts.muteHotkey"
     />
@@ -86,6 +92,8 @@ export default {
           value: 'ru',
         },
       ],
+
+      IS_MAC,
 
       localSettings: {
         mode: this.$store.state.app.runAppFrom,
