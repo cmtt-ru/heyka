@@ -143,7 +143,10 @@
         href="#sidebar_user_anchor"
         class="channel-header__label"
       >{{ texts.usersHeader }}</a>
-      <router-link :to="{name: 'invite'}">
+      <router-link
+        v-if="canInvite"
+        :to="{name: 'invite'}"
+      >
         <ui-button
           v-tooltip="$t('tooltips.newUser')"
           :type="7"
@@ -173,7 +176,7 @@
       </list-item>
     </list>
     <router-link
-      v-if="!searchText"
+      v-if="!searchText && canInvite"
       :to="{name: 'invite'}"
       class="action-button"
     >
@@ -215,14 +218,17 @@ export default {
       searchText: '',
       filteredChannelItems: [],
       filteredUserItems: [],
+      workspaceSettings: {},
     };
   },
 
   computed: {
 
     ...mapGetters({
+      selectedWorkspaceId: 'me/getSelectedWorkspaceId',
       channels: 'channels/getChannels',
       getAllUsers: 'users/getAllUsersByFrequency',
+      myInfo: 'myInfo',
     }),
 
     ...mapState('app', {
@@ -295,18 +301,14 @@ export default {
     },
 
     /**
-     * Search string in vuex
+     * true if user can invite to workspace
      *
      * @returns {string}
      */
-    // searchText: {
-    //   get() {
-    //     return this.$store.state.app.search;
-    //   },
-    //   set(value) {
-    //     this.$store.commit('app/SET_SEARCH_TEXT', value);
-    //   },
-    // },
+    canInvite() {
+      return this.workspaceSettings.canUsersInvite ||
+      (this.myInfo.user && this.myInfo.user.role === 'admin');
+    },
 
   },
 
@@ -314,6 +316,10 @@ export default {
     Mousetrap.bind(['command+f', 'ctrl+f'], () => {
       this.activateInput(false);
     });
+  },
+
+  async mounted() {
+    this.workspaceSettings = await this.$API.workspace.getWorkspaceSettings(this.selectedWorkspaceId);
   },
 
   beforeDestroy() {
@@ -449,6 +455,7 @@ $ANIM = 250ms
       top 0
       bottom 0
       margin auto 0
+      color #A2A7AD
 
       &:hover
         color var(--new-UI-04)
@@ -514,13 +521,13 @@ $ANIM = 250ms
   position relative
 
 .connected-channel
-  margin-top 4px
+  margin-top 2px
   margin-bottom 12px
 
 .connected-channel-enter
   opacity 0
   transform translateY(52px)
-  margin-bottom -57px
+  margin-bottom -54px
 
 .connected-channel-enter-to
   margin-bottom 12px
@@ -530,26 +537,27 @@ $ANIM = 250ms
 
 .connected-channel-leave-to
   opacity 0
-  transform translateY(52px)
-  margin-bottom -57px
+  transform translateY(50px)
+  margin-bottom -54px
   margin-top 0
   transition all $ANIM ease
 
 .list-channel-enter
   opacity 0
-  transform translateY(-48px)
-  margin-top -53px
+  transform translateY(-49px)
+  margin-top -51px
 
 .list-channel-enter-to
+  margin-top 3px
   transition all $ANIM ease
 
 .list-channel-leave
-  margin-top 2px
+  margin-top 4px
 
 .list-channel-leave-to
   opacity 0
-  transform translateY(-48px)
-  margin-top -53px
+  transform translateY(-46px)
+  margin-top -51px
   transition all $ANIM ease
 
 </style>

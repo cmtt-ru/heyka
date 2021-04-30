@@ -226,7 +226,7 @@ export default {
      * @returns {void}
      */
     cancelHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
 
     /**

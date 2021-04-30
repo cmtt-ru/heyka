@@ -6,7 +6,7 @@
       </div>
       <div
         class="settings-close"
-        @click="$router.go(-1)"
+        @click="__backOrRedirect()"
       >
         {{ texts.close }}
       </div>
@@ -115,7 +115,7 @@ export default {
      * @returns {void}
      */
     closeHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
   },
 };

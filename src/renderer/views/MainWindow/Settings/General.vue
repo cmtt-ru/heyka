@@ -46,6 +46,12 @@
       :text="texts.nomic"
     />
     <ui-switch
+      v-if="IS_MAC"
+      v-model="muteHotkey"
+      :text="texts.macMuteHotkey"
+    />
+    <ui-switch
+      v-else
       v-model="muteHotkey"
       :text="texts.muteHotkey"
     />
@@ -65,6 +71,7 @@
 import { UiSelect, UiSwitch } from '@components/Form';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import { heykaStore } from '@/store/localStore';
+import notify from '@libs/notify';
 
 export default {
   components: {
@@ -86,6 +93,8 @@ export default {
           value: 'ru',
         },
       ],
+
+      IS_MAC,
 
       localSettings: {
         mode: this.$store.state.app.runAppFrom,
@@ -277,28 +286,21 @@ export default {
 
   methods: {
     async importantSetting() {
-      const texts = this.$i18n.t('notifications.importantSetting');
-
-      const notification = {
+      notify('notifications.importantSetting.text', {
         modal: true,
-        data: {
-          text: texts.text,
-          buttons: [
-            {
-              text: texts.yes,
-              type: 12,
-              action: this.restartHandler,
-            },
-            {
-              text: texts.no,
-              close: true,
-              action: this.cancelImportantSetting,
-            },
-          ],
-        },
-      };
-
-      await this.$store.dispatch('app/addNotification', notification);
+        buttons: [
+          {
+            text: 'notifications.importantSetting.yes',
+            type: 12,
+            action: this.restartHandler,
+          },
+          {
+            text: 'notifications.importantSetting.no',
+            close: true,
+            action: this.cancelImportantSetting,
+          },
+        ],
+      });
     },
 
     cancelImportantSetting() {
