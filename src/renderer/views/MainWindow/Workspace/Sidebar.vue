@@ -521,13 +521,13 @@ $ANIM = 250ms
   position relative
 
 .connected-channel
-  margin-top 4px
+  margin-top 2px
   margin-bottom 12px
 
 .connected-channel-enter
   opacity 0
   transform translateY(52px)
-  margin-bottom -57px
+  margin-bottom -54px
 
 .connected-channel-enter-to
   margin-bottom 12px
@@ -537,26 +537,27 @@ $ANIM = 250ms
 
 .connected-channel-leave-to
   opacity 0
-  transform translateY(52px)
-  margin-bottom -57px
+  transform translateY(50px)
+  margin-bottom -54px
   margin-top 0
   transition all $ANIM ease
 
 .list-channel-enter
   opacity 0
-  transform translateY(-48px)
-  margin-top -53px
+  transform translateY(-49px)
+  margin-top -51px
 
 .list-channel-enter-to
+  margin-top 3px
   transition all $ANIM ease
 
 .list-channel-leave
-  margin-top 2px
+  margin-top 4px
 
 .list-channel-leave-to
   opacity 0
-  transform translateY(-48px)
-  margin-top -53px
+  transform translateY(-46px)
+  margin-top -51px
   transition all $ANIM ease
 
 </style>
