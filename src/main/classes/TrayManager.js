@@ -137,7 +137,7 @@ class TrayManager {
     if (icons[theme][icon]) {
       return path.join(__static, `trayIcons/${icons[theme][icon]}.png`);
     } else {
-      console.error(`Icon "${icon}" not found`);
+      console.error(`TrayManager --> Icon "${icon}" not found`);
 
       return false;
     }
