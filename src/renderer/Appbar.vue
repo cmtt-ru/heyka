@@ -79,18 +79,18 @@
         square
         @click="switchProp('microphone')"
       />
-      <router-link :to="{name: 'settings'}">
-        <ui-button
-          v-if="myWorkspace"
-          v-tooltip="$t('tooltips.settings')"
-          :type="7"
-          class="user__button"
-          size="medium"
-          icon="settings2"
-          header
-          square
-        />
-      </router-link>
+      <ui-button
+        v-if="myWorkspace"
+        v-tooltip="$t('tooltips.settings')"
+        :type="7"
+        class="user__button"
+        :class="settingsClass"
+        size="medium"
+        icon="settings2"
+        header
+        square
+        @click="toggleSettings"
+      />
       <avatar
         v-popover.click="{name: 'UserProfile'}"
         class="user__avatar"
@@ -108,6 +108,8 @@ import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 import { getUserAvatarUrl } from '@libs/image';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
+
+import Mousetrap from 'mousetrap';
 
 /**
  * Map media state points to corresponding icons
@@ -181,12 +183,23 @@ export default {
         return this.$t('tooltips.speakerOn');
       }
     },
+
+    settingsClass() {
+      if (this.$route.fullPath.includes('/settings')) {
+        return 'user__button--opened';
+      }
+
+      return '';
+    },
   },
 
   created() {
     if (this.$store.state.app.runAppFrom === 'tray') {
       this.tray = true;
     }
+    Mousetrap.bind(['command+,', 'ctrl+,'], () => {
+      this.toggleSettings();
+    });
   },
 
   methods: {
@@ -215,6 +228,16 @@ export default {
         newState.speaking = false;
       }
       this.$store.dispatch('me/setMediaState', newState);
+    },
+
+    toggleSettings() {
+      if (this.$route.fullPath.includes('/settings')) {
+        this.__backOrRedirect();
+      } else if (this.$route.fullPath.includes('/styleguide')) {
+        this.$router.replace({ name: 'workspace' });
+      } else {
+        this.$router.push({ name: 'settings' });
+      }
     },
 
   },
@@ -294,6 +317,9 @@ export default {
   &__button
     margin-right 4px
 
+    &--opened
+      background-color var(--new-UI-07)
+
   &__avatar
     margin 0 11px 0 4px
     cursor pointer
@@ -314,7 +340,7 @@ export default {
     &:hover, &:active
       mix-blend-mode initial
       background var(--new-system-02)
-      color var(--new-UI-09)
+      color var(--new-white)
 
      &:active
       background var(--new-system-02-2)

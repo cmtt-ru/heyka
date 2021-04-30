@@ -1,7 +1,6 @@
 <template>
   <div
     class="layout__popover"
-    :style="$themes.getColors('popover')"
   >
     <router-view />
   </div>
@@ -10,6 +9,5 @@
 <style scoped lang="stylus">
     .layout__popover
         -webkit-app-region drag
-        background-color var(--app-bg)
-        color var(--text-0)
+        background-color var(--new-black)
 </style>
