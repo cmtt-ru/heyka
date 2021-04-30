@@ -138,7 +138,6 @@ export default {
   font-size 14px
   line-height 16px
   text-decoration none
-  color var(--text-0)
   margin 2px 4px 4px
 
   &:hover:not(.router-link-exact-active)

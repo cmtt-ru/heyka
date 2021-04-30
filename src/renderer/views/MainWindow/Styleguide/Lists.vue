@@ -86,7 +86,7 @@ export default {
 
 <style scoped lang="stylus">
   h3
-    color var(--text-0)
+    color var(--new-UI-01)
 
   .styleguide-user
     width 100%
@@ -96,5 +96,5 @@ export default {
     padding 8px 8px 8px 16px
 
     &:hover
-      background-color var(--item-bg-hover)
+      background-color var(--new-UI-06)
 </style>

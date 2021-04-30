@@ -221,8 +221,7 @@
       style="background: #000; margin: 0 -8px 0 -8px; padding: 18px 8px"
     >
       <div
-        :style="$themes.getColors('popover')"
-        style="color: var(--text-0)"
+        style="color: var(-new-UI-09)"
       >
         <h3>Icon in popover</h3>
         <div class="l-mt-12 l-mb-24">

@@ -489,7 +489,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--shadow-10)
+    background-color var(--new-stroke-01)
 
 /deep/ .user-search .input
   padding-left 54px
@@ -533,7 +533,7 @@ export default {
 
     & .user__check
       background-color var(--new-UI-01)
-      color var(--new-UI-09)
+      color var(--new-white)
       padding 2px
       border none
 
@@ -570,17 +570,5 @@ export default {
 
     &__icon
       color var(--new-signal-02)
-
-.link__copied-text
-  font-size 12px
-  margin-top 20px
-  color var(--text-1)
-
-.success
-  display inline-block
-  margin-bottom 16px
-
-  &__tick
-    transform translateY(2px)
 
 </style>
