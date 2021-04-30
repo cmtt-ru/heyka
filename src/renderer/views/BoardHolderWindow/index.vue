@@ -65,7 +65,7 @@ export default {
     await janusVideoroomWrapper.init();
     janusVideoroomWrapper.on('textroom-data', this.onTextroomData.bind(this));
     janusVideoroomWrapper.on('textroom-joined', this.onNewUser.bind(this));
-    cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store, this.$store.state.me.id);
+    cnsl.info('janus options: ', this.userId, this.janusOptions, this.$store.state.me.id);
     janusVideoroomWrapper.connectTextroom(this.userId, 'receiver', this.janusOptions);
     broadcastEvents.on('toggleDrawing', (state) => {
       this.canDraw = state;

@@ -2,8 +2,9 @@
   <div class="settings-page">
     <a
       class="about-link"
-      href="https://cmtt-ru.slack.com/archives/CLA674QEN"
       target="_blank"
+      href="https://cmtt-ru.slack.com/archives/CLA674QEN"
+      @click="sendLogs"
     >{{ texts.tellerror }}</a>
   </div>
 </template>
@@ -19,6 +20,12 @@ export default {
      */
     texts() {
       return this.$t('settings.support');
+    },
+  },
+
+  methods: {
+    sendLogs() {
+      window.ipcRenderer.send('log-manager-send');
     },
   },
 
