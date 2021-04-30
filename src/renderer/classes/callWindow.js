@@ -392,10 +392,9 @@ class CallWindow {
     if (this.streamingOverlayWindow === null) {
       this.streamingOverlayWindow = await WindowManager.create({
         route: '/call-overlay/streaming',
-        template: 'overlay',
+        template: 'sharingOverlay',
         showInactive: true,
         margin: 80,
-        aspectRatio: 1.778,
         position: 'bottomLeft',
         visibleOnAllWorkspaces: true,
         window: {

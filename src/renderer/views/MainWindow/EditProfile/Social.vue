@@ -117,6 +117,7 @@ export default {
 
       notify(text, {
         lifespan: 3000,
+        icon: 'tick',
       });
 
       this.socialName = null;

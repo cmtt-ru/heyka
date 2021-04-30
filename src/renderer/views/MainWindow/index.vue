@@ -122,7 +122,9 @@ export default {
       console.log('DeepLink login', code, error);
 
       if (code === 'false') {
-        notify(decodeURIComponent(error));
+        notify(decodeURIComponent(error), {
+          icon: 'warning',
+        });
 
         return;
       }

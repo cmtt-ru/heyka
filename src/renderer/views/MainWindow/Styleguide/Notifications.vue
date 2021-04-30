@@ -106,6 +106,7 @@ export default {
       const notification = {
         infinite: true,
         data: {
+          icon: 'warning',
           text: 'I will stay forever till action, № ' + Math.random(),
           buttons: [
             {

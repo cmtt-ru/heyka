@@ -299,6 +299,7 @@ export default {
 
       notify('workspace.channel.audioLagsNotification', {
         lifespan: 3000,
+        icon: 'warning',
       });
     },
 
@@ -365,7 +366,7 @@ export default {
   padding 2px 0
 
 .last-block
-  margin-bottom 48px
+  margin-bottom 12px
 
 .channel-footer
   flex-grow 1
