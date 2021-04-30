@@ -188,7 +188,7 @@ export default {
     },
 
     settingsClass() {
-      if (this.$route.name === 'settings') {
+      if (this.$route.fullPath.includes('/settings')) {
         return 'user__button--opened';
       }
 
@@ -247,6 +247,14 @@ export default {
       this.$store.dispatch('me/setMediaState', newState);
     },
 
+    changeStyle(action) {
+      if (action === 'blur') {
+        document.getElementById('header').classList.add('appbar--blurred');
+      } else {
+        document.getElementById('header').classList.remove('appbar--blurred');
+      }
+    },
+
     toggleSettings() {
       if (this.$route.fullPath.includes('/settings')) {
         this.__backOrRedirect();
@@ -256,17 +264,7 @@ export default {
         this.$router.push({ name: 'settings' });
       }
     },
-
-    changeStyle(action) {
-      if (action === 'blur') {
-        document.getElementById('header').classList.add('appbar--blurred');
-      } else {
-        document.getElementById('header').classList.remove('appbar--blurred');
-      }
-    },
-
   },
-
 };
 </script>
 
