@@ -339,7 +339,7 @@ export default {
   flex-direction row
   align-items center
   justify-content flex-start
-  background-color var(--app-bg)
+  background-color var(--new-bg-04)
   z-index 1
 
   &__type
@@ -353,7 +353,7 @@ export default {
     margin-left 8px
 
   &__more
-    color var(--icon-1)
+    color var(--new-UI-03)
     margin 0 6px
     flex-shrink 0
 

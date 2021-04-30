@@ -25,8 +25,8 @@ export default {
   .tooltip
     pointer-events none
     position relative
-    background var(--color-5)
-    color var(--text-tech-3)
+    background var(--new-black)
+    color var(--new-white)
     font-size 12px
     line-height 24px
     padding 0 8px
@@ -45,13 +45,13 @@ export default {
       & ^[0]__arrow
         top -5px
         border-width 0 5px 5px 5px
-        border-color transparent transparent var(--color-5) transparent
+        border-color transparent transparent var(--new-black) transparent
 
     &[data-popper-placement="top"]
       & ^[0]__arrow
         bottom -5px
         border-width 5px 5px 0 5px
-        border-color var(--color-5) transparent transparent transparent
+        border-color var(--new-black) transparent transparent transparent
 
     span
       opacity 0.9
