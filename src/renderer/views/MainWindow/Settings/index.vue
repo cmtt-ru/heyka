@@ -6,7 +6,7 @@
       </div>
       <div
         class="settings-close"
-        @click="$router.go(-1)"
+        @click="__backOrRedirect()"
       >
         {{ texts.close }}
       </div>
@@ -115,7 +115,7 @@ export default {
      * @returns {void}
      */
     closeHandler() {
-      this.$router.back();
+      this.__backOrRedirect();
     },
   },
 };
@@ -138,7 +138,6 @@ export default {
   font-size 14px
   line-height 16px
   text-decoration none
-  color var(--text-0)
   margin 2px 4px 4px
 
   &:hover:not(.router-link-exact-active)
