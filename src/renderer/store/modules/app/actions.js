@@ -364,13 +364,11 @@ export default {
     commit('SET_MICROPHONE_VOLUME', volume);
   },
 
-  raiseHandInChannel({ commit }, myId) {
-    conversationBroadcast('hand-up', myId, {
-      timestamp: Date.now(),
-    });
+  raiseHandInChannel({ rootGetters }, state) {
+    conversationBroadcast('hand-up', rootGetters['me/getMyId'], { state });
   },
 
-  sendMiniChatMessage({ commit, rootGetters }, message) {
+  sendMiniChatMessage({ rootGetters }, message) {
     conversationBroadcast('mini-chat', rootGetters['me/getMyId'], {
       message,
     });
