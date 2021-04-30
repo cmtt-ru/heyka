@@ -105,6 +105,7 @@ export default {
 <style lang="stylus" scoped>
 .appbar
   width 100%
+  padding 8px
   display flex
   flex-direction row-reverse
   justify-content space-between

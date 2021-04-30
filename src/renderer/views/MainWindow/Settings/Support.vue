@@ -11,6 +11,7 @@
     <div class="l-mt-24">
       <ui-button
         :type="1"
+        class="l-mr-8 l-mb-8"
         @click="openReportPage"
       >
         {{ texts.report }}
@@ -18,7 +19,6 @@
 
       <ui-button
         :type="17"
-        class="l-ml-8"
         @click="openLogs"
       >
         {{ texts.logs }}

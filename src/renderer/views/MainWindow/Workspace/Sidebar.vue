@@ -501,7 +501,7 @@ $ANIM = 250ms
   font-size 12px
   font-weight bold
   position sticky
-  top 56px
+  top 55px
   z-index 10
   padding 2px 0 2px 8px
 
