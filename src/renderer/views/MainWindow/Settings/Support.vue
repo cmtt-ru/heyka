@@ -37,5 +37,5 @@ export default {
 
 .about-link
   padding-top 12px
-  color var(--color-2)
+  color var(--new-UI-01)
 </style>
