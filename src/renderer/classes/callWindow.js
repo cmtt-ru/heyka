@@ -343,6 +343,10 @@ class CallWindow {
           this.frameWindow = null;
         },
       });
+
+      broadcastEvents.on('frame-window-resized', () => {
+        this.frameWindow.action('maximize');
+      });
     } else {
       await this.frameWindow.action('showInactive');
     }
@@ -372,6 +376,7 @@ class CallWindow {
    */
   async closeFrame() {
     if (this.frameWindow) {
+      broadcastEvents.removeAllListeners('frame-window-resized');
       await this.frameWindow.action('softClose');
       await this.closeStreamingOverlay();
       await this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');

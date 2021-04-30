@@ -58,7 +58,7 @@ module.exports = {
           ],
         },
       },
-      nodeIntegration: true,
+      preload: 'public/preload.js',
     },
     i18n: {
       locale: 'en',
