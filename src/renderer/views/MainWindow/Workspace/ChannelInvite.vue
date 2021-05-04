@@ -424,7 +424,9 @@ export default {
         for (const group of this.selectedGroups) {
           groups.push(this.$API.group.getMembers(group.id));
         }
-        const groupUsers = [ ...(await Promise.all(groups)) ].flat();
+        const res = await Promise.all(groups);
+
+        const groupUsers = res.flat();
 
         for (const user of groupUsers) {
           ids.push(user.id);
