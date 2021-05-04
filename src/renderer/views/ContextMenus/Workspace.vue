@@ -1,8 +1,11 @@
 <template>
   <popover>
-    <div class="buttons">
+    <div
+      v-if="canInvite || permissions['workspaces.manage']"
+      class="buttons"
+    >
       <router-link
-        v-if="permissions['workspaces.manage']"
+        v-if="canInvite"
         :to="{name: 'invite'}"
       >
         <ui-button
@@ -25,7 +28,10 @@
       </ui-button>
     </div>
 
-    <div class="delimiter" />
+    <div
+      v-if="canInvite || permissions['workspaces.manage']"
+      class="delimiter"
+    />
 
     <div class="buttons">
       <ui-button
@@ -96,6 +102,7 @@ export default {
   data() {
     return {
       IS_DEV,
+      workspaceSettings: {},
     };
   },
 
@@ -103,6 +110,7 @@ export default {
     ...mapGetters({
       workspaces: 'workspaces/getWorkspaces',
       selectedWorkspaceId: 'me/getSelectedWorkspaceId',
+      myInfo: 'myInfo',
     }),
 
     /**
@@ -113,6 +121,10 @@ export default {
       return this.$t('popover.workspace');
     },
 
+  },
+
+  async mounted() {
+    this.workspaceSettings = await this.$API.workspace.getWorkspaceSettings(this.selectedWorkspaceId);
   },
 
   methods: {
@@ -144,6 +156,16 @@ export default {
 
     workspaceClickHandler(workspaceId) {
       this.$store.dispatch('changeWorkspace', workspaceId);
+    },
+
+    /**
+     * true if user can invite to workspace
+     *
+     * @returns {string}
+     */
+    canInvite() {
+      return this.workspaceSettings.canUsersInvite ||
+      (this.myInfo.user && this.myInfo.user.role === 'admin');
     },
 
     userAvatar: getUserAvatarUrl,
