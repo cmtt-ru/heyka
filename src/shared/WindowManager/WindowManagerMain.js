@@ -157,6 +157,8 @@ class WindowManager {
       newUserAgent.push('is-main-window');
     }
 
+    windowOptions.webPreferences.additionalArguments = [`--template=${options.template}`, '--end'];
+
     if (IS_LINUX && options.displayId) {
       let display;
 
