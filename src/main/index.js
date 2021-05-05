@@ -9,10 +9,20 @@ import './classes/HttpServer';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import { IS_DEV, IS_WIN, IS_MAC, IS_LINUX } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
-import si from 'systeminformation';
-import { setInterval } from 'requestanimationframe-timer';
-import cloneDeep from 'clone-deep';
-import sleep from 'es7-sleep';
+import { fork } from 'child_process';
+
+const forked = fork('src/main/libs/system.js');
+
+forked.on('message', (msg) => {
+  console.log('Message from child', msg);
+});
+
+forked.send({ hello: 'world' });
+
+// setTimeout(() => {
+//   forked.kill();
+// // eslint-disable-next-line no-magic-numbers
+// }, 10000);
 
 console.time('init');
 console.time('before-load');
@@ -83,86 +93,7 @@ app.on('ready', async () => {
       loadingScreenID = null;
     }
   });
-
-  while (true) {
-    await sysInfo();
-
-    // eslint-disable-next-line no-magic-numbers
-    await sleep(5000);
-  }
 });
-
-let processesPids = [];
-
-async function sysInfo() {
-  const processName = IS_DEV ? 'Electron' : 'Heyka';
-
-  console.time('--- si exec');
-  /** Check for count */
-  if (processesPids.length === 0) {
-    processesPids = await si.processLoad(processName);
-
-    processesPids = processesPids[0].pids;
-  }
-  const { list } = await si.processes();
-
-  // const processesPids = parentProcesses[0].pids;
-
-  console.timeEnd('--- si exec');
-
-  const appProcesses = list.filter(({ pid }) => processesPids.includes(pid));
-
-  const result = {
-
-  };
-
-  appProcesses.forEach(proc => {
-    /** Form process name */
-    // const templateArg = proc.params
-    //   .split(' ')
-    //   .find(u => u.includes('template:'));
-    //
-    // let template = 'unknown';
-    //
-    // if (templateArg) {
-    //   template = templateArg.split(':')[1];
-    // }
-
-    const name = `${proc.pid}:${proc.name}`;
-
-    /** Save key for result */
-    result[name] = {
-      pid: proc.pid,
-      cpu: proc.cpu,
-      mem: proc.memRss,
-    };
-  });
-
-  const cpuTotal = appProcesses.reduce((sum, proc) => {
-    return sum + proc.cpu;
-  }, 0);
-
-  const memTotal = appProcesses.reduce((sum, proc) => {
-    return sum + proc.memRss;
-  }, 0);
-
-  const b = 1024;
-
-  result['total'] = {
-    pid: 0,
-    cpu: parseFloat(cpuTotal.toFixed(2)),
-    mem: parseFloat((memTotal / b).toFixed(2)),
-  };
-
-  console.log('\n');
-  console.table(result);
-
-  // Object.keys(res).forEach(a => {
-  //   console.log(a, res[a].length);
-  // });
-
-  // console.log('----------', appProcesses);
-}
 
 // trigger flag in WindowManager so that windows won't prevent closing
 app.on('before-quit', function (e) {
