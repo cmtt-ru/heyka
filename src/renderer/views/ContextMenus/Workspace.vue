@@ -1,7 +1,7 @@
 <template>
   <popover>
     <div
-      v-if="canInvite || permissions['workspaces.manage']"
+      v-if="canInvite || isAdmin"
       class="buttons"
     >
       <router-link
@@ -18,7 +18,7 @@
       </router-link>
 
       <ui-button
-        v-if="permissions['workspaces.manage']"
+        v-if="isAdmin"
         :type="11"
         icon="manage"
         data-popover-close
@@ -29,7 +29,7 @@
     </div>
 
     <div
-      v-if="canInvite || permissions['workspaces.manage']"
+      v-if="canInvite || isAdmin"
       class="delimiter"
     />
 
@@ -121,6 +121,19 @@ export default {
       return this.$t('popover.workspace');
     },
 
+    isAdmin() {
+      return this.myInfo.user && this.myInfo.user.role === 'admin';
+    },
+
+    /**
+     * true if user can invite to workspace
+     *
+     * @returns {string}
+     */
+    canInvite() {
+      return this.workspaceSettings.canUsersInvite || this.isAdmin;
+    },
+
   },
 
   async mounted() {
@@ -156,16 +169,6 @@ export default {
 
     workspaceClickHandler(workspaceId) {
       this.$store.dispatch('changeWorkspace', workspaceId);
-    },
-
-    /**
-     * true if user can invite to workspace
-     *
-     * @returns {string}
-     */
-    canInvite() {
-      return this.workspaceSettings.canUsersInvite ||
-      (this.myInfo.user && this.myInfo.user.role === 'admin');
     },
 
     userAvatar: getUserAvatarUrl,
