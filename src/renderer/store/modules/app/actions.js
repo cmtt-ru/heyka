@@ -6,6 +6,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { heykaStore } from '@/store/localStore';
 import sounds from '@sdk/classes/sounds';
 import { conversationBroadcast } from '@api/socket/utils';
+import intercom from '@classes/intercom';
 
 /**
  * @typedef PrivacyLogData
@@ -398,5 +399,18 @@ export default {
 
   markMiniChatAsRead({ commit }) {
     commit('SET_MINI_CHAT_READ_TIMESTAMP', Date.now());
+  },
+
+  openIntercom({ rootGetters }) {
+    const user = rootGetters['users/getUserById'](rootGetters['me/getMyId']);
+
+    intercom.init();
+    intercom.show();
+    intercom.setUserData({
+      name: user.name,
+      email: user.email,
+    });
+
+    window.ipcRenderer.send('log-manager-send');
   },
 };
