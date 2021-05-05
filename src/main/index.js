@@ -19,10 +19,14 @@ forked.on('message', (msg) => {
 
 forked.send({ hello: 'world' });
 
-// setTimeout(() => {
-//   forked.kill();
-// // eslint-disable-next-line no-magic-numbers
-// }, 10000);
+setTimeout(() => {
+  forked.kill();
+// eslint-disable-next-line no-magic-numbers
+}, 20000);
+
+console.log('\n\n\n\n\n\n\n');
+console.log('process.pid', process.pid);
+console.log('\n\n\n\n\n\n\n');
 
 console.time('init');
 console.time('before-load');
