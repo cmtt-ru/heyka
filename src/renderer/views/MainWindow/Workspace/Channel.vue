@@ -133,15 +133,6 @@
       <template #custom-footer>
         <div class="channel-footer l-flex">
           <ui-button
-            v-if="selectedChannelId"
-            :type="14"
-            class="l-mr-4"
-            @click="audioLagsHandler"
-          >
-            {{ texts.audioLags }}
-          </ui-button>
-
-          <ui-button
             class="l-ml-auto"
             :type="14"
             @click="openIntercom"
@@ -161,7 +152,6 @@ import UiButton from '@components/UiButton';
 import PseudoPopup from '@components/PseudoPopup';
 import { mapGetters } from 'vuex';
 import API from '@api';
-import intercom from '@classes/intercom';
 import notify from '@libs/notify';
 
 const ICON_MAP = {
@@ -269,10 +259,6 @@ export default {
 
   },
 
-  beforeDestroy() {
-    intercom.hide();
-  },
-
   methods: {
     /**
      * Connect to channel
@@ -308,14 +294,7 @@ export default {
      * @returns {void}
      */
     openIntercom() {
-      const user = this.$store.getters['users/getUserById'](this.$store.getters['me/getMyId']);
-
-      intercom.init();
-      intercom.show();
-      intercom.setUserData({
-        name: user.name,
-        email: user.email,
-      });
+      this.$store.dispatch('app/openIntercom');
     },
   },
 };

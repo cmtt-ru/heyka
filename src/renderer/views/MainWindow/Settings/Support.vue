@@ -48,8 +48,7 @@ export default {
 
   methods: {
     openReportPage() {
-      window.open('https://cmtt-ru.slack.com/archives/CLA674QEN');
-      window.ipcRenderer.send('log-manager-send');
+      this.$store.dispatch('app/openIntercom');
     },
 
     openLogs() {

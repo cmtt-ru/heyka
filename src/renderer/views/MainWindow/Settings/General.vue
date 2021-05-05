@@ -46,14 +46,8 @@
       :text="texts.nomic"
     />
     <ui-switch
-      v-if="IS_MAC"
       v-model="muteHotkey"
-      :text="texts.macMuteHotkey"
-    />
-    <ui-switch
-      v-else
-      v-model="muteHotkey"
-      :text="texts.muteHotkey"
+      :text="muteText"
     />
 
     <div class="settings__label">
@@ -93,8 +87,6 @@ export default {
           value: 'ru',
         },
       ],
-
-      IS_MAC,
 
       localSettings: {
         mode: this.$store.state.app.runAppFrom,
@@ -257,6 +249,14 @@ export default {
       set(value) {
         this.$store.dispatch('app/setMuteHotkey', value);
       },
+    },
+
+    muteText() {
+      if (IS_MAC) {
+        return this.texts.macMuteHotkey;
+      }
+
+      return this.texts.muteHotkey;
     },
 
     /**
