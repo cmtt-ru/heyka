@@ -6,6 +6,7 @@ import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
+import { EventEmitter } from 'events';
 import { IS_WIN, IS_DEV, IS_LINUX } from '../../main/Constants';
 
 let icon;
@@ -37,14 +38,15 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
 /**
  * A class that handles all windows
  */
-class WindowManager {
+class WindowManager extends EventEmitter {
   /**
    * Inits window manager class, assigns mainwindow
    */
   constructor() {
-    this.windows = [];
+    super();
+    this.windows = {};
     this.quitting = false;
-    this.events = {
+    this.windowEvents = {
       show: this.showWindow,
       hide: this.hideWindow,
       close: this.closeWindow,
@@ -65,10 +67,10 @@ class WindowManager {
     };
 
     ipcMain.handle('window-manager-event', async (event, options) => {
-      if (this.events[options.event] === undefined) {
+      if (this.windowEvents[options.event] === undefined) {
         return;
       }
-      this.events[options.event].call(this, options);
+      this.windowEvents[options.event].call(this, options);
 
       return true;
     });
@@ -132,6 +134,18 @@ class WindowManager {
     return this.windows[id].browserWindow;
   }
 
+  getProcesses() {
+    return Object.keys(this.windows).map(key => {
+      const browserWindow = this.windows[key].browserWindow;
+      const template = this.windows[key].options.template;
+
+      return {
+        template,
+        pid: browserWindow.webContents.getOSProcessId(),
+      };
+    });
+  }
+
   /**
    * Create Window
    * @param {object} options - mainWindow instance
@@ -158,6 +172,8 @@ class WindowManager {
     }
 
     windowOptions.webPreferences.additionalArguments = [`--template=${options.template}`, '--end'];
+
+    console.log('-------------------', windowOptions.webPreferences.additionalArguments);
 
     if (IS_LINUX && options.displayId) {
       let display;
@@ -235,6 +251,7 @@ class WindowManager {
       console.log('WindowManager --> closed', options.template, windowId);
       try {
         delete this.windows[windowId];
+        this.emit('processes-update', this.getProcesses());
         this.send(`window-close-${windowId}`);
       } catch (error) {
         console.error('WindowManager --> window already closed', options.template, windowId);
@@ -281,7 +298,7 @@ class WindowManager {
       }
 
       // retrieve window position and size
-      if (options.windowPosition) {
+      if (options.windowPosbrowserWindowition) {
         if (options.windowPosition.size && browserWindow.resizable) {
           this.windows[windowId].positioner.resize(options.windowPosition);
         }
@@ -294,6 +311,12 @@ class WindowManager {
       } else {
         browserWindow.show();
       }
+
+      browserWindow.once('show', () => {
+        setTimeout(() => {
+          this.emit('processes-update', this.getProcesses());
+        }, 500);
+      });
       // browserWindow.webContents.toggleDevTools();
     };
 

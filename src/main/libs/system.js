@@ -6,14 +6,20 @@ const IS_WIN = process.platform === 'win32';
 // const APP_NAME = process.env.NODE_ENV === 'development' ? 'Electron' : 'Heyka';
 const APP_NAME = 'Electron';
 const PROCESS_IGNORE = ['system.js', 'chrome_crashpad_handler'];
+const KILOBYTE = 1024;
 
 let PARENT_PID;
+let PIDS;
 
-process.on('message', (data) => {
+process.on('message', data => {
   console.log('Message received', data);
   switch (data.action) {
     case 'pid':
       PARENT_PID = data.pid;
+      break;
+
+    case 'pids':
+      PIDS = data.data;
       break;
 
     case 'start':
@@ -45,15 +51,20 @@ async function sysInfo() {
   const result = appProcesses.map(proc => {
     const argsKey = IS_WIN ? 'command' : 'params';
     const procArgs = parseParams(proc[argsKey]);
+    const winProcess = PIDS.find(p => p.pid === proc.pid);
+    let template = '';
+
+    if (winProcess) {
+      template = winProcess.template;
+    }
 
     return {
-      template: procArgs.template,
+      template,
       type: procArgs.type,
-      path: procArgs.path,
       name: proc.name,
       pid: proc.pid,
       cpu: parseFloat(proc.cpu.toFixed(2)),
-      mem: proc.memRss,
+      mem: parseFloat((proc.memRss / KILOBYTE).toFixed(2)),
       parentPid: proc.parentPid,
     };
   });
@@ -68,11 +79,9 @@ async function sysInfo() {
     mem: 0,
   });
 
-  const b = 1024;
-
   result.push({
     cpu: parseFloat(computedTotal.cpu.toFixed(2)),
-    mem: parseFloat((computedTotal.mem / b).toFixed(2)),
+    mem: parseFloat((computedTotal.mem / KILOBYTE).toFixed(2)),
   });
 
   console.log('\n');
