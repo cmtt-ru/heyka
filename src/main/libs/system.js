@@ -1,7 +1,11 @@
 const sleep = require('es7-sleep');
 const si = require('systeminformation');
+const IS_MAC = process.platform === 'darwin';
+const IS_WIN = process.platform === 'win32';
 
-const APP_NAME = process.env.NODE_ENV === 'development' ? 'Electron' : 'Heyka';
+// const APP_NAME = process.env.NODE_ENV === 'development' ? 'Electron' : 'Heyka';
+const APP_NAME = 'Electron';
+const PARENT_PID = 43452;
 
 process.on('message', (msg) => {
   console.log('Message from parent:', msg);
@@ -31,7 +35,8 @@ async function sysInfo() {
     .filter(({ pid, name }) => processesPids.includes(pid) && !processIgnore.includes(name));
 
   const result = appProcesses.map(proc => {
-    const procArgs = parseParams(proc.params);
+    const argsKey = IS_WIN ? 'command' : 'params';
+    const procArgs = parseParams(proc[argsKey]);
 
     return {
       template: procArgs.template,
@@ -58,8 +63,6 @@ async function sysInfo() {
   const b = 1024;
 
   result.push({
-    name: 'total',
-    pid: 0,
     cpu: parseFloat(computedTotal.cpu.toFixed(2)),
     mem: parseFloat((computedTotal.mem / b).toFixed(2)),
   });
@@ -70,6 +73,8 @@ async function sysInfo() {
 
 function parseParams(params) {
   const list = params.split(' ');
+
+  // console.log(list);
 
   return {
     template: getArgv(list, 'template') || '',
