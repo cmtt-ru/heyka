@@ -312,11 +312,9 @@ class WindowManager extends EventEmitter {
         browserWindow.show();
       }
 
-      browserWindow.once('show', () => {
-        setTimeout(() => {
-          this.emit('processes-update', this.getProcesses());
-        }, 500);
-      });
+      setTimeout(() => {
+        this.emit('processes-update', this.getProcesses());
+      }, 500);
       // browserWindow.webContents.toggleDevTools();
     };
 
