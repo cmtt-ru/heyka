@@ -13,6 +13,16 @@ import { fork } from 'child_process';
 
 const forked = fork('src/main/libs/system.js');
 
+WindowManager.on('processes-update', data => {
+  if (!forked.killed) {
+    forked.send({
+      action: 'pids',
+      data,
+    });
+    console.log('processes-update', data);
+  }
+});
+
 forked.on('message', (msg) => {
   console.log('Message from child', msg);
 });
@@ -27,7 +37,7 @@ forked.send({
 });
 
 setTimeout(() => {
-  // forked.kill();
+  forked.kill();
 // eslint-disable-next-line no-magic-numbers
 }, 20000);
 
