@@ -5,13 +5,22 @@ const IS_WIN = process.platform === 'win32';
 
 // const APP_NAME = process.env.NODE_ENV === 'development' ? 'Electron' : 'Heyka';
 const APP_NAME = 'Electron';
-const PARENT_PID = 43452;
+const PROCESS_IGNORE = ['system.js', 'chrome_crashpad_handler'];
 
-process.on('message', (msg) => {
-  console.log('Message from parent:', msg);
+let PARENT_PID;
+
+process.on('message', (data) => {
+  console.log('Message received', data);
+  switch (data.action) {
+    case 'pid':
+      PARENT_PID = data.pid;
+      break;
+
+    case 'start':
+      init();
+      break;
+  }
 });
-
-init();
 
 async function init() {
   while (true) {
@@ -22,17 +31,16 @@ async function init() {
 }
 
 async function sysInfo() {
-  const processIgnore = ['system.js', 'chrome_crashpad_handler'];
-
-  /** todo: Check for count */
-  let processesPids = await si.processLoad(APP_NAME);
-
-  processesPids = processesPids[0].pids;
-
   const { list } = await si.processes();
 
   const appProcesses = list
-    .filter(({ pid, name }) => processesPids.includes(pid) && !processIgnore.includes(name));
+    .filter(({ name, pid, parentPid }) => {
+      if (PROCESS_IGNORE.includes(name)) {
+        return false;
+      }
+
+      return (parentPid === PARENT_PID || pid === PARENT_PID);
+    });
 
   const result = appProcesses.map(proc => {
     const argsKey = IS_WIN ? 'command' : 'params';
@@ -44,7 +52,7 @@ async function sysInfo() {
       path: procArgs.path,
       name: proc.name,
       pid: proc.pid,
-      cpu: proc.cpu,
+      cpu: parseFloat(proc.cpu.toFixed(2)),
       mem: proc.memRss,
       parentPid: proc.parentPid,
     };
