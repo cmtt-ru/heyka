@@ -17,16 +17,19 @@ forked.on('message', (msg) => {
   console.log('Message from child', msg);
 });
 
-forked.send({ hello: 'world' });
+forked.send({
+  action: 'pid',
+  pid: process.pid,
+});
+
+forked.send({
+  action: 'start',
+});
 
 setTimeout(() => {
-  forked.kill();
+  // forked.kill();
 // eslint-disable-next-line no-magic-numbers
 }, 20000);
-
-console.log('\n\n\n\n\n\n\n');
-console.log('process.pid', process.pid);
-console.log('\n\n\n\n\n\n\n');
 
 console.time('init');
 console.time('before-load');
