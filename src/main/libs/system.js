@@ -9,7 +9,7 @@ const PROCESS_IGNORE = ['system.js', 'chrome_crashpad_handler'];
 const KILOBYTE = 1024;
 
 let PARENT_PID;
-let PIDS;
+let PIDS = [];
 
 process.on('message', data => {
   console.log('Message received', data);
