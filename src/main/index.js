@@ -9,37 +9,14 @@ import './classes/HttpServer';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import { IS_DEV, IS_WIN, IS_MAC, IS_LINUX } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
-import { fork } from 'child_process';
+import performanceMonitor from './libs/PerformanceMonitor';
 
-const forked = fork('src/main/libs/system.js');
-
-WindowManager.on('processes-update', data => {
-  if (!forked.killed) {
-    forked.send({
-      action: 'pids',
-      data,
-    });
-    console.log('processes-update', data);
-  }
-});
-
-forked.on('message', (msg) => {
-  console.log('Message from child', msg);
-});
-
-forked.send({
-  action: 'pid',
-  pid: process.pid,
-});
-
-forked.send({
-  action: 'start',
-});
+performanceMonitor.start();
 
 setTimeout(() => {
-  forked.kill();
+  performanceMonitor.stop();
 // eslint-disable-next-line no-magic-numbers
-}, 20000);
+}, 10000);
 
 console.time('init');
 console.time('before-load');
