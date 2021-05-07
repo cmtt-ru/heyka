@@ -150,7 +150,14 @@ function openLogsFolder() {
   shell.openPath(LOG_PATH);
 }
 
-console.time('!!!!!!!!!');
+/**
+ * Returns log path
+ * @returns {string}
+ */
+export function getLogPath() {
+  return LOG_PATH;
+}
+
 /**
  * Show app launched log and some useful information about computer
  */
@@ -170,4 +177,3 @@ OS: ${osName()} ${os.release()}
 CPU: ${cpus[0].model} / ${cpus.length} cores
 RAM: ${Math.round(os.totalmem() / mb)}MB
 `);
-console.timeEnd('!!!!!!!!!');

@@ -1,17 +1,43 @@
+/* eslint-disable require-jsdoc */
 const sleep = require('es7-sleep');
 const si = require('systeminformation');
+const MACalculator = require('./MACalculator');
 
 const IS_MAC = process.platform === 'darwin';
 const IS_WIN = process.platform === 'win32';
 
-const PROCESS_IGNORE = ['worker.js', 'chrome_crashpad_handler'];
-const KILOBYTE = 1024;
+const PROCESS_IGNORE = ['worker1.js', 'chrome_crashpad_handler'];
+const ARGS_KEY = IS_WIN ? 'command' : 'params';
 
-let parrentPid = null;
-let processPids = [];
+let parrentPid = 63907;
+let processPids = [
+  {
+    template: 'main',
+    pid: 63920,
+  },
+  {
+    template: 'overlay',
+    pid: 65507,
+  },
+  {
+    template: 'push',
+    pid: 64003,
+  },
+];
+let logPath = null;
+let sleepTimeout = 1000;
 
+const ma = new MACalculator({
+  length: 1,
+});
+
+ma.on('update', data => {
+  console.table(data);
+});
+
+/** Listen messages from parent process */
 process.on('message', data => {
-  console.log('Message received', data);
+  console.log('Worker --> message received', data);
   switch (data.action) {
     case 'parent-pid':
       parrentPid = data.pid;
@@ -21,16 +47,26 @@ process.on('message', data => {
       processPids = data.data;
       break;
 
+    case 'log-path':
+      logPath = data.path;
+      break;
+
+    case 'sleep-timeout':
+      sleepTimeout = data.timeout;
+      break;
+
     case 'start':
       init();
       break;
   }
 });
 
+init();
+
 async function init() {
   while (true) {
     // eslint-disable-next-line no-magic-numbers
-    await sleep(1000);
+    await sleep(sleepTimeout);
     await sysInfo();
   }
 }
@@ -48,8 +84,9 @@ async function sysInfo() {
     });
 
   const result = appProcesses.map(proc => {
-    const argsKey = IS_WIN ? 'command' : 'params';
-    const procArgs = parseParams(proc[argsKey]);
+    const processType = getArgv(proc[ARGS_KEY], 'type') || '';
+    const processSubType = getArgv(proc[ARGS_KEY], 'utility-sub-type') || '';
+    // const processRenderId = getArgv(proc[ARGS_KEY], 'renderer-client-id') || '';
     const winProcess = processPids.find(p => p.pid === proc.pid);
     let template = '';
 
@@ -59,48 +96,25 @@ async function sysInfo() {
 
     return {
       template,
-      type: procArgs.type,
+      type: processType,
+      subType: processSubType,
       name: proc.name,
+      // renderId: processRenderId,
       pid: proc.pid,
-      cpu: parseFloat(proc.cpu.toFixed(2)),
-      mem: parseFloat((proc.memRss / KILOBYTE).toFixed(2)),
-      parentPid: proc.parentPid,
+      // parentPid: proc.parentPid,
+      cpu: proc.cpu,
+      mem: proc.memRss,
     };
   });
 
-  const computedTotal = appProcesses.reduce((obj, proc) => {
-    obj.cpu += proc.cpu;
-    obj.mem += proc.memRss;
+  ma.add(result);
 
-    return obj;
-  }, {
-    cpu: 0,
-    mem: 0,
-  });
-
-  result.push({
-    cpu: parseFloat(computedTotal.cpu.toFixed(2)),
-    mem: parseFloat((computedTotal.mem / KILOBYTE).toFixed(2)),
-  });
-
-  console.log('\n');
-  console.table(result);
+  // console.log('\n');
+  // console.table(result);
 }
 
-function parseParams(params) {
-  const list = params.split(' ');
-
-  // console.log(list);
-
-  return {
-    template: getArgv(list, 'template') || '',
-    type: getArgv(list, 'type') || '',
-    path: getArgv(list, 'app-path') || '',
-  };
-}
-
-function getArgv(list, arg) {
-  const value = list.find(argv => argv.includes(`--${arg}=`));
+function getArgv(args, arg) {
+  const value = args.split(' ').find(argv => argv.includes(`--${arg}=`));
 
   if (value) {
     return value.split('=')[1];
