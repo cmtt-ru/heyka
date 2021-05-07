@@ -1,25 +1,24 @@
 const sleep = require('es7-sleep');
 const si = require('systeminformation');
+
 const IS_MAC = process.platform === 'darwin';
 const IS_WIN = process.platform === 'win32';
 
-// const APP_NAME = process.env.NODE_ENV === 'development' ? 'Electron' : 'Heyka';
-const APP_NAME = 'Electron';
-const PROCESS_IGNORE = ['system.js', 'chrome_crashpad_handler'];
+const PROCESS_IGNORE = ['worker.js', 'chrome_crashpad_handler'];
 const KILOBYTE = 1024;
 
-let PARENT_PID;
-let PIDS = [];
+let parrentPid = null;
+let processPids = [];
 
 process.on('message', data => {
   console.log('Message received', data);
   switch (data.action) {
-    case 'pid':
-      PARENT_PID = data.pid;
+    case 'parent-pid':
+      parrentPid = data.pid;
       break;
 
-    case 'pids':
-      PIDS = data.data;
+    case 'process-pids':
+      processPids = data.data;
       break;
 
     case 'start':
@@ -40,18 +39,18 @@ async function sysInfo() {
   const { list } = await si.processes();
 
   const appProcesses = list
-    .filter(({ name, pid, parentPid }) => {
-      if (PROCESS_IGNORE.includes(name)) {
+    .filter(proc => {
+      if (PROCESS_IGNORE.includes(proc.name)) {
         return false;
       }
 
-      return (parentPid === PARENT_PID || pid === PARENT_PID);
+      return (proc.parentPid === parrentPid || proc.pid === parrentPid);
     });
 
   const result = appProcesses.map(proc => {
     const argsKey = IS_WIN ? 'command' : 'params';
     const procArgs = parseParams(proc[argsKey]);
-    const winProcess = PIDS.find(p => p.pid === proc.pid);
+    const winProcess = processPids.find(p => p.pid === proc.pid);
     let template = '';
 
     if (winProcess) {
