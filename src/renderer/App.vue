@@ -12,6 +12,8 @@ import Mousetrap from 'mousetrap';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
 
+let performanceMonitorWindow = null;
+
 export default {
   created() {
     this.loadSvgSprite();
@@ -24,8 +26,12 @@ export default {
       WindowManager.getCurrentWindow().action('reload');
     });
 
-    Mousetrap.bind('esc esc esc', function () {
+    Mousetrap.bind('esc esc esc', () => {
       broadcastEvents.dispatch('go-to-support');
+    });
+
+    Mousetrap.bind(['command+esc', 'ctrl+esc'], () => {
+      this.openPerformanceMonitor();
     });
 
     Mousetrap.bind('up up down down left right left right b a enter', function () {
@@ -51,6 +57,20 @@ export default {
         div.innerHTML = ajax.responseText;
         document.body.insertBefore(div, document.body.childNodes[0]);
       };
+    },
+
+    async openPerformanceMonitor() {
+      if (!performanceMonitorWindow) {
+        performanceMonitorWindow = await WindowManager.create({
+          route: '/performance-monitor',
+          template: 'performanceMonitor',
+          onClose: () => {
+            performanceMonitorWindow = null;
+          },
+        });
+      } else {
+        performanceMonitorWindow.action('show');
+      }
     },
   },
 };

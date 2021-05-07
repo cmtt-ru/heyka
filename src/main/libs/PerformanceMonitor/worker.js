@@ -6,7 +6,7 @@ const MACalculator = require('./MACalculator');
 const IS_MAC = process.platform === 'darwin';
 const IS_WIN = process.platform === 'win32';
 
-const PROCESS_IGNORE = ['worker1.js', 'chrome_crashpad_handler'];
+const PROCESS_IGNORE = ['worker.js', 'chrome_crashpad_handler'];
 const ARGS_KEY = IS_WIN ? 'command' : 'params';
 
 let parrentPid = 63907;

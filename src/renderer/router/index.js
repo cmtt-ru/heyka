@@ -11,6 +11,7 @@ const MainWindow = () => import(/* webpackChunkName: "main" */ '@views/MainWindo
 const NoWorkspace = () => import(/* webpackChunkName: "main" */ '@views/MainWindow/NoWorkspace');
 const PushWindow = () => import(/* webpackChunkName: "push" */ '@views/Pushes');
 const BoardHolderWindow = () => import(/* webpackChunkName: "boardHolder" */ '@views/BoardHolderWindow');
+const PerformanceMonitor = () => import(/* webpackChunkName: "performanceMonitor" */ '@views/PerformanceMonitor');
 
 Vue.use(VueRouter);
 
@@ -51,6 +52,12 @@ const routes = [
   {
     path: '/board-holder',
     component: BoardHolderWindow,
+  },
+
+  /* Performance monitor window */
+  {
+    path: '/performance-monitor',
+    component: PerformanceMonitor,
   },
 
   /**

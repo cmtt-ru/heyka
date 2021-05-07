@@ -91,5 +91,10 @@
     "skipTaskbar": true,
     "enableLargerThanScreen": true,
     "hasShadow": false
+  },
+  "performanceMonitor": {
+    "width": 800,
+    "height": 500,
+    "frame": true
   }
 }
