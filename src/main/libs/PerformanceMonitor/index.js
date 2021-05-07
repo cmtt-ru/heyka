@@ -1,10 +1,18 @@
 import WindowManager from '../../../shared/WindowManager/WindowManagerMain';
+import { getLogPath } from '../../classes/LogManager';
 import { fork } from 'child_process';
 import { EventEmitter } from 'events';
 
 let worker = null;
 
 class PerformanceMonitor extends EventEmitter {
+  setSleepTimeout(timeout) {
+    worker.send({
+      action: 'sleep-timeout',
+      timeout,
+    });
+  }
+
   start() {
     if (worker) {
       console.log('PerformanceMonitor --> worker is already running');
@@ -12,7 +20,7 @@ class PerformanceMonitor extends EventEmitter {
       return;
     }
 
-    /** Start worker in another thread */
+    /** Run worker in another thread */
     worker = fork('src/main/libs/PerformanceMonitor/worker.js');
 
     /** Listen for messages from worker */
@@ -30,6 +38,18 @@ class PerformanceMonitor extends EventEmitter {
     worker.send({
       action: 'process-pids',
       data: WindowManager.getProcesses(),
+    });
+
+    /** Send log path to worker */
+    worker.send({
+      action: 'log-path',
+      path: getLogPath(),
+    });
+
+    /** Send sleep timeout between iterations to worker */
+    worker.send({
+      action: 'sleep-timeout',
+      timeout: 2000,
     });
 
     /** Start worker */
