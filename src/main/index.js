@@ -14,13 +14,14 @@ import performanceMonitor from './libs/PerformanceMonitor';
 performanceMonitor.start();
 
 performanceMonitor.on('processes', data => {
+  // console.table(data);
   WindowManager.sendAll('performance-monitor-processes', data);
 });
 
-setTimeout(() => {
-  performanceMonitor.stop();
+// setTimeout(() => {
+// performanceMonitor.stop();
 // eslint-disable-next-line no-magic-numbers
-}, 150000);
+// }, 150000);
 
 console.time('init');
 console.time('before-load');
