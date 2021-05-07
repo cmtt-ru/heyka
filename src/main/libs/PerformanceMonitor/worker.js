@@ -32,7 +32,10 @@ const ma = new MACalculator({
 });
 
 ma.on('update', data => {
-  console.table(data);
+  process.send({
+    action: 'processes',
+    data,
+  });
 });
 
 /** Listen messages from parent process */

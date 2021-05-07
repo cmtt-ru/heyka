@@ -25,7 +25,11 @@ class PerformanceMonitor extends EventEmitter {
 
     /** Listen for messages from worker */
     worker.on('message', data => {
-      console.log('PerformanceMonitor --> message from worker', data);
+      switch (data.action) {
+        case 'processes':
+          this.emit('processes', data.data);
+          break;
+      }
     });
 
     /** Send pid of main process to worker */

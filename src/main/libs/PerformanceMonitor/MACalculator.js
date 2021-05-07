@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 const { EventEmitter } = require('events');
 
 class MACalculator extends EventEmitter {
