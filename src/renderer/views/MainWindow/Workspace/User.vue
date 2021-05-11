@@ -19,14 +19,14 @@
       </div>
     </div>
 
-    <div v-if="user.onlineStatus==='offline'">
+    <div>
       <ui-button
         :type="17"
         wide
         size="large"
         icon="slack"
         class="user-action"
-        @click="_notImplemented()"
+        @click="slackInvite"
       >
         <div>{{ texts.inviteBySlackButton }}</div>
       </ui-button>
@@ -42,7 +42,7 @@
       </ui-button> -->
     </div>
 
-    <div v-else>
+    <div>
       <ui-button
         v-if="selectedChannel && !isMe"
         :type="isInSameChannel? 5: 1"
@@ -255,6 +255,10 @@ export default {
 
     async startPrivateTalk(userId) {
       this.$store.dispatch('createPrivateChannel', userId);
+    },
+
+    async slackInvite() {
+      await this.$store.dispatch('app/sendSlackInviteToChannel', this.userId);
     },
   },
 
