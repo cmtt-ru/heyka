@@ -148,4 +148,4 @@ class DeepLinkMain {
   }
 }
 
-export default new DeepLinkMain(['focus', 'login', 'social-link', 'slack-connect', 'workspace']);
+export default new DeepLinkMain(['focus', 'login', 'social-link', 'slack-connect', 'workspace', 'invite']);

@@ -144,6 +144,18 @@ export default {
       await this.$store.dispatch('changeWorkspace', workspaceId);
     });
 
+    /**
+     * Deep link for channel invite
+     */
+    DeepLink.on('invite', async ([workspaceId, channelId]) => {
+      await this.$store.dispatch('initial');
+      await this.$store.dispatch('selectChannelInAnotherWorkspace', {
+        workspaceId,
+        channelId,
+      });
+      await broadcastEvents.dispatch('open-channel', channelId);
+    });
+
     setTimeout(() => {
       this.loading = false;
     }, WIREFRAME_MAX_TIME);
