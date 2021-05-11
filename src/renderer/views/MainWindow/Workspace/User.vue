@@ -19,30 +19,21 @@
       </div>
     </div>
 
-    <div>
+    <div v-if="user.onlineStatus === 'offline'">
+      <!-- //! selectedChannel && myWorkspace.slack && user.slack не очевидно юзеру! -->
       <ui-button
+        v-if="selectedChannel && myWorkspace.slack && user.slack"
         :type="17"
         wide
         size="large"
         icon="slack"
-        class="user-action"
         @click="slackInvite"
       >
         <div>{{ texts.inviteBySlackButton }}</div>
       </ui-button>
-      <!-- <ui-button
-        :type="17"
-        wide
-        size="large"
-        icon="ms-teams"
-        class="user-action"
-        @click="_notImplemented()"
-      >
-        <div>{{ texts.inviteByTeamsButton }}</div>
-      </ui-button> -->
     </div>
 
-    <div>
+    <div v-else>
       <ui-button
         v-if="selectedChannel && !isMe"
         :type="isInSameChannel? 5: 1"
@@ -81,6 +72,7 @@
         <div>{{ texts.privateTalkButton }}</div>
       </ui-button>
     </div>
+
     <!--
     <div class="user-info">
       <div class="user-info__title">
@@ -159,6 +151,7 @@ export default {
       selectedChannel: 'myChannel',
       myUserID: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
+      myWorkspace: 'myWorkspace',
     }),
 
     /**
@@ -224,6 +217,10 @@ export default {
 
       return false;
     },
+  },
+
+  mounted() {
+    console.log(this.myWorkspace);
   },
 
   methods: {
