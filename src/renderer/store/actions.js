@@ -104,6 +104,12 @@ export default {
     }
 
     const workspace = await API.workspace.getWorkspaceByID(workspaceId);
+    const settings = await API.workspace.getWorkspaceSettings(workspaceId);
+
+    commit('workspaces/SET_SETTINGS', {
+      id: workspaceId,
+      settings: settings,
+    });
 
     commit('channels/SET_COLLECTION', mapKeys(workspace.channels, 'id'));
     commit('users/SET_COLLECTION', mapKeys(workspace.users, 'id'));
