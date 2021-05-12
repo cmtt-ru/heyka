@@ -47,6 +47,12 @@
     </div>
 
     <div class="charts">
+      <p
+        v-if="timestamp"
+        class="charts__label"
+      >
+        {{ timestamp }}
+      </p>
       <p class="charts__label">
         CPU {{ total.cpu.toFixed(2) }} / {{ bgTotal.cpu.toFixed(2) }}%
       </p>
@@ -54,6 +60,8 @@
         :datasets="cpuChartLine"
         :grid="chartGrid"
         :labels="{yLabels: 3, yLabelsTextFormatter: val => Math.round(val) + '%'}"
+        interactive
+        @mouse-move="mouseMoveHandler"
       />
 
       <br>
@@ -65,6 +73,8 @@
         :datasets="memChartLine"
         :grid="chartGrid"
         :labels="{yLabels: 3, yLabelsTextFormatter: val => Math.round(val / 1024) + ' MB'}"
+        interactive
+        @mouse-move="mouseMoveHandler"
       />
     </div>
   </div>
@@ -85,13 +95,13 @@ export default {
 
       cpuChartLine: [
         {
-          data: [0, 0],
+          data: [],
           smooth: false,
           className: 'bg-cpu',
           fill: true,
         },
         {
-          data: [0, 0],
+          data: [],
           smooth: false,
           fill: true,
           className: 'cpu',
@@ -100,13 +110,13 @@ export default {
 
       memChartLine: [
         {
-          data: [0, 0],
+          data: [],
           smooth: false,
           fill: true,
           className: 'bg-mem',
         },
         {
-          data: [0, 0],
+          data: [],
           smooth: false,
           fill: true,
           className: 'mem',
@@ -118,6 +128,10 @@ export default {
         horizontalLines: true,
       },
 
+      historyArray: [],
+
+      realtime: true,
+      timestamp: null,
     };
   },
 
@@ -125,11 +139,11 @@ export default {
     const history = await window.ipcRenderer.invoke('performance-monitor-history');
 
     try {
-      const historyArray = JSON.parse(history);
+      this.historyArray = JSON.parse(history);
 
-      historyArray.forEach(item => {
-        const total = item.splice(-1)[0];
-        const bgTotal = item.splice(-1)[0];
+      this.historyArray.forEach(item => {
+        const total = item.data.slice(-2)[1];
+        const bgTotal = item.data.slice(-2)[0];
 
         this.cpuChartLine[0].data.push(bgTotal.cpu);
         this.cpuChartLine[1].data.push(total.cpu);
@@ -138,19 +152,25 @@ export default {
         this.memChartLine[1].data.push(total.mem);
       });
 
-      const last = historyArray.slice(-1)[0];
+      const last = this.historyArray.slice(-1)[0];
 
-      this.total = last.splice(-1)[0];
-      this.bgTotal = last.splice(-1)[0];
-      this.processes = last;
+      this.total = last.data.slice(-2)[1];
+      this.bgTotal = last.data.slice(-2)[0];
+      this.processes = last.data.slice(0, -2);
     } catch (err) {
       console.log('Error in parsing history', err);
     }
 
-    window.ipcRenderer.on('performance-monitor-processes', (event, data) => {
-      this.total = data.splice(-1)[0];
-      this.bgTotal = data.splice(-1)[0];
-      this.processes = data;
+    window.ipcRenderer.on('performance-monitor-processes', (event, item) => {
+      if (!this.realtime) {
+        return;
+      }
+
+      this.historyArray.push(item);
+
+      this.total = item.data.slice(-2)[1];
+      this.bgTotal = item.data.slice(-2)[1];
+      this.processes = item.data.slice(0, -2);
 
       this.cpuChartLine[0].data.push(Math.max(0, this.bgTotal.cpu));
       this.cpuChartLine[1].data.push(Math.max(0, this.total.cpu));
@@ -161,7 +181,20 @@ export default {
   },
 
   methods: {
+    mouseMoveHandler(obj) {
+      if (obj) {
+        const item = this.historyArray[obj.index];
 
+        this.realtime = false;
+        this.total = item.data.slice(-2)[1];
+        this.bgTotal = item.data.slice(-2)[0];
+        this.processes = item.data.slice(0, -2);
+        this.timestamp = item.timestamp;
+      } else {
+        this.realtime = true;
+        this.timestamp = null;
+      }
+    },
   },
 };
 </script>
