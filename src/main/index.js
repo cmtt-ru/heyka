@@ -148,6 +148,10 @@ ipcMain.on('exit-fullscreen', (event) => {
   }
 });
 
+ipcMain.handle('performance-monitor-history', async (event) => {
+  return performanceMonitor.getUtilizationLog();
+});
+
 /**
  * Create webrtc internals window
  * @returns {void}

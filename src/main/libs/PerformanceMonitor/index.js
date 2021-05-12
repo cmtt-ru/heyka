@@ -2,6 +2,9 @@ import WindowManager from '../../../shared/WindowManager/WindowManagerMain';
 import { getLogPath } from '../../classes/LogManager';
 import { fork } from 'child_process';
 import { EventEmitter } from 'events';
+import path from 'path';
+import fs from 'fs';
+const asyncFs = fs.promises;
 
 let worker = null;
 
@@ -79,6 +82,12 @@ class PerformanceMonitor extends EventEmitter {
       worker.kill();
       worker = null;
     }
+  }
+
+  async getUtilizationLog() {
+    const json = await asyncFs.readFile(path.join(getLogPath(), 'utilization.json'), 'utf8');
+
+    return `[${json.slice(0, -2)}]`;
   }
 }
 

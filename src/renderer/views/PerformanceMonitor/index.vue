@@ -101,14 +101,36 @@ export default {
       ],
 
       chartGrid: {
-        verticalLines: true,
+        // verticalLines: true,
         horizontalLines: true,
       },
 
     };
   },
 
-  mounted() {
+  async mounted() {
+    const history = await window.ipcRenderer.invoke('performance-monitor-history');
+
+    try {
+      const historyArray = JSON.parse(history);
+
+      historyArray.forEach(item => {
+        const total = item.splice(-1)[0];
+
+        this.cpuChartLine[0].data.push(total.cpu);
+        this.memChartLine[0].data.push(total.mem);
+
+        console.log(this.cpuChartLine[0].data);
+      });
+
+      const last = historyArray.slice(-1)[0];
+
+      this.total = last.splice(-1)[0];
+      this.processes = last;
+    } catch (err) {
+      console.log('Error in parsing history', err);
+    }
+
     window.ipcRenderer.on('performance-monitor-processes', (event, data) => {
       this.total = data.splice(-1)[0];
       this.processes = data;
