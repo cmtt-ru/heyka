@@ -11,10 +11,13 @@ import { IS_DEV, IS_WIN, IS_MAC, IS_LINUX } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
 import performanceMonitor from './libs/PerformanceMonitor';
 
+// eslint-disable-next-line no-magic-numbers
+performanceMonitor.setSleepTimeout(10000);
 performanceMonitor.start();
 
 performanceMonitor.on('processes', data => {
   // console.table(data);
+
   WindowManager.sendAll('performance-monitor-processes', data);
 });
 
@@ -150,6 +153,16 @@ ipcMain.on('exit-fullscreen', (event) => {
 
 ipcMain.handle('performance-monitor-history', async (event) => {
   return performanceMonitor.getUtilizationLog();
+});
+
+ipcMain.on('selected-channel', (event, channelId) => {
+  if (channelId === null) {
+    // eslint-disable-next-line no-magic-numbers
+    performanceMonitor.setSleepTimeout(10000);
+  } else {
+    // eslint-disable-next-line no-magic-numbers
+    performanceMonitor.setSleepTimeout(2000);
+  }
 });
 
 /**

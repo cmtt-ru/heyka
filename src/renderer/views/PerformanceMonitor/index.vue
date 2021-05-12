@@ -48,10 +48,9 @@
 
     <div class="charts">
       <p class="charts__label">
-        CPU {{ total.cpu.toFixed(2) }}%
+        CPU {{ total.cpu.toFixed(2) }} / {{ bgTotal.cpu.toFixed(2) }}%
       </p>
       <TrendChart
-        :key="total.cpu"
         :datasets="cpuChartLine"
         :grid="chartGrid"
         :labels="{yLabels: 3, yLabelsTextFormatter: val => Math.round(val) + '%'}"
@@ -60,10 +59,9 @@
       <br>
 
       <p class="charts__label">
-        MEM {{ (total.mem / 1024).toFixed(2) }} MB
+        MEM {{ (total.mem / 1024).toFixed(2) }} / {{ (bgTotal.mem / 1024).toFixed(2) }} MB
       </p>
       <TrendChart
-        :key="total.mem"
         :datasets="memChartLine"
         :grid="chartGrid"
         :labels="{yLabels: 3, yLabelsTextFormatter: val => Math.round(val / 1024) + ' MB'}"
@@ -83,11 +81,19 @@ export default {
     return {
       processes: [],
       total: {},
+      bgTotal: {},
 
       cpuChartLine: [
         {
           data: [0, 0],
           smooth: false,
+          className: 'bg-cpu',
+          fill: true,
+        },
+        {
+          data: [0, 0],
+          smooth: false,
+          fill: true,
           className: 'cpu',
         },
       ],
@@ -96,6 +102,13 @@ export default {
         {
           data: [0, 0],
           smooth: false,
+          fill: true,
+          className: 'bg-mem',
+        },
+        {
+          data: [0, 0],
+          smooth: false,
+          fill: true,
           className: 'mem',
         },
       ],
@@ -116,16 +129,19 @@ export default {
 
       historyArray.forEach(item => {
         const total = item.splice(-1)[0];
+        const bgTotal = item.splice(-1)[0];
 
-        this.cpuChartLine[0].data.push(total.cpu);
-        this.memChartLine[0].data.push(total.mem);
+        this.cpuChartLine[0].data.push(bgTotal.cpu);
+        this.cpuChartLine[1].data.push(total.cpu);
 
-        console.log(this.cpuChartLine[0].data);
+        this.memChartLine[0].data.push(bgTotal.mem);
+        this.memChartLine[1].data.push(total.mem);
       });
 
       const last = historyArray.slice(-1)[0];
 
       this.total = last.splice(-1)[0];
+      this.bgTotal = last.splice(-1)[0];
       this.processes = last;
     } catch (err) {
       console.log('Error in parsing history', err);
@@ -133,10 +149,14 @@ export default {
 
     window.ipcRenderer.on('performance-monitor-processes', (event, data) => {
       this.total = data.splice(-1)[0];
+      this.bgTotal = data.splice(-1)[0];
       this.processes = data;
 
-      this.cpuChartLine[0].data.push(this.total.cpu);
-      this.memChartLine[0].data.push(this.total.mem);
+      this.cpuChartLine[0].data.push(this.bgTotal.cpu);
+      this.cpuChartLine[1].data.push(this.total.cpu);
+
+      this.memChartLine[0].data.push(this.bgTotal.mem);
+      this.memChartLine[1].data.push(this.total.mem);
     });
   },
 
@@ -196,6 +216,18 @@ export default {
     .cpu, .mem
       path
         stroke var(--new-UI-01)
+
+      .fill
+        fill var(--new-UI-01)
+        opacity 0.5
+
+    .bg-cpu, .bg-mem
+      path
+        stroke var(--new-signal-03)
+
+      .fill
+        fill var(--new-signal-03)
+        opacity 0.5
 
   .charts
     padding 16px 16px 8px 16px
