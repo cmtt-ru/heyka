@@ -5,7 +5,6 @@ const sleep = require('es7-sleep');
 const si = require('systeminformation');
 const MACalculator = require('./MACalculator');
 
-const IS_MAC = process.platform === 'darwin';
 const IS_WIN = process.platform === 'win32';
 
 const PROCESS_IGNORE = ['worker.js', 'chrome_crashpad_handler', 'System Idle Process'];

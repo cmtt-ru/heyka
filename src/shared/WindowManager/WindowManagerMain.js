@@ -314,6 +314,7 @@ class WindowManager extends EventEmitter {
 
       setTimeout(() => {
         this.emit('processes-update', this.getProcesses());
+        // eslint-disable-next-line no-magic-numbers
       }, 500);
       // browserWindow.webContents.toggleDevTools();
     };
