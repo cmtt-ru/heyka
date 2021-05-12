@@ -95,9 +95,15 @@ class PerformanceMonitor extends EventEmitter {
   }
 
   async getUtilizationLog() {
-    const json = await asyncFs.readFile(path.join(getLogPath(), 'utilization.json'), 'utf8');
+    const jsonPath = path.join(getLogPath(), 'utilization.json');
 
-    return `[${json.slice(0, -2)}]`;
+    if (fs.existsSync(jsonPath)) {
+      const json = await asyncFs.readFile(jsonPath, 'utf8');
+
+      return `[${json.slice(0, -2)}]`;
+    }
+
+    return '[]';
   }
 }
 

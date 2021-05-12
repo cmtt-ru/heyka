@@ -8,7 +8,7 @@ const MACalculator = require('./MACalculator');
 const IS_MAC = process.platform === 'darwin';
 const IS_WIN = process.platform === 'win32';
 
-const PROCESS_IGNORE = ['worker.js', 'chrome_crashpad_handler'];
+const PROCESS_IGNORE = ['worker.js', 'chrome_crashpad_handler', 'System Idle Process'];
 const ARGS_KEY = IS_WIN ? 'command' : 'params';
 
 let parrentPid = 63907;
@@ -83,31 +83,42 @@ async function init() {
 async function sysInfo() {
   const { list } = await si.processes();
 
-  const appProcesses = list
-    .filter(proc => {
+  const processes = list.filter(proc => {
+    if (IS_WIN) {
+      if (PROCESS_IGNORE.includes(proc.command)) {
+        return false;
+      }
+    } else {
       if (PROCESS_IGNORE.includes(proc.name)) {
         return false;
       }
+    }
 
+    return true;
+  });
+
+  const appProcesses = processes.filter(proc => {
       return (proc.parentPid === parrentPid || proc.pid === parrentPid);
     });
 
-  const backgroundProcesses = list.filter(proc => {
-    if (PROCESS_IGNORE.includes(proc.name)) {
-      return false;
-    }
-
-    return (proc.parentPid !== parrentPid && proc.pid !== parrentPid);
-  });
+  const backgroundProcesses = processes.filter(proc => {
+      return (proc.parentPid !== parrentPid && proc.pid !== parrentPid);
+    });
 
   const bgTotal = backgroundProcesses.reduce((obj, proc) => {
-    obj.cpu += proc.cpu;
-    obj.mem += proc.memRss;
+      obj.cpu += proc.cpu;
+      obj.mem += proc.memRss;
 
-    return obj;
-  }, {
-    cpu: 0,
-    mem: 0,
+      return obj;
+    }, {
+      cpu: 0,
+      mem: 0,
+    });
+
+  backgroundProcesses.forEach(proc => {
+    if (proc.cpu > 50) {
+      console.log(proc);
+    }
   });
 
   const result = appProcesses.map(proc => {
@@ -142,8 +153,8 @@ async function sysInfo() {
 
   ma.add(result);
 
-  console.log('\n');
-  console.table(result);
+  // console.log('\n');
+  // console.table(result);
 }
 
 function getArgv(args, arg) {
