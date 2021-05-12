@@ -31,7 +31,7 @@ let jsonStream = null;
 let sleepTimeout = 1000;
 
 const ma = new MACalculator({
-  length: 1,
+  length: 5,
 });
 
 ma.on('update', data => {
