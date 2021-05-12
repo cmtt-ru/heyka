@@ -35,16 +35,28 @@ const ma = new MACalculator({
 });
 
 ma.on('update', data => {
+  const jsonPath = path.join(logPath, 'utilization.json');
+
+  const wrappedData = {
+    timestamp: new Date().toString(),
+    data: data,
+  };
+
   process.send({
     action: 'processes',
-    data,
+    data: wrappedData,
   });
 
-  if (jsonStream === null) {
-    jsonStream = fs.createWriteStream(path.join(logPath, 'utilization.json'), { flags: 'a' });
+  if (!fs.existsSync(jsonPath) && jsonStream) {
+    jsonStream.end();
+    jsonStream = null;
   }
 
-  jsonStream.write(JSON.stringify(data) + ',\n');
+  if (jsonStream === null) {
+    jsonStream = fs.createWriteStream(jsonPath, { flags: 'a' });
+  }
+
+  jsonStream.write(JSON.stringify(wrappedData) + ',\n');
 });
 
 /** Listen messages from parent process */
@@ -98,27 +110,21 @@ async function sysInfo() {
   });
 
   const appProcesses = processes.filter(proc => {
-      return (proc.parentPid === parrentPid || proc.pid === parrentPid);
-    });
+    return (proc.parentPid === parrentPid || proc.pid === parrentPid);
+  });
 
   const backgroundProcesses = processes.filter(proc => {
-      return (proc.parentPid !== parrentPid && proc.pid !== parrentPid);
-    });
+    return (proc.parentPid !== parrentPid && proc.pid !== parrentPid);
+  });
 
   const bgTotal = backgroundProcesses.reduce((obj, proc) => {
-      obj.cpu += proc.cpu;
-      obj.mem += proc.memRss;
+    obj.cpu += proc.cpu;
+    obj.mem += proc.memRss;
 
-      return obj;
-    }, {
-      cpu: 0,
-      mem: 0,
-    });
-
-  backgroundProcesses.forEach(proc => {
-    if (proc.cpu > 50) {
-      console.log(proc);
-    }
+    return obj;
+  }, {
+    cpu: 0,
+    mem: 0,
   });
 
   const result = appProcesses.map(proc => {
