@@ -152,8 +152,8 @@ export default {
       this.bgTotal = data.splice(-1)[0];
       this.processes = data;
 
-      this.cpuChartLine[0].data.push(this.bgTotal.cpu);
-      this.cpuChartLine[1].data.push(this.total.cpu);
+      this.cpuChartLine[0].data.push(Math.max(0, this.bgTotal.cpu));
+      this.cpuChartLine[1].data.push(Math.max(0, this.total.cpu));
 
       this.memChartLine[0].data.push(this.bgTotal.mem);
       this.memChartLine[1].data.push(this.total.mem);
