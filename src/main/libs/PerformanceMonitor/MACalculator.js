@@ -52,8 +52,10 @@ class MACalculator extends EventEmitter {
     });
 
     const computedTotal = calculated.reduce((obj, proc) => {
-      obj.cpu += proc.cpu;
-      obj.mem += proc.mem;
+      if (proc.pid !== 'bg') {
+        obj.cpu += proc.cpu;
+        obj.mem += proc.mem;
+      }
 
       return obj;
     }, {

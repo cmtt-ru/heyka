@@ -92,6 +92,24 @@ async function sysInfo() {
       return (proc.parentPid === parrentPid || proc.pid === parrentPid);
     });
 
+  const backgroundProcesses = list.filter(proc => {
+    if (PROCESS_IGNORE.includes(proc.name)) {
+      return false;
+    }
+
+    return (proc.parentPid !== parrentPid && proc.pid !== parrentPid);
+  });
+
+  const bgTotal = backgroundProcesses.reduce((obj, proc) => {
+    obj.cpu += proc.cpu;
+    obj.mem += proc.memRss;
+
+    return obj;
+  }, {
+    cpu: 0,
+    mem: 0,
+  });
+
   const result = appProcesses.map(proc => {
     const processType = getArgv(proc[ARGS_KEY], 'type') || '';
     const processSubType = getArgv(proc[ARGS_KEY], 'utility-sub-type') || '';
@@ -108,18 +126,24 @@ async function sysInfo() {
       type: processType,
       subType: processSubType,
       name: proc.name,
-      // renderId: processRenderId,
       pid: proc.pid,
-      // parentPid: proc.parentPid,
       cpu: proc.cpu,
       mem: proc.memRss,
+      // parentPid: proc.parentPid,
+      // renderId: processRenderId,
     };
+  });
+
+  result.push({
+    pid: 'bg',
+    cpu: bgTotal.cpu,
+    mem: bgTotal.mem,
   });
 
   ma.add(result);
 
-  // console.log('\n');
-  // console.table(result);
+  console.log('\n');
+  console.table(result);
 }
 
 function getArgv(args, arg) {

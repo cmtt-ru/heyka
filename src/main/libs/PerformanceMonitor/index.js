@@ -9,11 +9,21 @@ const asyncFs = fs.promises;
 let worker = null;
 
 class PerformanceMonitor extends EventEmitter {
+  constructor() {
+    super();
+
+    this.sleepTimeout = 10000;
+  }
+
   setSleepTimeout(timeout) {
-    worker.send({
-      action: 'sleep-timeout',
-      timeout,
-    });
+    this.sleepTimeout = timeout;
+
+    if (worker) {
+      worker.send({
+        action: 'sleep-timeout',
+        timeout,
+      });
+    }
   }
 
   start() {
@@ -56,7 +66,7 @@ class PerformanceMonitor extends EventEmitter {
     /** Send sleep timeout between iterations to worker */
     worker.send({
       action: 'sleep-timeout',
-      timeout: 2000,
+      timeout: this.sleepTimeout,
     });
 
     /** Start worker */
