@@ -93,8 +93,8 @@
     "hasShadow": false
   },
   "performanceMonitor": {
-    "width": 800,
-    "height": 500,
+    "width": 860,
+    "height": 600,
     "frame": true
   }
 }
