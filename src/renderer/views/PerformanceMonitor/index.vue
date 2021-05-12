@@ -48,7 +48,6 @@
 
     <div class="charts">
       <p
-        v-if="timestamp"
         class="charts__label"
       >
         {{ timestamp }}
@@ -200,13 +199,11 @@ export default {
       this.historyArray.push(item);
 
       this.total = item.data.slice(-2)[1];
-      this.bgTotal = item.data.slice(-2)[1];
+      this.bgTotal = item.data.slice(-2)[0];
       this.processes = item.data.slice(0, -2);
 
       this.cpuChartLine[0].data.push(Math.max(0, this.bgTotal.cpu));
       this.cpuChartLine[1].data.push(Math.max(0, this.total.cpu));
-
-      console.log('bgTotal', Math.max(0, this.bgTotal.cpu));
 
       this.memChartLine[0].data.push(this.bgTotal.mem);
       this.memChartLine[1].data.push(this.total.mem);
@@ -228,17 +225,12 @@ export default {
     },
 
     loadJsonHandler() {
-      // // eslint-disable-next-line no-magic-numbers
-      // this.cpuChartLine[0].data.splice(20);
-      // // eslint-disable-next-line no-magic-numbers
-      // this.cpuChartLine[1].data.splice(20);
-
-      // eslint-disable-next-line no-unreachable
       openFile(data => {
         this.realtime = false;
 
         this.clearHistory();
         this.loadHistory(`[${data.slice(0, -2)}]`);
+        this.chartKey = Date.now();
       });
     },
 
@@ -255,8 +247,6 @@ export default {
 
           this.memChartLine[0].data.push(bgTotal.mem);
           this.memChartLine[1].data.push(total.mem);
-
-          this.chartKey = Date.now();
         });
 
         const last = this.historyArray.slice(-1)[0];
