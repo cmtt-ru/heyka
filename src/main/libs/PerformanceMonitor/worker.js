@@ -1,4 +1,6 @@
 /* eslint-disable require-jsdoc */
+const fs = require('fs');
+const path = require('path');
 const sleep = require('es7-sleep');
 const si = require('systeminformation');
 const MACalculator = require('./MACalculator');
@@ -25,6 +27,7 @@ let processPids = [
   },
 ];
 let logPath = null;
+let jsonStream = null;
 let sleepTimeout = 1000;
 
 const ma = new MACalculator({
@@ -36,6 +39,12 @@ ma.on('update', data => {
     action: 'processes',
     data,
   });
+
+  if (jsonStream === null) {
+    jsonStream = fs.createWriteStream(path.join(logPath, 'utilization.json'), { flags: 'a' });
+  }
+
+  jsonStream.write(JSON.stringify(data) + ',\n');
 });
 
 /** Listen messages from parent process */
@@ -64,11 +73,8 @@ process.on('message', data => {
   }
 });
 
-init();
-
 async function init() {
   while (true) {
-    // eslint-disable-next-line no-magic-numbers
     await sleep(sleepTimeout);
     await sysInfo();
   }

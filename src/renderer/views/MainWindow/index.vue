@@ -22,7 +22,6 @@ import Notifications from '@components/Notifications';
 import AppStatus from '@components/AppStatus';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
-// import PerformanceMonitor from '@components/PerformanceMonitor';
 import Logger from '@sdk/classes/logger';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { mapGetters } from 'vuex';
@@ -40,7 +39,6 @@ export default {
     Notifications,
     AppStatus,
     Wireframe,
-    // PerformanceMonitor,
   },
   data() {
     return {
