@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div v-if="user.onlineStatus !== 'offline'">
+    <div v-if="user.onlineStatus === 'offline'">
       <ui-button
         v-if="myWorkspace.slack && user.slack"
         :type="17"
@@ -217,10 +217,6 @@ export default {
 
       return false;
     },
-  },
-
-  mounted() {
-    console.log(this.myWorkspace);
   },
 
   methods: {
