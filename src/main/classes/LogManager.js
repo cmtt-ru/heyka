@@ -121,7 +121,7 @@ async function makeZip() {
  * @returns {Promise<array>}
  */
 async function getLogFileNames() {
-  const extensions = [ '.log' ];
+  const extensions = ['.log', '.json'];
 
   try {
     const files = await asyncFs.readdir(LOG_PATH);
@@ -148,6 +148,14 @@ async function clearLogs() {
  */
 function openLogsFolder() {
   shell.openPath(LOG_PATH);
+}
+
+/**
+ * Returns log path
+ * @returns {string}
+ */
+export function getLogPath() {
+  return LOG_PATH;
 }
 
 /**

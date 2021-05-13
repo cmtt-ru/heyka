@@ -22,10 +22,9 @@ import Notifications from '@components/Notifications';
 import AppStatus from '@components/AppStatus';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import mediaCapturer from '@classes/mediaCapturer';
-// import PerformanceMonitor from '@components/PerformanceMonitor';
 import Logger from '@sdk/classes/logger';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { heykaStore } from '@/store/localStore';
 import { client } from '@api/socket/client';
 import notify from '@sdk/libs/notify';
@@ -40,7 +39,6 @@ export default {
     Notifications,
     AppStatus,
     Wireframe,
-    // PerformanceMonitor,
   },
   data() {
     return {
@@ -53,6 +51,15 @@ export default {
     ...mapGetters({
       mediaState: 'me/getMediaState',
     }),
+    ...mapState('me', {
+      selectedChannelId: 'selectedChannelId',
+    }),
+  },
+
+  watch: {
+    selectedChannelId(value) {
+      window.ipcRenderer.send('selected-channel', value);
+    },
   },
 
   async created() {
