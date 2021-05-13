@@ -104,6 +104,12 @@ export default {
     }
 
     const workspace = await API.workspace.getWorkspaceByID(workspaceId);
+    const settings = await API.workspace.getWorkspaceSettings(workspaceId);
+
+    commit('workspaces/SET_SETTINGS', {
+      id: workspaceId,
+      settings: settings,
+    });
 
     commit('channels/SET_COLLECTION', mapKeys(workspace.channels, 'id'));
     commit('users/SET_COLLECTION', mapKeys(workspace.users, 'id'));
@@ -339,9 +345,10 @@ export default {
    *
    * @param {object} vuex functions
    * @param {string} userId – user id
+   * @param {boolean} redirect – false if no need to redirect to channel
    * @returns {void}
    */
-  async createPrivateChannel({ state, commit, getters, dispatch }, userId) {
+  async createPrivateChannel({ state, commit, getters, dispatch }, { userId, redirect = true }) {
     const selectedWorkspaceId = getters['me/getSelectedWorkspaceId'];
 
     const response = await API.workspace.privateTalk(selectedWorkspaceId, {
@@ -352,12 +359,16 @@ export default {
       commit('channels/ADD_CHANNEL', response.channel);
       await dispatch('selectChannel', response.channel.id);
 
-      router.push({
-        name: 'channel',
-        params: {
-          id: response.channel.id,
-        },
-      });
+      if (redirect) {
+        router.push({
+          name: 'channel',
+          params: {
+            id: response.channel.id,
+          },
+        });
+      }
+
+      return response.channel.id;
     }
   },
 
