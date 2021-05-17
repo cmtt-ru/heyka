@@ -24,6 +24,20 @@ ipcMain.handle('remote-systemPreferences-microphone', async (event) => {
   return systemPreferences.getMediaAccessStatus('microphone');
 });
 
+ipcMain.handle('remote-media-access-status', async (event) => {
+  const states = {
+    microphone: await systemPreferences.getMediaAccessStatus('microphone'),
+    camera: await systemPreferences.getMediaAccessStatus('camera'),
+    screen: await systemPreferences.getMediaAccessStatus('screen'),
+  };
+
+  return states;
+});
+
+ipcMain.handle('remote-ask-for-media-access', async (event, mediaType) => {
+  return await systemPreferences.askForMediaAccess(mediaType);
+});
+
 ipcMain.on('remote-shutdown', (event) => {
   shutdown();
 });
