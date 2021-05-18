@@ -3,31 +3,95 @@ const fs = require('fs');
 const path = require('path');
 const sleep = require('es7-sleep');
 const si = require('systeminformation');
-const MACalculator = require('./MACalculator');
+const { EventEmitter } = require('events');
 
 const IS_WIN = process.platform === 'win32';
 
 const PROCESS_IGNORE = ['worker.js', 'chrome_crashpad_handler', 'System Idle Process'];
 const ARGS_KEY = IS_WIN ? 'command' : 'params';
 
-let parrentPid = 63907;
-let processPids = [
-  {
-    template: 'main',
-    pid: 63920,
-  },
-  {
-    template: 'overlay',
-    pid: 65507,
-  },
-  {
-    template: 'push',
-    pid: 64003,
-  },
-];
+let parrentPid;
+let processPids = [];
 let logPath = null;
 let jsonStream = null;
 let sleepTimeout = 1000;
+
+class MACalculator extends EventEmitter {
+  constructor({ length }) {
+    super();
+    this.maLength = length;
+    this.dataSet = [];
+    this.dataSetLength = 0;
+    this.counter = 1;
+    this.computed = null;
+  }
+
+  add(item) {
+    this.dataSet.push(item);
+    this.dataSetLength = this.dataSet.length;
+    this.dataSet = this.dataSet.slice(-this.maLength);
+
+    if (this.counter === this.maLength) {
+      this.counter = 1;
+      this.calc();
+    } else {
+      this.counter++;
+    }
+  }
+
+  calc() {
+    const data = {};
+
+    this.dataSet.forEach(item => {
+      item.forEach(proc => {
+        if (data[proc.pid] === undefined) {
+          data[proc.pid] = {};
+          data[proc.pid].source = proc;
+          data[proc.pid].cpu = [];
+          data[proc.pid].mem = [];
+        }
+
+        data[proc.pid].cpu.push(proc.cpu);
+        data[proc.pid].mem.push(proc.mem);
+      });
+    });
+
+    const calculated = Object.keys(data).map(key => {
+      const item = data[key];
+
+      return {
+        ...item.source,
+        cpu: avg(item.cpu),
+        mem: avg(item.mem),
+      };
+    });
+
+    const computedTotal = calculated.reduce((obj, proc) => {
+      if (proc.pid !== 'bg') {
+        obj.cpu += proc.cpu;
+        obj.mem += proc.mem;
+      }
+
+      return obj;
+    }, {
+      cpu: 0,
+      mem: 0,
+    });
+
+    calculated.push({
+      cpu: computedTotal.cpu,
+      mem: computedTotal.mem,
+    });
+
+    this.emit('update', calculated);
+
+    // console.table(calculated);
+  }
+}
+
+function avg(arr) {
+  return arr.reduce((result, value) => result + value, 0) / arr.length;
+}
 
 const ma = new MACalculator({
   length: 5,

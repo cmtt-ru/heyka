@@ -1,5 +1,5 @@
-import WindowManager from '../../../shared/WindowManager/WindowManagerMain';
-import { getLogPath } from '../../classes/LogManager';
+import WindowManager from '../../shared/WindowManager/WindowManagerMain';
+import { getLogPath } from './LogManager';
 import { fork } from 'child_process';
 import { EventEmitter } from 'events';
 import path from 'path';
@@ -7,6 +7,16 @@ import fs from 'fs';
 const asyncFs = fs.promises;
 
 let worker = null;
+
+let cwd = path.join(__dirname, '..');
+let workerPath;
+
+if (fs.existsSync(path.join(cwd, 'app.asar'))) {
+  workerPath = 'app.asar/worker.js';
+} else {
+  workerPath = path.join(__static, 'worker.js');
+  cwd = null;
+}
 
 class PerformanceMonitor extends EventEmitter {
   constructor() {
@@ -34,7 +44,9 @@ class PerformanceMonitor extends EventEmitter {
     }
 
     /** Run worker in another thread */
-    worker = fork('src/main/libs/PerformanceMonitor/worker.js');
+    worker = fork(workerPath, [], {
+      cwd,
+    });
 
     /** Listen for messages from worker */
     worker.on('message', data => {
