@@ -9,15 +9,15 @@ import './classes/HttpServer';
 import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import { IS_DEV, IS_WIN, IS_MAC, IS_LINUX } from '../main/Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
-import performanceMonitor from './classes/performanceMonitor';
+// import performanceMonitor from './classes/performanceMonitor';
 
 // eslint-disable-next-line no-magic-numbers
-performanceMonitor.setSleepTimeout(10000);
-performanceMonitor.start();
-
-performanceMonitor.on('processes', data => {
-  WindowManager.sendAll('performance-monitor-processes', data);
-});
+// performanceMonitor.setSleepTimeout(10000);
+// performanceMonitor.start();
+//
+// performanceMonitor.on('processes', data => {
+//   WindowManager.sendAll('performance-monitor-processes', data);
+// });
 
 // setTimeout(() => {
 // performanceMonitor.stop();
