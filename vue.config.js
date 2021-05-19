@@ -58,7 +58,10 @@ module.exports = {
           ],
         },
       },
-      preload: 'public/preload.js',
+      preload: {
+        preload: 'public/preload.js',
+        worker: 'public/worker.js',
+      },
     },
     i18n: {
       locale: 'en',
