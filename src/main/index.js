@@ -149,19 +149,19 @@ ipcMain.on('exit-fullscreen', (event) => {
   }
 });
 
-// ipcMain.handle('performance-monitor-history', async (event) => {
-//   return performanceMonitor.getUtilizationLog();
-// });
+ipcMain.handle('performance-monitor-history', async (event) => {
+  return performanceMonitor.getUtilizationLog();
+});
 
-// ipcMain.on('selected-channel', (event, channelId) => {
-//   if (channelId === null) {
-//     // eslint-disable-next-line no-magic-numbers
-//     performanceMonitor.setSleepTimeout(10000);
-//   } else {
-//     // eslint-disable-next-line no-magic-numbers
-//     performanceMonitor.setSleepTimeout(2000);
-//   }
-// });
+ipcMain.on('selected-channel', (event, channelId) => {
+  if (channelId === null) {
+    // eslint-disable-next-line no-magic-numbers
+    performanceMonitor.setSleepTimeout(10000);
+  } else {
+    // eslint-disable-next-line no-magic-numbers
+    performanceMonitor.setSleepTimeout(2000);
+  }
+});
 
 /**
  * Create webrtc internals window
