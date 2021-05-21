@@ -19,27 +19,17 @@
       </div>
     </div>
 
-    <div v-if="user.onlineStatus==='offline'">
+    <div v-if="user.onlineStatus === 'offline'">
       <ui-button
+        v-if="myWorkspace.slack && user.slack"
         :type="17"
         wide
         size="large"
         icon="slack"
-        class="user-action"
-        @click="_notImplemented()"
+        @click="slackInvite"
       >
         <div>{{ texts.inviteBySlackButton }}</div>
       </ui-button>
-      <!-- <ui-button
-        :type="17"
-        wide
-        size="large"
-        icon="ms-teams"
-        class="user-action"
-        @click="_notImplemented()"
-      >
-        <div>{{ texts.inviteByTeamsButton }}</div>
-      </ui-button> -->
     </div>
 
     <div v-else>
@@ -76,11 +66,12 @@
         wide
         size="large"
         class="user-action"
-        @click="startPrivateTalk(user.id)"
+        @click="startPrivateTalk"
       >
         <div>{{ texts.privateTalkButton }}</div>
       </ui-button>
     </div>
+
     <!--
     <div class="user-info">
       <div class="user-info__title">
@@ -178,8 +169,10 @@ export default {
   computed: {
     ...mapGetters({
       selectedChannel: 'myChannel',
+      selectedChannelId: 'me/getSelectedChannelId',
       myUserID: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
+      myWorkspace: 'myWorkspace',
     }),
 
     /**
@@ -258,7 +251,7 @@ export default {
         isResponseNeeded: true,
         message: {
           action: 'invite',
-          channelId: this.$store.getters['me/getSelectedChannelId'],
+          channelId: this.selectedChannelId,
         },
       });
 
@@ -274,8 +267,26 @@ export default {
       }, DISABLE_AFTER_INVITE_TIMEOUT);
     },
 
-    async startPrivateTalk(userId) {
-      this.$store.dispatch('createPrivateChannel', userId);
+    async startPrivateTalk(redirect = true) {
+      await this.$store.dispatch('createPrivateChannel', {
+        userId: this.userId,
+        redirect,
+      });
+    },
+
+    async slackInvite() {
+      if (!this.selectedChannel) {
+        await this.startPrivateTalk(false);
+      }
+
+      await this.$store.dispatch('app/sendSlackInviteToChannel', this.userId);
+
+      this.$router.push({
+        name: 'channel',
+        params: {
+          id: this.selectedChannelId,
+        },
+      });
     },
 
     async resetOnboarding() {
