@@ -148,15 +148,7 @@ export default {
         await this.$API.workspace.inviteByMail(this.selectedWorkspaceId, [ ...this.emails ]);
 
         this.emailsSent = true;
-      } catch (err) {
-        const notification = {
-          data: {
-            text: err.response.data.message,
-          },
-        };
-
-        this.$store.dispatch('app/addNotification', notification);
-      }
+      } catch (err) { }
     },
 
     resetEmails() {
