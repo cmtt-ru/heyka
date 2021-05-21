@@ -465,6 +465,7 @@ $ANIM = 250ms
   margin 2px 0
   width 100%
   height 24px
+  font-size 12px
   box-sizing border-box
   border-radius 6px
   color var(--new-UI-04)
