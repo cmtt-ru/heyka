@@ -30,7 +30,7 @@ export default {
      */
     createLocalServer() {
       window.ipcRenderer.send('http-create-server');
-      window.ipcRenderer.on('http-magic-link', (url) => {
+      window.ipcRenderer.on('http-magic-link', (event, url) => {
         console.log(url);
         this.$store.dispatch('useAuthLink', url);
       });
@@ -41,7 +41,7 @@ export default {
      * @returns {void}
      */
     destroyLocalServer() {
-      window.ipcRenderer.send('http-kill-server');
+      window.ipcRenderer.send('http-kill-server'); //! не работает, потому что асинхронно! при ctrl+R приложение перезагрузится, не успев убить сервер на предыдущем порту!
       window.ipcRenderer.removeAllListeners('http-magic-link');
     },
   },

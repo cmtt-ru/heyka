@@ -451,9 +451,6 @@ export default {
         this.successInvitesHandler();
       } catch (err) {
         console.error(err);
-        notify(err.response.data.message, {
-          icon: 'warning',
-        });
       }
     },
 

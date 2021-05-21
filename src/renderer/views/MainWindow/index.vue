@@ -10,6 +10,7 @@
     </transition>
     <router-view />
     <app-status :show="!$store.getters['app/getConnectionStatus']" />
+    <media-permissions />
     <!--    <performance-monitor />-->
   </div>
 </template>
@@ -20,8 +21,8 @@ import Janus from '@components/Janus.vue';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import Notifications from '@components/Notifications';
 import AppStatus from '@components/AppStatus';
+import MediaPermissions from '@components/MediaPermissions';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
-import mediaCapturer from '@classes/mediaCapturer';
 // import PerformanceMonitor from '@components/PerformanceMonitor';
 import Logger from '@sdk/classes/logger';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
@@ -40,6 +41,7 @@ export default {
     Notifications,
     AppStatus,
     Wireframe,
+    MediaPermissions,
     // PerformanceMonitor,
   },
   data() {
@@ -101,8 +103,6 @@ export default {
 
     window.ipcRenderer.send('update-check');
     window.ipcRenderer.send('tray-animation', false);
-
-    this.showMacScreenSharingPermission();
 
     window.addEventListener('beforeunload', () => {
       client.emit('logout');
@@ -201,23 +201,6 @@ export default {
           },
         ],
       });
-    },
-
-    /**
-     * Show mac screen sharing permission
-     * @returns {void}
-     */
-    async showMacScreenSharingPermission() {
-      const timeout = 1000;
-
-      if (IS_MAC) {
-        const screens = await mediaCapturer.getSources('screen', 0);
-        const stream = await mediaCapturer.getStream(screens[0].id);
-
-        setTimeout(() => {
-          mediaCapturer.destroyStream(stream);
-        }, timeout);
-      }
     },
   },
 };
