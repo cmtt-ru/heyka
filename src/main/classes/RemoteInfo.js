@@ -1,5 +1,6 @@
 import { ipcMain, app, nativeTheme, systemPreferences } from 'electron';
 import shutdown from 'electron-shutdown-command';
+import { IS_WIN } from '../Constants';
 
 /**
  * Subscribe to ipc events which replaced "remote" module
