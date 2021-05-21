@@ -20,6 +20,7 @@
           :minlength="2"
           :placeholder="texts.name"
           required
+          lowercase
         />
 
         <ui-switch
