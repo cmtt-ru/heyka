@@ -104,26 +104,6 @@
         {{ user.email }}
       </div>
     </div>
-
-    <ui-button
-      class="l-mt-24"
-      :type="4"
-      wide
-      @click="resetOnboarding"
-    >
-      Reset onboarding
-    </ui-button>
-
-    <p class="l-mt-8">
-      Reset mac permissions:
-    </p>
-    <pre
-      style="user-select: text; overflow: scroll"
-    >
-tccutil reset Camera app.live.hejkastage
-tccutil reset Microphone app.live.hejkastage
-tccutil reset ScreenCapture app.live.hejkastage
-    </pre>
   </div>
 </template>
 
@@ -132,7 +112,6 @@ import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
 import { mapGetters } from 'vuex';
 import notify from '@libs/notify';
-import { heykaStore } from '@/store/localStore';
 
 const DISABLE_AFTER_INVITE_TIMEOUT = 5000;
 
@@ -287,10 +266,6 @@ export default {
           id: this.selectedChannelId,
         },
       });
-    },
-
-    async resetOnboarding() {
-      heykaStore.set('onboardingPassed', false);
     },
   },
 
