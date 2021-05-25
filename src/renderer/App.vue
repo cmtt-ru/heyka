@@ -31,6 +31,22 @@ export default {
     Mousetrap.bind('up up down down left right left right b a enter', function () {
       console.log('%ckonami code!', 'color: green; font: 4rem/1 Tahoma;');
     });
+
+    /**
+     * Listener for context menu
+     */
+    document.body.addEventListener('contextmenu', ({ target }) => {
+      const windowId = WindowManager.getCurrentWindowId();
+      let node = target;
+
+      while (node) {
+        if (node.hasAttribute && node.hasAttribute('context-menu')) {
+          window.ipcRenderer.invoke('open-input-context-menu', windowId);
+          break;
+        }
+        node = node.parentNode;
+      }
+    });
   },
 
   methods: {
