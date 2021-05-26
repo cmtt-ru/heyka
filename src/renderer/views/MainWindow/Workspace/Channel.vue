@@ -316,7 +316,7 @@ export default {
   flex-direction row
   align-items center
   justify-content flex-start
-  background-color var(--new-bg-04)
+  background-color var(--Background-white)
   z-index 1
 
   &__type

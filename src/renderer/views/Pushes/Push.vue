@@ -310,7 +310,7 @@ $ANIM = 330ms
 $ANIM_DELAY = 200ms
 
 .push
-  background-color var(--new-bg-04)
+  background-color var(--Background-white)
   color var(--new-UI-02)
   flex-shrink 0
   display flex

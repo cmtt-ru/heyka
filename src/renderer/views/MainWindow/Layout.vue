@@ -103,13 +103,13 @@ export default {
     &__column
       display flex
       height 100%
-      background-color var(--new-bg-04)
+      background-color var(--Background-white)
       color var(--new-UI-02)
       flex-direction column
 
       &--sidebar
         flex 0 0 220px
-        background-color var(--new-bg-01)
+        background-color var(--Background-grey)
 
       &--content
         flex 1 1 auto
