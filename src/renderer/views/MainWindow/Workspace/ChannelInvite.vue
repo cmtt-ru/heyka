@@ -504,7 +504,7 @@ export default {
 
 .user-search__wrapper
   position relative
-  background-color var(--new-bg-04)
+  background-color var(--Background-white)
   padding 6px 0 12px
   z-index 1
 

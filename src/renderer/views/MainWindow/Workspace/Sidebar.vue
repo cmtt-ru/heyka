@@ -418,7 +418,7 @@ $ANIM = 250ms
   position sticky
   top 0
   z-index 20
-  background-color var(--new-bg-01)
+  background-color var(--Background-grey)
   padding 12px
   margin-top -12px
   width 100%
@@ -490,7 +490,7 @@ $ANIM = 250ms
 
 .channel-header
   display flex
-  background-color var(--new-bg-01)
+  background-color var(--Background-grey)
   flex-direction row
   justify-content space-between
   align-items center
@@ -514,7 +514,7 @@ $ANIM = 250ms
   transform translateY(-25px)
 
 .channels-list
-  background-color var(--new-bg-01)
+  background-color var(--Background-grey)
   position relative
 
 .connected-channel

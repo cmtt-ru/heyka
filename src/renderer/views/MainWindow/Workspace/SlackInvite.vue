@@ -278,7 +278,7 @@ export default {
   margin 4px 0 16px
 
 .user-search__wrapper
-  background-color var(--new-bg-04)
+  background-color var(--Background-white)
   padding 6px 0 12px
   z-index 1
   position relative
@@ -377,7 +377,7 @@ export default {
   width 100%
   box-sizing border-box
   padding 16px 0
-  background-color var(--new-bg-04)
+  background-color var(--Background-white)
   box-shadow none
   position: relative
 

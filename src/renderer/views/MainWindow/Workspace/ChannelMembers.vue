@@ -152,7 +152,7 @@ export default {
 <style lang="stylus" scoped>
 
 .user-search__wrapper
-  background-color var(--new-bg-04)
+  background-color var(--Background-white)
   padding 6px 0 12px
   z-index 1
   position sticky

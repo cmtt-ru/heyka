@@ -648,7 +648,7 @@ export default {
       &__preloader
         position absolute
         z-index 1
-        background var(--new-bg-04)
+        background var(--Background-white)
         opacity 1
 
         &--hidden

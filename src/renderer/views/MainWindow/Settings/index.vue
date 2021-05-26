@@ -161,6 +161,6 @@ export default {
   font-weight bold
 
 .layout__column--sidebar
-    background-color var(--new-bg-04)
+    background-color var(--Background-white)
 
 </style>

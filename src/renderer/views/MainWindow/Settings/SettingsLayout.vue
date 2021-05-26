@@ -77,7 +77,7 @@ export default {
       height 48px
       padding 8px
       box-sizing border-box
-      background-color var(--new-bg-04)
+      background-color var(--Background-white)
       color var(--new-UI-02)
       display flex
       flex-direction row
@@ -93,13 +93,13 @@ export default {
     &__column
       display flex
       height 100%
-      background-color var(--new-bg-04)
+      background-color var(--Background-white)
       color var(--new-UI-02)
       flex-direction column
 
       &--sidebar
         flex 0 0 220px
-        background-color var(--new-bg-04)
+        background-color var(--Background-white)
 
       &--content
         flex 1 1 auto
