@@ -170,7 +170,7 @@ export default {
 
 .sharing-panel
   position relative
-  background-color var(--new-UI-01)
+  background-color var(--UI-active)
   color var(--new-white)
   width 100%
   height 42px

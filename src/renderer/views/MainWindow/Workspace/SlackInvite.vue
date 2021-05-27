@@ -302,7 +302,7 @@ export default {
   font-weight 500
   font-size 12px
   line-height 18px
-  color var(--new-UI-01)
+  color var(--Font-active)
   cursor pointer
   margin 0 0 0 auto
 
@@ -348,7 +348,7 @@ export default {
       background-color var(--new-UI-06)
 
     & .user__check
-      background-color var(--new-UI-01)
+      background-color var(--Icon-active)
       color var(--new-white)
       padding 2px
       border none

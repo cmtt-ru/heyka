@@ -558,7 +558,7 @@ export default {
       background-color var(--new-UI-06)
 
     & .user__check
-      background-color var(--new-UI-01)
+      background-color var(--Icon-active)
       color var(--new-white)
       padding 2px
       border none
@@ -577,8 +577,7 @@ export default {
       height 32px
       border-radius 100%
       background var(--new-UI-01-3)
-      border 1px solid var(--new-stroke-01)
-      color var(--new-UI-01)
+      color var(--Icon-active)
 
   &__inner
     display flex
@@ -589,7 +588,7 @@ export default {
   &__channel
     font-size 12px
     margin-top 4px
-    color var(--new-UI-04)
+    color var(--Font-secondary)
     display flex
     flex-direction row
     align-items center

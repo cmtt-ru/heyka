@@ -260,7 +260,7 @@ export default {
 <style scoped lang="stylus">
   .edit-channel-label
     line-height 22px
-    color var(--new-UI-03)
+    color var(--Font-secondary)
     font-weight 400
 
   .edit-channel-delete

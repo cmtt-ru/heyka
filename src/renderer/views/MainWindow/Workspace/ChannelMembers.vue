@@ -196,6 +196,6 @@ export default {
 
   &__label
     font-size 12px
-    color var(--new-UI-04)
+    color var(--Font-secondary)
 
 </style>

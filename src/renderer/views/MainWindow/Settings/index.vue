@@ -125,7 +125,7 @@ export default {
 .app-info
   font-size 12px
   line-height 18px
-  color var(--new-UI-04)
+  color var(--Font-secondary)
   white-space pre-line
   position absolute
   bottom 12px
@@ -147,7 +147,7 @@ export default {
     background-color var(--new-UI-07)
 
 .settings-close
-  color var(--new-UI-01)
+  color var(--Font-active)
   margin-right 10px
   cursor pointer
 

@@ -84,7 +84,7 @@ textarea
   resize none
   background-color var(--new-UI-06)
   border 0.5px solid var(--new-stroke-01)
-  color var(--new-UI-02)
+  color var(--Font-primary)
   border-radius 4px
   margin-top 14px
   padding 8px 12px 16px

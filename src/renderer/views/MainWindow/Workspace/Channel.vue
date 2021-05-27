@@ -247,9 +247,9 @@ export default {
      */
     dynamicIconColor() {
       if (this.selectedChannelId === this.channel.id) {
-        return 'var(--new-signal-02)';
+        return 'var(--UI-positive)';
       } else {
-        return 'var(--new-UI-01)';
+        return 'var(--Icon-active)';
       }
     },
 
@@ -330,7 +330,7 @@ export default {
     margin-left 8px
 
   &__more
-    color var(--new-UI-03)
+    color var(--Icon-secondary)
     margin 0 6px 0 15px
     flex-shrink 0
 
@@ -373,7 +373,7 @@ export default {
     max-width 100%
 
     &__icon
-      color var(--new-UI-01)
+      color var(--Icon-active)
       margin 0 8px 0 -24px
       width 24px
       height 24px
@@ -383,7 +383,7 @@ export default {
     font-size 14px
     line-height 22px
     margin-bottom 16px
-    color var(--new-UI-03)
+    color var(--Font-secondary)
     text-align center
 
   &__button-row
