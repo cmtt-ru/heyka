@@ -313,7 +313,7 @@ export default {
     flex-shrink 0
     flex-grow 0
     margin-top -18px
-    color var(--new-UI-03)
+    color var(--Icon-secondary)
 
 .user-action
   margin-bottom 12px
@@ -335,7 +335,7 @@ export default {
   &__title
     font-weight bold
     line-height 24px
-    color var(--new-UI-02)
+    color var(--Font-primary)
 
   &__content
     margin-top 4px

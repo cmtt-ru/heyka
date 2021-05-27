@@ -291,7 +291,7 @@ $SAVE_FADE_TIME = 2s
   font-size 12px
   line-height 18px
   letter-spacing -0.24px
-  color var(--new-UI-01)
+  color var(--Font-active)
   cursor pointer
   margin-top 8px
 
@@ -317,7 +317,7 @@ $SAVE_FADE_TIME = 2s
   margin 24px 0 8px
   font-weight bold
   line-height 24px
-  color var(--new-UI-02)
+  color var(--Font-primary)
 
 .login-button
   margin-bottom 12px

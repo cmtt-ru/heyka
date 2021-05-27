@@ -67,7 +67,7 @@ export default {
 
 <style lang="stylus" scoped>
 .settings-close
-  color var(--new-UI-01)
+  color var(--Font-active)
   margin-right 10px
   cursor pointer
 

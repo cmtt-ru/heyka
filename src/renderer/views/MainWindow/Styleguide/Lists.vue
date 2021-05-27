@@ -86,7 +86,7 @@ export default {
 
 <style scoped lang="stylus">
   h3
-    color var(--new-UI-01)
+    color var(--Font-active)
 
   .styleguide-user
     width 100%

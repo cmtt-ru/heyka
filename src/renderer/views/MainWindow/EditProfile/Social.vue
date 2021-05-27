@@ -192,7 +192,7 @@ $SAVE_FADE_TIME = 2s
   width 45px
   height 24px
   box-sizing border-box
-  color var(--new-UI-01)
+  color var(--Icon-active)
   margin-left -45px
   transform translateX(12px)
   border-top-right-radius 6px

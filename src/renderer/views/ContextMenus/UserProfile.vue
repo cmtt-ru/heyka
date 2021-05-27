@@ -176,6 +176,6 @@ export default {
       color var(--new-signal-03)
 
   .status--checked
-    color var(--new-UI-01)
+    color var(--Icon-active)
     margin-left auto
 </style>

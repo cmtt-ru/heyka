@@ -302,7 +302,7 @@ export default {
       background var(--new-UI-08)
 
     &.context-menu--opened .workspace__expand
-      color var(--new-UI-01)
+      color var(--Icon-active)
 
   &__expand
     margin-left 4px

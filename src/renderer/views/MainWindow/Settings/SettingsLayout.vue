@@ -53,7 +53,7 @@ export default {
 <style lang="stylus" scoped>
 
   .layout
-    background-color var(--new-bg-03)
+    background var(--Background-darkgrey)
 
     &__content
       display flex
@@ -64,8 +64,8 @@ export default {
       width 100%
       height 48px
       box-sizing border-box
-      background-color var(--new-bg-03)
-      color var(--new-UI-02)
+      background var(--Background-darkgrey)
+      color var(--Font-primary)
       -webkit-app-region drag
       display flex
       flex-direction row
@@ -78,7 +78,7 @@ export default {
       padding 8px
       box-sizing border-box
       background-color var(--Background-white)
-      color var(--new-UI-02)
+      color var(--Font-primary)
       display flex
       flex-direction row
       justify-content space-between
@@ -94,7 +94,7 @@ export default {
       display flex
       height 100%
       background-color var(--Background-white)
-      color var(--new-UI-02)
+      color var(--Font-primary)
       flex-direction column
 
       &--sidebar
