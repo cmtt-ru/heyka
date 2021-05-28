@@ -504,7 +504,7 @@ export default {
 
 .user-search__wrapper
   position relative
-  background-color var(--Background-white)
+  background var(--Background-white)
   padding 6px 0 12px
   z-index 1
 
@@ -515,7 +515,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-stroke-01)
+    background var(--new-stroke-01)
 
 /deep/ .user-search .input
   padding-left 54px
@@ -536,7 +536,7 @@ export default {
   margin-bottom 4px
 
   &:hover
-    background-color var(--new-UI-06)
+    background var(--Background-darkgrey)
 
   &--offline
     opacity 0.5
@@ -555,11 +555,11 @@ export default {
     background-color initial
 
     &:hover
-      background-color var(--new-UI-06)
+      background var(--Background-darkgrey)
 
     & .user__check
-      background-color var(--Icon-active)
-      color var(--new-white)
+      background var(--UI-active)
+      color var(--Text-white)
       padding 2px
       border none
 
@@ -577,7 +577,7 @@ export default {
       height 32px
       border-radius 100%
       background var(--new-UI-01-3)
-      color var(--Icon-active)
+      color var(--UI-active)
 
   &__inner
     display flex
@@ -588,12 +588,12 @@ export default {
   &__channel
     font-size 12px
     margin-top 4px
-    color var(--Font-secondary)
+    color var(--Text-secondary)
     display flex
     flex-direction row
     align-items center
 
     &__icon
-      color var(--new-signal-02)
+      color var(--UI-positive)
 
 </style>

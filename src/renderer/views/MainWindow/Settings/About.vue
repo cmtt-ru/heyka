@@ -140,7 +140,7 @@ export default {
 
 .about-link
   padding-top 8px
-  color var(--Font-active)
+  color var(--UI-active)
   font-weight 400
 
 .check-for-updates

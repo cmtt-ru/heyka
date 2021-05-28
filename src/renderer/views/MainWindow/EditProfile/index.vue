@@ -67,7 +67,7 @@ export default {
 
 <style lang="stylus" scoped>
 .settings-close
-  color var(--Font-active)
+  color var(--UI-active)
   margin-right 10px
   cursor pointer
 
@@ -84,19 +84,8 @@ export default {
   margin 2px 4px 4px
 
   &:hover:not(.router-link-exact-active)
-    background-color var(--new-UI-07)
+    background var(--Background-darkgrey)
 
   &.router-link-exact-active
-    background-color var(--new-UI-07)
-
-pre
-  display inline-flex
-  background var(--new-UI-06)
-  padding 0 4px
-  border-radius 4px
-  border 1px solid var(--new-stroke-01)
-  font-size 12px
-  margin-top 4px
-  user-select text !important
-
+    background var(--Background-darkgrey)
 </style>

@@ -65,7 +65,7 @@ export default {
       height 48px
       box-sizing border-box
       background var(--Background-darkgrey)
-      color var(--Font-primary)
+      color var(--Text-primary)
       -webkit-app-region drag
       display flex
       flex-direction row
@@ -77,8 +77,8 @@ export default {
       height 48px
       padding 8px
       box-sizing border-box
-      background-color var(--Background-white)
-      color var(--Font-primary)
+      background var(--Background-white)
+      color var(--Text-primary)
       display flex
       flex-direction row
       justify-content space-between
@@ -93,13 +93,13 @@ export default {
     &__column
       display flex
       height 100%
-      background-color var(--Background-white)
-      color var(--Font-primary)
+      background var(--Background-white)
+      color var(--Text-primary)
       flex-direction column
 
       &--sidebar
         flex 0 0 220px
-        background-color var(--Background-white)
+        background var(--Background-white)
 
       &--content
         flex 1 1 auto

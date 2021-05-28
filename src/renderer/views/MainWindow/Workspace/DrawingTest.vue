@@ -54,5 +54,5 @@ export default {
 .mock-tablet
   width 100%
   height 200px
-  border 1px solid var(--Font-primary)
+  border 1px solid var(--Text-primary)
 </style>

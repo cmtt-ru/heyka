@@ -288,7 +288,7 @@ export default {
     flex-direction column
     height 100vh
     box-sizing border-box
-    color var(--new-white)
+    color var(--Text-white)
 
     &__close
       margin-left auto
@@ -377,7 +377,7 @@ export default {
           background #000
 
       &--active
-          box-shadow inset 0 0 0 2px var(--new-signal-02)
+          box-shadow inset 0 0 0 2px var(--UI-positive)
 
       &:hover:not(.sharing-window__source--active)
         opacity 0.7

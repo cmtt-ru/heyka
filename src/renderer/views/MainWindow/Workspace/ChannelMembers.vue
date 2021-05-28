@@ -152,7 +152,7 @@ export default {
 <style lang="stylus" scoped>
 
 .user-search__wrapper
-  background-color var(--Background-white)
+  background var(--Background-white)
   padding 6px 0 12px
   z-index 1
   position sticky
@@ -165,7 +165,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-UI-06)
+    background var(--UI-divider-1)
 
 /deep/ .user-search .input
   padding-left 54px
@@ -192,10 +192,10 @@ export default {
     flex-grow 1
 
   &__leave
-    color var(--new-signal-03)
+    color var(--UI-error)
 
   &__label
     font-size 12px
-    color var(--Font-secondary)
+    color var(--Text-secondary)
 
 </style>

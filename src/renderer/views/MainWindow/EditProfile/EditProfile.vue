@@ -291,12 +291,12 @@ $SAVE_FADE_TIME = 2s
   font-size 12px
   line-height 18px
   letter-spacing -0.24px
-  color var(--Font-active)
+  color var(--UI-active)
   cursor pointer
   margin-top 8px
 
   &--warning
-    color var(--new-signal-03)
+    color var(--UI-error)
 
 .user
   padding 0
@@ -317,7 +317,7 @@ $SAVE_FADE_TIME = 2s
   margin 24px 0 8px
   font-weight bold
   line-height 24px
-  color var(--Font-primary)
+  color var(--Text-primary)
 
 .login-button
   margin-bottom 12px
@@ -329,7 +329,7 @@ $SAVE_FADE_TIME = 2s
   width 100%
   box-sizing border-box
   bottom 0
-  background-color var(--Background-white)
+  background var(--Background-white)
   opacity 0
   pointer-events none
 

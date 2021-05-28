@@ -39,7 +39,7 @@
         <svg-icon
           class="search__icon"
           name="search"
-          color="var(--Icon-active)"
+          color="var(--UI-active)"
           width="20"
           height="20"
         />
@@ -437,10 +437,10 @@ $ANIM = 250ms
   &--mockup
 
     &:hover
-      background-color var(--new-UI-07)
+      background var(--new-UI-07)
 
     &:active
-      background-color var(--new-UI-08)
+      background var(--new-UI-08)
 
   &__icon
     margin 0 7px
@@ -454,7 +454,7 @@ $ANIM = 250ms
       color #A2A7AD
 
       &:hover
-        color var(--Font-secondary)
+        color var(--Text-secondary)
 
 .action-button
   padding 4px 8px
@@ -464,7 +464,7 @@ $ANIM = 250ms
   font-size 12px
   box-sizing border-box
   border-radius 6px
-  color var(--Font-secondary)
+  color var(--Text-secondary)
   font-weight bold
   display flex
   flex-direction row
@@ -473,13 +473,13 @@ $ANIM = 250ms
   cursor pointer
 
   &:hover
-    background-color var(--new-UI-07)
+    background var(--new-UI-07)
 
   &:active
-    background-color var(--new-UI-08)
+    background var(--new-UI-08)
 
   &.router-link-active .action-button__icon
-    color var(--Icon-active)
+    color var(--UI-active)
 
   &__icon
     margin-right 10px
@@ -494,7 +494,7 @@ $ANIM = 250ms
   flex-direction row
   justify-content space-between
   align-items center
-  color var(--Font-secondary)
+  color var(--Text-secondary)
   font-size 12px
   font-weight bold
   position sticky
@@ -503,7 +503,7 @@ $ANIM = 250ms
   padding 2px 0 2px 8px
 
 .router-link-active .channel-header__add
-  color var(--Icon-active)
+  color var(--UI-active)
 
 .user-header
   margin-top 22px
