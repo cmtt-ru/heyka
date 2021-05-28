@@ -227,6 +227,7 @@ export default {
         const users = await this.$API.workspace.getSlackUsers(this.selectedWorkspaceId);
 
         this.slackUsers = users;
+        console.log(users);
       } catch (err) {
         console.log(err);
         this.slackUsers = [];
@@ -278,7 +279,7 @@ export default {
   margin 4px 0 16px
 
 .user-search__wrapper
-  background-color var(--Background-white)
+  background var(--Background-white)
   padding 6px 0 12px
   z-index 1
   position relative
@@ -290,7 +291,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-stroke-01)
+    background var(--new-stroke-01)
 
 /deep/ .input
   padding-left 54px
@@ -302,12 +303,12 @@ export default {
   font-weight 500
   font-size 12px
   line-height 18px
-  color var(--Font-active)
+  color var(--UI-active)
   cursor pointer
   margin 0 0 0 auto
 
   &--deselect
-    color var(--new-signal-03)
+    color var(--UI-error)
 
   &__wrapper
     margin-bottom 12px
@@ -330,7 +331,7 @@ export default {
   height 44px
 
   &:hover
-    background-color var(--new-UI-06)
+    background var(--Background-darkgrey)
 
   &__check
     margin 0 5px
@@ -345,11 +346,11 @@ export default {
     background-color initial
 
     &:hover
-      background-color var(--new-UI-06)
+      background var(--Background-darkgrey)
 
     & .user__check
-      background-color var(--Icon-active)
-      color var(--new-white)
+      background var(--UI-active)
+      color var(--Text-white)
       padding 2px
       border none
 
@@ -377,7 +378,7 @@ export default {
   width 100%
   box-sizing border-box
   padding 16px 0
-  background-color var(--Background-white)
+  background var(--Background-white)
   box-shadow none
   position: relative
 
@@ -388,6 +389,6 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-stroke-01)
+    background var(--new-stroke-01)
 
 </style>

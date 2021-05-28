@@ -93,7 +93,7 @@ export default {
       height 48px
       box-sizing border-box
       background var(--Background-darkgrey)
-      color var(--Font-primary)
+      color var(--Text-primary)
       -webkit-app-region drag
       display flex
       flex-direction row
@@ -103,8 +103,8 @@ export default {
     &__column
       display flex
       height 100%
-      background-color var(--Background-white)
-      color var(--Font-primary)
+      background var(--Background-white)
+      color var(--Text-primary)
       flex-direction column
 
       &--sidebar

@@ -249,7 +249,7 @@ export default {
       if (this.selectedChannelId === this.channel.id) {
         return 'var(--UI-positive)';
       } else {
-        return 'var(--Icon-active)';
+        return 'var(--UI-active)';
       }
     },
 
@@ -316,7 +316,7 @@ export default {
   flex-direction row
   align-items center
   justify-content flex-start
-  background-color var(--Background-white)
+  background var(--Background-white)
   z-index 1
 
   &__type
@@ -330,7 +330,7 @@ export default {
     margin-left 8px
 
   &__more
-    color var(--Icon-secondary)
+    color var(--Text-secondary)
     margin 0 6px 0 15px
     flex-shrink 0
 
@@ -373,7 +373,7 @@ export default {
     max-width 100%
 
     &__icon
-      color var(--Icon-active)
+      color var(--UI-active)
       margin 0 8px 0 -24px
       width 24px
       height 24px
@@ -383,7 +383,7 @@ export default {
     font-size 14px
     line-height 22px
     margin-bottom 16px
-    color var(--Font-secondary)
+    color var(--Text-secondary)
     text-align center
 
   &__button-row

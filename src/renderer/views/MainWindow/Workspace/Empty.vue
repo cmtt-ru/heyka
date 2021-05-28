@@ -56,12 +56,12 @@ export default {
     position relative
     align-items center
     justify-content center
-    color var(--Font-secondary)
+    color var(--Text-secondary)
     white-space pre-line
 
     &__doggo
       margin-bottom 14px
-      color var(--Icon-secondary)
+      color var(--Text-secondary)
 
   .changelog
     position absolute

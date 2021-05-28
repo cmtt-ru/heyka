@@ -125,7 +125,7 @@ export default {
 .app-info
   font-size 12px
   line-height 18px
-  color var(--Font-secondary)
+  color var(--Text-secondary)
   white-space pre-line
   position absolute
   bottom 12px
@@ -141,13 +141,13 @@ export default {
   margin 2px 4px 4px
 
   &:hover:not(.router-link-exact-active)
-    background-color var(--new-UI-07)
+    background var(--Background-darkgrey)
 
   &.router-link-exact-active
-    background-color var(--new-UI-07)
+    background var(--Background-darkgrey)
 
 .settings-close
-  color var(--Font-active)
+  color var(--UI-active)
   margin-right 10px
   cursor pointer
 
@@ -161,6 +161,6 @@ export default {
   font-weight bold
 
 .layout__column--sidebar
-    background-color var(--Background-white)
+    background var(--Background-white)
 
 </style>

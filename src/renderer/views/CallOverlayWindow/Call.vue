@@ -627,7 +627,7 @@ export default {
     display flex
     flex-direction column
     height 100vh
-    color var(--new-white)
+    color var(--Text-white)
 
     &__media
       position relative

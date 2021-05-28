@@ -78,7 +78,7 @@ export default {
 .push__content__info
   a
     display inline
-    color var(--Font-active)
+    color var(--UI-active)
 
     &:hover
       opacity 0.75

@@ -66,5 +66,5 @@ export default {
 
 .about-link
   padding-top 12px
-  color var(--Font-active)
+  color var(--UI-active)
 </style>

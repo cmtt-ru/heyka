@@ -156,7 +156,7 @@ export default {
 
 <style scoped lang="stylus">
   h3
-    color var(--Font-active)
+    color var(--UI-active)
   .ui-switch
     margin 16px 0
 </style>
