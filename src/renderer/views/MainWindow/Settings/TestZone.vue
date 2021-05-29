@@ -1,4 +1,3 @@
-import {ipcRenderer} from "electron";
 <template>
   <div class="settings-page">
     <ui-button
@@ -58,6 +57,8 @@ import {ipcRenderer} from "electron";
 <script>
 import UiButton from '@components/UiButton';
 import callWindow from '@classes/callWindow';
+import mediaCapturer from '@classes/mediaCapturer';
+import faceDetection from '@classes/faceDetection';
 
 export default {
   components: {
@@ -71,6 +72,17 @@ export default {
   created() {
 
   },
+
+  async mounted() {
+    const stream = await mediaCapturer.getCameraStream();
+
+    faceDetection.start(stream);
+
+    faceDetection.on('change', state => {
+      console.log('face', state);
+    });
+  },
+
   methods: {
     openWebrtcInternals() {
       window.ipcRenderer.invoke('open-webrtc-internals');
@@ -97,4 +109,10 @@ export default {
 
 <style scoped lang="stylus">
   @import './styles'
+
+  .face-detection
+    video
+      width 240px
+      height 180px
+      background black
 </style>
