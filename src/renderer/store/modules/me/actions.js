@@ -352,6 +352,15 @@ export default {
         ...state.mediaState,
         camera: false,
       });
+
+      const push = {
+        inviteId: 'id-' + Date.now(),
+        local: true,
+        name: 'cameraStopped',
+        message: { action: 'cameraStopped' },
+      };
+
+      dispatch('app/addPush', push, { root: true });
     });
   },
 
