@@ -2,6 +2,8 @@ import EventEmitter from 'events';
 import { FaceDetection } from '@mediapipe/face_detection';
 
 const INTERVAL_TIMEOUT = 1000;
+const MAX_NO_FACE_COUNT = 5;
+let noFaceCounter = 0;
 
 class Face extends EventEmitter {
   constructor() {
@@ -31,6 +33,17 @@ class Face extends EventEmitter {
         this.emit('change', detections);
       }
 
+      if (detections > 0) {
+        noFaceCounter = 0;
+      } else {
+        noFaceCounter++;
+      }
+
+      if (noFaceCounter >= MAX_NO_FACE_COUNT) {
+        this.emit('no-face-too-long');
+        this.stop();
+      }
+
       console.log('results', results.detections.length > 0);
     });
   }
@@ -56,6 +69,7 @@ class Face extends EventEmitter {
   stop() {
     clearInterval(this.interval);
     this.video.srcObject = null;
+    noFaceCounter = 0;
   }
 }
 
