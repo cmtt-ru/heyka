@@ -57,8 +57,6 @@
 <script>
 import UiButton from '@components/UiButton';
 import callWindow from '@classes/callWindow';
-import mediaCapturer from '@classes/mediaCapturer';
-import faceDetection from '@classes/faceDetection';
 
 export default {
   components: {
@@ -71,16 +69,6 @@ export default {
   },
   created() {
 
-  },
-
-  async mounted() {
-    const stream = await mediaCapturer.getCameraStream();
-
-    faceDetection.start(stream);
-
-    faceDetection.on('change', state => {
-      console.log('face', state);
-    });
   },
 
   methods: {
