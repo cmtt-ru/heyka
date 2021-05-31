@@ -291,7 +291,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background var(--new-stroke-01)
+    background var(--UI-divider-1)
 
 /deep/ .input
   padding-left 54px
