@@ -83,7 +83,7 @@ textarea
   outline none
   resize none
   background var(--Background-grey)
-  border 0.5px solid var(--new-stroke-01)
+  border 0.5px solid var(--UI-divider-1)
   color var(--Text-primary)
   border-radius 4px
   margin-top 14px

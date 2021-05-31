@@ -83,7 +83,7 @@ export default {
       flex-direction row
       justify-content space-between
       align-items center
-      box-shadow 0px -1px 12px rgba(0, 0, 0, 0.12), inset 0 -1px 0 0 var(--new-stroke-01)
+      box-shadow 0px -1px 12px rgba(0, 0, 0, 0.12), inset 0 -1px 0 0 var(--UI-divider-1)
 
       &--mac
         border-top-left-radius 10px
@@ -103,7 +103,7 @@ export default {
 
       &--content
         flex 1 1 auto
-        box-shadow -1px 0 0 0 var(--new-stroke-01)
+        box-shadow -1px 0 0 0 var(--UI-divider-1)
 
     &__row
 

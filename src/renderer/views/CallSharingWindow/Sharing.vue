@@ -300,6 +300,8 @@ export default {
       &__title
         display flex
         align-items center
+        font-size 14px
+        line-height 28px
 
     &__footer
       flex 0 0 auto

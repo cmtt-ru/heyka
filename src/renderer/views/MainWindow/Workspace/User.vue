@@ -128,8 +128,8 @@ const STATUS_COLORS = {
     'border-color': 'var(--UI-alert)',
   },
   offline: {
-    'background-color': 'transparent',
-    'border-color': 'var(--new-UI-05)',
+    'background-color': 'var(--Text-tertiary)',
+    'border-color': 'var(--Text-tertiary)',
   },
 };
 
