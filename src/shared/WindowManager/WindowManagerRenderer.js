@@ -22,7 +22,7 @@ class WindowManager {
 
   /**
    * Get ID of window which invoked this method
-   * @returns {void}
+   * @returns {string}
    */
   getCurrentWindowId() {
     const substr = window.navigator.userAgent.split(' ').find(argv => argv.indexOf('window-id') === 0);
