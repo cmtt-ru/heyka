@@ -3,46 +3,24 @@ import TrayManager from '../../main/classes/TrayManager';
 import DeepLink from '../DeepLink/DeepLinkMain';
 import Positioner from '../WindowManager/Positioner';
 import Autoupdater from '../../main/classes/AutoUpdater';
-import { ipcMain, nativeTheme, powerMonitor, app, globalShortcut } from 'electron';
+import { ipcMain, nativeTheme, powerMonitor, globalShortcut } from 'electron';
 import { heykaStore } from '../../main/localStore';
-import { IS_DEV, IS_MAC } from '../../main/Constants';
+import { IS_DEV } from '../../main/Constants';
 
 const resizeable = heykaStore.get('resizeWindow', false);
 
 const MUTE_SHORTCUT = 'CommandOrControl+Shift+M';
 
-let params = {};
+const params = {
+  position: 'center',
+  windowPosition: heykaStore.get('windowPosition'),
+  template: resizeable ? 'mainDev' : 'main',
+  isMainWindow: true,
+  preventClose: true,
+  showFast: true,
+};
 
-if (TrayManager.isInTray()) {
-  params = {
-    position: 'tray',
-    template: 'maintray',
-    preventClose: true,
-    margin: 20,
-    isMainWindow: true,
-    showFast: true,
-  };
-
-  /**
-   * Electron bug with `win.setVisibleOnAllWorkspaces(true)`
-   * Mac dock icon appears even with `app.dock.hide()`
-   * @see: https://github.com/electron/electron/issues/25368
-   */
-  if (IS_MAC) {
-    app.dock.hide();
-  }
-} else {
-  params = {
-    position: 'center',
-    windowPosition: heykaStore.get('windowPosition'),
-    template: resizeable ? 'mainDev' : 'main',
-    isMainWindow: true,
-    preventClose: true,
-    showFast: true,
-  };
-
-  console.log('MainWindow --> restore window position:', params.windowPosition);
-}
+console.log('MainWindow --> restore window position:', params.windowPosition);
 
 /**
  * Class for controlling main window
