@@ -411,6 +411,8 @@ export default {
 
     sockets.destroy();
 
+    router.replace({ name: 'workspace' });
+
     await dispatch('initial');
   },
 
