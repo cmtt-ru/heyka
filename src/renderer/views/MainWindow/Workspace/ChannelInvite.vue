@@ -460,7 +460,7 @@ export default {
       }
       this.$store.dispatch('app/sendMultiplePushes', {
         users,
-        isResponseNeeded: true,
+        isResponseNeeded: false,
         message: {
           action: 'invite',
           channelId: this.channelId,
