@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div v-if="slackWorkspace===null || (slackUsers && slackUsers.length==0)">
+      <div v-if="slackWorkspace===null">
         <div class="top-info-text">
           {{ texts.noWorkspaces }}
         </div>
