@@ -1,4 +1,5 @@
 import API from '@api/index';
+import router from '@/router';
 import { mapKeys } from '@libs/arrays';
 
 export default {
@@ -23,6 +24,10 @@ export default {
       }
 
       commit('SET_COLLECTION', mapKeys(workspaces, 'id'));
+
+      if (router.history.current.name == 'no-workspace') {
+        router.push({ name: 'workspace' });
+      }
 
       return true;
     } else {
