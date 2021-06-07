@@ -346,7 +346,7 @@ export default {
     margin-right 4px
 
     &--opened
-      background var(--Background-black)
+      background var(--Background-white)
 
   &__avatar
     margin 0 11px 0 4px
