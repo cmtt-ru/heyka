@@ -15,7 +15,7 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   height: 560,
   x: 0,
   y: 0,
-  // backgroundColor: '#000000', //! need to set same color as main bg color of theme
+  backgroundColor: '#000000',
   frame: false,
   fullscreenable: false,
   show: false,
