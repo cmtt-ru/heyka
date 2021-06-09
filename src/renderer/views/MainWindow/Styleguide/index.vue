@@ -93,7 +93,9 @@ export default {
   cursor pointer
 
   &:hover
-    color var(--new-UI-01-1) //? так ли?
+    color var(--UI-active-hover)
+  &:active
+    color var(--UI-active-active)
 
 .link
   display block
@@ -103,10 +105,11 @@ export default {
   text-decoration none
   margin-top 2px
 
-  &:hover:not(.router-link-exact-active)
+  &.router-link-exact-active
     background var(--Background-darkgrey)
+  &:hover
+    background var(--Background-darkgrey-hover)
+  &:active
+    background var(--Background-darkgrey-active)
 
-.router-link-exact-active
-  background var(--Background-darkgrey)
-  box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
 </style>

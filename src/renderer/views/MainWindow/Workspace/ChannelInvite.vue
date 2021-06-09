@@ -515,7 +515,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background var(--new-stroke-01)
+    background var(--UI-divider-1)
 
 /deep/ .user-search .input
   padding-left 54px
@@ -536,7 +536,9 @@ export default {
   margin-bottom 4px
 
   &:hover
-    background var(--Background-darkgrey)
+    background var(--Background-darkgrey-hover)
+  &:active
+    background var(--Background-darkgrey-active)
 
   &--offline
     opacity 0.5
@@ -548,7 +550,7 @@ export default {
     box-sizing border-box
     flex-shrink 0
     color transparent
-    border 1px solid var(--new-UI-05)
+    border 1px solid var(--UI-divider-3)
     border-radius 50%
 
   &.list-item--selected
@@ -556,6 +558,8 @@ export default {
 
     &:hover
       background var(--Background-darkgrey)
+    &:active
+      background var(--Background-darkgrey-active)
 
     & .user__check
       background var(--UI-active)
