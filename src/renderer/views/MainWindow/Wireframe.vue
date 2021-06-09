@@ -140,11 +140,11 @@ export default {
 
     &:hover, &:active
       mix-blend-mode initial
-      background var(--new-system-02)
+      background var(--UI-error-hover)
       color var(--Text-white)
 
      &:active
-      background var(--new-system-02-2)
+      background var(--UI-error-active)
 
 .mac-controls-wrapper
   margin-left 10px
@@ -159,7 +159,7 @@ export default {
   flex-direction row
   justify-content center
   align-items center
-  background var(--new-UI-07)
+  background var(--Background-darkgrey)
 
   &__icon
     opacity 0
