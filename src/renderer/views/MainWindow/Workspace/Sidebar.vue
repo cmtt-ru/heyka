@@ -437,10 +437,9 @@ $ANIM = 250ms
   &--mockup
 
     &:hover
-      background var(--new-UI-07)
-
+      background var(--Background-darkgrey-hover)
     &:active
-      background var(--new-UI-08)
+      background var(--Background-darkgrey-active)
 
   &__icon
     margin 0 7px
@@ -451,10 +450,12 @@ $ANIM = 250ms
       top 0
       bottom 0
       margin auto 0
-      color #A2A7AD
+      color var(--Text-tertiary)
 
       &:hover
-        color var(--Text-secondary)
+        color var(--Text-tertiary-hover)
+      &:active
+        color var(--Text-tertiary-active)
 
 .action-button
   padding 4px 8px
@@ -473,10 +474,9 @@ $ANIM = 250ms
   cursor pointer
 
   &:hover
-    background var(--new-UI-07)
-
+    background var(--Background-darkgrey-hover)
   &:active
-    background var(--new-UI-08)
+    background var(--Background-darkgrey-active)
 
   &.router-link-active .action-button__icon
     color var(--UI-active)

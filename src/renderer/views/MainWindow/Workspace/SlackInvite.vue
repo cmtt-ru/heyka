@@ -331,7 +331,9 @@ export default {
   height 44px
 
   &:hover
-    background var(--Background-darkgrey)
+    background var(--Background-darkgrey-hover)
+  &:active
+    background var(--Background-darkgrey-active)
 
   &__check
     margin 0 5px
@@ -346,7 +348,9 @@ export default {
     background-color initial
 
     &:hover
-      background var(--Background-darkgrey)
+      background var(--Background-darkgrey-hover)
+    &:active
+      background var(--Background-darkgrey-active)
 
     & .user__check
       background var(--UI-active)
@@ -389,6 +393,6 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background var(--new-stroke-01)
+    background var(--UI-divider-1)
 
 </style>

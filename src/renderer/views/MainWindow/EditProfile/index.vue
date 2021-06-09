@@ -72,7 +72,9 @@ export default {
   cursor pointer
 
   &:hover
-    color var(--new-UI-01-1) //? так ли?
+    color var(--UI-active-hover)
+  &:active
+    color var(--UI-active-active)
 
 .editprofile-link
   display block
@@ -83,9 +85,10 @@ export default {
   text-decoration none
   margin 2px 4px 4px
 
-  &:hover:not(.router-link-exact-active)
-    background var(--Background-darkgrey)
-
   &.router-link-exact-active
     background var(--Background-darkgrey)
+  &:hover
+    background var(--Background-darkgrey-hover)
+  &:active
+    background var(--Background-darkgrey-active)
 </style>
