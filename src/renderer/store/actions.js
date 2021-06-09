@@ -411,7 +411,21 @@ export default {
 
     sockets.destroy();
 
+    router.replace({ name: 'workspace' });
+
     await dispatch('initial');
+  },
+
+  async selectAnyWorkspace({ dispatch, getters }) {
+    await dispatch('workspaces/updateList', false);
+    const firstWorkspace = getters['workspaces/getWorkspaces'][0];
+
+    console.log(firstWorkspace);
+    if (!firstWorkspace) {
+      await router.replace({ name: 'no-workspace' });
+    } else {
+      await dispatch('changeWorkspace', firstWorkspace.id);
+    }
   },
 
   /**
