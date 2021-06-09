@@ -47,6 +47,15 @@ export default {
         node = node.parentNode;
       }
     });
+
+    window.addEventListener('mouseup', function (e) {
+      const SIDE_MOUSE_BUTTON_1 = 3;
+      const SIDE_MOUSE_BUTTON_2 = 4;
+
+      if (e.button === SIDE_MOUSE_BUTTON_1 || e.button === SIDE_MOUSE_BUTTON_2) {
+        e.preventDefault();
+      }
+    });
   },
 
   methods: {
