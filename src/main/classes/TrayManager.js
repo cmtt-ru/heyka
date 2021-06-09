@@ -14,16 +14,14 @@ const BIG_SUR_VERSION = 20;
  */
 const icons = {
   light: {
-    default: 'icon',
-    'onair-1': 'icon-onair-1',
-    'onair-2': 'icon-onair-2',
-    crossed: 'icon-crossed',
+    default: 'icon-light',
+    'onair-1': 'icon-onair-1-light',
+    'onair-2': 'icon-onair-2-light',
   },
   dark: {
-    default: 'icon-light',
-    'onair-1': 'icon-onair-1',
-    'onair-2': 'icon-onair-2',
-    crossed: 'icon-crossed',
+    default: 'icon-dark',
+    'onair-1': 'icon-onair-1-dark',
+    'onair-2': 'icon-onair-2-dark',
   },
 };
 
