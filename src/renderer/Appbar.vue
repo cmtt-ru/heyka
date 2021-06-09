@@ -296,10 +296,10 @@ export default {
     font-weight bold
 
     &:hover
-      background var(--new-UI-07)
+      background var(--Background-grey-hover)
 
     &:active
-      background var(--new-UI-08)
+      background var(--Background-grey-active)
 
     &.context-menu--opened .workspace__expand
       color var(--UI-active)
