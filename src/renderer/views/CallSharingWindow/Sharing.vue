@@ -332,7 +332,7 @@ export default {
       width calc(50% - 6px)
       margin 12px 0
       cursor pointer
-      background var(--new-transparent)
+      background transparent
       border-radius 2px
 
       &__image
