@@ -580,7 +580,7 @@ export default {
       width 32px
       height 32px
       border-radius 100%
-      background var(--new-UI-01-3)
+      background var(--Button-social)
       color var(--UI-active)
 
   &__inner
