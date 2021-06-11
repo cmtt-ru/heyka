@@ -15,7 +15,6 @@ const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   height: 560,
   x: 0,
   y: 0,
-  backgroundColor: '#000000',
   frame: false,
   fullscreenable: false,
   show: false,
