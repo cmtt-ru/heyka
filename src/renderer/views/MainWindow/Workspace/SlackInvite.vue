@@ -227,7 +227,6 @@ export default {
         const users = await this.$API.workspace.getSlackUsers(this.selectedWorkspaceId);
 
         this.slackUsers = users;
-        console.log(users);
       } catch (err) {
         console.log(err);
         this.slackUsers = [];
