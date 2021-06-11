@@ -6,10 +6,10 @@ export default {
   /**
    * Update workspace list
    * @param {object} context – store context
-   * @param {boolean} changeWorkspaceId – true if we just want to update workspace list
+   * @param {boolean} changeWorkspace – true if we just want to update workspace list
    * @returns {void}
    */
-  async updateList({ commit, dispatch, rootGetters }, changeWorkspaceId = true) {
+  async updateList({ commit, dispatch, rootGetters }, changeWorkspace = true) {
     const workspaces = await API.workspace.getWorkspaces();
 
     if (workspaces.length > 0) {
@@ -18,7 +18,7 @@ export default {
       /** Selected workspace id */
       let selectedWorkspaceId = rootGetters['me/getSelectedWorkspaceId'];
 
-      if ((!selectedWorkspaceId || !workspacesIdList.includes(selectedWorkspaceId)) && changeWorkspaceId) {
+      if ((!selectedWorkspaceId || !workspacesIdList.includes(selectedWorkspaceId)) && changeWorkspace) {
         selectedWorkspaceId = workspaces[0].id;
         dispatch('me/setSelectedWorkspaceId', selectedWorkspaceId, { root: true });
       }
