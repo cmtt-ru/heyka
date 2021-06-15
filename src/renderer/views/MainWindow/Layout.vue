@@ -75,7 +75,7 @@ export default {
     -webkit-app-region no-drag
 
   .mainwindow-wrapper
-    background-color var(--new-bg-03)
+    background var(--Background-darkgrey)
 
   .layout
     display flex
@@ -92,8 +92,8 @@ export default {
       width 100%
       height 48px
       box-sizing border-box
-      background-color var(--new-bg-03)
-      color var(--new-UI-02)
+      background var(--Background-darkgrey)
+      color var(--Text-primary)
       -webkit-app-region drag
       display flex
       flex-direction row
@@ -103,13 +103,13 @@ export default {
     &__column
       display flex
       height 100%
-      background-color var(--new-bg-04)
-      color var(--new-UI-02)
+      background var(--Background-white)
+      color var(--Text-primary)
       flex-direction column
 
       &--sidebar
         flex 0 0 220px
-        background-color var(--new-bg-01)
+        background var(--Background-grey)
 
       &--content
         flex 1 1 auto

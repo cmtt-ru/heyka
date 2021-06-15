@@ -96,7 +96,10 @@
       </router-link>
     </div>
 
-    <div class="user-info">
+    <div
+      v-if="user.email"
+      class="user-info"
+    >
       <div class="user-info__title">
         {{ texts.email }}
       </div>
@@ -120,16 +123,16 @@ const DISABLE_AFTER_INVITE_TIMEOUT = 5000;
  */
 const STATUS_COLORS = {
   online: {
-    'background-color': 'var(--new-signal-02)',
-    'border-color': 'var(--new-signal-02)',
+    'background-color': 'var(--UI-positive)',
+    'border-color': 'var(--UI-positive)',
   },
   idle: {
-    'background-color': 'var(--new-signal-01)',
-    'border-color': 'var(--new-signal-01)',
+    'background-color': 'var(--UI-alert)',
+    'border-color': 'var(--UI-alert)',
   },
   offline: {
-    'background-color': 'transparent',
-    'border-color': 'var(--new-UI-05)',
+    'background-color': 'var(--Text-tertiary)',
+    'border-color': 'var(--Text-tertiary)',
   },
 };
 
@@ -313,7 +316,7 @@ export default {
     flex-shrink 0
     flex-grow 0
     margin-top -18px
-    color var(--new-UI-03)
+    color var(--Text-secondary)
 
 .user-action
   margin-bottom 12px
@@ -335,7 +338,7 @@ export default {
   &__title
     font-weight bold
     line-height 24px
-    color var(--new-UI-02)
+    color var(--Text-primary)
 
   &__content
     margin-top 4px

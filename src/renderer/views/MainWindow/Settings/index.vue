@@ -125,7 +125,7 @@ export default {
 .app-info
   font-size 12px
   line-height 18px
-  color var(--new-UI-04)
+  color var(--Text-secondary)
   white-space pre-line
   position absolute
   bottom 12px
@@ -140,19 +140,22 @@ export default {
   text-decoration none
   margin 2px 4px 4px
 
-  &:hover:not(.router-link-exact-active)
-    background-color var(--new-UI-07)
-
   &.router-link-exact-active
-    background-color var(--new-UI-07)
+    background var(--Background-darkgrey)
+  &:hover
+    background var(--Background-darkgrey-hover)
+  &:active
+    background var(--Background-darkgrey-active)
 
 .settings-close
-  color var(--new-UI-01)
+  color var(--UI-active)
   margin-right 10px
   cursor pointer
 
   &:hover
-    color var(--new-UI-01-1) //? так ли?
+    color var(--UI-active-hover)
+  &:active
+    color var(--UI-active-active)
 
 .settings-title
   height 40px
@@ -161,6 +164,6 @@ export default {
   font-weight bold
 
 .layout__column--sidebar
-    background-color var(--new-bg-04)
+    background var(--Background-white)
 
 </style>

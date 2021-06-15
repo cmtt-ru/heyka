@@ -77,7 +77,7 @@ export default {
 
 .push__content__info
   a
-    color var(--new-UI-01)
+    color var(--UI-active)
 
     &:hover
       opacity 0.75
