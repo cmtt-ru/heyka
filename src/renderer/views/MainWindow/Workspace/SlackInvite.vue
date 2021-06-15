@@ -227,7 +227,6 @@ export default {
         const users = await this.$API.workspace.getSlackUsers(this.selectedWorkspaceId);
 
         this.slackUsers = users;
-        console.log(users);
       } catch (err) {
         console.log(err);
         this.slackUsers = [];
@@ -341,7 +340,7 @@ export default {
     box-sizing border-box
     flex-shrink 0
     color transparent
-    border 1px solid var(--new-UI-05)
+    border 1px solid var(--UI-divider-3)
     border-radius 50%
 
   &.list-item--selected

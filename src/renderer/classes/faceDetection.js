@@ -43,8 +43,6 @@ class Face extends EventEmitter {
         this.emit('no-face-too-long');
         this.stop();
       }
-
-      console.log('results', results.detections.length > 0);
     });
   }
 
