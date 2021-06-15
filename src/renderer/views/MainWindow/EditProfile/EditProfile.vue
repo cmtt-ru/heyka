@@ -7,7 +7,7 @@
       <div class="user">
         <ui-image
           ref="avatarInput"
-          :key="me.user.avatarFileId || me.user.id"
+          :key="vuexAvatarFileId || me.user.id"
           :image="userAvatar(me.user.id, 64)"
           class="user__avatar"
           :size="64"
@@ -38,29 +38,34 @@
         :placeholder="me.user.name"
       />
 
-      <div class="block-title">
-        {{ texts.emailLabel }}
-      </div>
-      <div>
-        {{ me.user.email }}
-      </div>
-      <div
-        class="edit-link"
-        @click="editEmail"
-      >
-        {{ texts.editEmail }}
+      <div v-if="me.user.email">
+        <div class="block-title">
+          {{ texts.emailLabel }}
+        </div>
+        <div>
+          {{ me.user.email }}
+        </div>
+        <div
+          class="edit-link"
+          @click="editEmail"
+        >
+          {{ texts.editEmail }}
+        </div>
       </div>
 
-      <div class="block-title">
-        {{ texts.passLabel }}
-      </div>
-      <div
-        class="edit-link"
-        @click="resetHandler"
-      >
-        {{ texts.resetPass }}
+      <div v-if="me.user.email">
+        <div class="block-title">
+          {{ texts.passLabel }}
+        </div>
+        <div
+          class="edit-link"
+          @click="resetHandler"
+        >
+          {{ texts.resetPass }}
+        </div>
       </div>
     </div>
+
     <ui-button
       v-if="!saved"
       :type="1"
@@ -128,7 +133,7 @@ export default {
      * @returns {string}
      */
     vuexName() {
-      return this.me.user.name;
+      return this.me?.user?.name;
     },
 
     /**
@@ -136,12 +141,13 @@ export default {
      * @returns {string}
      */
     vuexAvatarFileId() {
-      return this.me.user.avatarFileId;
+      return this.me?.user?.avatarFileId;
     },
   },
 
   watch: {
     vuexName(val) {
+      console.log(val);
       this.$set(this.profile, 'name', val);
     },
     vuexAvatarFileId(val) {
@@ -291,12 +297,12 @@ $SAVE_FADE_TIME = 2s
   font-size 12px
   line-height 18px
   letter-spacing -0.24px
-  color var(--new-UI-01)
+  color var(--UI-active)
   cursor pointer
   margin-top 8px
 
   &--warning
-    color var(--new-signal-03)
+    color var(--UI-error)
 
 .user
   padding 0
@@ -317,7 +323,7 @@ $SAVE_FADE_TIME = 2s
   margin 24px 0 8px
   font-weight bold
   line-height 24px
-  color var(--new-UI-02)
+  color var(--Text-primary)
 
 .login-button
   margin-bottom 12px
@@ -329,7 +335,7 @@ $SAVE_FADE_TIME = 2s
   width 100%
   box-sizing border-box
   bottom 0
-  background-color var(--new-bg-04)
+  background var(--Background-white)
   opacity 0
   pointer-events none
 

@@ -88,12 +88,14 @@ export default {
 
 <style lang="stylus" scoped>
 .settings-close
-  color var(--new-UI-01)
+  color var(--UI-active)
   margin-right 10px
   cursor pointer
 
   &:hover
-    color var(--new-UI-01-1) //? так ли?
+    color var(--UI-active-hover)
+  &:active
+    color var(--UI-active-active)
 
 .link
   display block
@@ -103,21 +105,11 @@ export default {
   text-decoration none
   margin-top 2px
 
-  &:hover:not(.router-link-exact-active)
-    background-color var(--new-UI-06)
-
-.router-link-exact-active
-  background-color var(--new-UI-09)
-  box-shadow 0 1px 2px rgba(0, 0, 0, 0.1)
-
-pre
-  display inline-flex
-  background var(--new-UI-06)
-  padding 0 4px
-  border-radius 4px
-  border 1px solid var(--new-stroke-01)
-  font-size 12px
-  margin-top 4px
-  user-select text !important
+  &.router-link-exact-active
+    background var(--Background-darkgrey)
+  &:hover
+    background var(--Background-darkgrey-hover)
+  &:active
+    background var(--Background-darkgrey-active)
 
 </style>

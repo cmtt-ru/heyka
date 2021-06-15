@@ -627,7 +627,7 @@ export default {
     display flex
     flex-direction column
     height 100vh
-    color var(--new-white)
+    color var(--Text-white)
 
     &__media
       position relative
@@ -648,7 +648,7 @@ export default {
       &__preloader
         position absolute
         z-index 1
-        background var(--new-bg-04)
+        background var(--Background-white)
         opacity 1
 
         &--hidden
