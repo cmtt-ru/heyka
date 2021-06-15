@@ -8,20 +8,13 @@ import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
 import { IS_WIN, IS_DEV, IS_LINUX } from '../../main/Constants';
 
-let icon;
-
-if (IS_WIN) {
-  icon = nativeImage.createFromPath(path.join(__static, `trayIcons/icon-onair-1.png`));
-} else {
-  icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
-}
+const icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
 
 const DEFAULT_WINDOW_OPTIONS = Object.freeze({
   width: 780,
   height: 560,
   x: 0,
   y: 0,
-  // backgroundColor: '#000000', //! need to set same color as main bg color of theme
   frame: false,
   fullscreenable: false,
   show: false,

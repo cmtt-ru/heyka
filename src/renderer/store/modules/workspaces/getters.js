@@ -46,8 +46,8 @@ export default {
    * @param {object} rootGetters – vuex root getters
    * @returns {object}
    */
-  getCurrentWorkspaceSettings: (state, getters, rootState, rootGetters) => () => {
-    const workspaceId = rootGetters['me/me/getSelectedWorkspaceId'];
+  getCurrentWorkspaceSettings: (state, getters, rootState, rootGetters) => {
+    const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
 
     return state.workspaceSettings[workspaceId] || {};
   },

@@ -185,7 +185,7 @@ export default {
       case 'hand-up':
         if (commitData.data.state) {
           commitData.data.timestamp = Date.now();
-          if (commitData.userId !== rootGetters['me/getMyId']) {
+          if (commitData.userId !== rootGetters['me/getMyId'] && rootGetters['me/getMediaState'].microphone) {
             await dispatch('app/addPush', {
               local: true,
               inviteId: Date.now().toString(),
