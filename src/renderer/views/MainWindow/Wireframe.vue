@@ -10,7 +10,7 @@
         >
           <svg-icon
             name="wired-workspace"
-            width="163"
+            width="170"
             height="32"
           />
         </div>
@@ -58,8 +58,9 @@
     <template #sidebar-body>
       <svg-icon
         name="wired-sidebar"
-        width="220"
-        height="332"
+        class="sidebar-svg"
+        width="196"
+        height="360"
       />
     </template>
 
@@ -68,7 +69,7 @@
         class="content-svg"
         name="wired-content"
         width="180"
-        height="136"
+        height="114"
       />
     </template>
   </layout>
@@ -169,6 +170,9 @@ export default {
 
   &:active
     opacity 0.5
+
+.sidebar-svg
+  padding 12px
 
 .content-svg
   position absolute
