@@ -54,6 +54,7 @@ export default {
     muted: () => import('./Templates/Muted'),
     mutedForAll: () => import('./Templates/MutedForAll'),
     fastLink: () => import('./Templates/FastLink'),
+    cameraStopped: () => import('./Templates/CameraStopped'),
   },
 
   props: {
