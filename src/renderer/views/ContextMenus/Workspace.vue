@@ -102,7 +102,6 @@ export default {
   data() {
     return {
       IS_DEV,
-      workspaceSettings: {},
     };
   },
 
@@ -111,6 +110,7 @@ export default {
       workspaces: 'workspaces/getWorkspaces',
       selectedWorkspaceId: 'me/getSelectedWorkspaceId',
       myInfo: 'myInfo',
+      workspaceSettings: 'workspaces/getCurrentWorkspaceSettings',
     }),
 
     /**
@@ -134,10 +134,6 @@ export default {
       return this.workspaceSettings.canUsersInvite || this.isAdmin;
     },
 
-  },
-
-  async mounted() {
-    this.workspaceSettings = await this.$API.workspace.getWorkspaceSettings(this.selectedWorkspaceId);
   },
 
   methods: {
