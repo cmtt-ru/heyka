@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 
-//! http://blog.kislenko.net/show.php?id=1865
-//! В будущем можно будет поменять алгоритм на тот, который выше, в нём О(N^3)
+// TODO http://blog.kislenko.net/show.php?id=1865
+// TODO В будущем можно будет поменять алгоритм на тот, который выше, в нём О(N^3)
 
 import { appendFileSync } from 'fs';
 
