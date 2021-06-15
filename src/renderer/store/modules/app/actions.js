@@ -292,6 +292,30 @@ export default {
   },
 
   /**
+   * Send slack invite to offline User
+   *
+   * @param {function} rootGetters – store rootGetters
+   * @param {object} userId – recipent's user id
+   * @returns {string} id
+   */
+  async sendSlackInviteToChannel({ rootGetters }, userId) {
+    // if (rootGetters['me/getMyId'] === userId) {
+    //   return;
+    // }
+
+    const workspaceId = rootGetters['me/getSelectedWorkspaceId'];
+    const channelId = rootGetters['me/getSelectedChannelId'];
+
+    const { inviteId } = await API.user.sendSlackInvite({
+      userId,
+      workspaceId,
+      channelId,
+    });
+
+    return inviteId;
+  },
+
+  /**
    * Set selected devices
    *
    * @param {object} vuex context
@@ -410,7 +434,5 @@ export default {
       name: user.name,
       email: user.email,
     });
-
-    window.ipcRenderer.send('log-manager-send');
   },
 };

@@ -1,5 +1,6 @@
 import { ipcMain, app, nativeTheme, systemPreferences } from 'electron';
 import shutdown from 'electron-shutdown-command';
+import { IS_WIN } from '../Constants';
 
 /**
  * Subscribe to ipc events which replaced "remote" module
@@ -22,6 +23,24 @@ ipcMain.on('remote-shouldUseDarkColors', (event) => {
 
 ipcMain.handle('remote-systemPreferences-microphone', async (event) => {
   return systemPreferences.getMediaAccessStatus('microphone');
+});
+
+ipcMain.handle('remote-media-access-status', async (event) => {
+  const states = {
+    microphone: await systemPreferences.getMediaAccessStatus('microphone'),
+    camera: await systemPreferences.getMediaAccessStatus('camera'),
+    screen: await systemPreferences.getMediaAccessStatus('screen'),
+  };
+
+  return states;
+});
+
+ipcMain.handle('remote-ask-for-media-access', async (event, mediaType) => {
+  if (IS_WIN) {
+    return 'granted';
+  }
+
+  return await systemPreferences.askForMediaAccess(mediaType);
 });
 
 ipcMain.on('remote-shutdown', (event) => {

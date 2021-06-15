@@ -5,6 +5,7 @@ import { meStore } from '@/store/localStore';
 import Logger from '@sdk/classes/logger';
 import sounds from '@sdk/classes/sounds';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
+import faceDetection from '@classes/faceDetection';
 
 const cnsl = new Logger('Vuex actions /me', '#17A589');
 
@@ -334,5 +335,41 @@ export default {
   setChannelId({ commit }, id) {
     commit('app/ANIMATION_CHANNEL_ID', id, { root: true });
     commit('SET_CHANNEL_ID', id);
+  },
+
+  /**
+   * Start face monitoring and stop camera sharing when face is gone for too long
+   * @param {function} dispatch – vuex dispatch
+   * @param {MediaStream} stream – camera stream
+   * @param {MeState} state – vuex state
+   * @returns {void}
+   */
+  async startFaceMonitoring({ dispatch, state }, stream) {
+    faceDetection.start(stream);
+
+    faceDetection.on('no-face-too-long', () => {
+      dispatch('setMediaState', {
+        ...state.mediaState,
+        camera: false,
+      });
+
+      const push = {
+        inviteId: 'id-' + Date.now(),
+        local: true,
+        name: 'cameraStopped',
+        message: { action: 'cameraStopped' },
+      };
+
+      dispatch('app/addPush', push, { root: true });
+    });
+  },
+
+  /**
+   * Stop face monitoring
+   * @returns {void}
+   */
+  async stopFaceMonitoring() {
+    faceDetection.stop();
+    faceDetection.removeAllListeners('no-face-too-long');
   },
 };

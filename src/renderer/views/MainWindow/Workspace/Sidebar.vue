@@ -218,7 +218,6 @@ export default {
       searchText: '',
       filteredChannelItems: [],
       filteredUserItems: [],
-      workspaceSettings: {},
     };
   },
 
@@ -229,6 +228,7 @@ export default {
       channels: 'channels/getChannels',
       getAllUsers: 'users/getAllUsersByFrequency',
       myInfo: 'myInfo',
+      workspaceSettings: 'workspaces/getCurrentWorkspaceSettings',
     }),
 
     ...mapState('app', {
@@ -316,10 +316,6 @@ export default {
     Mousetrap.bind(['command+f', 'ctrl+f'], () => {
       this.activateInput(false);
     });
-  },
-
-  async mounted() {
-    this.workspaceSettings = await this.$API.workspace.getWorkspaceSettings(this.selectedWorkspaceId);
   },
 
   beforeDestroy() {
@@ -465,6 +461,7 @@ $ANIM = 250ms
   margin 2px 0
   width 100%
   height 24px
+  font-size 12px
   box-sizing border-box
   border-radius 6px
   color var(--new-UI-04)
