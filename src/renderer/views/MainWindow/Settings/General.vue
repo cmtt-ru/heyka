@@ -8,11 +8,11 @@
       :data="languages"
       :label="texts.languageLabel"
     />
-    <ui-select
+    <!-- <ui-select
       v-model="localSettings.mode"
       :data="modes"
       :label="texts.behaviourLabel"
-    />
+    /> -->
     <div class="settings__label">
       {{ texts.appearanceCategory }}
     </div>
