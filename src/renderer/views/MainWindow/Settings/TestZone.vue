@@ -1,4 +1,3 @@
-import {ipcRenderer} from "electron";
 <template>
   <div class="settings-page">
     <ui-button
@@ -71,6 +70,7 @@ export default {
   created() {
 
   },
+
   methods: {
     openWebrtcInternals() {
       window.ipcRenderer.invoke('open-webrtc-internals');
@@ -97,4 +97,10 @@ export default {
 
 <style scoped lang="stylus">
   @import './styles'
+
+  .face-detection
+    video
+      width 240px
+      height 180px
+      background black
 </style>
