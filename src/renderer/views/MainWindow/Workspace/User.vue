@@ -96,7 +96,10 @@
       </router-link>
     </div>
 
-    <div class="user-info">
+    <div
+      v-if="user.email"
+      class="user-info"
+    >
       <div class="user-info__title">
         {{ texts.email }}
       </div>

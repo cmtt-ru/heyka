@@ -18,8 +18,8 @@
     "titleBarStyle": "hidden"
   },
   "maintray": {
-    "width": 500,
-    "height": 600,
+    "width": 520,
+    "height": 520,
     "margin": 20,
     "resizable": false,
     "alwaysOnTop": true

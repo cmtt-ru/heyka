@@ -12,7 +12,7 @@
           {{ texts['title'] }}
         </h4>
         <p>
-          {{ $t('noWorkspace.description', [myEmail]) }}
+          {{ $t('noWorkspace.description') }}<span v-if="myEmail">{{ $t('noWorkspace.emailDescription', [myEmail]) }}</span>
         </p>
 
         <ui-button
