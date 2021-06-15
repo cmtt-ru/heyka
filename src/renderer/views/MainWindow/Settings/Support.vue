@@ -55,7 +55,6 @@ export default {
       window.ipcRenderer.send('log-manager-open-logs');
     },
   },
-
 };
 </script>
 
