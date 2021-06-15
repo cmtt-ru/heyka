@@ -23,7 +23,7 @@
         {{ data.user.name }}
       </div>
       <div class="push__content__info">
-        <a>{{ data.data.link }}</a>
+        <a v-textfade>{{ data.data.link }}</a>
       </div>
     </div>
   </div>
@@ -77,7 +77,6 @@ export default {
 
 .push__content__info
   a
-    display inline
     color var(--UI-active)
 
     &:hover
