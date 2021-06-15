@@ -13,6 +13,7 @@
     "resizable": false,
     "fullscreenable": false,
     "maximizable": false,
+    "backgroundColor": "#000000",
     "trafficLightPosition": {"x": 17, "y": 32},
     "titleBarStyle": "hidden"
   },

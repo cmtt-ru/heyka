@@ -91,18 +91,18 @@
         Type --5
       </ui-button>
 
-      <ui-button
+      <!-- <ui-button
         :type="6"
         class="l-mr-8"
       >
         Type --6
-      </ui-button>
+      </ui-button> -->
     </div>
 
     <h3 class="l-mt-24">
       Wide
     </h3>
-    <div
+    <!-- <div
       class="l-mt-12"
       style="width: 260px"
     >
@@ -119,7 +119,7 @@
           size="small"
         />
       </ui-button>
-    </div>
+    </div> -->
 
     <div
       class="l-mt-12"

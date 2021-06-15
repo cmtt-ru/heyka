@@ -9,5 +9,5 @@
 <style scoped lang="stylus">
     .layout__popover
         -webkit-app-region drag
-        background-color var(--new-black)
+        background var(--Background-black)
 </style>

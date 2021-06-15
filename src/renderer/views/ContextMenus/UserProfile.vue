@@ -167,15 +167,15 @@ export default {
 
 <style lang="stylus" scoped>
   .quit-button
-    color var(--new-signal-03)
+    color var(--UI-error)
 
     &:hover
-      background var(--new-signal-03-3)
+      background var(--UI-error-secondary)
 
     /deep/ svg
-      color var(--new-signal-03)
+      color var(--UI-error)
 
   .status--checked
-    color var(--new-UI-01)
+    color var(--UI-active)
     margin-left auto
 </style>

@@ -177,6 +177,6 @@ export default {
     margin-right 8px
 
   .workspace--checked
-    color var(--new-UI-01)
+    color var(--UI-active)
     margin-left auto
 </style>

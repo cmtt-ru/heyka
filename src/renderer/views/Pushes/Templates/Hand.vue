@@ -75,5 +75,5 @@ export default {
 @import './push.styl'
 
 .push__content__info
-  color var(--new-UI-01)
+  color var(--UI-active)
 </style>
