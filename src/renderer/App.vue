@@ -32,6 +32,22 @@ export default {
       console.log('%ckonami code!', 'color: green; font: 4rem/1 Tahoma;');
     });
 
+    /**
+     * Listener for context menu
+     */
+    document.body.addEventListener('contextmenu', ({ target }) => {
+      const windowId = WindowManager.getCurrentWindowId();
+      let node = target;
+
+      while (node) {
+        if (node.hasAttribute && node.hasAttribute('context-menu')) {
+          window.ipcRenderer.invoke('open-input-context-menu', windowId);
+          break;
+        }
+        node = node.parentNode;
+      }
+    });
+
     window.addEventListener('mouseup', function (e) {
       const SIDE_MOUSE_BUTTON_1 = 3;
       const SIDE_MOUSE_BUTTON_2 = 4;
