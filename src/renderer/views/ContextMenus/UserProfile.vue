@@ -170,7 +170,7 @@ export default {
     color var(--UI-error)
 
     &:hover
-      background var(--new-signal-03-3)
+      background var(--UI-error-secondary)
 
     /deep/ svg
       color var(--UI-error)

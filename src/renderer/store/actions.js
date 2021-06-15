@@ -420,7 +420,6 @@ export default {
     await dispatch('workspaces/updateList', false);
     const firstWorkspace = getters['workspaces/getWorkspaces'][0];
 
-    console.log(firstWorkspace);
     if (!firstWorkspace) {
       await router.replace({ name: 'no-workspace' });
     } else {

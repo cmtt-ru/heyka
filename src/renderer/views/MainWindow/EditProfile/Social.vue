@@ -9,6 +9,7 @@
           icon="slack"
           wide
           class="login-button"
+          :class="{'login-button--active': socialAuth.slack}"
           @click="socialHandler('slack')"
         >
           Slack
@@ -30,6 +31,7 @@
           icon="facebook"
           :wide="true"
           class="login-button"
+          :class="{'login-button--active': socialAuth.facebook}"
           @click="socialHandler('facebook')"
         >
           Facebook
@@ -51,6 +53,7 @@
           icon="google"
           :wide="true"
           class="login-button"
+          :class="{'login-button--active': socialAuth.google}"
           @click="socialHandler('google')"
         >
           Google
@@ -187,8 +190,10 @@ $SAVE_FADE_TIME = 2s
   margin-bottom 12px
   align-items center
 
+  &--active
+    background var(--Button-social)
+
 .close-button-wrapper
-  display inline
   width 45px
   height 24px
   box-sizing border-box
@@ -201,10 +206,10 @@ $SAVE_FADE_TIME = 2s
   flex-direction row
   justify-content center
   align-items center
-  border-left 1px solid rgba(21, 117, 241, 0.15)
+  border-left 1px solid var(--Button-social-secondary)
 
   &:hover
-    background-color rgba(21, 117, 241, 0.15)
+    background-color var(--Button-social-secondary)
     border-left 1px solid transparent
     height 100%
 </style>
