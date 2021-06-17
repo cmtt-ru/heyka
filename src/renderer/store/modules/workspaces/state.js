@@ -24,6 +24,11 @@ const state = () => {
      * @type WorkspaceCollection
      */
     collection: {},
+
+    /**
+     * @type Object
+     */
+    workspaceSettings: {},
   };
 };
 

@@ -56,5 +56,5 @@ export default {
     width 100vw
     height 100vh
     -webkit-app-region drag
-    background-color var(--new-black)
+    background var(--Background-black)
 </style>

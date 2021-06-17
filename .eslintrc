@@ -208,6 +208,7 @@
     "IS_MAC": true,
     "IS_LINUX": true,
     "IS_ELECTRON": true,
+    "IS_MOBILE": true,
     "buildRevision": true
   }
 }

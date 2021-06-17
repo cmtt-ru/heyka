@@ -20,6 +20,7 @@
           :minlength="2"
           :placeholder="texts.name"
           required
+          lowercase
         />
 
         <ui-switch
@@ -259,9 +260,9 @@ export default {
 <style scoped lang="stylus">
   .edit-channel-label
     line-height 22px
-    color var(--new-UI-03)
+    color var(--Text-secondary)
     font-weight 400
 
   .edit-channel-delete
-    color var(--new-signal-03)
+    color var(--UI-error)
 </style>
