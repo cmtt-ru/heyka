@@ -288,7 +288,7 @@ export default {
     flex-direction column
     height 100vh
     box-sizing border-box
-    color var(--new-white)
+    color var(--Text-white)
 
     &__close
       margin-left auto
@@ -300,6 +300,8 @@ export default {
       &__title
         display flex
         align-items center
+        font-size 14px
+        line-height 28px
 
     &__footer
       flex 0 0 auto
@@ -330,7 +332,7 @@ export default {
       width calc(50% - 6px)
       margin 12px 0
       cursor pointer
-      background var(--new-transparent)
+      background transparent
       border-radius 2px
 
       &__image
@@ -377,7 +379,7 @@ export default {
           background #000
 
       &--active
-          box-shadow inset 0 0 0 2px var(--new-signal-02)
+          box-shadow inset 0 0 0 2px var(--UI-positive)
 
       &:hover:not(.sharing-window__source--active)
         opacity 0.7

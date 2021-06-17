@@ -434,7 +434,5 @@ export default {
       name: user.name,
       email: user.email,
     });
-
-    window.ipcRenderer.send('log-manager-send');
   },
 };
