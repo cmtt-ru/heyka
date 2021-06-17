@@ -16,6 +16,8 @@ import isMainWindow from '@sdk/libs/isMainWindow';
 import network from '@sdk/classes/network';
 import windowName from '@shared/WindowManager/currentWindowName';
 
+themes.manualSetTheme('dark'); // TODO remove if light theme can be selected
+
 /**
  * Retrieving log file path from main process
  */

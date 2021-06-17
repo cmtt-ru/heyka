@@ -4,6 +4,7 @@
     "minHeight": 520,
     "width": 520,
     "height": 520,
+    "backgroundColor": "#000000",
     "trafficLightPosition": {"x": 17, "y": 32},
     "titleBarStyle": "hidden"
   },
