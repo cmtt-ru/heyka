@@ -67,6 +67,7 @@ const plugins = [
       'channels/SET_USER_MEDIA_STATE',
       'channels/ADD_CHANNEL',
       'channels/ADD_CONVERSATION_DATA',
+      'channels/REMOVE_CONVERSATION_DATA',
       'channels/CLEAR_CONVERSATION_DATA',
       'channels/ADD_CONVERSATION_EVENT',
       'channels/CLEAR_CONVERSATION_EVENTS',

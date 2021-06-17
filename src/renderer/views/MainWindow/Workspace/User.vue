@@ -19,27 +19,17 @@
       </div>
     </div>
 
-    <div v-if="user.onlineStatus==='offline'">
+    <div v-if="user.onlineStatus === 'offline'">
       <ui-button
+        v-if="myWorkspace.slack && user.slack"
         :type="17"
         wide
         size="large"
         icon="slack"
-        class="user-action"
-        @click="_notImplemented()"
+        @click="slackInvite"
       >
         <div>{{ texts.inviteBySlackButton }}</div>
       </ui-button>
-      <!-- <ui-button
-        :type="17"
-        wide
-        size="large"
-        icon="ms-teams"
-        class="user-action"
-        @click="_notImplemented()"
-      >
-        <div>{{ texts.inviteByTeamsButton }}</div>
-      </ui-button> -->
     </div>
 
     <div v-else>
@@ -76,11 +66,12 @@
         wide
         size="large"
         class="user-action"
-        @click="startPrivateTalk(user.id)"
+        @click="startPrivateTalk"
       >
         <div>{{ texts.privateTalkButton }}</div>
       </ui-button>
     </div>
+
     <!--
     <div class="user-info">
       <div class="user-info__title">
@@ -105,7 +96,10 @@
       </router-link>
     </div>
 
-    <div class="user-info">
+    <div
+      v-if="user.email"
+      class="user-info"
+    >
       <div class="user-info__title">
         {{ texts.email }}
       </div>
@@ -129,16 +123,16 @@ const DISABLE_AFTER_INVITE_TIMEOUT = 5000;
  */
 const STATUS_COLORS = {
   online: {
-    'background-color': 'var(--new-signal-02)',
-    'border-color': 'var(--new-signal-02)',
+    'background-color': 'var(--UI-positive)',
+    'border-color': 'var(--UI-positive)',
   },
   idle: {
-    'background-color': 'var(--new-signal-01)',
-    'border-color': 'var(--new-signal-01)',
+    'background-color': 'var(--UI-alert)',
+    'border-color': 'var(--UI-alert)',
   },
   offline: {
-    'background-color': 'transparent',
-    'border-color': 'var(--new-UI-05)',
+    'background-color': 'var(--Text-tertiary)',
+    'border-color': 'var(--Text-tertiary)',
   },
 };
 
@@ -157,8 +151,10 @@ export default {
   computed: {
     ...mapGetters({
       selectedChannel: 'myChannel',
+      selectedChannelId: 'me/getSelectedChannelId',
       myUserID: 'me/getMyId',
       userAvatar: 'users/getUserAvatarUrl',
+      myWorkspace: 'myWorkspace',
     }),
 
     /**
@@ -237,7 +233,7 @@ export default {
         isResponseNeeded: true,
         message: {
           action: 'invite',
-          channelId: this.$store.getters['me/getSelectedChannelId'],
+          channelId: this.selectedChannelId,
         },
       });
 
@@ -253,8 +249,26 @@ export default {
       }, DISABLE_AFTER_INVITE_TIMEOUT);
     },
 
-    async startPrivateTalk(userId) {
-      this.$store.dispatch('createPrivateChannel', userId);
+    async startPrivateTalk(redirect = true) {
+      await this.$store.dispatch('createPrivateChannel', {
+        userId: this.userId,
+        redirect,
+      });
+    },
+
+    async slackInvite() {
+      if (!this.selectedChannel) {
+        await this.startPrivateTalk(false);
+      }
+
+      await this.$store.dispatch('app/sendSlackInviteToChannel', this.userId);
+
+      this.$router.push({
+        name: 'channel',
+        params: {
+          id: this.selectedChannelId,
+        },
+      });
     },
   },
 
@@ -302,7 +316,7 @@ export default {
     flex-shrink 0
     flex-grow 0
     margin-top -18px
-    color var(--new-UI-03)
+    color var(--Text-secondary)
 
 .user-action
   margin-bottom 12px
@@ -324,7 +338,7 @@ export default {
   &__title
     font-weight bold
     line-height 24px
-    color var(--new-UI-02)
+    color var(--Text-primary)
 
   &__content
     margin-top 4px

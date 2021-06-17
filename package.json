@@ -1,6 +1,6 @@
 {
   "name": "heyka",
-  "version": "1.2.1026",
+  "version": "1.2.4",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -18,7 +18,8 @@
   "dependencies": {
     "@hawk.so/javascript": "^2.10.0",
     "@hawk.so/webpack-plugin": "0.0.10",
-    "@popperjs/core": "^2.9.2",
+    "@mediapipe/face_detection": "^0.3.1620248423",
+    "@popperjs/core": "^2.9.1",
     "adm-zip": "^0.5.5",
     "auto-launch": "^5.0.5",
     "axios": "^0.21.1",

@@ -1,5 +1,7 @@
-import { ipcMain, app, nativeTheme, systemPreferences } from 'electron';
+import { ipcMain, app, nativeTheme, systemPreferences, Menu } from 'electron';
 import shutdown from 'electron-shutdown-command';
+import { IS_WIN } from '../Constants';
+import WindowManager from '../../shared/WindowManager/WindowManagerMain';
 
 /**
  * Subscribe to ipc events which replaced "remote" module
@@ -24,6 +26,24 @@ ipcMain.handle('remote-systemPreferences-microphone', async (event) => {
   return systemPreferences.getMediaAccessStatus('microphone');
 });
 
+ipcMain.handle('remote-media-access-status', async (event) => {
+  const states = {
+    microphone: await systemPreferences.getMediaAccessStatus('microphone'),
+    camera: await systemPreferences.getMediaAccessStatus('camera'),
+    screen: await systemPreferences.getMediaAccessStatus('screen'),
+  };
+
+  return states;
+});
+
+ipcMain.handle('remote-ask-for-media-access', async (event, mediaType) => {
+  if (IS_WIN) {
+    return 'granted';
+  }
+
+  return await systemPreferences.askForMediaAccess(mediaType);
+});
+
 ipcMain.on('remote-shutdown', (event) => {
   shutdown();
 });
@@ -35,4 +55,36 @@ ipcMain.on('remote-quit', () => {
 ipcMain.on('remote-restart', () => {
   app.relaunch();
   app.exit();
+});
+
+/**
+ * Context menu for text manipulations
+ * @type {Electron.Menu}
+ */
+const InputMenu = Menu.buildFromTemplate([
+  {
+    label: 'Cut',
+    role: 'cut',
+  },
+  {
+    label: 'Copy',
+    role: 'copy',
+  },
+  {
+    label: 'Paste',
+    role: 'paste',
+  },
+  {
+    type: 'separator',
+  },
+  {
+    label: 'Select all',
+    role: 'selectall',
+  },
+]);
+
+ipcMain.handle('open-input-context-menu', async (event, windowId) => {
+  InputMenu.popup(WindowManager.getWindow(windowId));
+
+  return true;
 });

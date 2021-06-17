@@ -19,6 +19,14 @@
 
       <ui-button
         :type="17"
+        class="l-mr-8"
+        @click="sendLogs"
+      >
+        {{ texts.send }}
+      </ui-button>
+
+      <ui-button
+        :type="17"
         @click="openLogs"
       >
         {{ texts.logs }}
@@ -29,6 +37,7 @@
 
 <script>
 import UiButton from '@components/UiButton';
+import notify from '@libs/notify';
 
 export default {
 
@@ -48,15 +57,18 @@ export default {
 
   methods: {
     openReportPage() {
-      window.open('https://cmtt-ru.slack.com/archives/CLA674QEN');
+      this.$store.dispatch('app/openIntercom');
+    },
+
+    sendLogs() {
       window.ipcRenderer.send('log-manager-send');
+      notify('settings.support.sent', { icon: 'tick' });
     },
 
     openLogs() {
       window.ipcRenderer.send('log-manager-open-logs');
     },
   },
-
 };
 </script>
 
@@ -67,5 +79,5 @@ export default {
 
 .about-link
   padding-top 12px
-  color var(--new-UI-01)
+  color var(--UI-active)
 </style>

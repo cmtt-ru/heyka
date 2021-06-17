@@ -75,6 +75,12 @@ const router = new VueRouter({
 
 Vue.mixin({
   methods: {
+    /**
+     * Mixin. Use on ALL "back" buttons in case there is nowhere to go back
+     * @param {string} route - default route to safe-redirect to
+     *
+     * @returns {void}
+     */
     __backOrRedirect(route) {
       const originRoute = router.app.$route.fullPath;
 

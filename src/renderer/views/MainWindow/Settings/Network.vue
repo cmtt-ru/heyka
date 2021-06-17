@@ -1,6 +1,9 @@
 <template>
   <div class="settings-page">
     <div class="settings__label">
+      {{ $t('techTexts.wip') }}!
+    </div>
+    <div class="settings__label">
       {{ texts.transparencyCategory }}
     </div>
     <div class="privacy-text">
@@ -13,24 +16,24 @@
       cols="30"
       rows="10"
     />
-    <div class="settings__label">
+    <!-- <div class="settings__label">
       {{ texts.googleCategory }}
     </div>
     <ui-switch
       v-model="analytics"
       :text="texts.googleLabel"
       @input="save('Analytics', analytics)"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
 
-import { UiSwitch } from '@components/Form';
+// import { UiSwitch } from '@components/Form';
 
 export default {
   components: {
-    UiSwitch,
+    // UiSwitch,
   },
   data() {
     return {
@@ -79,9 +82,9 @@ export default {
 textarea
   outline none
   resize none
-  background-color var(--new-UI-06)
-  border 0.5px solid var(--new-stroke-01)
-  color var(--new-UI-02)
+  background var(--Background-grey)
+  border 0.5px solid var(--UI-divider-1)
+  color var(--Text-primary)
   border-radius 4px
   margin-top 14px
   padding 8px 12px 16px

@@ -90,7 +90,7 @@
               :key="user.id"
               :similarity="user.similarity"
               :select-data="user"
-              :class="{'user--offline': isUserOffline(user) || isUserInSameChannel(user) }"
+              :class="{'user--offline': (isUserOffline(user) && !isSlackConnected(user)) || isUserInSameChannel(user) }"
               button
               class="user"
             >
@@ -110,7 +110,7 @@
                   {{ user.name }}
                 </div>
                 <div
-                  v-if="userChannelName(user.id) && !isUserInSameChannel(user)"
+                  v-if="userChannel(user.id) && !isUserInSameChannel(user)"
                   class="user__channel"
                 >
                   <svg-icon
@@ -118,13 +118,19 @@
                     name="channel"
                     size="small"
                   />
-                  <div>{{ userChannelName(user.id).name }}</div>
+                  <div>{{ userChannel(user.id).name }}</div>
                 </div>
                 <div
-                  v-if="isUserOffline(user) && !userChannelName(user.id)"
+                  v-if="isUserOffline(user) && !userChannel(user.id) && !isSlackConnected(user)"
                   class="user__channel"
                 >
                   {{ $t('techTexts.offline') }}
+                </div>
+                <div
+                  v-if="isUserOffline(user) && !userChannel(user.id) && isSlackConnected(user)"
+                  class="user__channel"
+                >
+                  {{ texts.slackInvite }}
                 </div>
                 <div
                   v-if="isUserInSameChannel(user)"
@@ -260,6 +266,7 @@ export default {
       userAvatar: 'users/getUserAvatarUrl',
       getUsersInAllChannels: 'channels/getUsersInAllChannels',
       getChannelById: 'channels/getChannelById',
+      myWorkspace: 'myWorkspace',
     }),
 
     /**
@@ -394,7 +401,7 @@ export default {
       return false;
     },
 
-    userChannelName(userId) {
+    userChannel(userId) {
       const id = this.getUsersInAllChannels[userId];
 
       if (!id) {
@@ -412,43 +419,62 @@ export default {
       this.selectedGroups = data;
     },
 
+    isSlackConnected(user) {
+      return this.myWorkspace.slack && user.slack;
+    },
+
     async sendInvites() {
-      const ids = [];
+      const onlineArray = [];
+      const offlineArray = [];
 
       try {
-        for (const user of this.selectedUsers) {
-          ids.push(user.id);
-        }
         const groups = [];
 
         for (const group of this.selectedGroups) {
           groups.push(this.$API.group.getMembers(group.id));
         }
-        const groupUsers = [ ...(await Promise.all(groups)) ];
+        const res = await Promise.all(groups);
+        const groupUsers = [...res.flat(), ...this.selectedUsers];
 
         for (const user of groupUsers) {
-          ids.push(user.id);
+          // if user is offline and has slack connected, send him slack invite
+          if (this.isUserOffline(user) && !this.userChannel(user.id) && this.isSlackConnected(user)) {
+            offlineArray.push(user.id);
+          } else {
+            onlineArray.push(user.id);
+          }
         }
-        this.sendAllInvites(ids);
+
+        this.sendAllInvites(onlineArray);
+        this.sendSlackInvites(offlineArray);
 
         this.successInvitesHandler();
       } catch (err) {
         console.error(err);
-        notify(err.response.data.message, {
-          icon: 'warning',
-        });
       }
     },
 
     sendAllInvites(users) {
+      if (!users.length) {
+        return;
+      }
       this.$store.dispatch('app/sendMultiplePushes', {
         users,
-        isResponseNeeded: true,
+        isResponseNeeded: false,
         message: {
           action: 'invite',
           channelId: this.channelId,
         },
       });
+    },
+
+    async sendSlackInvites(users) {
+      if (!users.length) {
+        return;
+      }
+      for (const userId of users) {
+        await this.$store.dispatch('app/sendSlackInviteToChannel', userId);
+      }
     },
 
     successInvitesHandler() {
@@ -478,7 +504,7 @@ export default {
 
 .user-search__wrapper
   position relative
-  background-color var(--new-bg-04)
+  background var(--Background-white)
   padding 6px 0 12px
   z-index 1
 
@@ -489,7 +515,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-stroke-01)
+    background var(--UI-divider-1)
 
 /deep/ .user-search .input
   padding-left 54px
@@ -510,7 +536,9 @@ export default {
   margin-bottom 4px
 
   &:hover
-    background-color var(--new-UI-06)
+    background var(--Background-darkgrey-hover)
+  &:active
+    background var(--Background-darkgrey-active)
 
   &--offline
     opacity 0.5
@@ -522,18 +550,20 @@ export default {
     box-sizing border-box
     flex-shrink 0
     color transparent
-    border 1px solid var(--new-UI-05)
+    border 1px solid var(--UI-divider-3)
     border-radius 50%
 
   &.list-item--selected
     background-color initial
 
     &:hover
-      background-color var(--new-UI-06)
+      background var(--Background-darkgrey)
+    &:active
+      background var(--Background-darkgrey-active)
 
     & .user__check
-      background-color var(--new-UI-01)
-      color var(--new-white)
+      background var(--UI-active)
+      color var(--Text-white)
       padding 2px
       border none
 
@@ -550,9 +580,8 @@ export default {
       width 32px
       height 32px
       border-radius 100%
-      background var(--new-UI-01-3)
-      border 1px solid var(--new-stroke-01)
-      color var(--new-UI-01)
+      background var(--Button-social)
+      color var(--UI-active)
 
   &__inner
     display flex
@@ -563,12 +592,12 @@ export default {
   &__channel
     font-size 12px
     margin-top 4px
-    color var(--new-UI-04)
+    color var(--Text-secondary)
     display flex
     flex-direction row
     align-items center
 
     &__icon
-      color var(--new-signal-02)
+      color var(--UI-positive)
 
 </style>

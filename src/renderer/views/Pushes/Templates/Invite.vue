@@ -121,6 +121,6 @@ export default {
 
     &__icon
       margin-left 4px
-      color var(--new-UI-01)
+      color var(--UI-active)
 
 </style>
