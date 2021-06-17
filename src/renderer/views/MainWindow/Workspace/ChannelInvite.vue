@@ -460,7 +460,7 @@ export default {
       }
       this.$store.dispatch('app/sendMultiplePushes', {
         users,
-        isResponseNeeded: true,
+        isResponseNeeded: false,
         message: {
           action: 'invite',
           channelId: this.channelId,
@@ -504,7 +504,7 @@ export default {
 
 .user-search__wrapper
   position relative
-  background-color var(--new-bg-04)
+  background var(--Background-white)
   padding 6px 0 12px
   z-index 1
 
@@ -515,7 +515,7 @@ export default {
     width calc(100% + 32px)
     height 1px
     left -16px
-    background-color var(--new-stroke-01)
+    background var(--UI-divider-1)
 
 /deep/ .user-search .input
   padding-left 54px
@@ -536,7 +536,9 @@ export default {
   margin-bottom 4px
 
   &:hover
-    background-color var(--new-UI-06)
+    background var(--Background-darkgrey-hover)
+  &:active
+    background var(--Background-darkgrey-active)
 
   &--offline
     opacity 0.5
@@ -548,18 +550,20 @@ export default {
     box-sizing border-box
     flex-shrink 0
     color transparent
-    border 1px solid var(--new-UI-05)
+    border 1px solid var(--UI-divider-3)
     border-radius 50%
 
   &.list-item--selected
     background-color initial
 
     &:hover
-      background-color var(--new-UI-06)
+      background var(--Background-darkgrey)
+    &:active
+      background var(--Background-darkgrey-active)
 
     & .user__check
-      background-color var(--new-UI-01)
-      color var(--new-white)
+      background var(--UI-active)
+      color var(--Text-white)
       padding 2px
       border none
 
@@ -576,9 +580,8 @@ export default {
       width 32px
       height 32px
       border-radius 100%
-      background var(--new-UI-01-3)
-      border 1px solid var(--new-stroke-01)
-      color var(--new-UI-01)
+      background var(--Button-social)
+      color var(--UI-active)
 
   &__inner
     display flex
@@ -589,12 +592,12 @@ export default {
   &__channel
     font-size 12px
     margin-top 4px
-    color var(--new-UI-04)
+    color var(--Text-secondary)
     display flex
     flex-direction row
     align-items center
 
     &__icon
-      color var(--new-signal-02)
+      color var(--UI-positive)
 
 </style>

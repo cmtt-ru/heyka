@@ -1,6 +1,7 @@
-import { ipcMain, app, nativeTheme, systemPreferences } from 'electron';
+import { ipcMain, app, nativeTheme, systemPreferences, Menu } from 'electron';
 import shutdown from 'electron-shutdown-command';
 import { IS_WIN } from '../Constants';
+import WindowManager from '../../shared/WindowManager/WindowManagerMain';
 
 /**
  * Subscribe to ipc events which replaced "remote" module
@@ -54,4 +55,36 @@ ipcMain.on('remote-quit', () => {
 ipcMain.on('remote-restart', () => {
   app.relaunch();
   app.exit();
+});
+
+/**
+ * Context menu for text manipulations
+ * @type {Electron.Menu}
+ */
+const InputMenu = Menu.buildFromTemplate([
+  {
+    label: 'Cut',
+    role: 'cut',
+  },
+  {
+    label: 'Copy',
+    role: 'copy',
+  },
+  {
+    label: 'Paste',
+    role: 'paste',
+  },
+  {
+    type: 'separator',
+  },
+  {
+    label: 'Select all',
+    role: 'selectall',
+  },
+]);
+
+ipcMain.handle('open-input-context-menu', async (event, windowId) => {
+  InputMenu.popup(WindowManager.getWindow(windowId));
+
+  return true;
 });

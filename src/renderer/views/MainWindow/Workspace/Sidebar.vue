@@ -39,7 +39,7 @@
         <svg-icon
           class="search__icon"
           name="search"
-          color="var(--new-UI-01)"
+          color="var(--UI-active)"
           width="20"
           height="20"
         />
@@ -418,7 +418,7 @@ $ANIM = 250ms
   position sticky
   top 0
   z-index 20
-  background-color var(--new-bg-01)
+  background var(--Background-grey)
   padding 12px
   margin-top -12px
   width 100%
@@ -437,10 +437,9 @@ $ANIM = 250ms
   &--mockup
 
     &:hover
-      background-color var(--new-UI-07)
-
+      background var(--Background-darkgrey-hover)
     &:active
-      background-color var(--new-UI-08)
+      background var(--Background-darkgrey-active)
 
   &__icon
     margin 0 7px
@@ -451,10 +450,12 @@ $ANIM = 250ms
       top 0
       bottom 0
       margin auto 0
-      color #A2A7AD
+      color var(--Text-tertiary)
 
       &:hover
-        color var(--new-UI-04)
+        color var(--Text-tertiary-hover)
+      &:active
+        color var(--Text-tertiary-active)
 
 .action-button
   padding 4px 8px
@@ -464,7 +465,7 @@ $ANIM = 250ms
   font-size 12px
   box-sizing border-box
   border-radius 6px
-  color var(--new-UI-04)
+  color var(--Text-secondary)
   font-weight bold
   display flex
   flex-direction row
@@ -473,13 +474,12 @@ $ANIM = 250ms
   cursor pointer
 
   &:hover
-    background-color var(--new-UI-07)
-
+    background var(--Background-darkgrey-hover)
   &:active
-    background-color var(--new-UI-08)
+    background var(--Background-darkgrey-active)
 
   &.router-link-active .action-button__icon
-    color var(--new-UI-01)
+    color var(--UI-active)
 
   &__icon
     margin-right 10px
@@ -490,11 +490,11 @@ $ANIM = 250ms
 
 .channel-header
   display flex
-  background-color var(--new-bg-01)
+  background var(--Background-grey)
   flex-direction row
   justify-content space-between
   align-items center
-  color var(--new-UI-04)
+  color var(--Text-secondary)
   font-size 12px
   font-weight bold
   position sticky
@@ -503,7 +503,7 @@ $ANIM = 250ms
   padding 2px 0 2px 8px
 
 .router-link-active .channel-header__add
-  color var(--new-UI-01)
+  color var(--UI-active)
 
 .user-header
   margin-top 22px
@@ -514,7 +514,7 @@ $ANIM = 250ms
   transform translateY(-25px)
 
 .channels-list
-  background-color var(--new-bg-01)
+  background var(--Background-grey)
   position relative
 
 .connected-channel

@@ -163,7 +163,7 @@ export default {
    * @constructor
    */
   REMOVE_CONVERSATION_DATA(state, { channelId, userId }) {
-    if (state.collection[channelId]) {
+    if (state.collection[channelId] && state.collection[channelId].conversationData) {
       Vue.delete(state.collection[channelId].conversationData, userId);
     }
   },

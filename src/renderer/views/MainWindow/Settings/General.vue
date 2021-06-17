@@ -8,12 +8,12 @@
       :data="languages"
       :label="texts.languageLabel"
     />
-    <ui-select
+    <!-- <ui-select
       v-model="localSettings.mode"
       :data="modes"
       :label="texts.behaviourLabel"
-    />
-    <div class="settings__label">
+    /> -->
+    <!-- <div class="settings__label">
       {{ texts.appearanceCategory }}
     </div>
     <ui-select
@@ -25,7 +25,7 @@
     <ui-switch
       v-model="themeAuto"
       :text="texts.automaticallySwitch"
-    />
+    /> -->
 
     <div class="settings__label">
       {{ texts.autorunCategory }}
