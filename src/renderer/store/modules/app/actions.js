@@ -172,6 +172,36 @@ export default {
   },
 
   /**
+   * Add new modal window
+   *
+   * @param {function} commit – store commit
+   * @param {object} modal – modal
+   * @returns {string} id
+   */
+  addModal({ commit }, modal) {
+    const id = uuidV4();
+    const modalWithId = {
+      id,
+      ...modal,
+    };
+
+    commit('ADD_MODAL', modalWithId);
+
+    return id;
+  },
+
+  /**
+       * Remove last modal window
+       *
+       * @param {function} commit – store commit
+       * @param {string} id – notification id
+       * @returns {void}
+       */
+  removeModal({ commit }) {
+    commit('REMOVE_MODAL');
+  },
+
+  /**
    * Send push
    *
    * @param {function} rootGetters – store rootGetters

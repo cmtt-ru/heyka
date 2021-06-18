@@ -131,6 +131,30 @@ export default {
   },
 
   /**
+   * Add new modal window
+   *
+   * @param {AppState} state – module app state
+   * @param {object} modal – new modal window
+   * @constructor
+   */
+  ADD_MODAL(state, modal) {
+    if (state.modals.length && state.modals[state.modals.length - 1].name === modal.name) {
+      return;
+    }
+    state.modals.push(modal);
+  },
+
+  /**
+     * Remove last modal window
+     *
+     * @param {AppState} state – module app state
+     * @constructor
+     */
+  REMOVE_MODAL(state) {
+    state.modals.pop();
+  },
+
+  /**
    * Add new push
    *
    * @param {AppState} state – module app state

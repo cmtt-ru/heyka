@@ -9,6 +9,7 @@
       />
     </transition>
     <router-view />
+    <modals />
     <app-status :show="!$store.getters['app/getConnectionStatus']" />
     <media-permissions />
     <!--    <performance-monitor />-->
@@ -30,6 +31,7 @@ import { mapGetters } from 'vuex';
 import { heykaStore } from '@/store/localStore';
 import { client } from '@api/socket/client';
 import notify from '@sdk/libs/notify';
+import Modals from '@components/Modals';
 
 const cnsl = new Logger('Mainwindow/index.vue', '#138D75');
 
@@ -42,6 +44,7 @@ export default {
     AppStatus,
     Wireframe,
     MediaPermissions,
+    Modals,
     // PerformanceMonitor,
   },
   data() {
