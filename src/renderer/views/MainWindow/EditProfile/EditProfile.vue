@@ -7,26 +7,14 @@
       <div class="user">
         <ui-image
           ref="avatarInput"
-          :key="vuexAvatarFileId || me.user.id"
-          :image="userAvatar(me.user.id, 64)"
+          :key="localAvatarId"
+          :image="userAvatar(vuexId, 64)"
+          :big-image="userAvatar(vuexId, 512)"
           class="user__avatar"
           :size="64"
           @input="setNewAvatar"
+          @delete-image="deleteImage"
         />
-        <div
-          v-if="!profile.avatarFileId"
-          class="edit-link"
-          @click="selectAvatar"
-        >
-          {{ texts.uploadPhoto }}
-        </div>
-        <div
-          v-else
-          class="edit-link edit-link--warning"
-          @click="deleteImage"
-        >
-          {{ texts.deletePhoto }}
-        </div>
       </div>
 
       <div class="block-title">
@@ -35,15 +23,15 @@
       <ui-input
         v-model="profile.name"
         class="user__input"
-        :placeholder="me.user.name"
+        :placeholder="vuexName"
       />
 
-      <div v-if="me.user.email">
+      <div v-if="vuexMail">
         <div class="block-title">
           {{ texts.emailLabel }}
         </div>
         <div>
-          {{ me.user.email }}
+          {{ vuexMail }}
         </div>
         <div
           class="edit-link"
@@ -53,7 +41,7 @@
         </div>
       </div>
 
-      <div v-if="me.user.email">
+      <div v-if="vuexMail">
         <div class="block-title">
           {{ texts.passLabel }}
         </div>
@@ -136,12 +124,28 @@ export default {
       return this.me?.user?.name;
     },
 
+    vuexMail() {
+      return this.me?.user?.email;
+    },
+
+    /**
+     * Our name from vuex
+     * @returns {string}
+     */
+    vuexId() {
+      return this.me?.user?.id;
+    },
+
     /**
      * Our avatar from vuex
      * @returns {string}
      */
     vuexAvatarFileId() {
       return this.me?.user?.avatarFileId;
+    },
+
+    localAvatarId() {
+      return this.profile.avatarFileId;
     },
   },
 
@@ -179,23 +183,29 @@ export default {
      * @returns {void}
      */
     setNewAvatar(fileId) {
-      this.profile.avatarFileId = fileId;
+      this.$set(this.profile, 'avatarFileId', fileId);
+      this.submit(false);
     },
 
     /**
      * Update our info and send API
+     *
+     * @param {boolean} animation - true if we need to show "saved!" text
      * @returns {void}
      */
-    async submit() {
+    async submit(animation = true) {
       try {
         await this.$API.user.editProfile(this.profile);
-        this.savedAnimation();
+        if (animation) {
+          this.savedAnimation();
+        }
       } catch (err) {
         console.log(err);
       }
     },
 
     async deleteImage() {
+      console.log('starting deleteImage');
       this.$refs.avatarInput.clearInput();
 
       try {
