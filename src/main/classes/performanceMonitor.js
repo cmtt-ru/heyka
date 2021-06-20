@@ -44,7 +44,7 @@ class PerformanceMonitor extends EventEmitter {
     }
 
     /** Run worker in another thread */
-    worker = fork(workerPath, [], {
+    worker = fork(workerPath, [ '--type=pm-worker' ], {
       cwd,
     });
 
