@@ -7,7 +7,7 @@ const { EventEmitter } = require('events');
 
 const IS_WIN = process.platform === 'win32';
 
-const PROCESS_IGNORE = ['worker.js', 'chrome_crashpad_handler', 'System Idle Process'];
+const PROCESS_IGNORE = ['chrome_crashpad_handler', 'System Idle Process'];
 const ARGS_KEY = IS_WIN ? 'command' : 'params';
 
 let parrentPid;
@@ -94,7 +94,7 @@ function avg(arr) {
 }
 
 const ma = new MACalculator({
-  length: 5,
+  length: 1,
 });
 
 ma.on('update', data => {
@@ -190,29 +190,37 @@ async function sysInfo() {
     mem: 0,
   });
 
-  const result = appProcesses.map(proc => {
-    const processType = getArgv(proc[ARGS_KEY], 'type') || '';
-    const processSubType = getArgv(proc[ARGS_KEY], 'utility-sub-type') || '';
-    // const processRenderId = getArgv(proc[ARGS_KEY], 'renderer-client-id') || '';
-    const winProcess = processPids.find(p => p.pid === proc.pid);
-    let template = '';
+  const result = appProcesses
+    .map(proc => {
+      let processType = getArgv(proc[ARGS_KEY], 'type') || '';
+      const processSubType = getArgv(proc[ARGS_KEY], 'utility-sub-type') || '';
+      // const processRenderId = getArgv(proc[ARGS_KEY], 'renderer-client-id') || '';
+      const winProcess = processPids.find(p => p.pid === proc.pid);
+      let template = '';
 
-    if (winProcess) {
-      template = winProcess.template;
-    }
+      if (winProcess) {
+        template = winProcess.template;
+      }
 
-    return {
-      template,
-      type: processType,
-      subType: processSubType,
-      name: proc.name,
-      pid: proc.pid,
-      cpu: proc.cpu,
-      mem: proc.memRss,
+      if (proc.pid === parrentPid) {
+        processType = 'main';
+      }
+
+      return {
+        template,
+        type: processType,
+        subType: processSubType,
+        name: proc.name,
+        pid: proc.pid,
+        cpu: proc.cpu,
+        mem: proc.memRss,
       // parentPid: proc.parentPid,
       // renderId: processRenderId,
-    };
-  });
+      };
+    })
+    .filter(proc => {
+      return proc.type !== 'pm-worker';
+    });
 
   result.push({
     pid: 'bg',
