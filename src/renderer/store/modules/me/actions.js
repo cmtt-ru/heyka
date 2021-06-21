@@ -235,7 +235,7 @@ export default {
           location.reload();
         }
         // eslint-disable-next-line no-magic-numbers
-      }, 3000);
+      }, 5000);
 
       commit('app/ANIMATION_CHANNEL_ID', null, { root: true });
       await dispatch('initial', null, { root: true });
