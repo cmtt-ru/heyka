@@ -3,13 +3,13 @@
     v-if="me"
     class="edit-profile-page"
   >
-    <div>
+    <div v-if="me.user">
       <div class="user">
         <ui-image
           ref="avatarInput"
           :key="localAvatarId"
-          :image="userAvatar(vuexId, 64)"
-          :big-image="userAvatar(vuexId, 512)"
+          :image="userAvatar(me.user.id, 64)"
+          :big-image="userAvatar(me.user.id, 512)"
           class="user__avatar"
           :size="64"
           @input="setNewAvatar"
@@ -26,12 +26,12 @@
         :placeholder="vuexName"
       />
 
-      <div v-if="vuexMail">
+      <div v-if="me.user.email">
         <div class="block-title">
           {{ texts.emailLabel }}
         </div>
         <div>
-          {{ vuexMail }}
+          {{ me.user.email }}
         </div>
         <div
           class="edit-link"
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div v-if="vuexMail">
+      <div v-if="me.user.email">
         <div class="block-title">
           {{ texts.passLabel }}
         </div>
@@ -122,18 +122,6 @@ export default {
      */
     vuexName() {
       return this.me?.user?.name;
-    },
-
-    vuexMail() {
-      return this.me?.user?.email;
-    },
-
-    /**
-     * Our name from vuex
-     * @returns {string}
-     */
-    vuexId() {
-      return this.me?.user?.id;
     },
 
     /**

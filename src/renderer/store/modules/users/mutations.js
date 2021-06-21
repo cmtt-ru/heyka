@@ -21,7 +21,7 @@ export default {
    */
   UPDATE_USER(state, data) {
     if (state.collection[data.id]) {
-      state.collection[data.id] = Object.assign(state.collection[data.id], data);
+      state.collection[data.id] = { ...data };
     }
   },
 
