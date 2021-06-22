@@ -87,19 +87,18 @@
     <div class="buttons">
       <ui-button
         :type="11"
-        icon="disconnect"
-        @click="logoutHandler"
-      >
-        Logout
-      </ui-button>
-
-      <ui-button
-        :type="11"
         icon="quit"
-        class="quit-button"
         @click.native="quitAppHandler"
       >
         {{ texts.quit }}
+      </ui-button>
+      <ui-button
+        :type="11"
+        icon="disconnect"
+        class="logout-button"
+        @click="logoutHandler"
+      >
+        {{ texts.logout }}
       </ui-button>
     </div>
   </popover>
@@ -166,7 +165,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .quit-button
+  .logout-button
     color var(--UI-error)
 
     &:hover
@@ -178,4 +177,7 @@ export default {
   .status--checked
     color var(--UI-active)
     margin-left auto
+
+  /deep/ .icon--quit
+    margin-bottom 2px
 </style>
