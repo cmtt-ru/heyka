@@ -1,0 +1,29 @@
+name: Linter-And-Tests-Checking
+
+on:
+  workflow_dispatch:
+
+jobs:
+  linter-checking:
+    runs-on: [self-hosted, macOS, ARM64]
+    defaults:
+      run:
+        shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache node modules
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/cache
+          !~/cache/exclude
+          **/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+    - name: install dependencies
+      run: npm install
+    - name: Run linter
+      run: npm run lint
+    - name: Run unit tests
+      run: npm run test:unit
+      env:
+        CI: true
