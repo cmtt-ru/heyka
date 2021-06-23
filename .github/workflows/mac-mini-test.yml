@@ -1,4 +1,4 @@
-name: Linter-And-Tests-Checking
+name: Mac-Mini-Test
 
 on:
   workflow_dispatch:
