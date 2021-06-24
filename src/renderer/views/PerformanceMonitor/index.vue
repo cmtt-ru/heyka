@@ -83,17 +83,27 @@
         style="align-items: center"
       >
         <ui-button
-          size="small l-mr-12 l-ml-auto"
-          :type="6"
+          size="small l-mr-24 l-ml-auto"
+          :type="9"
           @click="loadJsonHandler"
         >
           Load JSON
         </ui-button>
 
-        <div style="width: 96px">
+        <div
+          class="l-mr-24"
+          style="width: 94px"
+        >
           <ui-switch
             v-model="realtime"
             text="Realtime"
+          />
+        </div>
+
+        <div style="width: 74px">
+          <ui-switch
+            v-model="limit"
+            text="Limit"
           />
         </div>
       </div>
@@ -105,6 +115,8 @@
 import TrendChart from 'vue-trend-chart';
 import UiButton from '@components/UiButton';
 import UiSwitch from '@components/Form/UiSwitch';
+
+const HISTORY_LIMIT = 100;
 
 const readInputFile = (inputElement, callback) => {
   const reader = new FileReader();
@@ -145,13 +157,13 @@ export default {
       cpuChartLine: [
         {
           data: [],
-          smooth: false,
+          smooth: true,
           className: 'bg-cpu',
           fill: true,
         },
         {
           data: [],
-          smooth: false,
+          smooth: true,
           fill: true,
           className: 'cpu',
         },
@@ -160,13 +172,13 @@ export default {
       memChartLine: [
         {
           data: [],
-          smooth: false,
+          smooth: true,
           fill: true,
           className: 'bg-mem',
         },
         {
           data: [],
-          smooth: false,
+          smooth: true,
           fill: true,
           className: 'mem',
         },
@@ -180,16 +192,26 @@ export default {
       historyArray: [],
 
       realtime: true,
+      limit: true,
       timestamp: null,
       chartKey: 0,
       customJsonLoaded: false,
     };
   },
 
+  watch: {
+    async limit(val) {
+      const history = await window.ipcRenderer.invoke('performance-monitor-history');
+
+      this.clearHistory();
+      this.loadHistory(history, this.limit ? HISTORY_LIMIT : 0);
+    },
+  },
+
   async mounted() {
     const history = await window.ipcRenderer.invoke('performance-monitor-history');
 
-    this.loadHistory(history);
+    this.loadHistory(history, this.limit ? HISTORY_LIMIT : 0);
 
     window.ipcRenderer.on('performance-monitor-processes', (event, item) => {
       if (!this.realtime) {
@@ -234,11 +256,12 @@ export default {
       });
     },
 
-    loadHistory(history) {
+    loadHistory(history, limit = 0) {
       try {
+        // eslint-disable-next-line no-magic-numbers
         this.historyArray = JSON.parse(history);
 
-        this.historyArray.forEach(item => {
+        this.historyArray.slice(-limit).forEach(item => {
           const total = item.data.slice(-2)[1];
           const bgTotal = item.data.slice(-2)[0];
 
@@ -276,6 +299,8 @@ export default {
   display flex
   flex-direction column
   height 100vh
+  background var(--new-black)
+  color var(--new-white)
 
   .table
     flex 1 auto
@@ -285,15 +310,15 @@ export default {
 
     th
       font-weight bold
-      border-right 1px solid #ddd
+      border-right 1px solid var(--UI-divider-1)
       padding 4px 0
-      border-bottom 1px solid #ddd
+      border-bottom 1px solid var(--UI-divider-1)
 
       &:last-child
         border-right none
 
     tr:nth-child(odd):not(.head)
-      background #eee
+      background var(--UI-divider-1)
 
     td
       padding 0 10px
@@ -326,17 +351,23 @@ export default {
 
     .bg-cpu, .bg-mem
       path
-        stroke var(--new-signal-03)
+        stroke var(--UI-divider-1)
 
       .fill
-        fill var(--new-signal-03)
-        opacity 0.5
+        fill var(--UI-divider-1)
+        opacity 0.9
 
   .charts
     padding 16px 16px 8px 16px
 
     &__label
+      color var(--new-white)
       margin-top 8px
       font-weight bold
 
+    .active-line
+      stroke var(--new-white)
+
+    .label
+      fill var(--new-white)
 </style>
