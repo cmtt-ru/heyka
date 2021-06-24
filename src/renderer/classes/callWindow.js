@@ -123,7 +123,7 @@ class CallWindow {
    */
   async closeOverlay() {
     if (this.overlayWindow) {
-      return this.overlayWindow.action('close');
+      return this.overlayWindow.action('softClose');
     }
 
     return false;
@@ -277,7 +277,7 @@ class CallWindow {
           if (this.streamingOverlayWindow) {
             this.streamingOverlayWindow.action('show');
           } else if (this.overlayWindow) {
-            this.overlayWindow.action('show');
+            this.showOverlay();
           }
           broadcastEvents.dispatch('grid-hide');
         }, BLUR_TIME);
@@ -348,7 +348,7 @@ class CallWindow {
     }
 
     setTimeout(async () => {
-      await this.hideOverlay();
+      await this.closeOverlay();
       await this.showStreamingOverlay();
       await this.closeGrid();
     }, BLUR_TIME);
@@ -375,8 +375,6 @@ class CallWindow {
       broadcastEvents.removeAllListeners('frame-window-resized');
       await this.frameWindow.action('softClose');
       await this.closeStreamingOverlay();
-      await this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
-      await this.overlayWindow.action('showInactive');
     }
   }
 
@@ -396,8 +394,10 @@ class CallWindow {
         window: {
           ...OVERLAY_WINDOW_SIZES['streamingMax'],
         },
-        onClose: () => {
+        onClose: async () => {
           this.streamingOverlayWindow = null;
+          await this.resizeOverlay(this.lastMediaSharingMode ? 'mediaSharing' : 'default');
+          await this.showOverlay();
         },
       });
     } else {
