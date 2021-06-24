@@ -96,7 +96,8 @@
   },
   "performanceMonitor": {
     "width": 860,
-    "height": 600,
-    "frame": true
+    "height": 660,
+    "frame": true,
+    "backgroundColor": "#000"
   }
 }

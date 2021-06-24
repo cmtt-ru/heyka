@@ -259,9 +259,12 @@ export default {
     loadHistory(history, limit = 0) {
       try {
         // eslint-disable-next-line no-magic-numbers
-        this.historyArray = JSON.parse(history);
+        this.historyArray = JSON.parse(history).slice(-limit);
 
-        this.historyArray.slice(-limit).forEach(item => {
+        console.log(this.historyArray[0]);
+        console.log(this.historyArray[this.historyArray.length - 1]);
+
+        this.historyArray.forEach(item => {
           const total = item.data.slice(-2)[1];
           const bgTotal = item.data.slice(-2)[0];
 
