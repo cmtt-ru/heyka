@@ -114,8 +114,6 @@ export default {
       if (status === 'true') {
         const socialName = this.socialName.charAt(0).toUpperCase() + this.socialName.slice(1);
 
-        trackEvent(GA_EVENTS.socialLink(socialName));
-
         text = this.$t('workspace.userSettings.socialLinked', [ socialName ]);
       } else {
         text = decodeURIComponent(error);
