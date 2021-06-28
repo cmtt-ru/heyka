@@ -229,6 +229,9 @@ export default {
         this.slackUsers = users;
       } catch (err) {
         console.log(err);
+        if (err.response.data.message === 'SlackNotConnected') {
+          await this.$store.dispatch('workspaces/updateList');
+        }
         this.slackUsers = [];
       } finally {
         this.loading = false;
