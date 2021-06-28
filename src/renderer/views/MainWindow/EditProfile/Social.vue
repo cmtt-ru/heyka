@@ -80,7 +80,6 @@ import { mapGetters } from 'vuex';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { WEB_URL } from '@sdk/Constants';
 import notify from '@libs/notify';
-import { GA_EVENTS, trackEvent } from '@libs/analytics';
 
 export default {
   components: {
