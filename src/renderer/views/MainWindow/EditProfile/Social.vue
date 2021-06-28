@@ -80,6 +80,7 @@ import { mapGetters } from 'vuex';
 import DeepLink from '@shared/DeepLink/DeepLinkRenderer';
 import { WEB_URL } from '@sdk/Constants';
 import notify from '@libs/notify';
+import { GA_EVENTS, trackEvent } from '@libs/analytics';
 
 export default {
   components: {
@@ -112,6 +113,8 @@ export default {
 
       if (status === 'true') {
         const socialName = this.socialName.charAt(0).toUpperCase() + this.socialName.slice(1);
+
+        trackEvent(GA_EVENTS.socialLink(socialName));
 
         text = this.$t('workspace.userSettings.socialLinked', [ socialName ]);
       } else {
