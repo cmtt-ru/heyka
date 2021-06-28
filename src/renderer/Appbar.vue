@@ -291,6 +291,7 @@ export default {
     -webkit-app-region no-drag
     border-radius 8px
     height 32px
+    line-height 16px
     padding 0 6px
     pointer-events initial
     font-weight bold
@@ -306,7 +307,7 @@ export default {
 
   &__expand
     margin-left 4px
-    margin-top 1px
+    color var(--Text-secondary)
 
   &__avatar
     width 14px
