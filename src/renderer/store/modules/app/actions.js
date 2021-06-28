@@ -7,6 +7,7 @@ import { heykaStore } from '@/store/localStore';
 import sounds from '@sdk/classes/sounds';
 import { conversationBroadcast } from '@api/socket/utils';
 import intercom from '@classes/intercom';
+import { GA_EVENTS, trackEvent } from '@libs/analytics';
 
 /**
  * @typedef PrivacyLogData
@@ -192,6 +193,8 @@ export default {
       isResponseNeeded,
       message,
     });
+
+    trackEvent(GA_EVENTS.pushInviteSend);
 
     return inviteId;
   },
@@ -413,6 +416,10 @@ export default {
 
   handUpInChannel({ rootGetters }, state) {
     conversationBroadcast('hand-up', rootGetters['me/getMyId'], { state });
+
+    if (state) {
+      trackEvent(GA_EVENTS.raiseHand);
+    }
   },
 
   sendMiniChatMessage({ rootGetters }, message) {
