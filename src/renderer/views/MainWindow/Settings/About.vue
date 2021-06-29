@@ -144,7 +144,7 @@ export default {
   font-weight 400
 
 .check-for-updates
-  margin-top 16px
+  margin-top 14px
 
 .changelog
   display flex
@@ -163,8 +163,8 @@ export default {
     font-weight bold
     font-size 18px
     line-height 28px
-    padding-bottom 8px
-    margin-top 15px
+    padding-bottom 9px
+    margin-top 16px
     user-select text
 
   &__text
