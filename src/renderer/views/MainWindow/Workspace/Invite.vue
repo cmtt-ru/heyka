@@ -170,7 +170,7 @@ export default {
 
 <style lang="stylus" scoped>
 .link-wrapper
-  padding 16px 0
+  padding 12px 0
 
 .link__header
   padding 4px
