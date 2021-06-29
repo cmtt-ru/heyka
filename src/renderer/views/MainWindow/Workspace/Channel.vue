@@ -326,7 +326,7 @@ export default {
   &__name
     font-weight 500
     flex-grow 1
-    line-height 20px
+    line-height 16px
     margin-left 8px
 
   &__more
@@ -341,7 +341,6 @@ export default {
   padding 0 12px
 
 .channel-user-item
-  margin-bottom 2px
   padding 2px 0
 
 .last-block
@@ -355,7 +354,7 @@ export default {
   display flex
   width 100%
   height 100%
-  padding 26px
+  padding 26px 26px 126px
   box-sizing border-box
   flex-direction column
   align-items center
