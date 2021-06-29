@@ -27,6 +27,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'online'}"
         @click="changeStatus('online')"
       >
         <svg-icon
@@ -46,6 +47,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'idle'}"
         @click="changeStatus('idle')"
       >
         <svg-icon
@@ -65,6 +67,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'offline'}"
         @click="changeStatus('offline')"
       >
         <svg-icon
@@ -177,5 +180,7 @@ export default {
 
   .status--checked
     color var(--UI-active)
-    margin-left auto
+
+    &.icon
+      margin-left auto
 </style>

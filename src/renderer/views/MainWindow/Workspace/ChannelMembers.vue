@@ -153,7 +153,7 @@ export default {
 
 .user-search__wrapper
   background var(--Background-white)
-  padding 6px 0 12px
+  padding 5px 0 9px
   z-index 1
   position sticky
   top 0
@@ -174,12 +174,12 @@ export default {
   padding-left 10px
 
 .user
-  padding 4px 0 4px 10px
+  padding 6px 0 6px 10px
   line-height 16px
   display flex
   flex-direction row
   align-items center
-  margin-bottom 2px
+  height 44px
 
   &__avatar
     margin-right 12px
@@ -196,6 +196,7 @@ export default {
 
   &__label
     font-size 12px
+    padding-top 4px
     color var(--Text-secondary)
 
 </style>
