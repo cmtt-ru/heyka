@@ -308,7 +308,7 @@ export default {
     &:active
       background var(--Background-grey-active)
 
-    &.context-menu--opened .workspace__expand
+    &.popover--opened .workspace__expand
       color var(--UI-active)
 
   &__expand
