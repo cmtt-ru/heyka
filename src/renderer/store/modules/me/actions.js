@@ -205,7 +205,7 @@ export default {
    * @param {boolean} value – state
    * @returns {void}
    */
-  async setSuspendState({ commit, dispatch, getters, state }, value) {
+  async setSuspendState({ commit, dispatch, getters, state, rootGetters }, value) {
     if (value) {
       cnsl.log('Sleep');
     } else {
@@ -225,6 +225,18 @@ export default {
 
     /** Wake up */
     if (!value) {
+      /**
+       * ٩(ఠ益ఠ)۶
+       * Dirty workaround with hanging connection status
+       * @since 21.06.2021
+       */
+      setTimeout(() => {
+        if (!rootGetters['app/getConnectionStatus']) {
+          location.reload();
+        }
+        // eslint-disable-next-line no-magic-numbers
+      }, 5000);
+
       commit('app/ANIMATION_CHANNEL_ID', null, { root: true });
       await dispatch('initial', null, { root: true });
     }
