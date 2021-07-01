@@ -21,7 +21,9 @@ export default {
    */
   UPDATE_USER(state, data) {
     if (state.collection[data.id]) {
-      state.collection[data.id] = { ...data };
+      for (const key in data){
+        Vue.set(state.collection[data.id], key, data[key])
+      }
     }
   },
 
