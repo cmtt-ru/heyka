@@ -17,15 +17,15 @@ jobs:
     - name: Fix git config
       run: |
         git submodule foreach 'git config --global url."https://x-access-token:${{ secrets.MY_REPO_PAT }}@github.com/cmtt-ru/heyka-sdk".insteadOf "https://github.com/cmtt-ru/heyka-sdk"'
-#    - name: Cache node modules
-#      uses: actions/cache@v1
-#      with:
-#        path: node_modules
-#        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-#        restore-keys: |
-#          ${{ runner.OS }}-build-${{ env.cache-name }}-
-#          ${{ runner.OS }}-build-
-#          ${{ runner.OS }}-
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ env.cache-name }}-
+          ${{ runner.OS }}-build-
+          ${{ runner.OS }}-
     - name: install dependencies
       run: npm install
     - name: set configuration
