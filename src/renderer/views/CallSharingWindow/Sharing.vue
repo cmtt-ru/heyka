@@ -14,7 +14,7 @@
 
       <div class="sharing-window__options">
         <ui-button
-          class="l-mr-4"
+          class="l-mr-4 window__options__button"
           :type="13"
           :active="sourceButton === 'screen'"
           size="small"
@@ -24,7 +24,7 @@
         </ui-button>
 
         <ui-button
-          class="l-mr-4"
+          class="l-mr-4 window__options__button"
           :type="13"
           :active="sourceButton === 'window'"
           size="small"
@@ -75,6 +75,7 @@
       <ui-button
         v-if="!isSharingEnabled"
         class="l-mr-8"
+        size="large"
         :type="1"
         :disabled="nothingSelected"
         @click="startSharingHandler"
@@ -85,6 +86,7 @@
       <ui-button
         v-if="isSharingEnabled"
         class="l-mr-8"
+        size="large"
         :type="12"
         @click="stopSharingHandler"
       >
@@ -93,6 +95,7 @@
 
       <ui-button
         :type="8"
+        size="large"
         @click="closeHandler"
       >
         {{ texts.cancel }}
@@ -295,7 +298,7 @@ export default {
 
     &__header
       flex 0 0 auto
-      padding 20px 20px 13px 20px
+      padding 20px 20px 12px 20px
 
       &__title
         display flex
@@ -306,6 +309,7 @@ export default {
     &__footer
       flex 0 0 auto
       padding 20px
+      box-shadow 0 0 0 1px var(--UI-divider-1)
 
     &__content
       flex 1 1 auto
@@ -313,8 +317,11 @@ export default {
       -webkit-app-region no-drag
 
     &__options
-      margin-top 13px
+      margin-top 16px
       display flex
+
+      &__button
+        height 14px !important
 
     &__sources
       display flex
@@ -327,12 +334,13 @@ export default {
       &[count="1"]
         & ^[-2]__source
           width 100%
+          max-height 264px
 
     &__source
       width calc(50% - 6px)
       margin 12px 0
       cursor pointer
-      background transparent
+      background var(--Background-darkgrey)
       border-radius 2px
 
       &__image
@@ -351,6 +359,7 @@ export default {
           justify-content center
           box-sizing border-box
           padding 8px
+          max-height 264px
 
           img
             border-radius 4px
@@ -390,4 +399,5 @@ export default {
   display inline-flex
   font-size 12px
   margin-left auto
+  height 28px
 </style>
