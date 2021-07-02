@@ -684,7 +684,7 @@ export default {
   display flex
   flex-direction row
   background-color #000000
-  padding 6px
+  padding 4px 6px
   border-radius 4px
   font-size 12px
   line-height 12px
