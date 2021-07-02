@@ -1,5 +1,6 @@
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
+import store from '@/store';
 import { IS_WIN } from '@sdk/Constants';
 
 const OVERLAY_WINDOW_SIZES = {
@@ -84,6 +85,11 @@ class CallWindow {
     if (this.streamingOverlayWindow) {
       return;
     }
+
+    if (!store.getters['me/getSelectedChannelId']) {
+      return;
+    }
+
     if (this.overlayWindow === null) {
       this.overlayWindow = await WindowManager.create({
         route: '/call-overlay',
