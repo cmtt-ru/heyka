@@ -32,6 +32,7 @@
         popover
         class="sharing-panel__expand-button"
         size="small"
+        height="24"
         :icon="streamingOverlayExpanded ? 'collapse': 'arrow-down'"
         @click="streamingHandler"
       />
@@ -190,13 +191,22 @@ export default {
   &__header
     text-align center
     pointer-events none
+    font-size 16px
+    line-height 18px
 
   &__expand-button
     border-radius 20px
+    width 24px
+    height 24px
     overflow hidden
     flex-shrink 0
     margin-left 8px
-    background-color rgba(255, 255, 255, 0.2) //! не переменная
+    background-color rgba(255, 255, 255, 0.2) //! not a var
+
+    &:hover
+      background rgba(255, 255, 255, 0.15)
+    &:active
+      background rgba(255, 255, 255, 0.3)
 
   .fade-enter-active,
   .fade-leave-active
