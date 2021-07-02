@@ -6,7 +6,7 @@
         data-popover-close
         @click="editHandler"
       >
-        Сменить фото
+        {{ texts.change }}
       </ui-button>
       <ui-button
         :type="11"
@@ -14,7 +14,7 @@
         data-popover-close
         @click="deleteHandler"
       >
-        Удалить
+        {{ texts.delete }}
       </ui-button>
     </div>
   </popover>
@@ -32,55 +32,13 @@ export default {
     UiButton,
   },
 
-  props: {
-    /**
-     * User id
-     */
-    userId: {
-      type: String,
-      default: '',
-    },
-
-    /**
-     * User microphone state
-     */
-    microphone: {
-      type: Boolean,
-      default: false,
-    },
-
-    /**
-     * Channel id
-     */
-    channelId: {
-      type: String,
-      default: null,
-    },
-  },
-
   computed: {
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
      */
     texts() {
-      return this.$t('popover.userInChannel');
-    },
-
-    /**
-     * Not me
-     * @returns {boolean}
-     */
-    notMe() {
-      return (this.$store.state.me.id !== this.userId);
-    },
-
-    /**
-     * Am i in channel
-     * @returns {boolean}
-     */
-    amIInChannel() {
-      return this.$store.getters['me/getSelectedChannelId'] === this.channelId;
+      return this.$t('popover.changePhoto');
     },
   },
 
