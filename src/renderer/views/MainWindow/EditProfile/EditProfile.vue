@@ -171,7 +171,7 @@ export default {
      */
     setNewAvatar(fileId) {
       this.$set(this.profile, 'avatarFileId', fileId);
-      this.submit(false);
+      this.submit();
     },
 
     /**
@@ -192,7 +192,6 @@ export default {
     },
 
     async deleteImage() {
-      console.log('starting deleteImage');
       this.$refs.avatarInput.clearInput();
 
       try {
