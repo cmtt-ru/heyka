@@ -179,6 +179,7 @@ export default {
 
 .workspace-avatar
   margin-right 8px
+  flex-shrink 0
 
 .workspace--checked
   color var(--UI-active)
