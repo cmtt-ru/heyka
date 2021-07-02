@@ -192,7 +192,6 @@ export default {
     },
 
     async deleteImage() {
-      console.log('starting deleteImage');
       this.$refs.avatarInput.clearInput();
 
       try {
