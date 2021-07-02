@@ -171,7 +171,7 @@ export default {
      */
     setNewAvatar(fileId) {
       this.$set(this.profile, 'avatarFileId', fileId);
-      this.submit(false);
+      this.submit();
     },
 
     /**
