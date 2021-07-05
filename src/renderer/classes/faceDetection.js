@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import { FaceDetection } from '@mediapipe/face_detection';
 
 const INTERVAL_TIMEOUT = 1000;
-const MAX_NO_FACE_COUNT = 5;
+const MAX_NO_FACE_COUNT = 120;
 let noFaceCounter = 0;
 
 class Face extends EventEmitter {
