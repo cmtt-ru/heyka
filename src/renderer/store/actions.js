@@ -8,6 +8,7 @@ import sounds from '@sdk/classes/sounds';
 import connectionCheck from '@sdk/classes/connectionCheck';
 import Logger from '@sdk/classes/logger';
 import { GA_EVENTS, trackEvent } from '@libs/analytics';
+import notify from '@libs/notify';
 
 const cnsl = new Logger('Initial', '#db580e');
 const PLAY_SOUND_TIMEOUT = 10;
@@ -386,6 +387,9 @@ export default {
 
       await dispatch('initial');
     } catch (err) {
+      notify('Invite code is invalid', {
+        icon: 'warning',
+      });
       console.log(`Code ${authLink} is invalid:`, err);
     }
   },

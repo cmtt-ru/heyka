@@ -500,12 +500,12 @@ export default {
 <style lang="stylus" scoped>
 
 .top-info-text
-  margin 42px 0 28px
+  margin 23px 0 17px
 
 .user-search__wrapper
   position relative
   background var(--Background-white)
-  padding 6px 0 12px
+  padding 4px 0 12px
   z-index 1
 
   &.ui-sticked:after
@@ -529,7 +529,6 @@ export default {
   display flex
   flex-direction row
   align-items center
-  margin-bottom 2px
   border-radius 6px
   cursor pointer
   height 44px
