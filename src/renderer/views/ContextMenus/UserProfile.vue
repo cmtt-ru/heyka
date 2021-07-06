@@ -168,21 +168,21 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .logout-button
+.logout-button
+  color var(--UI-error)
+
+  &:hover
+    background var(--UI-error-secondary)
+
+  /deep/ svg
     color var(--UI-error)
 
-    &:hover
-      background var(--UI-error-secondary)
+.status--checked
+  color var(--UI-active)
 
-    /deep/ svg
-      color var(--UI-error)
+  &.icon
+    margin-left auto
 
-  .status--checked
-    color var(--UI-active)
-
-    &.icon
-      margin-left auto
-
-  /deep/ .icon--quit
-    margin-bottom 2px
+/deep/ .icon--quit
+  margin-bottom 2px
 </style>
