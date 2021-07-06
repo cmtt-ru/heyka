@@ -5,6 +5,7 @@ import { meStore } from '@/store/localStore';
 import Logger from '@sdk/classes/logger';
 import sounds from '@sdk/classes/sounds';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
+import network from '@sdk/classes/network';
 import faceDetection from '@classes/faceDetection';
 
 const cnsl = new Logger('Vuex actions /me', '#17A589');
@@ -205,12 +206,16 @@ export default {
    * @param {boolean} value – state
    * @returns {void}
    */
-  async setSuspendState({ commit, dispatch, getters, state }, value) {
+  async setSuspendState({ commit, dispatch, getters, state, rootGetters }, value) {
     if (value) {
       cnsl.log('Sleep');
+      network.stopWatch();
     } else {
       cnsl.log('Awake');
+      network.watchInternetState();
     }
+
+    commit('SET_SUSPEND_STATE', value);
 
     /** Sleep */
     if (value) {
@@ -218,18 +223,33 @@ export default {
       const selectedChannelId = getters['getSelectedChannelId'];
 
       if (selectedChannelId) {
-        await dispatch('unselectChannel', selectedChannelId, { root: true });
+        try {
+          await dispatch('unselectChannel', selectedChannelId, { root: true });
+        } catch (e) {
+          console.error(`Can't unselect channel while in sleep`, e);
+        }
       }
-      sockets.destroy();
+
+      await sockets.destroy();
     }
 
     /** Wake up */
     if (!value) {
+      /**
+       * ٩(ఠ益ఠ)۶
+       * Dirty workaround with hanging connection status
+       * @since 21.06.2021
+       */
+      setTimeout(() => {
+        if (!rootGetters['app/getConnectionStatus']) {
+          location.reload();
+        }
+        // eslint-disable-next-line no-magic-numbers
+      }, 5000);
+
       commit('app/ANIMATION_CHANNEL_ID', null, { root: true });
       await dispatch('initial', null, { root: true });
     }
-
-    commit('SET_SUSPEND_STATE', value);
 
     if (!value && state.lockScreenState) {
       await dispatch('setLockScreenState', false);

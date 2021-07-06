@@ -180,6 +180,7 @@ export default {
   right 0
   margin 0 auto
   height 100%
+  transform translateY(-44px)
 
 /deep/ .icon
   animation loading 2s ease-in-out infinite

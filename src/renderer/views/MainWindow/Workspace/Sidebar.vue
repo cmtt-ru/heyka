@@ -419,7 +419,7 @@ $ANIM = 250ms
   top 0
   z-index 20
   background var(--Background-grey)
-  padding 12px
+  padding 9px 12px 12px
   margin-top -12px
   width 100%
   margin-left -12px
@@ -435,6 +435,7 @@ $ANIM = 250ms
   position relative
 
   &--mockup
+    line-height 22px
 
     &:hover
       background var(--Background-darkgrey-hover)
@@ -459,7 +460,7 @@ $ANIM = 250ms
 
 .action-button
   padding 4px 8px
-  margin 2px 0
+  margin 6px 0 2px
   width 100%
   height 24px
   font-size 12px
@@ -498,16 +499,16 @@ $ANIM = 250ms
   font-size 12px
   font-weight bold
   position sticky
-  top 55px
+  top 53px
   z-index 10
-  padding 2px 0 2px 8px
+  padding 1px 0 3px 8px
 
 .router-link-active .channel-header__add
   color var(--UI-active)
 
 .user-header
   margin-top 22px
-  top 79px
+  top 77px
   bottom 0
 
 .user-anchor

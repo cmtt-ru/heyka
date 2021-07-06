@@ -3,30 +3,17 @@
     v-if="me"
     class="edit-profile-page"
   >
-    <div>
+    <div v-if="me.user">
       <div class="user">
         <ui-image
           ref="avatarInput"
-          :key="vuexAvatarFileId || me.user.id"
           :image="userAvatar(me.user.id, 64)"
+          :big-image="userAvatar(me.user.id, Infinity)"
           class="user__avatar"
           :size="64"
           @input="setNewAvatar"
+          @delete-image="deleteImage"
         />
-        <div
-          v-if="!profile.avatarFileId"
-          class="edit-link"
-          @click="selectAvatar"
-        >
-          {{ texts.uploadPhoto }}
-        </div>
-        <div
-          v-else
-          class="edit-link edit-link--warning"
-          @click="deleteImage"
-        >
-          {{ texts.deletePhoto }}
-        </div>
       </div>
 
       <div class="block-title">
@@ -35,7 +22,7 @@
       <ui-input
         v-model="profile.name"
         class="user__input"
-        :placeholder="me.user.name"
+        :placeholder="vuexName"
       />
 
       <div v-if="me.user.email">
@@ -143,6 +130,10 @@ export default {
     vuexAvatarFileId() {
       return this.me?.user?.avatarFileId;
     },
+
+    localAvatarId() {
+      return this.profile.avatarFileId;
+    },
   },
 
   watch: {
@@ -179,17 +170,22 @@ export default {
      * @returns {void}
      */
     setNewAvatar(fileId) {
-      this.profile.avatarFileId = fileId;
+      this.$set(this.profile, 'avatarFileId', fileId);
+      this.submit();
     },
 
     /**
      * Update our info and send API
+     *
+     * @param {boolean} animation - true if we need to show "saved!" text
      * @returns {void}
      */
-    async submit() {
+    async submit(animation = true) {
       try {
         await this.$API.user.editProfile(this.profile);
-        this.savedAnimation();
+        if (animation) {
+          this.savedAnimation();
+        }
       } catch (err) {
         console.log(err);
       }

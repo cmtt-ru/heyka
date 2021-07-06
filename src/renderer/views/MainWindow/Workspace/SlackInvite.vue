@@ -31,7 +31,7 @@
           {{ texts.successInviteStart }}{{ $tc("slackInvite.successInviteMiddle", invitesSentTo.length) }}{{ texts.successInviteEnd }}
         </div>
         <div
-          v-sticky.top="{ offset: -0.1, rootSelector: '.pseudo-popup__body' }"
+          v-sticky.top="{ offset: -1, rootSelector: '.pseudo-popup__body' }"
           class="user-search__wrapper"
         >
           <ui-input
@@ -229,6 +229,9 @@ export default {
         this.slackUsers = users;
       } catch (err) {
         console.log(err);
+        if (err.response.data.message === 'SlackNotConnected') {
+          await this.$store.dispatch('workspaces/updateList');
+        }
         this.slackUsers = [];
       } finally {
         this.loading = false;
@@ -279,14 +282,14 @@ export default {
 
 .user-search__wrapper
   background var(--Background-white)
-  padding 6px 0 12px
+  padding-bottom 12px
   z-index 1
   position relative
 
   &.ui-sticked:after
     content ''
     position absolute
-    bottom 0
+    bottom -1px
     width calc(100% + 32px)
     height 1px
     left -16px
@@ -310,7 +313,7 @@ export default {
     color var(--UI-error)
 
   &__wrapper
-    margin-bottom 12px
+    margin-bottom 10px
     width 100%
     display flex
     flex-direction row-reverse

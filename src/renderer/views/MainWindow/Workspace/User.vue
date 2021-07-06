@@ -333,7 +333,7 @@ export default {
   margin 0 4px
 
 .user-info
-  margin-top 12px
+  margin-top 11px
 
   &__title
     font-weight bold
@@ -341,7 +341,7 @@ export default {
     color var(--Text-primary)
 
   &__content
-    margin-top 4px
+    margin-top 6px
     line-height 22px
 
     &--email

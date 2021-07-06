@@ -27,6 +27,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'online'}"
         @click="changeStatus('online')"
       >
         <svg-icon
@@ -46,6 +47,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'idle'}"
         @click="changeStatus('idle')"
       >
         <svg-icon
@@ -65,6 +67,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'offline'}"
         @click="changeStatus('offline')"
       >
         <svg-icon
@@ -87,19 +90,18 @@
     <div class="buttons">
       <ui-button
         :type="11"
-        icon="disconnect"
-        @click="logoutHandler"
-      >
-        Logout
-      </ui-button>
-
-      <ui-button
-        :type="11"
         icon="quit"
-        class="quit-button"
         @click.native="quitAppHandler"
       >
         {{ texts.quit }}
+      </ui-button>
+      <ui-button
+        :type="11"
+        icon="disconnect"
+        class="logout-button"
+        @click="logoutHandler"
+      >
+        {{ texts.logout }}
       </ui-button>
     </div>
   </popover>
@@ -166,16 +168,21 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .quit-button
+.logout-button
+  color var(--UI-error)
+
+  &:hover
+    background var(--UI-error-secondary)
+
+  /deep/ svg
     color var(--UI-error)
 
-    &:hover
-      background var(--UI-error-secondary)
+.status--checked
+  color var(--UI-active)
 
-    /deep/ svg
-      color var(--UI-error)
-
-  .status--checked
-    color var(--UI-active)
+  &.icon
     margin-left auto
+
+/deep/ .icon--quit
+  margin-bottom 2px
 </style>
