@@ -19,7 +19,7 @@ export default {
     /* eslint-disable-next-line */
     const sourceId = source?.display_id || source?.id;
 
-    if (source && source.index) {
+    if (source && source.index !== undefined) {
       console.log('SETTING SHARING SOURCE', source);
       console.log('sourceId: ', sourceId);
       console.log('sourceIndex: ', source.index);

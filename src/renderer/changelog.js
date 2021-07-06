@@ -1,6 +1,6 @@
 export const CHANGELOG = [
   {
-    version: 'v1.2.5',
+    version: 'v1.2.6',
     date: '02.07.2021',
     text: 'Дизайн-аудит',
     list: [
