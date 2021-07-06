@@ -9,7 +9,10 @@
       class="workspace"
     >
       <div
-        v-popover.click="{name: 'Workspace', permissions: $permissions.manageWorkspaces()}"
+        v-popover.click="{name: 'Workspace', permissions: $permissions.manageWorkspaces(), options: {modifiers:[{name: 'offset',
+                                                                                                                 options: {
+                                                                                                                   offset: [0, 8],
+                                                                                                                 },}]}}"
         class="workspace__wrapper"
       >
         <avatar
@@ -19,7 +22,9 @@
           :size="20"
           :border-radius="6"
         />
-        <div>{{ myWorkspace.name }}</div>
+        <div v-textfade>
+          {{ myWorkspace.name }}
+        </div>
         <svg-icon
           class="workspace__expand"
           name="arrow-down"
@@ -291,6 +296,8 @@ export default {
     -webkit-app-region no-drag
     border-radius 8px
     height 32px
+    max-width 230px
+    line-height 16px
     padding 0 6px
     pointer-events initial
     font-weight bold
@@ -301,18 +308,20 @@ export default {
     &:active
       background var(--Background-grey-active)
 
-    &.context-menu--opened .workspace__expand
+    &.popover--opened .workspace__expand
       color var(--UI-active)
 
   &__expand
     margin-left 4px
-    margin-top 1px
+    color var(--Text-secondary)
+    flex-shrink 0
 
   &__avatar
     width 14px
     height 14px
     border-radius 2px
     margin-right 6px
+    flex-shrink 0
 
 .appbar
   width 100%

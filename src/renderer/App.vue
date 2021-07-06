@@ -10,6 +10,8 @@ import '@styles/global.styl';
 import WindowManager from '@shared/WindowManager/WindowManagerRenderer';
 import Mousetrap from 'mousetrap';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
+
+import themes from '@sdk/themes';
 require.context('@assets/icons', true, /[A-Za-z0-9-_,\s]+\.svg$/i);
 
 export default {
@@ -28,8 +30,8 @@ export default {
       broadcastEvents.dispatch('go-to-support');
     });
 
-    Mousetrap.bind('up up down down left right left right b a enter', function () {
-      console.log('%ckonami code!', 'color: green; font: 4rem/1 Tahoma;');
+    Mousetrap.bind('up up down down left right left right', function () {
+      themes.manualSetTheme('light');
     });
 
     /**

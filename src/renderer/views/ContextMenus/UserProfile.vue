@@ -27,6 +27,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'online'}"
         @click="changeStatus('online')"
       >
         <svg-icon
@@ -46,6 +47,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'idle'}"
         @click="changeStatus('idle')"
       >
         <svg-icon
@@ -65,6 +67,7 @@
       <ui-button
         data-popover-close
         :type="11"
+        :class="{'status--checked': onlineStatus === 'offline'}"
         @click="changeStatus('offline')"
       >
         <svg-icon
@@ -165,19 +168,21 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .logout-button
+.logout-button
+  color var(--UI-error)
+
+  &:hover
+    background var(--UI-error-secondary)
+
+  /deep/ svg
     color var(--UI-error)
 
-    &:hover
-      background var(--UI-error-secondary)
+.status--checked
+  color var(--UI-active)
 
-    /deep/ svg
-      color var(--UI-error)
-
-  .status--checked
-    color var(--UI-active)
+  &.icon
     margin-left auto
 
-  /deep/ .icon--quit
-    margin-bottom 2px
+/deep/ .icon--quit
+  margin-bottom 2px
 </style>

@@ -14,8 +14,8 @@
       >
         <ui-input
           v-model="channelModel.name"
-          class="l-mt-8"
-          :class="{'l-mb-16': !isEditMode || !channelModel.isPrivate}"
+          class="l-mt-4"
+          :class="{'l-mb-12': !isEditMode}"
           :icon="channelIcon"
           :minlength="2"
           :placeholder="texts.name"
@@ -32,7 +32,7 @@
         <p
           v-if="channelModel.isPrivate && !isEditMode"
           class="edit-channel-label"
-          :class="{'l-mt-8': channelModel.isPrivate, 'l-mt-12': !channelModel.isPrivate}"
+          :class="{'l-mt-4': channelModel.isPrivate, 'l-mt-12': !channelModel.isPrivate}"
         >
           {{ texts.privateLabel }}
         </p>
@@ -260,6 +260,7 @@ export default {
 <style scoped lang="stylus">
   .edit-channel-label
     line-height 22px
+    font-size 14px
     color var(--Text-secondary)
     font-weight 400
 

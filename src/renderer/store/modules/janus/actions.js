@@ -1,6 +1,5 @@
 import callWindow from '@classes/callWindow';
 import sleep from 'es7-sleep';
-import { IS_LINUX } from '@sdk/Constants';
 
 export default {
   /**
@@ -18,9 +17,9 @@ export default {
      * else – hide frame
      */
     /* eslint-disable-next-line */
-    const sourceId = IS_LINUX ? source?.id : source?.display_id;
+    const sourceId = source?.display_id || source?.id;
 
-    if (source && sourceId) {
+    if (source && source.index) {
       console.log('SETTING SHARING SOURCE', source);
       console.log('sourceId: ', sourceId);
       console.log('sourceIndex: ', source.index);
