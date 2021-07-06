@@ -39,6 +39,7 @@
         :key="workspace.id"
         :type="11"
         data-popover-close
+        :class="{'workspace--checked': workspace.id === selectedWorkspaceId}"
         @click="workspaceClickHandler(workspace.id)"
       >
         <avatar
@@ -48,12 +49,12 @@
           :size="18"
           :border-radius="6"
         />
-
-        {{ workspace.name }}
+        <div v-textfade>
+          {{ workspace.name }}
+        </div>
 
         <svg-icon
           v-if="workspace.id === selectedWorkspaceId"
-          class="workspace--checked"
           name="check"
         />
       </ui-button>
@@ -173,10 +174,17 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .workspace-avatar
-    margin-right 8px
+.buttons
+  max-width 250px
 
-  .workspace--checked
-    color var(--UI-active)
+.workspace-avatar
+  margin-right 8px
+  flex-shrink 0
+
+.workspace--checked
+  color var(--UI-active)
+
+  & .icon
     margin-left auto
+    flex-shrink 0
 </style>

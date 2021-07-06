@@ -59,6 +59,9 @@ export default {
     color var(--Text-secondary)
     white-space pre-line
 
+    &__inner
+      margin-bottom 88px
+
     &__doggo
       margin-bottom 14px
       color var(--Text-secondary)
