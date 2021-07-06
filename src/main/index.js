@@ -10,11 +10,9 @@ import WindowManager from '../shared/WindowManager/WindowManagerMain';
 import { IS_DEV, IS_WIN, IS_MAC, IS_LINUX } from './Constants';
 import MainWindowManager from '../shared/MainWindow/Main';
 
-console.time('init');
-console.time('before-load');
+const gotTheLock = app.requestSingleInstanceLock();
 
-let mainWindowId,
-    loadingScreenID;
+let mainWindowId = null;
 
 protocol.registerSchemesAsPrivileged([ {
   scheme: 'heyka',
@@ -31,19 +29,6 @@ if (IS_LINUX) {
   app.disableHardwareAcceleration();
 }
 
-/**
- * Create Splash window
- * @returns {void}
- */
-// function createLoadingScreen() {
-// loadingScreenID = WindowManager.createWindow({
-//     position: 'center',
-//     template: 'splash',
-//     url: 'splash.html',
-// });
-// console.timeEnd('before-load');
-// }
-
 app.on('window-all-closed', () => {
   if (!IS_MAC) {
     app.quit();
@@ -58,31 +43,30 @@ app.on('activate', () => {
   }
 });
 
-app.on('second-instance', () => {
-  if (mainWindowId === null) {
-    mainWindowId = MainWindowManager.createWindow();
-  } else {
-    MainWindowManager.show();
-  }
-});
-
-app.on('ready', async () => {
-  createProtocol('heyka');
-  // load splash screen (fast) and start loading main screen (not so fast)
-  // createLoadingScreen();
-  mainWindowId = MainWindowManager.createWindow();
-
-  ipcMain.on('page-rendered', () => {
-    if (loadingScreenID) {
-      console.timeEnd('init');
-      WindowManager.closeWindow({ id: loadingScreenID });
-      loadingScreenID = null;
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindowId === null) {
+      mainWindowId = MainWindowManager.createWindow();
+    } else {
+      MainWindowManager.show();
     }
   });
+}
+
+app.on('ready', async () => {
+  console.log('main/index.js --> app.on ready', mainWindowId, gotTheLock);
+  if (mainWindowId !== null || !gotTheLock) {
+    return;
+  }
+  createProtocol('heyka');
+  mainWindowId = MainWindowManager.createWindow();
 });
 
 // trigger flag in WindowManager so that windows won't prevent closing
 app.on('before-quit', function (e) {
+  console.log('main/index.js --> before-quit', mainWindowId);
   WindowManager.willQuit();
 });
 
