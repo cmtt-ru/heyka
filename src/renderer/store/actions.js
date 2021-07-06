@@ -7,6 +7,7 @@ import router from '@/router';
 import sounds from '@sdk/classes/sounds';
 import connectionCheck from '@sdk/classes/connectionCheck';
 import Logger from '@sdk/classes/logger';
+import { GA_EVENTS, trackEvent } from '@libs/analytics';
 import notify from '@libs/notify';
 
 const cnsl = new Logger('Initial', '#db580e');
@@ -417,6 +418,8 @@ export default {
 
     router.replace({ name: 'workspace' });
 
+    trackEvent(GA_EVENTS.workspaceChange);
+
     await dispatch('initial');
   },
 
@@ -441,6 +444,7 @@ export default {
   async selectChannelInAnotherWorkspace({ dispatch }, { workspaceId, channelId }) {
     await dispatch('changeWorkspace', workspaceId);
     await dispatch('selectChannel', channelId);
+    trackEvent(GA_EVENTS.pushInviteAccept);
   },
 
   /**
