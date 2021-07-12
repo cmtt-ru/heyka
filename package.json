@@ -1,6 +1,6 @@
 {
   "name": "heyka",
-  "version": "1.2.6002",
+  "version": "1.2.6003",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
