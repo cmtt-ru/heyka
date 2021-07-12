@@ -11,12 +11,14 @@
       <!--        class="call-window__media__preloader"-->
       <!--        :class="{'call-window__media__preloader&#45;&#45;hidden': !preloaderShown}"-->
       <!--      />-->
-      <video
-        ref="video"
-        class="call-window__media__video"
-        autoplay
-        muted
-      />
+      <zoom-pan style="height: 100%">
+        <video
+          ref="video"
+          class="call-window__media__video"
+          autoplay
+          muted
+        />
+      </zoom-pan>
       <div
         v-if="sharingUser"
         class="sharing-user"
@@ -72,6 +74,7 @@ import broadcastActions from '@sdk/classes/broadcastActions';
 import broadcastEvents from '@sdk/classes/broadcastEvents';
 import UiButton from '@components/UiButton';
 import Avatar from '@components/Avatar';
+import ZoomPan from '@components/ZoomPan';
 import janusVideoroomWrapper from '@sdk/classes/janusVideoroomWrapper';
 import * as linkify from 'linkifyjs';
 import xss from 'xss';
@@ -85,6 +88,7 @@ export default {
     CallControls,
     UiButton,
     Avatar,
+    ZoomPan,
   },
   data() {
     return {
