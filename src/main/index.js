@@ -35,14 +35,6 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('activate', () => {
-  if (mainWindowId === null) {
-    mainWindowId = MainWindowManager.createWindow();
-  } else {
-    MainWindowManager.show();
-  }
-});
-
 if (!gotTheLock) {
   app.quit();
 } else {
