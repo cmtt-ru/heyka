@@ -51,6 +51,8 @@
 <script>
 import Layout from '../Settings/SettingsLayout';
 import { mapGetters } from 'vuex';
+import notify from '@sdk/libs/notify';
+import logout from '@api/auth/logout';
 
 import Modal from '@sdk/classes/Modal';
 
@@ -87,10 +89,14 @@ export default {
         },
         onClose: async (status) => {
           if (status === 'confirm') {
-            console.log('DELETE ACCOUNT LOL');
-            await this.$API.user.deleteAccount();
-
-            //! обработать ошибку, когда не получается удалить акк, если админ
+            try {
+              await this.$API.user.deleteAccount();
+              logout();
+            } catch (err) {
+              if (err.response?.data?.message) {
+                notify(err.response.data.message);
+              }
+            }
           }
         },
       });
