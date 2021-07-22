@@ -281,7 +281,7 @@ class CallWindow {
         clearTimeout(this.gridTimeout);
         setTimeout(() => {
           if (this.streamingOverlayWindow) {
-            this.streamingOverlayWindow.action('show');
+            this.streamingOverlayWindow.action('showInactive');
           } else if (this.overlayWindow) {
             this.showOverlay();
           }
