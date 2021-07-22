@@ -28,6 +28,13 @@
         >
           {{ texts.loginSettings }}
         </router-link>
+        <div
+          v-if="IS_DEV"
+          class="editprofile-link editprofile-link--delete"
+          @click="deleteModalHandler"
+        >
+          Delete account
+        </div>
       </div>
     </template>
 
@@ -43,6 +50,11 @@
 
 <script>
 import Layout from '../Settings/SettingsLayout';
+import { mapGetters } from 'vuex';
+import notify from '@sdk/libs/notify';
+import logout from '@api/auth/logout';
+
+import Modal from '@sdk/classes/Modal';
 
 export default {
   components: {
@@ -50,16 +62,44 @@ export default {
   },
   data() {
     return {
-
+      IS_DEV,
     };
   },
   computed: {
+    ...mapGetters({
+      myInfo: 'myInfo',
+    }),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
      */
     texts() {
       return this.$t('workspace.userSettings');
+    },
+  },
+
+  methods: {
+    deleteModalHandler() {
+      Modal.show({
+        name: 'ConfirmDelete',
+        data: {
+          header: 'Удаление аккаунта',
+          body: 'Введите своё имя для подтверждения',
+          confirmString: this.myInfo.user.name,
+        },
+        onClose: async (status) => {
+          if (status === 'confirm') {
+            try {
+              await this.$API.user.deleteAccount();
+              logout();
+            } catch (err) {
+              if (err.response?.data?.message) {
+                notify(err.response.data.message);
+              }
+            }
+          }
+        },
+      });
     },
   },
 };
@@ -84,6 +124,10 @@ export default {
   line-height 16px
   text-decoration none
   margin 2px 4px 4px
+  cursor pointer
+
+  &--delete
+    color var(--UI-error)
 
   &.router-link-exact-active
     background var(--Background-darkgrey)
