@@ -150,25 +150,6 @@ class WindowManager {
       newUserAgent.push('is-main-window');
     }
 
-    if (IS_LINUX && options.displayId) {
-      let display;
-
-      console.log('WindowManager --> linux display index', options.sourceIndex);
-
-      if (options.displayId && typeof options.sourceIndex !== 'number') {
-        display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
-      } else {
-        display = screen.getAllDisplays()[options.sourceIndex];
-      }
-
-      console.log('WindowManager --> linux display', display);
-
-      windowOptions.x = display.bounds.x;
-      windowOptions.y = display.bounds.y;
-      windowOptions.width = display.bounds.width;
-      windowOptions.height = display.bounds.height;
-    }
-
     // create BrowserWindow!
     const browserWindow = new BrowserWindow(windowOptions);
 
@@ -245,21 +226,19 @@ class WindowManager {
       browserWindow.setPosition(position.x, position.y);
 
       if (options.displayId || options.sourceIndex) {
-        let display = null;
+        const display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId)) ||
+          screen.getAllDisplays()[options.sourceIndex];
 
-        if ((options.displayId && typeof options.sourceIndex !== 'number') || IS_WIN) {
-          display = screen.getAllDisplays().find(d => d.id === parseInt(options.displayId));
-        } else {
-          display = screen.getAllDisplays()[options.sourceIndex];
+        if (!display) {
+          console.log('WINDOWMANAGER: SOURCE FOR SHARING NOT FOUND');
+
+          return;
         }
 
-        if (display) {
-          browserWindow.setPosition(display.bounds.x, display.bounds.y);
-
-          if (options.maximize) {
-            browserWindow.setBounds(display.bounds);
-            browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
-          }
+        browserWindow.setPosition(display.bounds.x, display.bounds.y);
+        if (options.maximize) {
+          browserWindow.setBounds(display.bounds);
+          browserWindow.setAlwaysOnTop(true, 'pop-up-menu');
         }
       }
 
