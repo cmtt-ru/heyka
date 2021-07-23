@@ -90,18 +90,18 @@
     <div class="buttons">
       <ui-button
         :type="11"
-        icon="quit"
-        @click.native="quitAppHandler"
-      >
-        {{ texts.quit }}
-      </ui-button>
-      <ui-button
-        :type="11"
         icon="disconnect"
         class="logout-button"
         @click="logoutHandler"
       >
         {{ texts.logout }}
+      </ui-button>
+      <ui-button
+        :type="11"
+        icon="quit"
+        @click.native="quitAppHandler"
+      >
+        {{ texts.quit }}
       </ui-button>
     </div>
   </popover>
