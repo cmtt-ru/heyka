@@ -1,5 +1,7 @@
 import Vue from 'vue';
 
+const NO_EMOJI_REGEXP = /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
+
 export default {
 
   /**
@@ -10,6 +12,10 @@ export default {
    * @constructor
    */
   SET_COLLECTION(state, collection) {
+    //! remove emoji from name. Temp solution!
+    for (const userId in collection) {
+      collection[userId].name = collection[userId].name.replace(NO_EMOJI_REGEXP, '');
+    }
     state.collection = collection;
   },
 
@@ -24,7 +30,12 @@ export default {
   UPDATE_USER(state, data) {
     if (state.collection[data.id]) {
       for (const key in data) {
-        Vue.set(state.collection[data.id], key, data[key]);
+        //! remove emoji from name. Temp solution!
+        if (key === 'name') {
+          Vue.set(state.collection[data.id], 'name', data[key].replace(NO_EMOJI_REGEXP, ''));
+        } else {
+          Vue.set(state.collection[data.id], key, data[key]);
+        }
       }
     }
   },
