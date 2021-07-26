@@ -10,15 +10,15 @@
       <p>{{ texts.empty }}</p>
     </div>
 
-    <div class="changelog">
-      <div>{{ CHANGELOG[0].version }}.</div>
-      <router-link
-        :to="{name: 'settings-about'}"
-        class="changelog__link"
-      >
-        {{ texts.new }}
-      </router-link>
-    </div>
+    <!--    <div class="changelog">-->
+    <!--      <div>{{ CHANGELOG[0].version }}.</div>-->
+    <!--      <router-link-->
+    <!--        :to="{name: 'settings-about'}"-->
+    <!--        class="changelog__link"-->
+    <!--      >-->
+    <!--        {{ texts.new }}-->
+    <!--      </router-link>-->
+    <!--    </div>-->
   </div>
 </template>
 
@@ -60,7 +60,7 @@ export default {
     white-space pre-line
 
     &__inner
-      margin-bottom 88px
+      margin-bottom 14px
 
     &__doggo
       margin-bottom 14px

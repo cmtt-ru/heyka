@@ -1,13 +1,13 @@
 <template>
   <div class="settings-page">
-    <div class="settings__label">
-      {{ texts.generalCategory }}
-    </div>
-    <ui-select
-      v-model="language"
-      :data="languages"
-      :label="texts.languageLabel"
-    />
+    <!--    <div class="settings__label">-->
+    <!--      {{ texts.generalCategory }}-->
+    <!--    </div>-->
+    <!--    <ui-select-->
+    <!--      v-model="language"-->
+    <!--      :data="languages"-->
+    <!--      :label="texts.languageLabel"-->
+    <!--    />-->
     <!-- <ui-select
       v-model="localSettings.mode"
       :data="modes"
@@ -37,10 +37,10 @@
     <div class="settings__label">
       {{ texts.advancedCategory }}
     </div>
-    <ui-switch
-      v-model="localSettings.resizeWindow"
-      :text="texts.resize"
-    />
+    <!--    <ui-switch-->
+    <!--      v-model="localSettings.resizeWindow"-->
+    <!--      :text="texts.resize"-->
+    <!--    />-->
     <ui-switch
       v-model="muteMic"
       :text="texts.nomic"
@@ -50,11 +50,15 @@
       :text="muteText"
     />
 
-    <div class="settings__label">
+    <div
+      class="settings__label"
+      hidden
+    >
       {{ texts.serverLabel }}
     </div>
     <ui-switch
       v-model="localSettings.devServer"
+      style="display: none"
       :text="texts.serverSwitch"
     />
   </div>
@@ -70,6 +74,7 @@ import notify from '@libs/notify';
 export default {
   components: {
     UiSwitch,
+    // eslint-disable-next-line vue/no-unused-components
     UiSelect,
   },
 
@@ -94,6 +99,8 @@ export default {
         devServer: this.$store.state.app.devServer,
       },
       devServer: this.$store.state.app.devServer,
+
+      IS_DEV,
 
     };
   },
