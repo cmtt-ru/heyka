@@ -308,11 +308,11 @@ class WindowManager {
       this.sendAll(`window-hide-${windowId}`);
     });
 
-    if (windowOptions.aspectRatio) {
-      if (IS_WIN) {
-        this.windows[windowId].aspectRatio = new AspectRatio(browserWindow, windowOptions.aspectRatio, windowOptions.extraWidth, windowOptions.extraHeight, windowOptions.maxWidth, windowOptions.maxHeight);
-      }
-    }
+    // if (windowOptions.aspectRatio) {
+    //   if (IS_WIN) {
+    //     this.windows[windowId].aspectRatio = new AspectRatio(browserWindow, windowOptions.aspectRatio, windowOptions.extraWidth, windowOptions.extraHeight, windowOptions.maxWidth, windowOptions.maxHeight);
+    //   }
+    // }
 
     // return this window Id after it's created
     return windowId;
