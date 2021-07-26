@@ -29,11 +29,10 @@
           {{ texts.loginSettings }}
         </router-link>
         <div
-          v-if="IS_DEV"
           class="editprofile-link editprofile-link--delete"
           @click="deleteModalHandler"
         >
-          Delete account
+          {{ $t('popover.deleteAccount.header') }}
         </div>
       </div>
     </template>
@@ -60,11 +59,6 @@ export default {
   components: {
     Layout,
   },
-  data() {
-    return {
-      IS_DEV,
-    };
-  },
   computed: {
     ...mapGetters({
       myInfo: 'myInfo',
@@ -83,8 +77,8 @@ export default {
       Modal.show({
         name: 'ConfirmDelete',
         data: {
-          header: 'Удаление аккаунта',
-          body: 'Введите своё имя для подтверждения',
+          header: this.$t('popover.deleteAccount.header'),
+          body: this.$t('popover.deleteAccount.desc'),
           confirmString: this.myInfo.user.name,
         },
         onClose: async (status) => {
