@@ -1,9 +1,6 @@
 <template>
   <div class="settings-page">
     <div class="settings__label">
-      {{ $t('techTexts.wip') }}!
-    </div>
-    <div class="settings__label">
       {{ texts.transparencyCategory }}
     </div>
     <div class="privacy-text">
