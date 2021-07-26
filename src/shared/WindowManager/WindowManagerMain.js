@@ -1,7 +1,7 @@
 import path from 'path';
 import { ipcMain, BrowserWindow, screen, Menu, nativeImage, app } from 'electron';
 import Positioner from './Positioner';
-import AspectRatio from './AspectRatio';
+// import AspectRatio from './AspectRatio';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
