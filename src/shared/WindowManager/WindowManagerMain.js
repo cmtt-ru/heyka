@@ -6,7 +6,7 @@ import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
 import cloneDeep from 'clone-deep';
-import { IS_WIN, IS_DEV } from '../../main/Constants';
+import { IS_DEV } from '../../main/Constants';
 
 const icon = nativeImage.createFromPath(path.join(__static, `icon.png`));
 
