@@ -17,7 +17,7 @@ import network from '@sdk/classes/network';
 import windowName from '@shared/WindowManager/currentWindowName';
 
 themes.manualSetTheme('dark'); // TODO remove if light theme can be selected
-
+store.dispatch('app/setLanguage', 'en');
 /**
  * Retrieving log file path from main process
  */
