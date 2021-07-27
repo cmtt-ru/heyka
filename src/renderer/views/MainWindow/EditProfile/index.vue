@@ -28,6 +28,12 @@
         >
           {{ texts.loginSettings }}
         </router-link>
+        <div
+          class="editprofile-link editprofile-link--delete"
+          @click="deleteModalHandler"
+        >
+          {{ $t('popover.deleteAccount.header') }}
+        </div>
       </div>
     </template>
 
@@ -43,23 +49,51 @@
 
 <script>
 import Layout from '../Settings/SettingsLayout';
+import { mapGetters } from 'vuex';
+import notify from '@sdk/libs/notify';
+import logout from '@api/auth/logout';
+
+import Modal from '@sdk/classes/Modal';
 
 export default {
   components: {
     Layout,
   },
-  data() {
-    return {
-
-    };
-  },
   computed: {
+    ...mapGetters({
+      myInfo: 'myInfo',
+    }),
     /**
      * Get needed texts from I18n-locale file
      * @returns {object}
      */
     texts() {
       return this.$t('workspace.userSettings');
+    },
+  },
+
+  methods: {
+    deleteModalHandler() {
+      Modal.show({
+        name: 'ConfirmDelete',
+        data: {
+          header: this.$t('popover.deleteAccount.header'),
+          body: this.$t('popover.deleteAccount.desc'),
+          confirmString: this.myInfo.user.name,
+        },
+        onClose: async (status) => {
+          if (status === 'confirm') {
+            try {
+              await this.$API.auth.deleteAccount();
+              logout();
+            } catch (err) {
+              if (err.response?.data?.message) {
+                notify(err.response.data.message);
+              }
+            }
+          }
+        },
+      });
     },
   },
 };
@@ -84,6 +118,10 @@ export default {
   line-height 16px
   text-decoration none
   margin 2px 4px 4px
+  cursor pointer
+
+  &--delete
+    color var(--UI-error)
 
   &.router-link-exact-active
     background var(--Background-darkgrey)
