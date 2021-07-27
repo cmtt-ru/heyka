@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="me.user"
+    v-if="me || me.user"
     class="edit-profile-page"
   >
     <div class="user">
