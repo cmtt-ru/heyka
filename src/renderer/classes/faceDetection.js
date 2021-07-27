@@ -37,7 +37,6 @@ class Face extends EventEmitter {
         noFaceCounter = 0;
       } else {
         noFaceCounter++;
-        // console.log(`FaceDetection --> no face ${noFaceCounter}/${MAX_NO_FACE_COUNT}`);
       }
 
       if (noFaceCounter >= MAX_NO_FACE_COUNT) {
@@ -48,7 +47,6 @@ class Face extends EventEmitter {
   }
 
   async start(stream) {
-    // console.log('FaceDetection --> start');
     this.video.srcObject = stream;
 
     clearInterval(this.interval);
@@ -67,7 +65,6 @@ class Face extends EventEmitter {
   }
 
   stop() {
-    // console.log('FaceDetection --> stop');
     clearInterval(this.interval);
     this.video.srcObject = null;
     noFaceCounter = 0;
