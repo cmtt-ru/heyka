@@ -36,9 +36,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (mainWindowId === null) {
-    mainWindowId = MainWindowManager.createWindow();
-  } else {
+  if (mainWindowId !== null) {
     MainWindowManager.show();
   }
 });
