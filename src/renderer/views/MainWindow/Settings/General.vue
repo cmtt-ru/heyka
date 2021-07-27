@@ -332,7 +332,6 @@ export default {
 @import './styles'
 
 .settings-page
-  min-height calc(100vh - 52px)
   display flex
   flex-direction column
 </style>
