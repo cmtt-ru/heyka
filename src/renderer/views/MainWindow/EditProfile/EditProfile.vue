@@ -1,27 +1,32 @@
 <template>
   <div
-    v-if="me"
+    v-if="me || me.user"
     class="edit-profile-page"
   >
-    <div v-if="me.user">
-      <div class="user">
-        <ui-image
-          ref="avatarInput"
-          :image="userAvatar(me.user.id, 64)"
-          :big-image="userAvatar(me.user.id, Infinity)"
-          class="user__avatar"
-          :size="64"
-          @input="setNewAvatar"
-          @delete-image="deleteImage"
-        />
-      </div>
+    <div class="user">
+      <ui-image
+        ref="avatarInput"
+        :image="userAvatar(me.user.id, 64)"
+        :big-image="userAvatar(me.user.id, Infinity)"
+        class="user__avatar"
+        :size="64"
+        @input="setNewAvatar"
+        @delete-image="deleteImage"
+      />
+    </div>
 
+    <ui-form
+      @submit="submit"
+    >
       <div class="block-title">
         {{ texts.fullNameLabel }}
       </div>
+
       <ui-input
         v-model="profile.name"
         class="user__input"
+        :minlength="3"
+        required
         :placeholder="vuexName"
       />
 
@@ -51,31 +56,32 @@
           {{ texts.resetPass }}
         </div>
       </div>
-    </div>
 
-    <ui-button
-      v-if="!saved"
-      :type="1"
-      size="large"
-      class="l-mt-24"
-      @click="submit"
-    >
-      {{ $t('workspace.editChannel.buttonSave') }}
-    </ui-button>
-    <ui-button
-      v-else
-      :type="5"
-      wide
-      class="l-mt-24"
-      @click="submit"
-    >
-      {{ $t('techTexts.saved') }}
-    </ui-button>
+      <ui-button
+        v-if="!saved"
+        :type="1"
+        size="large"
+        class="l-mt-24"
+        wide
+        submit
+      >
+        {{ $t('workspace.editChannel.buttonSave') }}
+      </ui-button>
+      <ui-button
+        v-else
+        :type="5"
+        wide
+        class="l-mt-24"
+        submit
+      >
+        {{ $t('techTexts.saved') }}
+      </ui-button>
+    </ui-form>
   </div>
 </template>
 
 <script>
-import { UiInput, UiImage } from '@components/Form';
+import { UiForm, UiInput, UiImage } from '@components/Form';
 import UiButton from '@components/UiButton';
 import { mapGetters } from 'vuex';
 import { WEB_URL } from '@sdk/Constants';
@@ -83,6 +89,7 @@ import notify from '@libs/notify';
 
 export default {
   components: {
+    UiForm,
     UiInput,
     UiImage,
     UiButton,
