@@ -1,4 +1,4 @@
-import { ipcMain, app, nativeTheme, systemPreferences, Menu } from 'electron';
+import { ipcMain, app, nativeTheme, systemPreferences, Menu, screen } from 'electron';
 import shutdown from 'electron-shutdown-command';
 import { IS_WIN } from '../Constants';
 import WindowManager from '../../shared/WindowManager/WindowManagerMain';
@@ -42,6 +42,10 @@ ipcMain.handle('remote-ask-for-media-access', async (event, mediaType) => {
   }
 
   return await systemPreferences.askForMediaAccess(mediaType);
+});
+
+ipcMain.handle('remote-get-all-displays', async (event) => {
+  return screen.getAllDisplays();
 });
 
 ipcMain.on('remote-shutdown', (event) => {
