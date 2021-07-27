@@ -1,7 +1,7 @@
 import path from 'path';
 import { ipcMain, BrowserWindow, screen, Menu, nativeImage, app } from 'electron';
 import Positioner from './Positioner';
-import AspectRatio from './AspectRatio';
+// import AspectRatio from './AspectRatio';
 import adjustBounds from '@/main/libs/adjustWindowBounds';
 import templates from './templates.json';
 import { v4 as uuidV4 } from 'uuid';
@@ -308,11 +308,11 @@ class WindowManager {
       this.sendAll(`window-hide-${windowId}`);
     });
 
-    if (windowOptions.aspectRatio) {
-      if (IS_WIN) {
-        this.windows[windowId].aspectRatio = new AspectRatio(browserWindow, windowOptions.aspectRatio, windowOptions.extraWidth, windowOptions.extraHeight, windowOptions.maxWidth, windowOptions.maxHeight);
-      }
-    }
+    // if (windowOptions.aspectRatio) {
+    //   if (IS_WIN) {
+    //     this.windows[windowId].aspectRatio = new AspectRatio(browserWindow, windowOptions.aspectRatio, windowOptions.extraWidth, windowOptions.extraHeight, windowOptions.maxWidth, windowOptions.maxHeight);
+    //   }
+    // }
 
     // return this window Id after it's created
     return windowId;
