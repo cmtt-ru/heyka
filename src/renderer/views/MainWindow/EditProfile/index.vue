@@ -84,7 +84,7 @@ export default {
         onClose: async (status) => {
           if (status === 'confirm') {
             try {
-              await this.$API.user.deleteAccount();
+              await this.$API.auth.deleteAccount();
               logout();
             } catch (err) {
               if (err.response?.data?.message) {
