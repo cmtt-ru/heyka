@@ -49,7 +49,6 @@ export default {
    * @constructor
    */
   ADD_USER(state, data) {
-    console.log('ADD_USER', data);
     Vue.set(state.collection, data.id, { ...data });
   },
 
