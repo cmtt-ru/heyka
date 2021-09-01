@@ -60,6 +60,8 @@ const plugins = [
       'me/SET_ALLOW_DRAW',
       'me/getSelectedChannelId',
       'users/UPDATE_USER',
+      'users/ADD_USER',
+      'users/REMOVE_USER',
       'users/SET_COLLECTION',
       'channels/UPDATE_CHANNEL',
       'channels/ADD_USER',
