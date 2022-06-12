@@ -22,7 +22,7 @@
     "@popperjs/core": "^2.9.2",
     "adm-zip": "^0.5.5",
     "auto-launch": "^5.0.5",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "capture-frame": "^3.0.3",
     "chai-as-promised": "^7.1.1",
     "clone-deep": "^4.0.1",
