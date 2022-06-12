@@ -3,6 +3,7 @@
     <div
       v-show="mediaCanShow"
       class="call-window__media"
+      :class="{'call-window__media--windows-mic-fix': IS_WIN}"
       @dblclick="expandHandler"
     >
       <!--      <video-->
@@ -101,6 +102,7 @@ export default {
       isMediaPlaying: false,
       isStreamActive: false,
       isNeedToWaitVideo: true,
+      IS_WIN,
 
       /**
        * Used for real changes of `getUserWhoSharesMedia` getter, to prevent re-renders
@@ -638,6 +640,9 @@ export default {
       flex-grow 2
       flex-shrink 2
       min-height 196px
+
+      &--windows-mic-fix
+        transform rotate(0.00001deg) //! всё чтобы убрать мерцание активного микрофона на винде, когда кто-то шарит экран
 
       video
         display block
