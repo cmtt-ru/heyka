@@ -19,7 +19,7 @@ It is a cross-platform desktop app made with the help of **Electron**. Yes, it e
 We also had separate mobile apps for iOS & Android, but they were still in early beta and will most likely not be part of this open source project.
 <details>
   <summary>Mobile screenshot</summary>
-<img src="./promo/15.png" alt="drawing" width="500"/>
+<img src="./promo/15.png" alt="iOS screenshot" width="500"/>
 </details>
 &nbsp;
 
@@ -43,7 +43,7 @@ Probably the best way to explore the functionality of Heyka is to set up this pr
 **But we’ll write out a dozen of features:**
 
 &#8291;**1.** Heyka is small! Small in visual size, small in CPU usage.
-<img src="./promo/10.png" alt="drawing" width="500"/>
+![Main interface](/promo/10.png)
 &nbsp;
 
 &#8291;**2.** You can create workspaces and invite people to them
@@ -51,15 +51,14 @@ Probably the best way to explore the functionality of Heyka is to set up this pr
 &#8291;**3.** Users can create private channels in workspaces, admins can also create public channels
 
 &#8291;**4.** Anyone with enough rights can connect to a channel any time, voice only or with camera
-
-<img src="./promo/6.png" alt="drawing" width="700"/>
+![Call window](/promo/6.png)
 &nbsp;
 
 &#8291;**5.** You can connect to a specific channel from a web browser as a guest, as long as you have an invitation link
 
 &#8291;**6.** In channels people can share their screen – and others can draw over it, with their cursors visible when moving. Really useful to point at some parts of the screen or explain something in a pinch.
 
-<img src="./promo/drawing.gif" alt="drawing" width="500"/>  
+![Drawing animation](/promo/drawing.gif)
 
 <details>
   <summary>Screenshots</summary>
@@ -70,33 +69,31 @@ Probably the best way to explore the functionality of Heyka is to set up this pr
 
 &#8291;**7.** Temporary chat function during the call (works like chat in Zoom)
 
-<img src="./promo/12.png" alt="drawing" width="700"/>
-
+![Chat popup](/promo/12.png)
+&nbsp;
 
 &#8291;**8.** Push messages with invitations to calls
 
-<img src="./promo/9.png" alt="drawing" width="500"/>
+![Push notification](/promo/9.png)
 &nbsp;
 
 &#8291;**9.** Login with social networks or by login/pass
-
-<img src="./promo/2.png" alt="drawing" width="500"/>
-&nbsp;
 
 &#8291;**10.** Call directly anyone from your team, creating a temporary private channel
 
 &#8291;**11.** Integrate with slack, inviting people to a workspace or to a call if they are already in a workspace
 
-&#8291;**12.** Manage users and their roles in a web-hosted admin interface
+&#8291;**12.** Change app theme (dark/light) and app language (ru/en) on the fly
 
-<img src="./promo/13.png" alt="drawing" width="700"/>
+&#8291;**13.** Manage users and their roles in a web-hosted admin interface
+
+![Web interface for admin](/promo/13.png)
 &nbsp;
 
-&#8291;**13.** Change app theme (dark/light) and app language (ru/en) on the fly
 
----
----
-## Project setup
+
+# Project setup
+### Install dependencies
 ```
 npm i
 ```
@@ -116,24 +113,25 @@ npm run electron:build
 npm run lint
 ```
 
----
----
+
 # Contribution
-Heyka is in a limbo right now: we won't accept new requests right now, but we made sure it is possible for anyone to fork this project and use it for themselves. We hope that someday Heyka will regain its second life, and we would be happy to continue the development.
+Heyka is in a limbo right now: we won't accept new requests right now, but we made sure it is possible for anyone to fork this project and use it for themselves. We hope that someday Heyka will gain its second life, and we would be happy to continue the development.
 
-For the time being, the only contributors are the original developers of Heyka at cmtt.ru:
+For the time being, the only contributors are the original developers of Heyka at [cmtt.ru](https://cmtt.ru):
 
-<img src="https://avatars.githubusercontent.com/u/6544286?s=64&v=4" alt="Evgenii Korolev" width="40"/> [Evgenii Korolev](https://github.com/ekorolev)
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/6544286?s=64&v=4" alt="Evgenii Korolev" width="40"/> [Evgenii Korolev](https://github.com/ekorolev) - backend
 
-<img src="https://avatars.githubusercontent.com/u/3993459?s=64&v=4" alt="Michael Nalbandyan" width="40"/> [Michael Nalbandyan](https://github.com/xinger)
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/3993459?s=64&v=4" alt="Michael Nalbandyan" width="40"/> [Michael Nalbandyan](https://github.com/xinger) - frontend
 
-<img src="https://avatars.githubusercontent.com/u/21334998?s=64&v=4" alt="Ivan Bushmin" width="40"/> [Ivan Bushmin](https://github.com/bushmin)
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/21334998?s=64&v=4" alt="Ivan Bushmin" width="40"/> [Ivan Bushmin](https://github.com/bushmin) - frontend
 
-<img src="https://avatars.githubusercontent.com/u/241584?s=64&v=4" alt="Ilya Chekalsky" width="40"/> [Ilya Chekalsky](https://github.com/chekalsky)
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/241584?s=64&v=4" alt="Ilya Chekalsky" width="40"/> [Ilya Chekalsky](https://github.com/chekalsky) - infrastructure
 
-<img src="https://avatars.githubusercontent.com/u/6507765?s=64&v=4" alt="Murod Khaydarov" width="40"/> [Murod Khaydarov](https://github.com/khaydarov)
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/6507765?s=64&v=4" alt="Murod Khaydarov" width="40"/> [Murod Khaydarov](https://github.com/khaydarov) - infrastructure
 
-<img src="https://avatars.githubusercontent.com/u/3684889?s=64&v=4" alt="Peter Savchenko" width="40"/> [Peter Savchenko](https://github.com/neSpecc)
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/3684889?s=64&v=4" alt="Peter Savchenko" width="40"/> [Peter Savchenko](https://github.com/neSpecc) - infrastructure
+
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://cdn.dribbble.com/users/1407957/avatars/normal/6489f78fbc621f7d72b4391ab91e6ae8.jpg?1652209845" alt="Peter Savchenko" width="40"/> [Kostya Zakharenko](https://dribbble.com/kostya-zakharenko) - design
 
 
 &nbsp;
