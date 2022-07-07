@@ -93,43 +93,25 @@ Probably the best way to explore the functionality of Heyka is to set up this pr
 
 
 # Project setup
-### Install dependencies
-```
-npm i
-```
 
-### Compiles and hot-reloads for development
-```
-npm run electron:serve
-```
+## [Read here](https://github.com/cmtt-ru/heyka/blob/master/SETUP.md)
 
-### Compiles and minifies for production
-```
-npm run electron:build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
+&nbsp;
 
 # Contribution
 Heyka is in a limbo right now: we won't accept new requests right now, but we made sure it is possible for anyone to fork this project and use it for themselves. We hope that someday Heyka will gain its second life, and we would be happy to continue the development.
 
 For the time being, the only contributors are the original developers of Heyka at [cmtt.ru](https://cmtt.ru):
 
-<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/6544286?s=64&v=4" alt="Evgenii Korolev" width="40"/> [Evgenii Korolev](https://github.com/ekorolev) - backend
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/21334998?s=64&v=4" alt="Ivan Bushmin" width="40"/> [Ivan Bushmin](https://github.com/bushmin) - frontend
 
 <img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/3993459?s=64&v=4" alt="Michael Nalbandyan" width="40"/> [Michael Nalbandyan](https://github.com/xinger) - frontend
 
-<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/21334998?s=64&v=4" alt="Ivan Bushmin" width="40"/> [Ivan Bushmin](https://github.com/bushmin) - frontend
+<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/6544286?s=64&v=4" alt="Evgenii Korolev" width="40"/> [Evgenii Korolev](https://github.com/ekorolev) - backend
 
 <img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/241584?s=64&v=4" alt="Ilya Chekalsky" width="40"/> [Ilya Chekalsky](https://github.com/chekalsky) - infrastructure
 
 <img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/6507765?s=64&v=4" alt="Murod Khaydarov" width="40"/> [Murod Khaydarov](https://github.com/khaydarov) - infrastructure
-
-<img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://avatars.githubusercontent.com/u/3684889?s=64&v=4" alt="Peter Savchenko" width="40"/> [Peter Savchenko](https://github.com/neSpecc) - infrastructure
 
 <img style="border-radius: 50%; margin: 10px 10px -15px 0" src="https://cdn.dribbble.com/users/1407957/avatars/normal/6489f78fbc621f7d72b4391ab91e6ae8.jpg?1652209845" alt="Peter Savchenko" width="40"/> [Kostya Zakharenko](https://dribbble.com/kostya-zakharenko) - design
 
@@ -138,3 +120,6 @@ For the time being, the only contributors are the original developers of Heyka a
 &nbsp;
 # License
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Copyright Ⓒ 2020-present [Komitet](https://cmtt.ru)
