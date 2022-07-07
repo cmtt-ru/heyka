@@ -122,4 +122,4 @@ For the time being, the only contributors are the original developers of Heyka a
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Copyright Ⓒ 2020-present [Komitet](https://cmtt.ru)
+Copyright Ⓒ 2020-present [KMTT](https://cmtt.ru)
